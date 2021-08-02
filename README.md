@@ -1,4 +1,5 @@
-<p align="middle" >
+<br/>
+<p align="middle">
   <img width="200px;" src="./src/images/moonbucks.png"/>
 </p>
 <h2 align="middle">JS 문벅스 카페메뉴 앱</h2>
@@ -32,7 +33,7 @@
 </p>
 
 <p align="middle">
-  <a href="https://next-step.github.io/js-moonbucks/">🖥️ 데모 링크</a>
+  <a href="https://blackcoffee-study.github.io/moonbucks-menu/">🖥️ 데모 링크</a>
 </p>
 
 <br/>

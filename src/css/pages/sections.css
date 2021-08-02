@@ -1,0 +1,15 @@
+.create-section-btn {
+  font-size: 1rem;
+  width: 120px;
+  line-height: inherit;
+  cursor: pointer;
+  height: 42px;
+  padding: 0.65rem 1.25rem;
+  border: none;
+  outline: none;
+  border-radius: 2rem;
+}
+
+.modal-inner {
+  width: 600px;
+}

@@ -29,7 +29,7 @@
 ## 🔥 Projects!
 
 <p align="middle">
-  <img width="400" src="./src/images/sample.gif">
+  <img width="400" src="./src/images/moonbucks-main.png">
 </p>
 
 <p align="middle">

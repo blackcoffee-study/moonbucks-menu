@@ -8,8 +8,8 @@
   <img src="https://img.shields.io/badge/language-html-red.svg?style=flat-square"/>
   <img src="https://img.shields.io/badge/language-css-blue.svg?style=flat-square"/>
   <img src="https://img.shields.io/badge/language-js-yellow.svg?style=flat-square"/>
-  <a href="https://github.com/next-step/js-todo-list-step1/blob/main/LICENSE" target="_blank">
-    <img src="https://img.shields.io/github/license/next-step/js-todo-list-step1.svg?style=flat-square&label=license&color=08CE5D"/>
+  <a href="https://github.com/blackcoffee-study/js-lv1-book-manual/blob/main/LICENSE" target="_blank">
+    <img src="https://img.shields.io/github/license/blackcoffee-study/js-lv1-book-manual.svg?style=flat-square&label=license&color=08CE5D"/>
   </a>
 </p>
 
@@ -21,7 +21,7 @@
 <br/>
 
 블랙커피처럼 서로를 자극해주고, 동기부여 해주며, 그 성장과정으로 인해 의미있는 가치를 만들어내고자 하는   
-**프론트엔드 코드리뷰 모임** ☕️ **Black Coffee**입니다.
+**개발자 커뮤니티** ☕️ **Black Coffee**입니다.
 
 <br/>
 
@@ -32,7 +32,7 @@
 </p>
 
 <p align="middle">
-  <a href="https://next-step.github.io/js-moonbucks/">🖥️ 데모 링크</a>
+  <a href="https://blackcoffee-study.github.io/moonbucks-menu/">🖥️ 데모 링크</a>
 </p>
 
 <br/>
@@ -44,9 +44,6 @@
 - [ ] 메뉴의 수정 버튼을 눌러 메뉴 이름 수정
 - [ ] 메뉴 삭제 버튼을 이용하여 메뉴 삭제
 - [ ] 총 메뉴 갯수를 count하여 하단에 보여주기
-
-<br/>
-
 
 <br/>
 

@@ -1,5 +1,5 @@
 <p align="middle" >
-  <img width="200px;" src="./src/images/check_list.png"/>
+  <img width="200px;" src="./src/images/moonbucks.png"/>
 </p>
 <h2 align="middle">JS 문벅스 카페메뉴 앱</h2>
 <p align="middle">Vanilla JS로 구현 하는 상태관리가 가능한 카페메뉴 앱</p>

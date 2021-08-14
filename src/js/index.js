@@ -9,16 +9,22 @@ function App() {
     const $menuName = document.querySelector("#espresso-menu-name");
     const $menuList = document.querySelector("#espresso-menu-list");
     $menuList.insertAdjacentHTML("beforeend", template($menuName.value));
+    document.querySelector(".menu-count").innerText = `총 ${
+      $menuList.querySelectorAll("li").length
+    }개`;
     $menuName.value = "";
   });
 
-  $("#espresso-menu-name").addEventListener("keyup", (e) => {
+  $("#espresso-menu-name").addEventListener("keypress", (e) => {
     if (e.key !== "Enter") {
       return;
     }
     const $menuList = document.querySelector("#espresso-menu-list");
     const $menuName = document.querySelector("#espresso-menu-name");
     $menuList.insertAdjacentHTML("beforeend", template($menuName.value));
+    document.querySelector(".menu-count").innerText = `총 ${
+      $menuList.querySelectorAll("li").length
+    }개`;
     $menuName.value = "";
   });
 
@@ -49,7 +55,7 @@ function App() {
 
   const template = (name) => {
     return `
-    <li class="station-list-item d-flex items-center py-2">
+    <li class="menu-list-item d-flex items-center py-2">
       <span class="w-100 pl-2 menu-name">${name}</span>
       <button
         type="button"
@@ -68,3 +74,32 @@ function App() {
 }
 
 App();
+
+const onAddMenuItem = () => {
+  const $espressoMenuList = document.querySelector("#espresso-menu-list");
+
+  const template = (name) => {
+    return `<li class="menu-list-item d-flex items-center py-2">
+      <span class="w-100 pl-2 menu-name">${name}</span>
+      <button
+        type="button"
+        class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
+      >
+        수정
+      </button>
+      <button
+        type="button"
+        class="bg-gray-50 text-gray-500 text-sm menu-remove-button"
+      >
+        삭제
+      </button>
+    </li>`;
+  };
+
+  $espressoMenuList.insertAdjacentHTML(
+    "beforeend",
+    template($espressoMenuName.value)
+  );
+
+  $espressoMenuName.value = "";
+};

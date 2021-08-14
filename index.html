@@ -2,8 +2,10 @@
 <html lang="kr">
   <head>
     <meta charset="UTF-8" />
-    <title>🌝 문벅스 메뉴</title>
+    <title>문벅스 메뉴</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="shortcut icon" href="src/images/favicon.ico" />
+    <link rel="icon" href="src/images/favicon.png" />
     <link rel="stylesheet" href="src/css/index.css" />
   </head>
   <body>
@@ -34,8 +36,9 @@
           </header>
           <main class="mt-10 d-flex justify-center">
             <div class="wrapper bg-white p-10">
-              <div class="heading">
+              <div class="heading d-flex justify-between">
                 <h2 class="mt-1">☕ 에스프레소 메뉴 관리</h2>
+                <span class="mr-2 mt-4 menu-count">총 0개</span>
               </div>
               <form id="espresso-menu-form">
                 <div class="d-flex w-100">
@@ -54,7 +57,7 @@
                     type="button"
                     name="submit"
                     id="espresso-menu-submit-button"
-                    class="input-submit bg-cyan-300 ml-2"
+                    class="input-submit bg-green-600 ml-2"
                   >
                     확인
                   </button>

@@ -52,7 +52,7 @@
 - [ ] 총 메뉴 갯수를 count하여 상단에 보여준다.
   
 - 추가되는 메뉴의 마크업은 `<ul id="espresso-menu-list" class="mt-3 pl-0"></ul>` 안에 삽입해야 한다.
-- 추가되는 메뉴의 마크업
+- 메뉴 마크업
 ```js
 <li class="menu-list-item d-flex items-center py-2">
   <span class="w-100 pl-2 menu-name">${name}</span>

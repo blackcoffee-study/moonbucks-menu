@@ -72,7 +72,7 @@
 ```
 
 ## 🎯 step2 요구사항
-- [ ] localStorage에 데이터를 저장하여 새로고침해도 데이터가 남아있게 한다.
+- [ ] [localStorage](https://developer.mozilla.org/ko/docs/Web/API/Window/localStorage)에 데이터를 저장하여 새로고침해도 데이터가 남아있게 한다.
 - [ ] 에스프레소, 프라푸치노, 블렌디드, 티바나, 디저트 각각의 종류별로 메뉴판을 관리할 수 있게 만든다.
 - [ ] 품절 상태인 경우 라벨로 표시할 수 있다.
 

@@ -2,6 +2,7 @@ const inputForm = document.querySelector('#espresso-menu-form');
 const inputBtn = document.querySelector('#espresso-menu-submit-button');
 const input = document.querySelector('#espresso-menu-name');
 const menuList = document.querySelector('#espresso-menu-list');
+const menuCount = document.querySelector('.menu-count');
 
 function takeInput() {
     const inputValue = input.value;
@@ -30,6 +31,7 @@ function addMenu(name) {
         삭제
         </button>`;
     menuList.appendChild(menu);
+    displayCount();
 }
 
 function editMenu(menu) {
@@ -49,6 +51,11 @@ function deleteMenu(menu) {
         return;
     }
     menuList.removeChild(menu);
+    displayCount();
+}
+
+function displayCount() {
+    menuCount.innerText = `총 ${menuList.childElementCount}개`;
 }
 
 inputForm.addEventListener('submit', (event) => {

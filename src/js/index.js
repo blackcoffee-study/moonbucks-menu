@@ -44,6 +44,13 @@ function editMenu(menu) {
     }
 }
 
+function deleteMenu(menu) {
+    if (!window.confirm('정말 삭제하시겠습니까?')) {
+        return;
+    }
+    menuList.removeChild(menu);
+}
+
 inputForm.addEventListener('submit', (event) => {
     event.preventDefault();
     takeInput();
@@ -59,5 +66,8 @@ menuList.addEventListener('click', (event) => {
     const targetMenu = targetBtn.closest('li');
     if (targetBtn.classList.contains('menu-edit-button')) {
         editMenu(targetMenu);
+    }
+    if (targetBtn.classList.contains('menu-remove-button')) {
+        deleteMenu(targetMenu);
     }
 });

@@ -17,7 +17,7 @@ const editEspressoMenu = function (event) {
     '메뉴명을 수정하세요.',
     menuName.innerText
   );
-  if (editEspressoMenuValue === null) return;
+  if (!editEspressoMenuValue) return;
 
   menuList = menuList.map(
     menu => menu.id === parseInt(li.id) && (menu.name = editEspressoMenuValue)

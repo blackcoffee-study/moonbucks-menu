@@ -32,9 +32,32 @@ function addMenu(name) {
     menuList.appendChild(menu);
 }
 
+function editMenu(menu) {
+    const newName = window.prompt('메뉴명을 수정해주세요');
+    if (newName === null || newName === '') {
+        return;
+    }
+    for (const child of menu.childNodes) {
+        if (child.classList && child.classList.contains('menu-name')) {
+            child.innerText = newName;
+        }
+    }
+}
+
 inputForm.addEventListener('submit', (event) => {
     event.preventDefault();
     takeInput();
 });
 
 inputBtn.addEventListener('click', takeInput);
+
+menuList.addEventListener('click', (event) => {
+    const targetBtn = event.target;
+    if (targetBtn.tagName !== 'BUTTON') {
+        return;
+    }
+    const targetMenu = targetBtn.closest('li');
+    if (targetBtn.classList.contains('menu-edit-button')) {
+        editMenu(targetMenu);
+    }
+});

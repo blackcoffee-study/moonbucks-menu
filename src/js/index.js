@@ -25,14 +25,14 @@ const editEspressoMenu = function (event) {
   menuName.innerText = editEspressoMenuValue;
 };
 
-const removeEspressonMenu = function (event) {
+const removeEspressoMenu = function (event) {
   const li = event.target.parentElement;
   const removeConfirm = confirm('정말 삭제하시겠습니까?');
-  if (removeConfirm) {
-    li.remove();
-    menuList = menuList.filter(menu => menu.id !== parseInt(li.id));
-    menuCounter();
-  }
+  if (!removeConfirm) return;
+
+  li.remove();
+  menuList = menuList.filter(menu => menu.id !== parseInt(li.id));
+  menuCounter();
 };
 
 const printEspressoMenu = function (name) {
@@ -65,7 +65,7 @@ const printEspressoMenu = function (name) {
   const $btnRemove = $menuItem.querySelector('.menu-remove-button');
 
   $btnEdit.addEventListener('click', editEspressoMenu);
-  $btnRemove.addEventListener('click', removeEspressonMenu);
+  $btnRemove.addEventListener('click', removeEspressoMenu);
 };
 
 const submitEspressoMenu = function (event) {
@@ -81,5 +81,5 @@ const submitEspressoMenu = function (event) {
   $espressoMenuInput.value = '';
 };
 
-$espressoMenuForm.addEventListener('submit', submitEspressoMenu) ||
-  $btnSubmitEspressoMenu.addEventListener('click', submitEspressoMenu);
+$espressoMenuForm.addEventListener('submit', submitEspressoMenu);
+$btnSubmitEspressoMenu.addEventListener('click', submitEspressoMenu);

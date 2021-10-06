@@ -15,9 +15,14 @@ const handleSubmit = e => {
   const $input = e.target[0];
   const $menuList = document.querySelector('#espresso-menu-list');
   appendMenu($input.value, $menuList);
+  clearInput($input);
 };
 
 const appendMenu = (menu, $menuList) => {
   const template = createItemListTemplate(menu);
   $menuList.insertAdjacentHTML('beforeend', template);
+};
+
+const clearInput = $input => {
+  $input.value = '';
 };

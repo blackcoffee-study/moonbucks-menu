@@ -14,6 +14,10 @@ const menuList = document.getElementById('espresso-menu-list');
 menuList.addEventListener('click', function(event) {
     if (event.target && event.target.nodeName == 'BUTTON' && event.target.classList.contains('menu-edit-button')) {
         event.target.previousElementSibling.innerText = prompt('메뉴명을 수정하세요');
+    }else if (event.target && event.target.nodeName == 'BUTTON' && event.target.classList.contains('menu-remove-button')) {
+        if(confirm('정말 삭제하시겠습니까?')) {
+            event.target.parentElement.remove();
+        }
     }
 })
 

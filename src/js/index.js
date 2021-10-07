@@ -1,11 +1,17 @@
 'use strict'
 
+const $espressoMenuForm = document.querySelector('#espresso-menu-form')
 const $espressoMenuSubmitBtn = document.querySelector(
   '#espresso-menu-submit-button'
 )
-const $espressoMenuName = document.querySelector('#espresso-menu-name')
 const $espressoMenuList = document.querySelector('#espresso-menu-list')
-const $espressoMenuForm = document.querySelector('#espresso-menu-form')
+const $espressoMenuName = document.querySelector('#espresso-menu-name')
+const $menuCount = document.querySelector('.menu-count')
+
+// 메뉴 개수 변경
+const changeCounter = () => {
+  $menuCount.innerText = `총 ${$espressoMenuList.childElementCount}개`
+}
 
 // 메뉴 추가
 const createNewMenu = input => {
@@ -43,6 +49,7 @@ const addEspressoMenu = () => {
 
   const newMenu = createNewMenu(input)
   $espressoMenuList.appendChild(newMenu)
+  changeCounter()
   $espressoMenuName.value = ''
 }
 
@@ -75,6 +82,7 @@ const deleteMenu = id => {
   if (confirm('메뉴를 삭제하시겠습니까?')) {
     $toBeDeleted.remove()
   }
+  changeCounter()
 }
 
 $espressoMenuList.addEventListener('click', e => {

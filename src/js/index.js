@@ -53,16 +53,21 @@ $espressoMenuList.addEventListener('click', e => {
   const id = e.target.dataset.id
 
   if (id && target.matches('.menu-edit-button')) {
-    const toBeEdited = document
+    const $toBeEdited = document
       .querySelector(`.menu-list-item[data-id="${id}"]`)
       .querySelector('.menu-name')
 
-    const $menuName = window.prompt('수정할 메뉴명을 입력해주세요')
-    if ($menuName === null || $menuName === '') {
+    const menuName = window.prompt('수정할 메뉴명을 입력해주세요')
+    if (menuName === null || menuName === '') {
       return
     }
-    toBeEdited.innerText = $menuName
+    $toBeEdited.innerText = menuName
   } else if (id && target.matches('.menu-remove-button')) {
-    console.log('삭제')
+    const $toBeDeleted = document.querySelector(
+      `.menu-list-item[data-id="${id}"]`
+    )
+    if (confirm('메뉴를 삭제하시겠습니까?')) {
+      $toBeDeleted.remove()
+    }
   }
 })

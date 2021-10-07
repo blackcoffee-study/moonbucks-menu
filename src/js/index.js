@@ -14,6 +14,10 @@ const handleSubmit = e => {
   e.preventDefault();
   const $input = e.target[0];
   const $menuList = document.querySelector('#espresso-menu-list');
+  if (!isValid($input)) {
+    alert('값을 입력해주세요');
+    return;
+  }
   appendMenu($input.value, $menuList);
   clearInput($input);
 };
@@ -25,4 +29,8 @@ const appendMenu = (menu, $menuList) => {
 
 const clearInput = $input => {
   $input.value = '';
+};
+
+const isValid = $input => {
+  return $input.value.trim() !== '';
 };

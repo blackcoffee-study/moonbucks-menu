@@ -10,6 +10,13 @@ inputMenu.addEventListener('keypress', function(event) {
     addMenu();
 });
 
+const menuList = document.getElementById('espresso-menu-list');
+menuList.addEventListener('click', function(event) {
+    if (event.target && event.target.nodeName == 'BUTTON' && event.target.classList.contains('menu-edit-button')) {
+        event.target.previousElementSibling.innerText = prompt('메뉴명을 수정하세요');
+    }
+})
+
 function addMenu() {
     const menuName = document.getElementById('espresso-menu-name');
     if (menuName.value.trim() == '') {

@@ -1,8 +1,10 @@
-const $menuForm = document.querySelector('#espresso-menu-form');
-$menuForm.addEventListener('submit', e => handleSubmit(e));
+const init = () => {
+  const $menuForm = document.querySelector('#espresso-menu-form');
+  const $menuList = document.querySelector('#espresso-menu-list');
 
-const $menuList = document.querySelector('#espresso-menu-list');
-$menuList.addEventListener('click', e => handleMenuListClick(e));
+  $menuForm.addEventListener('submit', e => handleSubmit(e));
+  $menuList.addEventListener('click', e => handleMenuListClick(e));
+};
 
 const handleMenuListClick = e => {
   const $menuItem = e.target.parentNode;
@@ -71,3 +73,5 @@ const clearInput = $input => {
 const isValid = $input => {
   return $input.value.trim() !== '';
 };
+
+window.onload = init;

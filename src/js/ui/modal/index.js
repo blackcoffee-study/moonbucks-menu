@@ -1,9 +1,10 @@
 const $modalTriggerBtn = document.querySelector(".modal-trigger-btn");
 const $modalClose = document.querySelector(".modal-close");
 const $modal = document.querySelector(".modal");
-
+var total = 0;
 
 const $addMenuBtn = document.getElementById('espresso-menu-submit-button');
+const $menuForm = document.getElementById('espresso-menu-form');
 
 
 const onModalShow = () => {
@@ -14,17 +15,15 @@ const onModalClose = () => {
   $modal.classList.remove("open");
 };
 
-const addMenu = (e) => {
-
+const addMenu = () => {
+ 
   var name = document.getElementById('espresso-menu-name').value;
   if(name === "") {
     return;
   }
   console.log(name);
 
-  console.log("돌아ㅏ");
-  alert("submitted!");
-  e.preventDefault();
+  alert("added!");
   
   var ul = $('#espresso-menu-list');
   var clone = $('#espresso-menu-list').find('li:first').clone(true);
@@ -32,10 +31,24 @@ const addMenu = (e) => {
   $(clone).find('span').eq(0).text(name);
   clone.appendTo(ul);
 
+  countMenu();
+
   $('#espresso-menu-form')[0].reset();
 };
 
-$addMenuBtn.addEventListener("click", addMenu);
+const countMenu = () => {
+  $('.menu-count').eq(0).text("총 "+ ++total +"개");
+  console.log(total);
+}
+
+$addMenuBtn.addEventListener('click', function(e){
+  e.preventDefault();
+  addMenu();
+});
+$menuForm.addEventListener('submit', function (e){
+  e.preventDefault();
+  addMenu();
+});
 $modalTriggerBtn.addEventListener("click", onModalShow);
 $modalClose.addEventListener("click", onModalClose);
 

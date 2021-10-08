@@ -1,6 +1,40 @@
 const $menuForm = document.querySelector('#espresso-menu-form');
 $menuForm.addEventListener('submit', e => handleSubmit(e));
 
+const $menuList = document.querySelector('#espresso-menu-list');
+$menuList.addEventListener('click', e => handleMenuListClick(e));
+
+const handleMenuListClick = e => {
+  const $menuItem = e.target.parentNode;
+  const $target = e.target;
+
+  if (hasClass($target, 'menu-edit-button')) {
+    editMenu($menuItem);
+  }
+
+  if (hasClass($target, 'menu-remove-button')) {
+    removeMenu($menuItem);
+  }
+};
+
+const hasClass = ($target, className) => {
+  return $target.classList.contains(className);
+};
+
+const editMenu = $menuItem => {
+  const $menuName = $menuItem.querySelector('.menu-name');
+  const text = window.prompt('메뉴명을 수정하세요', $menuName.textContent);
+  if (!text.trim()) {
+    alert('값을 입력해주세요');
+    return;
+  }
+  $menuName.textContent = text;
+};
+
+const removeMenu = $menuItem => {
+  $menuItem.remove();
+};
+
 const createItemTemplate = name => {
   const $template = document.createElement('template');
   $template.innerHTML = `
@@ -27,22 +61,6 @@ const handleSubmit = e => {
 
 const appendMenu = (menu, $menuList) => {
   const $menuItem = createItemTemplate(menu).content;
-  $menuItem.querySelector('.menu-edit-button').addEventListener('click', e => {
-    const $menuName = e.target.parentNode.querySelector('.menu-name');
-    const text = window.prompt('메뉴명을 수정하세요', $menuName.textContent);
-    if (!text.trim()) {
-      alert('값을 입력해주세요');
-      return;
-    }
-    $menuName.textContent = text;
-  });
-  $menuItem
-    .querySelector('.menu-remove-button')
-    .addEventListener('click', e => {
-      const $item = e.target.parentNode;
-      $item.remove();
-    });
-
   $menuList.append($menuItem);
 };
 

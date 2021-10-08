@@ -36,6 +36,12 @@ const appendMenu = (menu, $menuList) => {
     }
     $menuName.textContent = text;
   });
+  $menuItem
+    .querySelector('.menu-remove-button')
+    .addEventListener('click', e => {
+      const $item = e.target.parentNode;
+      $item.remove();
+    });
 
   $menuList.insertAdjacentElement('beforeend', $menuItem);
 };

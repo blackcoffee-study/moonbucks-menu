@@ -13,7 +13,6 @@ const handleMenuListClick = e => {
   if (hasClass($target, 'menu-edit-button')) {
     editMenu($menuItem);
   }
-
   if (hasClass($target, 'menu-remove-button')) {
     removeMenu($menuItem);
   }
@@ -26,7 +25,9 @@ const hasClass = ($target, className) => {
 const editMenu = $menuItem => {
   const $menuName = $menuItem.querySelector('.menu-name');
   const text = window.prompt('메뉴명을 수정하세요', $menuName.textContent);
-  if (!text.trim()) {
+
+  if (text === null) return; // 취소한 경우
+  if (isEmpty(text)) {
     alert('값을 입력해주세요');
     return;
   }
@@ -35,6 +36,10 @@ const editMenu = $menuItem => {
 
 const removeMenu = $menuItem => {
   $menuItem.remove();
+};
+
+const isEmpty = value => {
+  return !(value && value.trim());
 };
 
 const createItemTemplate = name => {
@@ -53,7 +58,7 @@ const handleSubmit = e => {
   e.preventDefault();
   const $input = e.target[0];
   const $menuList = document.querySelector('#espresso-menu-list');
-  if (!isValid($input)) {
+  if (isEmpty($input.value)) {
     alert('값을 입력해주세요');
     return;
   }
@@ -68,10 +73,6 @@ const appendMenu = (menu, $menuList) => {
 
 const clearInput = $input => {
   $input.value = '';
-};
-
-const isValid = $input => {
-  return $input.value.trim() !== '';
 };
 
 window.onload = init;

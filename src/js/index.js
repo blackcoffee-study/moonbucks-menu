@@ -35,7 +35,10 @@ const editMenu = $menuItem => {
 };
 
 const removeMenu = $menuItem => {
-  $menuItem.remove();
+  const confirm = window.confirm('정말 삭제하시겠습니까?');
+  if (confirm) {
+    $menuItem.remove();
+  }
 };
 
 const isEmpty = value => {

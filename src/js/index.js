@@ -1,3 +1,5 @@
+let counter = 0;
+
 const init = () => {
   const $menuForm = document.querySelector('#espresso-menu-form');
   const $menuList = document.querySelector('#espresso-menu-list');
@@ -38,6 +40,7 @@ const removeMenu = $menuItem => {
   const confirm = window.confirm('정말 삭제하시겠습니까?');
   if (confirm) {
     $menuItem.remove();
+    updateCounter(counter - 1);
   }
 };
 
@@ -66,12 +69,18 @@ const handleSubmit = e => {
     return;
   }
   appendMenu($input.value, $menuList);
+  updateCounter(counter + 1);
   clearInput($input);
 };
 
 const appendMenu = (menu, $menuList) => {
   const $menuItem = createItemTemplate(menu).content;
   $menuList.append($menuItem);
+};
+
+const updateCounter = newCounter => {
+  counter = newCounter;
+  document.querySelector('.menu-count').textContent = `총 ${counter}개`;
 };
 
 const clearInput = $input => {

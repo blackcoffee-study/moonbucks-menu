@@ -15,16 +15,35 @@ function App($target) {
   };
 
   this.onAddMenu = (menu) => {
-    const newMenu = {
-      id: this.state.menu[this.state.menu.length - 1]?.id + 1 || 1,
+    const newMenuItem = {
+      id: this.state.menu[this.state.menu.length - 1]?.id + 1 || '1',
       name: menu,
     };
-    const nextState = { menu: [...this.state.menu, newMenu] };
+    const nextState = { menu: [...this.state.menu, newMenuItem] };
     this.setState(nextState);
   };
 
-  this.onEditMenu = (menuId) => {};
-  this.onRemoveMenu = (menuId) => {};
+  this.onEditMenu = (menuId) => {
+    const editName = prompt('변경할 메뉴를 입력하세요');
+    const nextState = {
+      menu: this.state.menu.map((menu) =>
+        menu.id === menuId
+          ? {
+              ...menu,
+              name: editName,
+            }
+          : menu
+      ),
+    };
+    this.setState(nextState);
+  };
+
+  this.onRemoveMenu = (menuId) => {
+    const nextState = {
+      menu: this.state.menu.filter((menu) => menu.id !== menuId),
+    };
+    this.setState(nextState);
+  };
 
   this.menuInput = new MenuInput({
     $target: this.$target.querySelector('.input-field'),
@@ -39,6 +58,8 @@ function App($target) {
   this.menuList = new MenuList({
     $target: this.$target.querySelector('#espresso-menu-list'),
     state: this.state,
+    onEditMenu: this.onEditMenu,
+    onRemoveMenu: this.onRemoveMenu,
   });
 }
 

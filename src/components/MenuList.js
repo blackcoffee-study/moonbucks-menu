@@ -8,6 +8,13 @@ function MenuList({ $target, state }) {
   };
 
   this.render = () => {
+    if (this.state.menu.length < 1) {
+      this.$target.innerHTML = `
+      <li class="menu-list-item d-flex items-center py-2">
+        <span class="w-100 pl-2 menu-name">메뉴를 입력해 주세요</span> 
+      </li>`;
+      return;
+    }
     const menuList = this.state.menu
       .map(
         (menuItem) => `

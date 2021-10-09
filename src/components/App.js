@@ -4,11 +4,7 @@ import MenuList from './MenuList.js';
 function App($target) {
   this.$target = $target;
   this.state = {
-    menu: [
-      { id: 0, name: '아메리카노' },
-      { id: 1, name: '카페라떼' },
-      { id: 2, name: '오렌지주스' },
-    ],
+    menu: [],
   };
 
   this.setState = (nextState) => {
@@ -18,12 +14,14 @@ function App($target) {
 
   this.onAddMenu = (menu) => {
     const newMenu = {
-      id: this.state.menu[this.state.menu.length - 1].id + 1,
+      id: this.state.menu[this.state.menu.length - 1]?.id + 1 || 1,
       name: menu,
     };
     const nextState = { menu: [...this.state.menu, newMenu] };
     this.setState(nextState);
   };
+
+  this.onEditMenu = (menuId) => {};
 
   this.menuInput = new MenuInput({
     $target: this.$target.querySelector('.input-field'),

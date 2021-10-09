@@ -1,4 +1,5 @@
 import MenuInput from './MenuInput.js';
+import MenuCount from './MenuCount.js';
 import MenuList from './MenuList.js';
 
 function App($target) {
@@ -10,6 +11,7 @@ function App($target) {
   this.setState = (nextState) => {
     this.state = nextState;
     this.menuList.setState(nextState);
+    this.menuCount.setState(nextState);
   };
 
   this.onAddMenu = (menu) => {
@@ -22,17 +24,22 @@ function App($target) {
   };
 
   this.onEditMenu = (menuId) => {};
+  this.onRemoveMenu = (menuId) => {};
 
   this.menuInput = new MenuInput({
     $target: this.$target.querySelector('.input-field'),
     onAddMenu: this.onAddMenu,
   });
 
+  this.menuCount = new MenuCount({
+    $target: this.$target.querySelector('.menu-count'),
+    state: this.state,
+  });
+
   this.menuList = new MenuList({
     $target: this.$target.querySelector('#espresso-menu-list'),
     state: this.state,
   });
-  this.menuList.render();
 }
 
 export default App;

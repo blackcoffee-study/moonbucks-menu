@@ -1,0 +1,20 @@
+{
+	"name": "moonbucks-menu",
+	"version": "1.0.0",
+	"main": "index.js",
+	"repository": "https://github.com/SINHOLEE/moonbucks-menu",
+	"author": "sinholee <dltlsgh5@gmail.com>",
+	"license": "MIT",
+	"scripts": {
+		"test": "jest"
+	},
+	"devDependencies": {
+		"@babel/core": "^7.15.5",
+		"@babel/preset-env": "^7.15.6",
+		"babel-jest": "^27.2.4",
+		"jest": "^27.2.4"
+	},
+	"dependencies": {
+		"modules": "^0.4.0"
+	}
+}

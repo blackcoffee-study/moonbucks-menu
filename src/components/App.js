@@ -1,4 +1,5 @@
 import MenuInput from './MenuInput.js';
+import MenuAddButton from './MenuAddButton.js';
 import MenuCount from './MenuCount.js';
 import MenuList from './MenuList.js';
 
@@ -49,6 +50,11 @@ function App($target) {
 
   this.menuInput = new MenuInput({
     $target: this.$target.querySelector('.input-field'),
+    onAddMenu: this.onAddMenu,
+  });
+  this.MenuAddButton = new MenuAddButton({
+    $target: this.$target.querySelector('.input-submit'),
+    $menuInput: this.$target.querySelector('.input-field'),
     onAddMenu: this.onAddMenu,
   });
 

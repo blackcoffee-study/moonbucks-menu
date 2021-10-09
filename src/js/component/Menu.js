@@ -1,19 +1,36 @@
 export default class Menu {
-    constructor() {}
+    onEditMenu = null;
+    onRemoveMenu = null;
+    
+    constructor({onEditMenu, onRemoveMenu}) {
+        this.onEditMenu = onEditMenu;
+        this.onRemoveMenu = onRemoveMenu;
+    }
 
     getMenuForm(menu) {
-        returnHtml = `<li class="menu-list-item d-flex items-center py-2">
-                        <span class="w-100 pl-2 menu-name">${menu.name}</span>
-                        <button
-                            type="button"
-                            class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button">수정
-                        </button>
-                        <button
-                            type="button"
-                            class="bg-gray-50 text-gray-500 text-sm menu-remove-button">삭제
-                        </button>
-                    </li>`
+        var liElement = document.createElement('li');
+        var spanElement = document.createElement('span');
+        var editButtonElement = document.createElement('button');
+        var removeButtonElement = document.createElement('button');
 
-        return returnHtml;
+        liElement.setAttribute("id", menu.code);
+        liElement.setAttribute("class", "menu-list-item d-flex items-center py-2");
+        
+        spanElement.setAttribute("class", "w-100 pl-2 menu-name");
+        spanElement.innerHTML = menu.name;
+
+        editButtonElement.setAttribute("class", "bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button");
+        editButtonElement.innerHTML = "수정";
+        editButtonElement.addEventListener("click", event => this.onEditMenu(event));
+
+        removeButtonElement.setAttribute("class", "bg-gray-50 text-gray-500 text-sm menu-remove-button");
+        removeButtonElement.innerHTML = "삭제";
+        removeButtonElement.addEventListener("click", event => this.onRemoveMenu(event));
+
+        liElement.append(spanElement);
+        liElement.append(editButtonElement);
+        liElement.append(removeButtonElement);
+
+        return liElement;
     }
 }

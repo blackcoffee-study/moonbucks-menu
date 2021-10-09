@@ -17,6 +17,7 @@ menuList.addEventListener('click', function(event) {
     }else if (event.target && event.target.nodeName == 'BUTTON' && event.target.classList.contains('menu-remove-button')) {
         if(confirm('정말 삭제하시겠습니까?')) {
             event.target.parentElement.remove();
+            showMenuCount();
         }
     }
 })
@@ -47,4 +48,11 @@ function addMenu() {
         + '</li>';
     menuList.innerHTML += menuItem;
     menuName.value = '';
+    showMenuCount();
+}
+
+function showMenuCount() {
+    const menuCount = document.querySelector('.menu-count');
+    const menuList = document.getElementById('espresso-menu-list');
+    menuCount.innerText = '총 ' + menuList.childElementCount + '개';
 }

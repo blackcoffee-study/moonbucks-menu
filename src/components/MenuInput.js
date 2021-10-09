@@ -2,7 +2,7 @@ function MenuInput({ $target, onAddMenu }) {
   this.$target = $target;
   this.onAddMenu = onAddMenu;
 
-  this.keyDownHandler = (e) => {
+  this.keyPressHandler = (e) => {
     if (e.key === 'Enter') {
       e.preventDefault();
     }
@@ -18,7 +18,7 @@ function MenuInput({ $target, onAddMenu }) {
     e.target.cursor;
   };
 
-  this.$target.addEventListener('keydown', this.keyDownHandler);
+  this.$target.addEventListener('keypress', this.keyPressHandler);
 }
 
 export default MenuInput;

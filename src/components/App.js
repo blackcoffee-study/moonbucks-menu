@@ -39,10 +39,12 @@ function App($target) {
   };
 
   this.onRemoveMenu = (menuId) => {
-    const nextState = {
-      menu: this.state.menu.filter((menu) => menu.id !== menuId),
-    };
-    this.setState(nextState);
+    if (confirm('선택한 메뉴를 삭제하시겠습니까?')) {
+      const nextState = {
+        menu: this.state.menu.filter((menu) => menu.id !== menuId),
+      };
+      this.setState(nextState);
+    }
   };
 
   this.menuInput = new MenuInput({

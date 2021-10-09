@@ -1,10 +1,12 @@
+import { isEmptyInput } from '../utils/checkCondition.js';
+
 function MenuAddButton({ $target, $menuInput, onAddMenu }) {
   this.$target = $target;
   this.$menuInput = $menuInput;
   this.onAddMenu = onAddMenu;
 
   this.clickHandler = () => {
-    if (this.$menuInput.value.trim() === '') {
+    if (isEmptyInput(this.$menuInput.value)) {
       alert('메뉴를 입력하세요');
       return;
     }

@@ -5,3 +5,7 @@ export const isNodeNameButton = (nodeName) => {
 export const isIncludesClass = (classList, className) => {
   return classList.includes(className);
 };
+
+export const isEmptyInput = (text) => {
+  return text.trim() === '';
+};

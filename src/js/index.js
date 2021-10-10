@@ -58,5 +58,28 @@ function setMenuCount() {
     $menuCount.innerHTML = `총 ${count}개`;
 }
 
+// 수정 / 삭제
+$list.addEventListener("click", event => {
+
+    const $target = event.target;
+    const $li = $target.parentNode;
+    const $span = $li.children[0]; //수정할 span
+    const classList = $target.classList;  //클래스 리스트
+
+    //수정버튼
+    if(classList.contains(BUTTON.EDIT)) {
+        const menuName = prompt("메뉴명을 수정하세요");
+        $span.innerHTML = menuName;
+
+    } else if(classList.contains(BUTTON.REMOVE)) {
+        if(confirm("정말 삭제하시겠습니까?")) {
+            $list.removeChild($li);
+        }
+    }
+
+    setMenuCount(); //메뉴 갯수
+});
+
+
 
 

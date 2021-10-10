@@ -3,12 +3,13 @@ import store, {
 	editEspresso,
 	removeEspresso,
 } from '../js/store/index.js';
+import { EVENTS, SELECTORS, MESSAGES } from './constants.js';
 import { getUUID } from './utils/index.js';
 
-const $input = document.querySelector('.input-field');
-const $form = document.querySelector('#espresso-menu-form');
-const ul = document.querySelector('#espresso-menu-list');
-const menuCount = document.querySelector('.menu-count');
+const $input = document.querySelector(SELECTORS.CLASS.INPUT_FIELD);
+const $form = document.querySelector(SELECTORS.ID.ESPRESSO_MENU_FORM);
+const $ul = document.querySelector(SELECTORS.ID.ESPRESSO_MENU_LIST);
+const $menuCount = document.querySelector(SELECTORS.CLASS.MENU_COUNT);
 
 const countTemplate = (cnt) => {
 	return `총 ${cnt}개`;
@@ -44,8 +45,8 @@ const liTemplate = (item) => {
 const onDelete = (e) => {
 	// 삭제
 	const { target } = e;
-	if (target.closest('.menu-remove-button')) {
-		const answer = confirm(`정말로 삭제하시겠습니까?`);
+	if (target.closest(SELECTORS.CLASS.MENU_REMOVE_BUTTON)) {
+		const answer = confirm(MESSAGES.CONFIRM_REMOVE);
 		if (answer) {
 			const id = target.dataset.id;
 			store.dispatch(removeEspresso(id));
@@ -54,16 +55,17 @@ const onDelete = (e) => {
 };
 const onEdit = (e) => {
 	const { target } = e;
-	if (target.closest('.menu-edit-button')) {
+	if (target.closest(SELECTORS.CLASS.MENU_EDIT_BUTTON)) {
 		const id = target.dataset.id;
-		const newItem = prompt('새로운 입력.');
+		const name = store.getState().espresso.find((es) => es.id === id).name;
+		const newItem = prompt(MESSAGES.PROMPT_EDIT_MENU, name);
 		if (newItem) {
 			store.dispatch(editEspresso({ id, name: newItem }));
 		}
 	}
 };
-ul.addEventListener('click', onDelete);
-ul.addEventListener('click', onEdit);
+$ul.addEventListener(EVENTS.click, onDelete);
+$ul.addEventListener(EVENTS.click, onEdit);
 
 const onSubmit = (e) => {
 	e.preventDefault();
@@ -72,13 +74,12 @@ const onSubmit = (e) => {
 		$input.value = '';
 	}
 };
-$form.addEventListener('submit', onSubmit);
+$form.addEventListener(EVENTS.submit, onSubmit);
 
 const render = () => {
 	const { espresso } = store.getState();
-	ul.innerHTML = '';
-	ul.innerHTML = espresso.map(liTemplate).join('');
-	menuCount.innerHTML = countTemplate(espresso.length || 0);
+	$ul.innerHTML = espresso.map(liTemplate).join('');
+	$menuCount.innerHTML = countTemplate(espresso.length || 0);
 };
 
 store.subscribe(render);

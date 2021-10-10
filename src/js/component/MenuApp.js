@@ -14,8 +14,8 @@ export default class MenuApp {
 
     constructor() {
         this.menu = new Menu({
-            onEditMenu: (event => {this.onEditMenu(event)}),
-            onRemoveMenu: (event => {this.onRemoveMenu(event)})
+            onEditMenu: (menu => {this.onEditMenu(menu)}),
+            onRemoveMenu: (menu => {this.onRemoveMenu(menu)})
         });
         this.common = new Common();
         this.menuForm = new MenuForm({
@@ -29,41 +29,30 @@ export default class MenuApp {
                 this.onAddMenu(data);
             })
         });
-        
     }
 
     onAddMenu(menu) {
         this.$menuList.append(this.menu.getMenuForm(menu));
-        this.setMenuInfo();
-    }
-
-    onEditMenu(event) {
-        var originMenu = event.target.parentNode;
-        var editMenuName = prompt("수정할 이름을 입력하세요", originMenu.firstChild.innerHTML);
-
-        originMenu.firstChild.innerHTML = editMenuName;
-    }
-
-    onRemoveMenu(event) {
-        if(confirm("메뉴를 삭제하시겠습니까?")) {
-            var deleteMenu = event.target.parentNode.getAttribute("id");
-
-            document.getElementById(deleteMenu).remove();
-            this.setMenuInfo();
-        }
-    }
-
-    setMenuInfo() {
-        this.setMenuItems();
         this.setMenuCount();
     }
 
-    setMenuItems() {
-        this.$menuItems = document.querySelectorAll(".menu-list-item");
+    onEditMenu(menu) {
+        var originMenu = menu.querySelector(".menu-name");
+        var editMenuName = prompt("수정할 이름을 입력하세요", originMenu.innerHTML);
+
+        originMenu.innerHTML = editMenuName;
+    }
+
+    onRemoveMenu(menu) {
+        if(confirm("메뉴를 삭제하시겠습니까?")) {
+            menu.remove();
+            this.setMenuCount();
+        }
     }
 
     setMenuCount() {
-        var count = this.$menuItems.length;
+        var count = this.$menuList.querySelectorAll('.menu-list-item').length;
+
         this.$menuCount[0].innerText = `총 ${count}개`
     }
 }

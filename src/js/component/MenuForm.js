@@ -8,11 +8,11 @@ export default class MenuForm {
         this.$menuForm = target;
         this.$menuInput = document.getElementById("espresso-menu-name");
 
-        this.$menuForm.addEventListener("submit", () => this.onSubmit());
+        this.$menuForm.addEventListener("submit", (event) => this.onSubmit(event));
         this.onAdd = onAdd;
     }
 
-    onSubmit() {
+    onSubmit(event) {
         var menuName = this.$menuInput.value;
         var returnValue = this.onDataCheck(menuName);
 
@@ -22,6 +22,7 @@ export default class MenuForm {
         } else {
             alert(returnValue.reason);
         }
+        event.preventDefault();
     }
 
     onDataCheck(data) {

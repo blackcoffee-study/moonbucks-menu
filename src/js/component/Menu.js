@@ -21,16 +21,16 @@ export default class Menu {
 
         editButtonElement.setAttribute("class", "bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button");
         editButtonElement.innerHTML = "수정";
-        editButtonElement.addEventListener("click", event => this.onEditMenu(event));
+        editButtonElement.addEventListener("click", () => this.onEditMenu(liElement));
 
         removeButtonElement.setAttribute("class", "bg-gray-50 text-gray-500 text-sm menu-remove-button");
         removeButtonElement.innerHTML = "삭제";
-        removeButtonElement.addEventListener("click", event => this.onRemoveMenu(event));
+        removeButtonElement.addEventListener("click", () => this.onRemoveMenu(liElement));
 
         liElement.append(spanElement);
         liElement.append(editButtonElement);
         liElement.append(removeButtonElement);
-
+        
         return liElement;
     }
 }

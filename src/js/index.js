@@ -45,8 +45,11 @@ const onDelete = (e) => {
 	// 삭제
 	const { target } = e;
 	if (target.closest('.menu-remove-button')) {
-		const id = target.dataset.id;
-		store.dispatch(removeEspresso(id));
+		const answer = confirm(`정말로 삭제하시겠습니까?`);
+		if (answer) {
+			const id = target.dataset.id;
+			store.dispatch(removeEspresso(id));
+		}
 	}
 };
 const onEdit = (e) => {

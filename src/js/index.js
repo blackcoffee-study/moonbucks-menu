@@ -17,7 +17,7 @@ function MenuApp() {
 	new MenuInput({
 		onAdd: contents => {
 			this._id++;
-			const template = menuTemplate(contents, this._id);
+			const template = menuCardTemplate(contents, this._id);
 			this.menuItems.push({
 				id : this._id,
 				template : template,
@@ -112,7 +112,7 @@ function MenuCount () {
 	}
 }
 
-function menuTemplate(contents, id) {
+function menuCardTemplate(contents, id) {
 	return `<li class="menu-list-item d-flex items-center py-2" data-id=${id}>
   <span class="w-100 pl-2 menu-name sold-out">${contents}</span>
   <button

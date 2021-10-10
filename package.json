@@ -1,0 +1,16 @@
+{
+  "name": "moonbucks-menu-tekiter",
+  "repository": "https://github.com/Tekiter/moonbucks-menu.git",
+  "author": "Tekiter <tekiter8@gmail.com>",
+  "scripts": {
+    "lint": "npm run lint-eslint && npm run lint-prettier",
+    "lint-eslint": "eslint src --ext js,jsx,ts,tsx --ignore-path .gitignore --max-warnings=0 --fix",
+    "lint-prettier": "prettier --write \"src/**/*.(js|jsx|ts|tsx)\""
+  },
+  "devDependencies": {
+    "eslint": "^8.0.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "prettier": "^2.4.1"
+  }
+}

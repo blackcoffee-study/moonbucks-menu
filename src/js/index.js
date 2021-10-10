@@ -1,6 +1,14 @@
 const $form = document.getElementById('espresso-menu-form')
 const $button = document.getElementById('espresso-menu-submit-button')
 
+const onUpdate = () => {
+  const updatedMenuName = prompt('메뉴명을 수정하세요.')
+}
+
+const onDelete = () => {
+  console.log('delete')
+}
+
 const onSubmit = (e) => {
   e.preventDefault()
 
@@ -12,11 +20,20 @@ const onSubmit = (e) => {
     return
   }
 
-  $menuName.innerHTML = `
-    <span>${value}</span>
-    <button>수정</button>
-    <button>삭제</button>
-  `
+  const $name = document.createElement('span')
+  $name.innerText = value
+  $menuName.appendChild($name)
+
+  const $updateBtn = document.createElement('button')
+  $updateBtn.innerText = '수정'
+  $updateBtn.addEventListener('click', (e) => onUpdate(e))
+  $menuName.appendChild($updateBtn)
+
+  const $deleteBtn = document.createElement('button')
+  $deleteBtn.innerText = '삭제'
+  $deleteBtn.addEventListener('click', (e) => onDelete(e))
+  $menuName.appendChild($deleteBtn)
+
   $input.value = ''
 
   const $menuList = document.getElementById('espresso-menu-list')

@@ -20,12 +20,12 @@ class Renderer {
 class DOMRenderer extends Renderer {
   constructor (app) {
     super(app)
-    this.$menuList = $('#espresso-menu-list')
-
     this._addMenuEvent().render()
+    this.prev = null;
   }
 
   _addMenuEvent () {
+    this.$menuList = $('#espresso-menu-list')
     const $inputMenu = $('#espresso-menu-form')
     $inputMenu.addEventListener('submit', this._handleAddMenu)
     return this;
@@ -76,9 +76,13 @@ class DOMRenderer extends Renderer {
   }
 
   _render () {
-    this.$menuList.innerHTML = ''
     const menuList = this.app.getInfo()
+    if(this.prev === JSON.stringify(menuList)) return;
+
+    console.log('render list')
+    this.$menuList.innerHTML = ''
     menuList.forEach(this._createMenu)
+    this.prev = JSON.stringify(menuList);
   }
 
 }

@@ -1,11 +1,13 @@
 function MenuApp() {
 	this.menuItems = [];
 	this.menuList = new MenuList();
+	this.menuCount = new MenuCount()
 	this._id = 0;
 
 	this.setState = updatedItems => {
 		this.menuItems = updatedItems;
 		this.menuList.setState(this.menuItems);
+		this.menuCount.setState(this.menuItems.length);
 		this.handleEditClick();
 		this.handleRemoveClick();
 		this.handleSoldOutClick();
@@ -95,6 +97,19 @@ function MenuList() {
 		const template = items.reduce((acc, cur) => acc + cur.template, '');
 		this.$menuList.innerHTML = template;
 	};
+}
+
+function MenuCount () {
+	this.$menuCount = document.querySelector(".menu-count");
+
+	this.setState = updatedMenuCounts => {
+		this.menuCounts = updatedMenuCounts;
+		this.render(this.menuCounts);
+	}
+
+	this.render = menuCounts => {
+		this.$menuCount.innerHTML = `총${menuCounts}개`
+	}
 }
 
 function menuTemplate(contents, id) {

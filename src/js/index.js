@@ -80,7 +80,7 @@ class DOMRenderer extends Renderer {
     if(this.prev === JSON.stringify(menuList)) return;
 
     console.log('render list')
-    this.$menuList.innerHTML = ''
+    this.$menuList.innerHTML = '';
     menuList.forEach(this._createMenu)
     this.prev = JSON.stringify(menuList);
   }

@@ -1,10 +1,10 @@
-const Form = document.querySelector("#espresso-menu-form");
+const Form = document.getElementById("espresso-menu-form");
 const Input = Form.querySelector("input");
 const Button = Form.querySelector("button");
-const List = document.querySelector("ul #espresso-menu-list");
-const CountSpan = document.querySelector("span .menu-count");
-const $Edit = document.querySelectorAll("button .menu-edit-button");
-const $Remove = document.querySelectorAll("button .menu-remove-button");
+const List = document.querySelector("ul#espresso-menu-list");
+const CountSpan = document.querySelector("span.menu-count");
+const $Edit = document.querySelectorAll("button.menu-edit-button");
+const $Remove = document.querySelectorAll("button.menu-remove-button");
 
 
 
@@ -12,12 +12,15 @@ const BUTTON = Object.freeze({
 	EDIT: "menu-edit-button",
 	REMOVE: "menu-remove-button",
 });
-
+function SetCount(){
+	const children = List.querySelectorAll("li");
+	CountSpan.innerHTML = `총 ${children.length}개`;
+}
 
 const onClick = (e) => {
-	const children = List.querySelectorAll("li");
+	
 	const $li = e.target.closest("li");
-	const $name = $li.querySelector("span .menu-name");
+	const $name = $li.querySelector("span.menu-name");
 	if (e.target.classList.contains(BUTTON.EDIT)) {
 		let newName = window.prompt("메뉴명을 입력하세요");
 		if (newName && newName !== "") {
@@ -28,13 +31,15 @@ const onClick = (e) => {
 			List.removeChild($li);
 		}
 	}
-	CountSpan.innerHTML = `${children.length}`;
+	SetCount();
 };
 
-const onSubmit = (e) => {
+const onSubmit = () => {
+
+	const $name = Input.value;
 	let newList = `
 <li class="menu-list-item d-flex items-center py-2">
-  <span class="w-100 pl-2 menu-name">${Input.value}</span>
+  <span class="w-100 pl-2 menu-name">${$name}</span>
   <button
     type="button"
     class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
@@ -49,17 +54,22 @@ const onSubmit = (e) => {
   </button>
 </li>
 `;
-
-	const $name = Input.value;
-	e.preventDefault();
-	if (!name || name.trim() === "") {
+	if (!$name || $name.trim() === "") {
 		return;
 	} else {
-		e.target.innerHTML += newList;
+		List.innerHTML += newList;
 		Input.value = "";
 	}
 	List.addEventListener("click", onClick);
-	console.log(Input.value);
+	SetCount();
 };
 
-Form.addEventListener("submit", onSubmit);
+Input.addEventListener("keydown", e=>{
+	if(e.key==="Enter"){
+		e.preventDefault();
+		onSubmit();
+	}
+})
+Button.addEventListener("click", e=>{
+	onSubmit()
+});

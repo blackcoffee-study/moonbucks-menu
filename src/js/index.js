@@ -1,20 +1,61 @@
 function MenuApp() {
 	this.menuItems = [];
 	this.menuList = new MenuList();
+	this._id = 0;
 
 	this.setState = updatedItems => {
 		this.menuItems = updatedItems;
 		this.menuList.setState(this.menuItems);
+		this.handleEditClick();
+		this.handleRemoveClick();
+		this.handleSoldOutClick();
 	};
+
 
 	new MenuInput({
 		onAdd: contents => {
-			const newMenuItem = menuItem(contents);
-			this.menuItems.push(newMenuItem);
-			// this.menuItems = [ <li>...</li> ,  <li>...</li>, ... ]
+			this._id++;
+			const template = menuTemplate(contents, this._id);
+			this.menuItems.push({
+				id : this._id,
+				template : template,
+				contents : contents
+			});
 			this.setState(this.menuItems);
 		},
 	});
+
+	this.handleSoldOutClick = () => {
+		const soldOutBtns = this.menuList.$menuList.querySelectorAll(".menu-sold-out-button")
+		soldOutBtns.forEach((el) => el.addEventListener('click', () => {
+			
+		}));
+	}
+
+	this.handleEditClick = () => {
+		const editBtns = this.menuList.$menuList.querySelectorAll(".menu-edit-button")
+		editBtns.forEach((el) => el.addEventListener('click', () => {
+			const prompt = window.prompt('수정할 내용을 입력하세요');
+			const newMenuItems = this.menuItems.map((v) => {
+				if(v.id === Number(el.parentElement.dataset.id)) {
+					v.contents = prompt;
+					v.template = menuTemplate(v.contents, v.id);
+				}
+				return v;
+			})
+			this.setState(newMenuItems);
+		}));
+	}
+
+	this.handleRemoveClick = () => {
+		const removeBtns = this.menuList.$menuList.querySelectorAll(".menu-remove-button")
+		removeBtns.forEach((el) => el.addEventListener('click', () => {
+			const confirm = window.confirm("정말 삭제하시겠습니까?")
+			if(!confirm) return;
+			const newMenuItems = this.menuItems.filter((v) => v.id !== Number(el.parentElement.dataset.id))
+			this.setState(newMenuItems);
+		}));
+	}
 }
 
 // 입력 받는 컴포넌트
@@ -51,13 +92,13 @@ function MenuList() {
 	};
 
 	this.render = items => {
-		const template = items.reduce((acc, cur) => acc + cur);
+		const template = items.reduce((acc, cur) => acc + cur.template, '');
 		this.$menuList.innerHTML = template;
 	};
 }
 
-function menuItem(contents) {
-	return `<li class="menu-list-item d-flex items-center py-2">
+function menuTemplate(contents, id) {
+	return `<li class="menu-list-item d-flex items-center py-2" data-id=${id}>
   <span class="w-100 pl-2 menu-name sold-out">${contents}</span>
   <button
     type="button"
@@ -78,6 +119,8 @@ function menuItem(contents) {
     삭제
   </button>
 </li>`;
+  
 }
+
 
 new MenuApp();

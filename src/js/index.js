@@ -1,5 +1,7 @@
 import App from './states/App.js'
-import Menu from './states/Menu'
+import Menu from './states/Menu.js'
+import { menuTemplate } from './template/menu.js'
+import { $ } from './utils/DOM.js'
 
 class Renderer {
   constructor (app) {
@@ -16,37 +18,69 @@ class Renderer {
 }
 
 class DOMRenderer extends Renderer {
-  constructor (parent, app) {
+  constructor (app) {
     super(app)
-    this.$parent = parent
-    this.render()
-    this.addMenuEvent()
+    this.$menuList = $('#espresso-menu-list')
+
+    this._addMenuEvent().render()
   }
 
-  addMenuEvent () {
-    const $inputMenu = this.$parent.querySelector('#espresso-menu-form')
-
-    $inputMenu.addEventListener('submit', this.handleAddMenu)
+  _addMenuEvent () {
+    const $inputMenu = $('#espresso-menu-form')
+    $inputMenu.addEventListener('submit', this._handleAddMenu)
+    return this;
   }
 
-  handleAddMenu = (e) => {
-    e.preventDefault();
-    const name = e.target.elements['espressoMenuName'].value.trim()
+  _handleAddMenu = (e) => {
+    e.preventDefault()
+    const $input =  e.target.elements['espressoMenuName'];
+    const name = $input.value.trim()
 
     if (!name.length) return
-
     this.app.addMenu(Menu.get(this.app.size, name))
 
-    this.render();
+    $input.value = '';
+
+    this.render()
   }
 
+  _updateMenu = (menu) => {
+    const newName = window.prompt('메뉴를 수정해주세요');
+    if(!newName.trim()) return;
+    menu.updateName(newName);
+  }
 
+  _deleteMenu = (menu) => {
+    this.app.removeMenu(menu);
+  }
+
+  _createMenu = (menu) => {
+    const { id, name } = menu.getInfo()
+    const li = document.createElement('li')
+    const style = 'menu-list-item d-flex items-center py-2'.split(' ')
+    li.id = id
+    li.classList.add(...(style))
+    li.addEventListener('click', ({ target }) => {
+        if (target.classList.contains('menu-edit-button')) {
+          this._updateMenu(menu)
+        }
+        if (target.classList.contains('menu-remove-button')) {
+          this._deleteMenu(menu)
+        }
+
+        this.render()
+      }
+    )
+    li.innerHTML = menuTemplate(name)
+    this.$menuList.appendChild(li)
+  }
 
   _render () {
-
-
+    this.$menuList.innerHTML = ''
+    const menuList = this.app.getInfo()
+    menuList.forEach(this._createMenu)
   }
 
 }
 
-new DOMRenderer(document, new App())
+new DOMRenderer(new App())

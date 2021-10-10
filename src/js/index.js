@@ -48,10 +48,14 @@ class DOMRenderer extends Renderer {
     const newName = window.prompt('메뉴를 수정해주세요');
     if(!newName.trim()) return;
     menu.updateName(newName);
+    this.render()
   }
 
   _deleteMenu = (menu) => {
+    const isDelete = window.confirm('메뉴를 삭제하시겠습니까?');
+    if(!isDelete) return;
     this.app.removeMenu(menu);
+    this.render()
   }
 
   _createMenu = (menu) => {
@@ -63,12 +67,11 @@ class DOMRenderer extends Renderer {
     li.addEventListener('click', ({ target }) => {
         if (target.classList.contains('menu-edit-button')) {
           this._updateMenu(menu)
+          return;
         }
         if (target.classList.contains('menu-remove-button')) {
           this._deleteMenu(menu)
         }
-
-        this.render()
       }
     )
     li.innerHTML = menuTemplate(name)

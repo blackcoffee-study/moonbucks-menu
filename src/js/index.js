@@ -26,6 +26,7 @@ class DOMRenderer extends Renderer {
 
   _addMenuEvent () {
     this.$menuList = $('#espresso-menu-list')
+    this.$menuCount = $('span.menu-count');
     const $inputMenu = $('#espresso-menu-form')
     $inputMenu.addEventListener('submit', this._handleAddMenu)
     return this;
@@ -85,6 +86,7 @@ class DOMRenderer extends Renderer {
     console.log('render list')
     this.$menuList.innerHTML = '';
     menuList.forEach(this._createMenu)
+    this.$menuCount.innerHTML = `총 ${menuList.length}개`;
     this.prev = JSON.stringify(menuList);
   }
 

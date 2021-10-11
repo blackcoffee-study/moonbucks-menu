@@ -8,6 +8,7 @@ export default class Component {
     this.targetElement = targetElement;
 
     this.created();
+    this.mounted();
   }
 
   // state를 초기화하는 메소드
@@ -24,6 +25,9 @@ export default class Component {
       this.updated();
     } else throw new Error("state 파라미터로 객체만 넣을 수 있습니다.");
   }
+
+  // targetElement에 이벤트 리스너들을 달기위한 메소드(이벤트 위임)
+  setEventListners() {}
 
   // 맨 처음 컨텐츠를 렌더링하거나 state 변화 이후 컨텐츠를 재렌더링하는 메소드
   render() {

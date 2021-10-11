@@ -26,4 +26,8 @@ export default class MenuListInput extends Component {
     </div>
   </form>`;
   }
+
+  mounted() {
+    console.log(this.props);
+  }
 }

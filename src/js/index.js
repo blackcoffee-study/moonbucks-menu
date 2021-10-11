@@ -1,28 +1,42 @@
-// TODO localStorage Read & Write
-// - [x] localStorage에 데이터를 저장한다.
-//  - [x] 메뉴를 추가할 때
-//  - [x] 메뉴를 수정할 때
-//  - [x] 메뉴를 삭제할 때
-// - [x] localStorage에 있는 데이터를 읽어온다.
-
-// TODO 카테고리별 메뉴판 관리
-// - [x] 에스프레소 메뉴판 관리
-// - [x] 프라푸치노 메뉴판 관리
-// - [x] 블렌디드 메뉴판 관리
-// - [x] 티바나 메뉴판 관리
-// - [x] 디저트 메뉴판 관리
-
-// TODO 페이지 접근시 최초 데이터 Read & Rendering
-// - [x] 페이지에 최초로 로딩될때 localStorage에 에스프레소 메뉴를 읽어온다.
-// - [x] 에스프레소 메뉴를 페이지에 그려준다.
-
-// - TODO 품절 상태 관리
-// - [x] 품절 상태인 경우를 보여줄 수 있게, 품절 버튼을 추가하고 sold-out class를 추가하여 상태를 변경한다.
-// - [x] 품절 버튼을 추가한다.
-// - [x] 품절 버튼을 클릭하면 localStorage에 상태값이 저장된다.
-// - [x] 클릭 이벤트에서 가장 가까운 li태그의 class속성 값에 sold-out을 추가한다.
 import { $ } from "./utils/dom.js";
 import store from "./store/index.js";
+// - [x] 웹 서버를 띄운다.
+// - [x] 서버에 새로운 메뉴명이 추가될 수 있도록 요청한다.
+// - [x] 서버에 카테고리별 메뉴리스트를 불러온다.
+// - [] 서버에 메뉴가 수정될 수 있도록 요청한다.
+// - [] 서버에 메뉴의 품절상태가 토글될 수 있도록 요청한다.
+// - [] 서버에 메뉴가 삭제 될 수 있도록 요청한다.
+
+// 리펙터링 부분
+// - [] localStorage에 저장하는 로직은 지운다될
+// - [] fetch 비동기 api를 사용하는 부분을 async await을 사용하여 구현한다.
+
+// TODO 사용자 경험
+// - [] API 통신이 실패하는 경우에 대해 사용자가 알 수 있게 alert으로 예외처리를 진행한다.
+// - [] 중복되는 메뉴는 추가할 수 없다.
+
+const BASE_URL = "http://localhost:3000/api";
+const MenuApi = {
+  async getAllMenuByCategory(category) {
+    const response = await fetch(
+      //this.currentCategory --> category 로 된 이유 & this가 빠진 이유 = 여기서 this는 MenuApi이다. 원래 쓰던 this는 App이었다. // MenuApi는 Category 라는 속성을 않가지고 있기 때문에 못 찾았던 것 이다.
+      `${BASE_URL}/category/${category}/menu`
+    );
+    return response.json();
+  },
+  async createMenu(category, name) {
+    const response = await fetch(`${BASE_URL}/category/${category}/menu`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ name }),
+    });
+    if (!response.ok) {
+      console.error("에러가 발생했습니다.");
+    }
+  },
+};
 
 function App() {
   // 상태는 변하는 데이터, 이 앱에서 변하는 것이 무엇인가 - 메뉴명
@@ -34,10 +48,10 @@ function App() {
     desert: [],
   };
   this.currentCategory = "espresso";
-  this.init = () => {
-    if (store.getLocalStorage()) {
-      this.menu = store.getLocalStorage();
-    }
+  this.init = async () => {
+    this.menu[this.currentCategory] = await MenuApi.getAllMenuByCategory(
+      this.currentCategory
+    );
     render();
     initEventListeners();
   };
@@ -80,14 +94,16 @@ function App() {
     $(".menu-count").innerText = `총 ${menuCount}개`;
   };
 
-  const addMenuName = () => {
+  const addMenuName = async () => {
     if ($("#menu-name").value === "") {
       alert("값을 입력해주세요");
       return;
     }
     const menuName = $("#menu-name").value;
-    this.menu[this.currentCategory].push({ name: menuName });
-    store.setLocalStorage(this.menu);
+    await MenuApi.createMenu(this.currentCategory, menuName);
+    this.menu[this.currentCategory] = await MenuApi.getAllMenuByCategory(
+      this.currentCategory
+    );
     render();
     $("#menu-name").value = "";
   };
@@ -144,7 +160,7 @@ function App() {
       addMenuName();
     });
 
-    $("nav").addEventListener("click", (e) => {
+    $("nav").addEventListener("click", async (e) => {
       const isCategoryButton =
         e.target.classList.contains("cafe-category-name");
       if (isCategoryButton) {
@@ -152,6 +168,9 @@ function App() {
         const categoryName = e.target.dataset.categoryName;
         this.currentCategory = categoryName;
         $("#category-title").innerText = `${e.target.innerText} 메뉴 관리`;
+        this.menu[this.currentCategory] = await MenuApi.getAllMenuByCategory(
+          this.currentCategory
+        );
         render();
       }
     });

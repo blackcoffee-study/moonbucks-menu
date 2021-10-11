@@ -1,5 +1,6 @@
 import Component from "../cores/Component.js";
 import MenuListInput from "../components/MenuListInput.js";
+import MenuList from "../components/MenuList.js";
 
 export default class Home extends Component {
   makeTemplate() {
@@ -46,7 +47,7 @@ export default class Home extends Component {
         <div class="wrapper bg-white p-10">
           <div class="heading d-flex justify-between">
             <h2 class="mt-1">☕ 에스프레소 메뉴 관리</h2>
-            <span class="mr-2 mt-4 menu-count">총 0개</span>
+            <span class="mr-2 mt-4 menu-count">총 ${this.state.menu.length}개</span>
           </div>
           <div id="espresso-menu-form-wrapper">
           
@@ -77,32 +78,46 @@ export default class Home extends Component {
   created() {
     super.created();
 
-    const wrapper = this.targetElement.querySelector(
+    const MenuFormWrapper = this.targetElement.querySelector(
       "#espresso-menu-form-wrapper"
     );
 
-    const menuListInput = new MenuListInput(wrapper, {
+    const MenuListWrapper = this.targetElement.querySelector(
+      "#espresso-menu-list-wrapper"
+    );
+
+    const menuListInput = new MenuListInput(MenuFormWrapper, {
       menu: this.state.menu,
       addMenu: this.addMenu.bind(this),
     });
 
-    this.childrenComponents = [menuListInput];
+    const menuList = new MenuList(MenuListWrapper, {
+      menu: this.state.menu,
+    });
+
+    this.childrenComponents = [menuListInput, menuList];
   }
 
   updated() {
     super.updated();
 
-    const wrapper = this.targetElement.querySelector(
+    const MenuFormWrapper = this.targetElement.querySelector(
       "#espresso-menu-form-wrapper"
     );
 
-    const menuListInput = new MenuListInput(wrapper, {
+    const MenuListWrapper = this.targetElement.querySelector(
+      "#espresso-menu-list-wrapper"
+    );
+
+    const menuListInput = new MenuListInput(MenuFormWrapper, {
       menu: this.state.menu,
       addMenu: this.addMenu.bind(this),
     });
 
-    this.childrenComponents = [menuListInput];
-  }
+    const menuList = new MenuList(MenuListWrapper, {
+      menu: this.state.menu,
+    });
 
-  // updated() {}
+    this.childrenComponents = [menuListInput, menuList];
+  }
 }

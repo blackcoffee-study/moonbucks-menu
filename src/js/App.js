@@ -5,6 +5,16 @@ export default class App extends Component {
   created() {
     super.created();
 
-    new Home(this.targetElement, null);
+    const home = new Home(this.targetElement, null);
+
+    this.childrenComponents = [home];
+  }
+
+  updated() {
+    super.updated();
+
+    const home = new Home(this.targetElement, null);
+
+    this.childrenComponents = [home];
   }
 }

@@ -84,20 +84,4 @@ export default class MenuListInput extends Component {
   }
 
   submitButtonClickListener() {}
-
-  beforeMounted() {
-    super.beforeMounted();
-
-    this.setEventListeners(this.listenerInfos);
-  }
-
-  mounted() {
-    super.mounted();
-  }
-
-  updated() {
-    super.updated();
-
-    this.setEventListeners(this.listenerInfos);
-  }
 }

@@ -51,7 +51,10 @@ export default class Home extends Component {
           <div id="espresso-menu-form-wrapper">
           
           </div>
-          <ul id="espresso-menu-list" class="mt-3 pl-0"></ul>
+          <div id="espresso-menu-list-wrapper">
+
+          </div>
+          
         </div>
       </main>
     </div>

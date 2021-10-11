@@ -42,7 +42,7 @@ export default class Component {
         }.bind(this),
         0
       );
-    } else throw new Error("state 파라미터로 객체만 넣을 수 있습니다.");
+    } else alert("state 파라미터로 객체만 넣을 수 있습니다.");
   }
 
   // event targets에 이벤트 리스너들을 달기위한 메소드

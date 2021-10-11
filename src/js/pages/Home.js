@@ -65,13 +65,31 @@ export default class Home extends Component {
   initState() {
     this.state = {
       menu: [],
+      menuId: 0,
     };
   }
 
   addMenu(newMenu) {
-    console.log(newMenu);
+    if (newMenu.trim() === "") {
+      alert("빈 값은 추가할 수 없습니다.");
+
+      return false;
+    }
+
     this.setState({
-      menu: [...this.state.menu, newMenu],
+      menu: [...this.state.menu, { name: newMenu, id: this.state.menuId }],
+      menuId: this.state.menuId + 1,
+    });
+  }
+
+  removeMenu(key) {
+    const targetMenuIndex = this.state.menu.find((item) => item.id === key);
+    let copiedMenu = [...this.state.menu];
+
+    copiedMenu.splice(targetMenuIndex, 1);
+
+    this.setState({
+      menu: copiedMenu,
     });
   }
 
@@ -93,6 +111,7 @@ export default class Home extends Component {
 
     const menuList = new MenuList(MenuListWrapper, {
       menu: this.state.menu,
+      removeMenu: this.removeMenu.bind(this),
     });
 
     this.childrenComponents = [menuListInput, menuList];
@@ -116,6 +135,7 @@ export default class Home extends Component {
 
     const menuList = new MenuList(MenuListWrapper, {
       menu: this.state.menu,
+      removeMenu: this.removeMenu.bind(this),
     });
 
     this.childrenComponents = [menuListInput, menuList];

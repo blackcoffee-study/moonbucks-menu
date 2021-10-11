@@ -7,29 +7,44 @@ function createApp() {
 
     app.setMethods({
         createMenu(e) {
-            console.log("create!", e);
+            e.preventDefault();
+            if (this.data.menuInput !== "") {
+                this.data.menuList.push({ key: this.data.serial, content: this.data.menuInput });
+                this.data.serial++;
+                this.data.count++;
+                this.data.menuInput = "";
+                this.render();
+                this.elements.menuInput.focus();
+            }
         },
         inputChange(e) {
-            console.log("change!", e);
+            this.data.menuInput = e.target.value;
         },
         menuEdit(e, item) {
-            console.log("edit!", e, item);
+            const changed = prompt("새로운 메뉴 이름을 입력해주세요.", item.content);
+            if (changed) {
+                item.content = changed;
+                this.render();
+            }
+        },
+        menuDelete(e, item) {
+            const shouldDelete = confirm(`정말 ${item.content} 메뉴를 삭제하시겠습니까?`);
+            if (shouldDelete) {
+                const idx = this.data.menuList.indexOf(item);
+                this.data.menuList.splice(idx, 1);
+                this.render();
+            }
         },
     });
 
     app.setData({
-        menuList: [
-            { key: 0, content: "1234" },
-            { key: 1, content: "5678" },
-        ],
-        count: 123,
+        menuList: [],
+        menuInput: "",
+        count: 0,
+        serial: 0,
     });
 
-    window.data = app.data;
-
-    const rendered = app.render();
-
-    document.body.appendChild(rendered);
+    app.render();
 
     return app;
 }

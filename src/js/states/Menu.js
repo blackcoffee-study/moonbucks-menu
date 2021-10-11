@@ -1,18 +1,27 @@
 const Menu = class {
-  constructor (id, name) {
+  constructor (id, name, isSoldOut = false) {
     this.id = id
     this.name = name
+    this.isSoldOut = isSoldOut
   }
 
-  static get(id, name) {
+  static get (id, name) {
     return new Menu(id, name)
   }
 
-  updateName(newName) {
-    this.name = newName;
+  static load ({ id, name, isSoldOut}) {
+    return new Menu(id, name, isSoldOut)
   }
 
-  getInfo() {
+  toJSON(){
+    return this.getInfo();
+  }
+
+  updateName (newName) {
+    this.name = newName
+  }
+
+  getInfo () {
     return this
   }
 }

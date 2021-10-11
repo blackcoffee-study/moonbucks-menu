@@ -1,22 +1,26 @@
 import Menu from './Menu.js'
+import MenuList from './MenuList.js'
 
 const App = class extends Set {
   constructor () {
     super()
   }
 
-  static get () {
-    return new App()
+  static load(json){
+    const app = new App();
+    json.forEach(f => {
+      app.addMenuList(MenuList.load(f))
+    })
+    return app;
   }
 
-  addMenu (menu) {
-    if (!menu instanceof Menu) return console.log('invalid menu')
-    super.add(menu)
+  toJSON () {
+    return this.getInfo();
   }
 
-  removeMenu (menu) {
-    if (!menu instanceof Menu) return console.log('invalid menu')
-    super.delete(menu)
+  addMenuList (menuList) {
+    if (!menuList instanceof MenuList) return console.log('invalid menuList')
+    super.add(menuList)
   }
 
   getInfo () {

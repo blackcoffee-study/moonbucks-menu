@@ -27,9 +27,8 @@ class DOMRenderer extends Renderer {
     } else {
       this.app = App.load(JSON.parse(localStorage['menus']))
     }
-    this.currentFolder = this.app.getCurrentMenuList()
+    this.currentMenu = this.app.getCurrentMenuList()
     this._addMenuEvent().render()
-    this.prev = null;
   }
 
   _addMenuEvent () {
@@ -47,7 +46,7 @@ class DOMRenderer extends Renderer {
   _handleMenuChange = ({target: { dataset }}) => {
     const category = dataset['categoryName']
     if(category) {
-      this.currentFolder = this.app.getCurrentMenuList(category)
+      this.currentMenu = this.app.getCurrentMenuList(category)
     }
     this.render()
   }
@@ -58,7 +57,7 @@ class DOMRenderer extends Renderer {
     const name = $input.value.trim()
 
     if (!name.length) return
-    this.currentFolder.addMenu(Menu.get(this.currentFolder.size, name))
+    this.currentMenu.addMenu(Menu.get(this.currentMenu.size, name))
 
     $input.value = '';
 
@@ -75,7 +74,7 @@ class DOMRenderer extends Renderer {
   _deleteMenu = (menu) => {
     const isDelete = window.confirm('메뉴를 삭제하시겠습니까?');
     if(!isDelete) return;
-    this.currentFolder.removeMenu(menu);
+    this.currentMenu.removeMenu(menu);
     this.render()
   }
 
@@ -100,15 +99,14 @@ class DOMRenderer extends Renderer {
   }
 
   _render () {
-    const menuList = this.currentFolder.getInfo();
-
-    // if(this.prev === JSON.stringify(menuList)) return;
+    const current = this.currentMenu.getInfo();
+    if(this.prev === JSON.stringify(current)) return;
 
     console.log('render list')
     this.$menuList.innerHTML = '';
-    menuList.forEach(this._createMenu)
-    this.$menuCount.innerHTML = `총 ${menuList.length}개`;
-    this.prev = JSON.stringify(menuList);
+    current.menuList.forEach(this._createMenu)
+    this.$menuCount.innerHTML = `총 ${current.menuList.length}개`;
+    this.prev = JSON.stringify(current);
     localStorage['menus'] = JSON.stringify(this.app);
   }
 

@@ -19,7 +19,7 @@ const MenuList = class extends Set {
   }
 
   toJSON () {
-    return { title : this.title, menuList: this.getInfo()}
+    return this.getInfo();
   }
 
   addMenu (menu) {
@@ -33,7 +33,7 @@ const MenuList = class extends Set {
   }
 
   getInfo () {
-    return Array.from(super.values())
+    return { title : this.title, menuList: Array.from(super.values())}
   }
 
 }

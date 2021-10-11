@@ -30,13 +30,16 @@ export default class Component {
     this.targetElement.innerHTML += this.makeTemplate();
   }
 
-  // 기초적인 created 라이프사이클. 마운트 시 일단 컨텐츠를 렌더링
+  // 기초적인 created 라이프사이클
   created() {
     this.initState();
     this.render();
   }
 
-  // 기초적인 updated 라이프 사이클
+  // 기초적인 mounted 라이프사이클
+  mounted() {}
+
+  // 기초적인 updated 라이프사이클
   updated() {
     this.render();
   }

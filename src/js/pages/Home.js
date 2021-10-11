@@ -1,4 +1,5 @@
 import Component from "../cores/Component.js";
+import MenuListInput from "../components/MenuListInput.js";
 
 export default class Home extends Component {
   initState() {
@@ -9,6 +10,9 @@ export default class Home extends Component {
 
   created() {
     super.created();
+
+    const wrapper = this.targetElement.querySelector(".wrapper");
+    new MenuListInput(wrapper, { menu: this.state.menu });
   }
 
   makeTemplate() {

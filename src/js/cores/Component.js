@@ -3,7 +3,7 @@ export default class Component {
   state = {};
   targetElement;
 
-  constructor(props, targetElement) {
+  constructor(targetElement, props) {
     this.props = props;
     this.targetElement = targetElement;
 
@@ -27,11 +27,11 @@ export default class Component {
 
   // 맨 처음 컨텐츠를 렌더링하거나 state 변화 이후 컨텐츠를 재렌더링하는 메소드
   render() {
-    this.targetElement.innerHTML = this.makeTemplate();
+    this.targetElement.innerHTML += this.makeTemplate();
   }
 
-  // 기초적인 mounted 라이프사이클. 마운트 시 일단 컨텐츠를 렌더링
-  mounted() {
+  // 기초적인 created 라이프사이클. 마운트 시 일단 컨텐츠를 렌더링
+  created() {
     this.initState();
     this.render();
   }

@@ -11,7 +11,9 @@ export default class Home extends Component {
   created() {
     super.created();
 
-    const wrapper = this.targetElement.querySelector(".wrapper");
+    const wrapper = this.targetElement.querySelector(
+      "#espresso-menu-form-wrapper"
+    );
     new MenuListInput(wrapper, { menu: this.state.menu });
   }
 
@@ -61,7 +63,9 @@ export default class Home extends Component {
             <h2 class="mt-1">☕ 에스프레소 메뉴 관리</h2>
             <span class="mr-2 mt-4 menu-count">총 0개</span>
           </div>
+          <div id="espresso-menu-form-wrapper">
           
+          </div>
           <ul id="espresso-menu-list" class="mt-3 pl-0"></ul>
         </div>
       </main>

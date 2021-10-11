@@ -35,6 +35,8 @@ export default class MenuListInput extends Component {
   }
 
   inputValueChangeListener(event) {
+    console.log("inputValueChangeListener");
+
     this.setState({
       inputValue: event.target.value,
     });
@@ -42,11 +44,14 @@ export default class MenuListInput extends Component {
 
   formSubmitListener(event) {
     event.preventDefault();
+    console.log("formSubmitListener");
   }
 
   submitButtonClickListener() {}
 
   beforeMounted() {
+    super.beforeMounted();
+
     const listenerInfos = [
       {
         eventTarget: this.targetElement.querySelector("#espresso-menu-form"),
@@ -71,6 +76,57 @@ export default class MenuListInput extends Component {
   }
 
   mounted() {
+    super.mounted();
     console.log(this.props);
+  }
+
+  beforeUpdated() {
+    super.beforeUpdated();
+    // const listenerInfos = [
+    //   {
+    //     eventTarget: this.targetElement.querySelector("#espresso-menu-form"),
+    //     eventType: "submit",
+    //     listener: this.formSubmitListener.bind(this),
+    //   },
+    //   {
+    //     eventTarget: this.targetElement.querySelector(
+    //       "#espresso-menu-submit-button"
+    //     ),
+    //     eventType: "click",
+    //     listener: this.submitButtonClickListener.bind(this),
+    //   },
+    //   {
+    //     eventTarget: this.targetElement.querySelector("#espresso-menu-name"),
+    //     eventType: "change",
+    //     listener: this.inputValueChangeListener.bind(this),
+    //   },
+    // ];
+
+    // this.clearEventListeners(listenerInfos);
+  }
+
+  updated() {
+    super.updated();
+    const listenerInfos = [
+      {
+        eventTarget: this.targetElement.querySelector("#espresso-menu-form"),
+        eventType: "submit",
+        listener: this.formSubmitListener.bind(this),
+      },
+      {
+        eventTarget: this.targetElement.querySelector(
+          "#espresso-menu-submit-button"
+        ),
+        eventType: "click",
+        listener: this.submitButtonClickListener.bind(this),
+      },
+      {
+        eventTarget: this.targetElement.querySelector("#espresso-menu-name"),
+        eventType: "change",
+        listener: this.inputValueChangeListener.bind(this),
+      },
+    ];
+
+    this.setEventListeners(listenerInfos);
   }
 }

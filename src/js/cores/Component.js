@@ -19,40 +19,65 @@ export default class Component {
   setState(state) {
     // state parameter 는 object만 허용
     if (state.constructor === Object) {
-      // 불변성 유지
-      this.state = { ...this.state, ...state };
+      // 이벤트 큐의 뒤로 밀어버리기 위해 사용
+      setTimeout(
+        function () {
+          // 불변성 유지
+          this.state = { ...this.state, ...state };
 
-      // state 변경 후 업데이트 반영
-      this.updated();
+          this.beforeUpdated();
+          // state 변경 후 업데이트 반영
+          this.updated();
+        }.bind(this),
+        0
+      );
     } else throw new Error("state 파라미터로 객체만 넣을 수 있습니다.");
   }
 
-  // event targets에 이벤트 리스너들을 달기위한 메소드(이벤트 위임)
+  // event targets에 이벤트 리스너들을 달기위한 메소드
   setEventListeners(listenerInfos) {
     listenerInfos.forEach(({ eventTarget, eventType, listener }) => {
       eventTarget.addEventListener(eventType, listener);
     });
   }
 
+  // event targets에 이벤트 리스너들을 제거하기 위한 메소드
+  clearEventListeners(listenerInfos) {
+    listenerInfos.forEach(({ eventTarget, eventType, listener }) => {
+      eventTarget.removeEventListener(eventType, listener);
+    });
+  }
+
   // 맨 처음 컨텐츠를 렌더링하거나 state 변화 이후 컨텐츠를 재렌더링하는 메소드
   render() {
+    console.log("rendering...");
     this.targetElement.innerHTML = this.makeTemplate();
   }
 
   // 기초적인 created 라이프사이클
   created() {
+    console.log("created ...");
     this.initState();
     this.render();
   }
 
   // 기초적인 beforeMounted 라이프사이클
-  beforeMounted() {}
+  beforeMounted() {
+    console.log("beforeMounted...");
+  }
 
   // 기초적인 mounted 라이프사이클
-  mounted() {}
+  mounted() {
+    console.log("mounted...");
+  }
+
+  beforeUpdated() {
+    console.log("beforeUpdated");
+  }
 
   // 기초적인 updated 라이프사이클
   updated() {
+    console.log("updated...");
     this.render();
   }
 

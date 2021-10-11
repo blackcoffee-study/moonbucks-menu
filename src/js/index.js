@@ -27,7 +27,7 @@ class DOMRenderer extends Renderer {
     } else {
       this.app = App.load(JSON.parse(localStorage['menus']))
     }
-    this.currentFolder = this.app.getInfo()[0];
+    this.currentFolder = this.app.getCurrentMenuList()
     this._addMenuEvent().render()
     this.prev = null;
   }
@@ -35,9 +35,21 @@ class DOMRenderer extends Renderer {
   _addMenuEvent () {
     this.$menuList = $('#espresso-menu-list')
     this.$menuCount = $('span.menu-count');
+
     const $inputMenu = $('#espresso-menu-form')
+    const $navMenu = $('#category-name');
+
     $inputMenu.addEventListener('submit', this._handleAddMenu)
+    $navMenu.addEventListener('click', this._handleMenuChange)
     return this;
+  }
+
+  _handleMenuChange = ({target: { dataset }}) => {
+    const category = dataset['categoryName']
+    if(category) {
+      this.currentFolder = this.app.getCurrentMenuList(category)
+    }
+    this.render()
   }
 
   _handleAddMenu = (e) => {
@@ -90,7 +102,7 @@ class DOMRenderer extends Renderer {
   _render () {
     const menuList = this.currentFolder.getInfo();
 
-    if(this.prev === JSON.stringify(menuList)) return;
+    // if(this.prev === JSON.stringify(menuList)) return;
 
     console.log('render list')
     this.$menuList.innerHTML = '';

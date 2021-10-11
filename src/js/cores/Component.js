@@ -27,7 +27,11 @@ export default class Component {
   }
 
   // targetElement에 이벤트 리스너들을 달기위한 메소드(이벤트 위임)
-  setEventListners() {}
+  setEventListeners(listenerInfos) {
+    listenerInfos.forEach(([event, listener]) => {
+      this.targetElement.addEventListener(event, listener);
+    });
+  }
 
   // 맨 처음 컨텐츠를 렌더링하거나 state 변화 이후 컨텐츠를 재렌더링하는 메소드
   render() {
@@ -39,6 +43,9 @@ export default class Component {
     this.initState();
     this.render();
   }
+
+  // 기초적인 beforeMounted 라이프사이클
+  beforeMounted() {}
 
   // 기초적인 mounted 라이프사이클
   mounted() {}

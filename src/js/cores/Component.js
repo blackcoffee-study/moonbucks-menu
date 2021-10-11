@@ -30,7 +30,7 @@ export default class Component {
   // event targets에 이벤트 리스너들을 달기위한 메소드(이벤트 위임)
   setEventListeners(listenerInfos) {
     listenerInfos.forEach(({ eventTarget, eventType, listener }) => {
-      this.targetElement.addEventListener(eventType, listener);
+      eventTarget.addEventListener(eventType, listener);
     });
   }
 

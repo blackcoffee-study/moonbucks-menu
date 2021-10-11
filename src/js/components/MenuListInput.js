@@ -1,6 +1,12 @@
 import Component from "../cores/Component.js";
 
 export default class MenuListInput extends Component {
+  initState() {
+    this.state = {
+      inputValue: "",
+    };
+  }
+
   makeTemplate() {
     return `<form id="espresso-menu-form">
     <div class="d-flex w-100">
@@ -14,6 +20,7 @@ export default class MenuListInput extends Component {
               class="input-field"
               placeholder="에스프레소 메뉴 이름"
               autocomplete="off"
+              value="${this.state.inputValue}"
       />
       <button
               type="button"
@@ -28,15 +35,29 @@ export default class MenuListInput extends Component {
   }
 
   beforeMounted() {
-    this.setEventListeners([
+    const listenerInfos = [
       {
-        eventTarget: this.targetElement.querySelector("#espresso-menu-name"),
-        eventType: "change",
-        listener: function () {
+        eventTarget: this.targetElement.querySelector(
+          "#espresso-menu-submit-button"
+        ),
+        eventType: "click",
+        listener: () => {
           console.log("test");
         },
       },
-    ]);
+      {
+        eventTarget: this.targetElement.querySelector("#espresso-menu-name"),
+        eventType: "change",
+        listener: function (event) {
+          console.log(event.target.value);
+          this.setState({
+            inputValue: event.target.value,
+          });
+        }.bind(this),
+      },
+    ];
+
+    this.setEventListeners(listenerInfos);
   }
 
   mounted() {

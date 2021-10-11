@@ -1,7 +1,7 @@
 const menuForm = document.getElementById("espresso-menu-form");
 const menuInput = menuForm.querySelector("input[name=espressoMenuName]");
-// const confirmButton = menuForm.querySelector("button[name=submit]");
 const menuList = document.getElementById("espresso-menu-list");
+const menuCount = document.querySelector(".menu-count");
 
 function newMenuTemplate(name) {
   return `<li class="menu-list-item d-flex items-center py-2">
@@ -20,6 +20,11 @@ function newMenuTemplate(name) {
 </button>
 </li>
 `;
+}
+
+function countMenu() {
+  const count = menuList.children.length;
+  menuCount.textContent = `총 ${count}개`;
 }
 
 function clearInput(input) {
@@ -59,11 +64,13 @@ function addMenu(e) {
   }
   const menuName = getInputValue(menuInput);
   menuList.append(createMenuElement(menuName));
+  countMenu();
   clearInput(menuInput);
 }
 
-function editMenu() {
-  const originalMenu = document.querySelector(".menu-name");
+function editMenu(e) {
+  const menuItem = e.target.closest(".menu-list-item");
+  const originalMenu = menuItem.querySelector(".menu-name");
   const editedMenu = getEditedMenu(originalMenu.textContent);
   originalMenu.textContent = editedMenu;
 }
@@ -85,6 +92,7 @@ function removeMenu(e) {
   const confirm = window.confirm("정말 삭제하시겠습니까?");
   if (!confirm) return;
   e.target.closest(".menu-list-item").remove();
+  countMenu();
 }
 
 menuForm.addEventListener("submit", addMenu);

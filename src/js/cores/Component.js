@@ -8,6 +8,7 @@ export default class Component {
     this.targetElement = targetElement;
 
     this.created();
+    this.beforeMounted();
     this.mounted();
   }
 
@@ -26,10 +27,10 @@ export default class Component {
     } else throw new Error("state 파라미터로 객체만 넣을 수 있습니다.");
   }
 
-  // targetElement에 이벤트 리스너들을 달기위한 메소드(이벤트 위임)
+  // event targets에 이벤트 리스너들을 달기위한 메소드(이벤트 위임)
   setEventListeners(listenerInfos) {
-    listenerInfos.forEach(([event, listener]) => {
-      this.targetElement.addEventListener(event, listener);
+    listenerInfos.forEach(({ eventTarget, eventType, listener }) => {
+      this.targetElement.addEventListener(eventType, listener);
     });
   }
 

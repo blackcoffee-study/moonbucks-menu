@@ -27,6 +27,18 @@ export default class MenuListInput extends Component {
   </form>`;
   }
 
+  beforeMounted() {
+    this.setEventListeners([
+      {
+        eventTarget: this.targetElement.querySelector("#espresso-menu-name"),
+        eventType: "change",
+        listener: function () {
+          console.log("test");
+        },
+      },
+    ]);
+  }
+
   mounted() {
     console.log(this.props);
   }

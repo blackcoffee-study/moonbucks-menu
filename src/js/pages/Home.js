@@ -83,10 +83,30 @@ export default class Home extends Component {
   }
 
   removeMenu(key) {
-    const targetMenuIndex = this.state.menu.find((item) => item.id === key);
+    if (!confirm("정말 삭제하시겠습니까?")) return;
+
+    const targetMenuIndex = this.state.menu.findIndex(
+      (item) => item.id === Number(key)
+    );
     let copiedMenu = [...this.state.menu];
 
     copiedMenu.splice(targetMenuIndex, 1);
+
+    this.setState({
+      menu: copiedMenu,
+    });
+  }
+
+  editMenu(key) {
+    const newName = prompt("메뉴명을 수정하세요.");
+
+    if (newName.trim() === "") return alert("빈 값으로 수정할 수 없습니다.");
+
+    const targetMenuIndex = this.state.menu.findIndex(
+      (item) => item.id === Number(key)
+    );
+    let copiedMenu = [...this.state.menu];
+    copiedMenu[targetMenuIndex].name = newName.toLowerCase();
 
     this.setState({
       menu: copiedMenu,
@@ -112,6 +132,7 @@ export default class Home extends Component {
     const menuList = new MenuList(MenuListWrapper, {
       menu: this.state.menu,
       removeMenu: this.removeMenu.bind(this),
+      editMenu: this.editMenu.bind(this),
     });
 
     this.childrenComponents = [menuListInput, menuList];
@@ -136,6 +157,7 @@ export default class Home extends Component {
     const menuList = new MenuList(MenuListWrapper, {
       menu: this.state.menu,
       removeMenu: this.removeMenu.bind(this),
+      editMenu: this.editMenu.bind(this),
     });
 
     this.childrenComponents = [menuListInput, menuList];

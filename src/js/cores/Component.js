@@ -18,12 +18,12 @@ export default class Component {
 
   // listenerInfos를 초기화하는 메소드
   initListenerInfos() {
-    console.log("initListenerInfos");
+    // console.log("initListenerInfos");
   }
 
   // state를 초기화하는 메소드
   initState() {
-    console.log("initState");
+    // console.log("initState");
   }
 
   // state에 변화를 주는 메소드
@@ -61,7 +61,7 @@ export default class Component {
 
   // 맨 처음 컨텐츠를 렌더링하거나 state 변화 이후 컨텐츠를 재렌더링하는 메소드
   render() {
-    console.log("rendering...");
+    // console.log("rendering...");
 
     this.targetElement.innerHTML = this.makeTemplate();
 
@@ -70,7 +70,7 @@ export default class Component {
 
   // 기초적인 created 라이프사이클
   created() {
-    console.log("created ...");
+    // console.log("created ...");
 
     this.initState();
     this.render();
@@ -78,18 +78,18 @@ export default class Component {
 
   // 기초적인 beforeMounted 라이프사이클
   beforeMounted() {
-    console.log("beforeMounted...");
+    // console.log("beforeMounted...");
     this.setEventListeners();
   }
 
   // 기초적인 mounted 라이프사이클
   mounted() {
-    console.log("mounted...");
+    // console.log("mounted...");
   }
 
   // 기초적인 beforeUpdated 라이프사이클
   beforeUpdated() {
-    console.log("beforeUpdated");
+    // console.log("beforeUpdated");
   }
 
   // 기초적인 updated 라이프사이클.

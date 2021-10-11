@@ -61,7 +61,7 @@ export default class MenuListInput extends Component {
   }
 
   inputValueChangeListener(event) {
-    console.log("inputValueChangeListener");
+    // console.log("inputValueChangeListener");
 
     this.setState({
       inputValue: event.target.value,
@@ -70,7 +70,7 @@ export default class MenuListInput extends Component {
 
   formSubmitListener(event) {
     event.preventDefault();
-    console.log("formSubmitListener");
+    // console.log("formSubmitListener");
 
     /**
      * @todo form submit을 위한 비동기 메소드 하나 만들 것.

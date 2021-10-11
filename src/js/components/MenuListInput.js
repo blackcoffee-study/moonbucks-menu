@@ -1,12 +1,6 @@
 import Component from "../cores/Component.js";
 
 export default class MenuListInput extends Component {
-  initState() {
-    this.state = {
-      inputValue: "",
-    };
-  }
-
   makeTemplate() {
     return `<form id="espresso-menu-form">
     <div class="d-flex w-100">
@@ -34,6 +28,38 @@ export default class MenuListInput extends Component {
   </form>`;
   }
 
+  initListenerInfos() {
+    super.initListenerInfos();
+
+    this.listenerInfos = [
+      {
+        eventTarget: this.targetElement.querySelector("#espresso-menu-form"),
+        eventType: "submit",
+        listener: this.formSubmitListener.bind(this),
+      },
+      {
+        eventTarget: this.targetElement.querySelector(
+          "#espresso-menu-submit-button"
+        ),
+        eventType: "click",
+        listener: this.submitButtonClickListener.bind(this),
+      },
+      {
+        eventTarget: this.targetElement.querySelector("#espresso-menu-name"),
+        eventType: "change",
+        listener: this.inputValueChangeListener.bind(this),
+      },
+    ];
+  }
+
+  initState() {
+    super.initState();
+
+    this.state = {
+      inputValue: "",
+    };
+  }
+
   inputValueChangeListener(event) {
     console.log("inputValueChangeListener");
 
@@ -45,6 +71,7 @@ export default class MenuListInput extends Component {
   formSubmitListener(event) {
     event.preventDefault();
     console.log("formSubmitListener");
+    // this.props.addMenu(this.state.inputValue);
   }
 
   submitButtonClickListener() {}
@@ -52,81 +79,16 @@ export default class MenuListInput extends Component {
   beforeMounted() {
     super.beforeMounted();
 
-    const listenerInfos = [
-      {
-        eventTarget: this.targetElement.querySelector("#espresso-menu-form"),
-        eventType: "submit",
-        listener: this.formSubmitListener.bind(this),
-      },
-      {
-        eventTarget: this.targetElement.querySelector(
-          "#espresso-menu-submit-button"
-        ),
-        eventType: "click",
-        listener: this.submitButtonClickListener.bind(this),
-      },
-      {
-        eventTarget: this.targetElement.querySelector("#espresso-menu-name"),
-        eventType: "change",
-        listener: this.inputValueChangeListener.bind(this),
-      },
-    ];
-
-    this.setEventListeners(listenerInfos);
+    this.setEventListeners(this.listenerInfos);
   }
 
   mounted() {
     super.mounted();
-    console.log(this.props);
-  }
-
-  beforeUpdated() {
-    super.beforeUpdated();
-    // const listenerInfos = [
-    //   {
-    //     eventTarget: this.targetElement.querySelector("#espresso-menu-form"),
-    //     eventType: "submit",
-    //     listener: this.formSubmitListener.bind(this),
-    //   },
-    //   {
-    //     eventTarget: this.targetElement.querySelector(
-    //       "#espresso-menu-submit-button"
-    //     ),
-    //     eventType: "click",
-    //     listener: this.submitButtonClickListener.bind(this),
-    //   },
-    //   {
-    //     eventTarget: this.targetElement.querySelector("#espresso-menu-name"),
-    //     eventType: "change",
-    //     listener: this.inputValueChangeListener.bind(this),
-    //   },
-    // ];
-
-    // this.clearEventListeners(listenerInfos);
   }
 
   updated() {
     super.updated();
-    const listenerInfos = [
-      {
-        eventTarget: this.targetElement.querySelector("#espresso-menu-form"),
-        eventType: "submit",
-        listener: this.formSubmitListener.bind(this),
-      },
-      {
-        eventTarget: this.targetElement.querySelector(
-          "#espresso-menu-submit-button"
-        ),
-        eventType: "click",
-        listener: this.submitButtonClickListener.bind(this),
-      },
-      {
-        eventTarget: this.targetElement.querySelector("#espresso-menu-name"),
-        eventType: "change",
-        listener: this.inputValueChangeListener.bind(this),
-      },
-    ];
 
-    this.setEventListeners(listenerInfos);
+    this.setEventListeners(this.listenerInfos);
   }
 }

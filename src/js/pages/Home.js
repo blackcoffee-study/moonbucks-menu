@@ -2,21 +2,6 @@ import Component from "../cores/Component.js";
 import MenuListInput from "../components/MenuListInput.js";
 
 export default class Home extends Component {
-  initState() {
-    this.state = {
-      menu: [],
-    };
-  }
-
-  created() {
-    super.created();
-
-    const wrapper = this.targetElement.querySelector(
-      "#espresso-menu-form-wrapper"
-    );
-    new MenuListInput(wrapper, { menu: this.state.menu });
-  }
-
   makeTemplate() {
     return `<div class="d-flex justify-center mt-5 w-100">
     <div class="w-100">
@@ -71,5 +56,30 @@ export default class Home extends Component {
       </main>
     </div>
   </div>`;
+  }
+
+  initState() {
+    this.state = {
+      menu: [],
+    };
+  }
+
+  addMenu(newMenu) {
+    console.log(newMenu);
+    this.setState({
+      menu: [...this.state.menu, newMenu],
+    });
+  }
+
+  created() {
+    super.created();
+
+    const wrapper = this.targetElement.querySelector(
+      "#espresso-menu-form-wrapper"
+    );
+    new MenuListInput(wrapper, {
+      menu: this.state.menu,
+      addMenu: this.addMenu.bind(this),
+    });
   }
 }

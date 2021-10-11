@@ -21,6 +21,10 @@ const Menu = class {
     this.name = newName
   }
 
+  toggleSoldOut(){
+    this.isSoldOut = !this.isSoldOut
+  }
+
   getInfo () {
     return this
   }

@@ -64,6 +64,11 @@ class DOMRenderer extends Renderer {
     this.render()
   }
 
+  _toggleSoldOut = (menu) => {
+    menu.toggleSoldOut();
+    this.render()
+  }
+
   _updateMenu = (menu) => {
     const newName = window.prompt('메뉴를 수정해주세요');
     if(!newName.trim()) return;
@@ -79,22 +84,25 @@ class DOMRenderer extends Renderer {
   }
 
   _createMenu = (menu) => {
-    const { id, name } = menu.getInfo()
+    const { id, name, isSoldOut } = menu.getInfo()
     const li = document.createElement('li')
     const style = 'menu-list-item d-flex items-center py-2'.split(' ')
     li.id = id
     li.classList.add(...(style))
     li.addEventListener('click', ({ target }) => {
+        if (target.classList.contains('menu-sold-out-button')) {
+          this._toggleSoldOut(menu)
+        }
         if (target.classList.contains('menu-edit-button')) {
           this._updateMenu(menu)
-          return;
         }
         if (target.classList.contains('menu-remove-button')) {
           this._deleteMenu(menu)
         }
+
       }
     )
-    li.innerHTML = menuTemplate(name)
+    li.innerHTML = menuTemplate(name, isSoldOut)
     this.$menuList.appendChild(li)
   }
 

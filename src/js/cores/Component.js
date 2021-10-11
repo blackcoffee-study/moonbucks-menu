@@ -25,6 +25,11 @@ export default class Component {
     this.targetElement.innerHTML = this.makeTemplate();
   }
 
+  // 기초적인 mounted 라이프사이클. 마운트 시 일단 컨텐츠를 렌더링
+  mounted() {
+    this.render();
+  }
+
   // 컴포넌트의 템플릿을 만드는 메소드. todo : 나중에 Virtual dom 적용해볼 것
   makeTemplate() {
     return ``;

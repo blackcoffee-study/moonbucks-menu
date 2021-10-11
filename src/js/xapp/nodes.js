@@ -60,7 +60,6 @@ export class ElementTemplateNode extends TemplateNode {
         });
 
         if (this.name) {
-            console.log(xApp);
             xApp.elements[this.name] = node;
         }
 

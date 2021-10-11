@@ -20,8 +20,8 @@ export default class Component {
       // 불변성 유지
       this.state = { ...this.state, ...state };
 
-      // state 변경 후 재렌더링
-      this.render();
+      // state 변경 후 업데이트 반영
+      this.updated();
     } else throw new Error("state 파라미터로 객체만 넣을 수 있습니다.");
   }
 
@@ -33,6 +33,11 @@ export default class Component {
   // 기초적인 created 라이프사이클. 마운트 시 일단 컨텐츠를 렌더링
   created() {
     this.initState();
+    this.render();
+  }
+
+  // 기초적인 updated 라이프 사이클
+  updated() {
     this.render();
   }
 

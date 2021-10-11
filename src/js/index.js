@@ -1,19 +1,5 @@
 import { $ } from "./utils/dom.js";
 import MenuApi from "./api/index.js";
-// - [x] 웹 서버를 띄운다.
-// - [x] 서버에 새로운 메뉴명이 추가될 수 있도록 요청한다.
-// - [x] 서버에 카테고리별 메뉴리스트를 불러온다.
-// - [x] 서버에 메뉴가 수정될 수 있도록 요청한다.
-// - [x] 서버에 메뉴의 품절상태가 토글될 수 있도록 요청한다.
-// - [x] 서버에 메뉴가 삭제 될 수 있도록 요청한다.
-
-// 리펙터링 부분
-// - [x] localStorage에 저장하는 로직은 지운다될
-// - [] fetch 비동기 api를 사용하는 부분을 async await을 사용하여 구현한다.
-
-// TODO 사용자 경험
-// - [] API 통신이 실패하는 경우에 대해 사용자가 알 수 있게 alert으로 예외처리를 진행한다.
-// - [] 중복되는 메뉴는 추가할 수 없다.
 
 function App() {
   // 상태는 변하는 데이터, 이 앱에서 변하는 것이 무엇인가 - 메뉴명
@@ -80,6 +66,13 @@ function App() {
     if ($("#menu-name").value === "") {
       alert("값을 입력해주세요");
       return;
+    }
+    const duplicatedItem = this.menu[this.currentCategory].find(
+      (menuItem) => menuItem.name === $("#menu-name").value
+    );
+    if (duplicatedItem) {
+      alert("이미 등록된 메뉴입니다. 다시 입력해주세요.");
+      $("#menu-name").value = "";
     }
     const menuName = $("#menu-name").value;
     await MenuApi.createMenu(this.currentCategory, menuName);

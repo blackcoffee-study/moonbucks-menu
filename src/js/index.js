@@ -45,6 +45,9 @@ function createMenuElement(menuName) {
   menuElement
     .querySelector(".menu-edit-button")
     .addEventListener("click", editMenu);
+  menuElement
+    .querySelector(".menu-remove-button")
+    .addEventListener("click", removeMenu);
   return menuElement;
 }
 
@@ -59,7 +62,7 @@ function addMenu(e) {
   clearInput(menuInput);
 }
 
-function editMenu(e) {
+function editMenu() {
   const originalMenu = document.querySelector(".menu-name");
   const editedMenu = getEditedMenu(originalMenu.textContent);
   originalMenu.textContent = editedMenu;
@@ -78,8 +81,10 @@ function getEditedMenu(originalMenu) {
   return editedMenu;
 }
 
-// editButtons.forEach((button) => {
-//   console.log(button);
-//   button.addEventListener("click", editMenu);
-// });
+function removeMenu(e) {
+  const confirm = window.confirm("정말 삭제하시겠습니까?");
+  if (!confirm) return;
+  e.target.closest(".menu-list-item").remove();
+}
+
 menuForm.addEventListener("submit", addMenu);

@@ -7,7 +7,7 @@ export default class Component {
     this.props = props;
     this.targetElement = targetElement;
 
-    this.mounted();
+    this.created();
   }
 
   // state를 초기화하는 메소드

@@ -5,6 +5,6 @@ export default class App extends Component {
   created() {
     super.created();
 
-    new Home();
+    new Home(this.targetElement, null);
   }
 }

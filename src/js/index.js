@@ -1,7 +1,8 @@
 const $form = document.querySelector('#espresso-menu-form');
 const $input = document.querySelector('#espresso-menu-name');
-const $button = document.querySelector('#espresso-menu-submit-button');
+const $submitButton = document.querySelector('#espresso-menu-submit-button');
 const $list = document.querySelector('#espresso-menu-list');
+
 
 const addMenu = (meunValue) => {
   const newMenu = document.createElement('li');
@@ -33,5 +34,33 @@ const submitMenu = (event) => {
   $input.value = '';
 };
 
-$button.addEventListener('click', submitMenu);
+const editMenu = (target) => {
+  for (const child of target.childNodes) {
+    if (child.classList && child.classList.contains('menu-name')) {
+      const string = window.prompt('메뉴명을 수정하세요', child.innerText);
+
+      if (string === '') return;
+
+      child.innerText = string;
+      break;
+    }
+  }
+};
+
+const listClickListener = (event) => {
+  const target = event.target;
+
+  if (target.tagName !== 'BUTTON') return;
+
+  const targetListItem = target.closest('li');
+
+  if (target.classList.contains('menu-edit-button')) {
+    editMenu(targetListItem)
+  }
+
+}
+
+$submitButton.addEventListener('click', submitMenu);
 $form.addEventListener('submit', submitMenu);
+
+$list.addEventListener('click', listClickListener)

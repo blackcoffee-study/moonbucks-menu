@@ -50,11 +50,10 @@ class ElementTemplateNode extends TemplateNode {
         const node = this.el.cloneNode();
 
         this.events.forEach(event => {
-            node.addEventListener(event.property, e => {
-                if (event.value.indexOf("(") === -1) {
-                    xStore.methods[event.value].call(xStore, e);
-                }
-            });
+            if (!Array.isArray(node.xEvents)) {
+                node.xEvents = [];
+            }
+            node.xEvents.push(event);
         });
 
         this.children.forEach(child => {
@@ -80,13 +79,24 @@ function getProp(obj, path = []) {
     return getProp(obj[path[0]], path.slice(1));
 }
 
-class TemplateParser {
-    constructor() {}
+class Template {
+    constructor() {
+        this.root = null;
+        this.eventUsed = [];
+    }
+
+    press(xStore) {
+        return this.root.press(xStore);
+    }
+
+    parse(rootDomNode) {
+        this.root = this._parse(rootDomNode);
+    }
 
     /**
      * @param {Node} currentDomNode
      */
-    parse(currentDomNode) {
+    _parse(currentDomNode) {
         if (currentDomNode instanceof Text) {
             const textNode = new TextTempltaeNode();
             const text = currentDomNode.data.trim();
@@ -119,11 +129,15 @@ class TemplateParser {
                     const value = attr.textContent;
 
                     elementNode.events.push({ property, value });
+
+                    if (this.eventUsed.indexOf(property) === -1) {
+                        this.eventUsed.push(property);
+                    }
                 }
             });
 
             for (const child of currentDomNode.childNodes) {
-                const ch = this.parse(child);
+                const ch = this._parse(child);
                 if (ch) {
                     elementNode.children.push(ch);
                 }
@@ -138,9 +152,27 @@ class TemplateParser {
 
 export class XApp {
     constructor(config) {
+        /** @type {Element} */
         this.el = config.el;
-        this.template = new TemplateParser().parse(this.el);
+        this.template = new Template();
+        this.template.parse(this.el);
+        this.data = {};
         this.methods = {};
+    }
+
+    setHandler(el) {
+        this.template.eventUsed.forEach(eventType => {
+            el.addEventListener(eventType, e => {
+                const xEvents = e.target.xEvents;
+                if (Array.isArray(xEvents)) {
+                    const eventInfo = xEvents.find(evt => evt.property === eventType);
+                    if (eventInfo) {
+                        const args = eventInfo.value.split(",");
+                        this.methods[args[0]].apply(this, [e, ...args.slice(1).map(v => getProp(this.data, v))]);
+                    }
+                }
+            });
+        });
     }
 
     render() {
@@ -148,6 +180,8 @@ export class XApp {
             data: this.data,
             methods: this.methods,
         });
+
+        this.setHandler(vnode);
         return vnode;
     }
 

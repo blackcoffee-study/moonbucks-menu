@@ -6,8 +6,14 @@ function createApp() {
     });
 
     app.setMethods({
-        createMenu() {
-            console.log("create!");
+        createMenu(e) {
+            console.log("create!", e);
+        },
+        inputChange(e) {
+            console.log("change!", e);
+        },
+        menuEdit(e, item) {
+            console.log("edit!", e, item);
         },
     });
 

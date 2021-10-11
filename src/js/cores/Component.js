@@ -6,7 +6,12 @@ export default class Component {
   constructor(props, targetElement) {
     this.props = props;
     this.targetElement = targetElement;
+
+    this.mounted();
   }
+
+  // state를 초기화하는 메소드
+  initState() {}
 
   // state에 변화를 주는 메소드
   setState(state) {
@@ -27,6 +32,7 @@ export default class Component {
 
   // 기초적인 mounted 라이프사이클. 마운트 시 일단 컨텐츠를 렌더링
   mounted() {
+    this.initState();
     this.render();
   }
 

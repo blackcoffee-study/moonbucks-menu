@@ -1,3 +1,5 @@
 import Component from "../cores/Component.js";
 
-export default class Home extends Component {}
+export default class Home extends Component {
+  constructor() {}
+}

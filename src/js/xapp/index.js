@@ -67,6 +67,14 @@ class Template {
             elementNode.events = events;
             elementNode.el = currentDomNode;
 
+            attrs.forEach(attr => {
+                if (attr.name?.startsWith("x-name")) {
+                    const value = attr.textContent;
+
+                    elementNode.name = value;
+                }
+            });
+
             for (const child of currentDomNode.childNodes) {
                 const ch = this._parse(child);
                 if (ch) {
@@ -100,6 +108,7 @@ export class XApp {
         this.template.parse(this.el);
         this.data = {};
         this.methods = {};
+        this.elements = {};
     }
 
     setHandler(el) {
@@ -120,12 +129,12 @@ export class XApp {
     }
 
     render() {
-        const vnode = this.template.press({
-            data: this.data,
-            methods: this.methods,
-        });
+        const vnode = this.template.press(this);
 
         this.setHandler(vnode);
+
+        this.el.replaceWith(vnode);
+        this.el = vnode;
         return vnode;
     }
 

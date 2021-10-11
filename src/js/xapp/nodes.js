@@ -33,8 +33,8 @@ export class TextTempltaeNode extends TemplateNode {
             .join("");
     }
 
-    press(xStore, binding = {}) {
-        const node = document.createTextNode(this.format({ ...xStore.data, ...binding }));
+    press(xApp, binding = {}) {
+        const node = document.createTextNode(this.format({ ...xApp.data, ...binding }));
         return node;
     }
 }
@@ -45,9 +45,10 @@ export class ElementTemplateNode extends TemplateNode {
         this.el = null;
         /** @type {{property: string, value: string, binding: Object}[]} */
         this.events = [];
+        this.name = null;
     }
 
-    press(xStore, binding = {}) {
+    press(xApp, binding = {}) {
         /** @type {Element} */
         const node = this.el.cloneNode();
 
@@ -58,8 +59,13 @@ export class ElementTemplateNode extends TemplateNode {
             node.xEvents.push({ property: event.property, value: event.value, binding: binding });
         });
 
+        if (this.name) {
+            console.log(xApp);
+            xApp.elements[this.name] = node;
+        }
+
         this.children.forEach(child => {
-            let arr = child.press(xStore, binding);
+            let arr = child.press(xApp, binding);
             if (!Array.isArray(arr)) {
                 arr = [arr];
             }

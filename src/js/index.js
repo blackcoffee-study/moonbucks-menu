@@ -18,16 +18,16 @@ function createApp() {
     });
 
     app.setData({
-        item: {
-            name: "asdf",
-            tag: "tag",
-        },
-        menuData: [],
+        menuList: [
+            { key: 0, content: "1234" },
+            { key: 1, content: "5678" },
+        ],
         count: 123,
     });
 
+    window.data = app.data;
+
     const rendered = app.render();
-    console.log(rendered);
 
     document.body.appendChild(rendered);
 

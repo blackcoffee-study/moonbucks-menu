@@ -13,5 +13,6 @@ module.exports = {
     },
     rules: {
         "prettier/prettier": ["error", { endOfLine: "auto" }, { usePrettierrc: true }],
+        "no-inner-declarations": ["off"],
     },
 };

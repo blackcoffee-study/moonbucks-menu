@@ -34,26 +34,36 @@ export default class MenuListInput extends Component {
   </form>`;
   }
 
+  inputValueChangeListener(event) {
+    this.setState({
+      inputValue: event.target.value,
+    });
+  }
+
+  formSubmitListener(event) {
+    event.preventDefault();
+  }
+
+  submitButtonClickListener() {}
+
   beforeMounted() {
     const listenerInfos = [
+      {
+        eventTarget: this.targetElement.querySelector("#espresso-menu-form"),
+        eventType: "submit",
+        listener: this.formSubmitListener.bind(this),
+      },
       {
         eventTarget: this.targetElement.querySelector(
           "#espresso-menu-submit-button"
         ),
         eventType: "click",
-        listener: () => {
-          console.log("test");
-        },
+        listener: this.submitButtonClickListener.bind(this),
       },
       {
         eventTarget: this.targetElement.querySelector("#espresso-menu-name"),
         eventType: "change",
-        listener: function (event) {
-          console.log(event.target.value);
-          this.setState({
-            inputValue: event.target.value,
-          });
-        }.bind(this),
+        listener: this.inputValueChangeListener.bind(this),
       },
     ];
 

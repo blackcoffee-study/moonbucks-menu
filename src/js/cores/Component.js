@@ -36,7 +36,7 @@ export default class Component {
 
   // 맨 처음 컨텐츠를 렌더링하거나 state 변화 이후 컨텐츠를 재렌더링하는 메소드
   render() {
-    this.targetElement.innerHTML += this.makeTemplate();
+    this.targetElement.innerHTML = this.makeTemplate();
   }
 
   // 기초적인 created 라이프사이클

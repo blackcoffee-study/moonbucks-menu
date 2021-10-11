@@ -77,9 +77,13 @@ export default class Home extends Component {
     const wrapper = this.targetElement.querySelector(
       "#espresso-menu-form-wrapper"
     );
-    new MenuListInput(wrapper, {
+    const menuListInput = new MenuListInput(wrapper, {
       menu: this.state.menu,
       addMenu: this.addMenu.bind(this),
     });
+
+    this.childrenComponents = [menuListInput];
   }
+
+  updated() {}
 }

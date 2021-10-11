@@ -3,10 +3,12 @@ export default class Component {
   state;
   targetElement;
   listenerInfos;
+  childrenComponents;
 
   constructor(targetElement, props) {
     this.props = props;
     this.targetElement = targetElement;
+    this.childrenComponents = [];
 
     this.created();
     this.beforeMounted();
@@ -84,6 +86,7 @@ export default class Component {
     console.log("mounted...");
   }
 
+  // 기초적인 beforeUpdated 라이프사이클
   beforeUpdated() {
     console.log("beforeUpdated");
   }
@@ -93,6 +96,10 @@ export default class Component {
     console.log("updated...");
     this.render();
     this.initListenerInfos();
+
+    this.childrenComponents.forEach((childComponent) =>
+      childComponent.render()
+    );
   }
 
   // 컴포넌트의 템플릿을 만드는 메소드. todo : 나중에 Virtual dom 적용해볼 것

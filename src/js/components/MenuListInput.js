@@ -71,7 +71,16 @@ export default class MenuListInput extends Component {
   formSubmitListener(event) {
     event.preventDefault();
     console.log("formSubmitListener");
-    // this.props.addMenu(this.state.inputValue);
+
+    /**
+     * @todo form submit을 위한 비동기 메소드 하나 만들 것.
+     */
+    setTimeout(
+      function () {
+        this.props.addMenu(this.state.inputValue);
+      }.bind(this),
+      0
+    );
   }
 
   submitButtonClickListener() {}

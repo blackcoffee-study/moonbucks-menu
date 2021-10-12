@@ -22,7 +22,7 @@ function createMenuItem(name) {
   return li;
 }
 
-function AddMenu(e) {
+function AddMenu() {
   const { value } = $menuinput;
   if (value === "") return;
   const newMenu = createMenuItem(value);
@@ -30,6 +30,31 @@ function AddMenu(e) {
   $menuinput.value = "";
 }
 
+function editMenu(li) {
+  const $menuName = li.querySelector("span.menu-name");
+  const previousMenuName = $menuName.innerText;
+  const currentMenuName = window.prompt(
+    "메뉴명을 수정하세요",
+    previousMenuName
+  );
+  if (previousMenuName === currentMenuName) return;
+  if (["", null].includes(currentMenuName)) return;
+  $menuName.innerText = currentMenuName;
+}
+
+function handleListClick(e) {
+  const { target } = e;
+  if (target.tagName !== "BUTTON") return;
+  const { classList } = target;
+  const selectedBtn = target;
+  const selectedLi = selectedBtn.closest("li");
+  if (classList.contains("menu-edit-button")) {
+    editMenu(selectedLi);
+    return;
+  }
+}
+
+$menuList.addEventListener("click", handleListClick);
 $menuform.addEventListener("submit", (e) => {
   e.preventDefault();
   AddMenu();

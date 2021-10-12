@@ -46,7 +46,13 @@ const editMenu = (target) => {
     }
   }
 };
+const removeMenu = (target) => {
+  if (!window.confirm('정말 삭제하시겠습니까?')) {
+    return;
+  }
 
+  $list.removeChild(target);
+}
 const listClickListener = (event) => {
   const target = event.target;
 
@@ -56,6 +62,8 @@ const listClickListener = (event) => {
 
   if (target.classList.contains('menu-edit-button')) {
     editMenu(targetListItem)
+  } else if (target.classList.contains('menu-remove-button')) {
+    removeMenu(targetListItem)
   }
 
 }

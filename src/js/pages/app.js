@@ -31,10 +31,13 @@ export default class App {
     }
 
     onMenuClick = (action) => {
-        if(typeof(action.result) === 'string') {
-            this._items[action.menuId] = action.result;
+        const result = (action.isEditButton) ? 
+            prompt('메뉴명을 수정하세요', this._items[action.menuId]) : 
+            confirm('정말 삭제하시겠습니까?');
+        if(typeof(result) === 'string') {
+            this._items[action.menuId] = result;
         }
-        else if(action.result){
+        else if(result){
             this._items.splice(action.menuId, 1);
         }
         this.render();

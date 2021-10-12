@@ -33,10 +33,8 @@ export default class MenuItem {
         this._app.addEventListener('click', (e) => {
             const isEditButton = e.target.classList.contains('menu-edit-button');
             const menuId = e.target.closest('li').dataset.menuId;
-            const result = (isEditButton) ? 
-            prompt('메뉴명을 수정하세요', e.target.closest('li.menu-name')) : 
-            confirm('정말 삭제하시겠습니까?');
-            this._onMenuClick({result: result, menuId: menuId});
+            
+            this._onMenuClick({isEditButton: isEditButton, menuId: menuId});
         })
     }
 }

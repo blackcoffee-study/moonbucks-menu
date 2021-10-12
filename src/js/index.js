@@ -42,6 +42,12 @@ function editMenu(li) {
   $menuName.innerText = currentMenuName;
 }
 
+function removeMenu(li) {
+  const confirmation = window.confirm("정말 삭제하시겠습니까?");
+  if (!confirmation) return;
+  li.remove();
+}
+
 function handleListClick(e) {
   const { target } = e;
   if (target.tagName !== "BUTTON") return;
@@ -50,6 +56,10 @@ function handleListClick(e) {
   const selectedLi = selectedBtn.closest("li");
   if (classList.contains("menu-edit-button")) {
     editMenu(selectedLi);
+    return;
+  }
+  if (classList.contains("menu-remove-button")) {
+    removeMenu(selectedLi);
     return;
   }
 }

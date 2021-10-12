@@ -2,6 +2,7 @@ const $menuform = document.getElementById("espresso-menu-form");
 const $menuinput = document.getElementById("espresso-menu-name");
 const $menuSubmitBtn = document.getElementById("espresso-menu-submit-button");
 const $menuList = document.getElementById("espresso-menu-list");
+const $countSpan = document.querySelector("span.menu-count");
 
 function createMenuItem(name) {
   const li = document.createElement("li");
@@ -28,6 +29,7 @@ function AddMenu() {
   const newMenu = createMenuItem(value);
   $menuList.append(newMenu);
   $menuinput.value = "";
+  updateCount();
 }
 
 function editMenu(li) {
@@ -46,6 +48,13 @@ function removeMenu(li) {
   const confirmation = window.confirm("정말 삭제하시겠습니까?");
   if (!confirmation) return;
   li.remove();
+  updateCount();
+}
+
+function updateCount() {
+  const liList = document.querySelectorAll(".menu-list-item");
+  const count = liList.length;
+  $countSpan.innerText = `총 ${count}개`;
 }
 
 function handleListClick(e) {

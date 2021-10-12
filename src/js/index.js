@@ -2,7 +2,8 @@ const $form = document.querySelector('#espresso-menu-form');
 const $input = document.querySelector('#espresso-menu-name');
 const $submitButton = document.querySelector('#espresso-menu-submit-button');
 const $list = document.querySelector('#espresso-menu-list');
-
+const $menuCount = document.querySelector('.menu-count');
+let menuCounter = 0
 
 const addMenu = (meunValue) => {
   const newMenu = document.createElement('li');
@@ -32,6 +33,8 @@ const submitMenu = (event) => {
 
   addMenu(inputValue);
   $input.value = '';
+  menuCounter += 1;
+  updateMenuCount()
 };
 
 const editMenu = (target) => {
@@ -46,13 +49,21 @@ const editMenu = (target) => {
     }
   }
 };
+
 const removeMenu = (target) => {
   if (!window.confirm('정말 삭제하시겠습니까?')) {
     return;
   }
 
   $list.removeChild(target);
+  menuCounter -= 1;
+  updateMenuCount();
 }
+
+const updateMenuCount = () => {
+  $menuCount.innerText = `총 ${menuCounter}개`
+}
+
 const listClickListener = (event) => {
   const target = event.target;
 

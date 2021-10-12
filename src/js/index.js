@@ -1,6 +1,10 @@
 function EspressoMenuApp() {
   this.espressoMenuItems = [];
 
+  this.getCopiedItems = () => {
+    return this.espressoMenuItems.slice();
+  };
+
   this.setState = (espressoMenuItems) => {
     this.espressoMenuItems = espressoMenuItems;
     this.EspressoMenuList.setState(this.espressoMenuItems);
@@ -13,13 +17,28 @@ function EspressoMenuApp() {
     this.setState(this.espressoMenuItems);
   };
 
+  this.onMenuItemDelete = (key) => {
+    const targetEspressoMenuItems = this.getCopiedItems(); // deep copy
+    targetEspressoMenuItems.splice(key, 1);
+    this.setState(targetEspressoMenuItems);
+  };
+
+  this.onMenuItemEdit = (key, name) => {
+    const targetEspressoMenuItems = this.getCopiedItems(); // deep copy
+    targetEspressoMenuItems[key].setName(name);
+    this.setState(targetEspressoMenuItems);
+  };
+
   // Initialize
   (function () {
     this.EspressoMenuForm = new EspressoMenuForm({
       onMenuItemAdd: this.onMenuItemAdd,
     });
     this.EspressoMenuItemCounter = new EspressoMenuItemCounter();
-    this.EspressoMenuList = new EspressoMenuList();
+    this.EspressoMenuList = new EspressoMenuList({
+      onMenuItemEdit: this.onMenuItemEdit,
+      onMenuItemDelete: this.onMenuItemDelete,
+    });
 
     this.setState([]);
   }.bind(this)());
@@ -101,6 +120,10 @@ function EspressoMenuItemCounter() {
 function EspressoMenuItem({ name }) {
   this.name = name;
 
+  this.setName = (name) => {
+    this.name = name;
+  };
+
   this.getTemplateString = (key) => {
     return `<li class="menu-list-item d-flex items-center py-2">
         <span class="w-100 pl-2 menu-name">${this.name}</span>
@@ -122,8 +145,26 @@ function EspressoMenuItem({ name }) {
   };
 }
 
-function EspressoMenuList() {
+function EspressoMenuList({ onMenuItemEdit, onMenuItemDelete }) {
   const $menuList = document.querySelector("#espresso-menu-list");
+
+  $menuList.addEventListener("click", (event) => {
+    if (event.target && event.target.nodeName === "BUTTON") {
+      const key = parseInt(event.target.getAttribute("data-menu-key"), 10);
+      if (event.target.className.indexOf("menu-edit-button") >= 0) {
+        const name = prompt("입력해주세요");
+        if (name) {
+          onMenuItemEdit(key, name);
+        }
+      }
+
+      if (event.target.className.indexOf("menu-remove-button") >= 0) {
+        if (confirm("삭제하시겠습니까?")) {
+          onMenuItemDelete(key);
+        }
+      }
+    }
+  });
 
   this.setState = (menuItems) => {
     this.menuItems = menuItems;

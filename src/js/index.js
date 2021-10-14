@@ -3,7 +3,7 @@ const menuInput = menuForm.querySelector("input[name=espressoMenuName]");
 const menuList = document.getElementById("espresso-menu-list");
 const menuCount = document.querySelector(".menu-count");
 
-function newMenuTemplate(name) {
+function getMenuTemplate(name) {
   return `<li class="menu-list-item d-flex items-center py-2">
 <span class="w-100 pl-2 menu-name">${name}</span>
 <button
@@ -31,7 +31,7 @@ function clearInput(input) {
   input.value = "";
 }
 
-function inputValidate(input) {
+function isInputValid(input) {
   if (input.value === "") {
     return false;
   }
@@ -45,20 +45,15 @@ function getInputValue(input) {
 
 function createMenuElement(menuName) {
   const template = document.createElement("template");
-  template.innerHTML = newMenuTemplate(menuName);
+  template.innerHTML = getMenuTemplate(menuName);
   const menuElement = template.content.cloneNode(true);
-  menuElement
-    .querySelector(".menu-edit-button")
-    .addEventListener("click", editMenu);
-  menuElement
-    .querySelector(".menu-remove-button")
-    .addEventListener("click", removeMenu);
+  menuElement.querySelector("li").addEventListener("click", clickMenuButton);
   return menuElement;
 }
 
 function addMenu(e) {
   e.preventDefault();
-  if (!inputValidate(menuInput)) {
+  if (!isInputValid(menuInput)) {
     alert("메뉴를 작성해주세요!");
     return;
   }
@@ -68,8 +63,18 @@ function addMenu(e) {
   clearInput(menuInput);
 }
 
-function editMenu(e) {
+function clickMenuButton(e) {
   const menuItem = e.target.closest(".menu-list-item");
+  if (e.target.tagName !== "BUTTON") return;
+  if (e.target.classList.contains("menu-remove-button")) {
+    removeMenu(menuItem);
+  }
+  if (e.target.classList.contains("menu-edit-button")) {
+    editMenu(menuItem);
+  }
+}
+
+function editMenu(menuItem) {
   const originalMenu = menuItem.querySelector(".menu-name");
   const editedMenu = getEditedMenu(originalMenu.textContent);
   originalMenu.textContent = editedMenu;
@@ -88,10 +93,10 @@ function getEditedMenu(originalMenu) {
   return editedMenu;
 }
 
-function removeMenu(e) {
+function removeMenu(menuItem) {
   const confirm = window.confirm("정말 삭제하시겠습니까?");
   if (!confirm) return;
-  e.target.closest(".menu-list-item").remove();
+  menuItem.remove();
   countMenu();
 }
 

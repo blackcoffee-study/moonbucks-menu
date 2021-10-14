@@ -9,25 +9,25 @@ function createApp() {
         createMenu(e) {
             e.preventDefault();
             if (this.data.menuInput !== "") {
-                this.data.menuList.push({ key: this.data.serial, content: this.data.menuInput });
-                this.data.serial++;
-                this.data.count++;
+                this.data.menuList.push({ key: this.data.menuSerial, content: this.data.menuInput });
+                this.data.menuSerial++;
+                this.data.menuCount++;
                 this.data.menuInput = "";
                 this.render();
                 this.elements.menuInput.focus();
             }
         },
-        inputChange(e) {
+        onMenuInputChange(e) {
             this.data.menuInput = e.target.value;
         },
-        menuEdit(e, item) {
+        editMenu(e, item) {
             const changed = prompt("새로운 메뉴 이름을 입력해주세요.", item.content);
             if (changed) {
                 item.content = changed;
                 this.render();
             }
         },
-        menuDelete(e, item) {
+        deleteMenu(e, item) {
             const shouldDelete = confirm(`정말 ${item.content} 메뉴를 삭제하시겠습니까?`);
             if (shouldDelete) {
                 const idx = this.data.menuList.indexOf(item);
@@ -40,8 +40,8 @@ function createApp() {
     app.setData({
         menuList: [],
         menuInput: "",
-        count: 0,
-        serial: 0,
+        menuCount: 0,
+        menuSerial: 0,
     });
 
     app.render();

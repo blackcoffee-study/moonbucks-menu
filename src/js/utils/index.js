@@ -24,3 +24,10 @@ export function deepFreeze(object) {
 	return Object.freeze(object);
 	// 출처:https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Global_Objects/Object/freeze
 }
+
+export const $ = (selector, target = document) =>
+	target.querySelector(selector);
+
+export const addEvent = (el, eventType, listenser) => {
+	el.addEventListener(eventType, listenser);
+};

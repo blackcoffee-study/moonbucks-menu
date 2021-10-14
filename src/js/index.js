@@ -4,18 +4,18 @@ import store, {
 	removeEspresso,
 } from '../js/store/index.js';
 import { EVENTS, SELECTORS, MESSAGES } from './constants.js';
-import { getUUID } from './utils/index.js';
+import { $, addEvent, getUUID } from './utils/index.js';
 
-const $input = document.querySelector(SELECTORS.CLASS.INPUT_FIELD);
-const $form = document.querySelector(SELECTORS.ID.ESPRESSO_MENU_FORM);
-const $ul = document.querySelector(SELECTORS.ID.ESPRESSO_MENU_LIST);
-const $menuCount = document.querySelector(SELECTORS.CLASS.MENU_COUNT);
+const $input = $(SELECTORS.CLASS.INPUT_FIELD);
+const $form = $(SELECTORS.ID.ESPRESSO_MENU_FORM);
+const $ul = $(SELECTORS.ID.ESPRESSO_MENU_LIST);
+const $menuCount = $(SELECTORS.CLASS.MENU_COUNT);
 
-const countTemplate = (cnt) => {
+const menuTotalCountTemplate = (cnt) => {
 	return `총 ${cnt}개`;
 };
 
-const liTemplate = (item) => {
+const menuItemTemplate = (item) => {
 	return `
   <li class="menu-list-item d-flex items-center py-2">
     <span class="w-100 pl-2 menu-name">${item.name}</span>
@@ -43,7 +43,6 @@ const liTemplate = (item) => {
 };
 
 const onDelete = (e) => {
-	// 삭제
 	const { target } = e;
 	if (target.closest(SELECTORS.CLASS.MENU_REMOVE_BUTTON)) {
 		const answer = confirm(MESSAGES.CONFIRM_REMOVE);
@@ -64,8 +63,6 @@ const onEdit = (e) => {
 		}
 	}
 };
-$ul.addEventListener(EVENTS.click, onDelete);
-$ul.addEventListener(EVENTS.click, onEdit);
 
 const onSubmit = (e) => {
 	e.preventDefault();
@@ -74,12 +71,15 @@ const onSubmit = (e) => {
 		$input.value = '';
 	}
 };
-$form.addEventListener(EVENTS.submit, onSubmit);
+
+addEvent($ul, EVENTS.click, onDelete);
+addEvent($ul, EVENTS.click, onEdit);
+addEvent($form, EVENTS.submit, onSubmit);
 
 const render = () => {
 	const { espresso } = store.getState();
-	$ul.innerHTML = espresso.map(liTemplate).join('');
-	$menuCount.innerHTML = countTemplate(espresso.length || 0);
+	$ul.innerHTML = espresso.map(menuItemTemplate).join('');
+	$menuCount.innerHTML = menuTotalCountTemplate(espresso.length || 0);
 };
 
 store.subscribe(render);

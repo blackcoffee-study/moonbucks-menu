@@ -18,6 +18,6 @@ export const SELECTORS = deepFreeze({
 	},
 });
 export const MESSAGES = deepFreeze({
-	CONFIRM_REMOVE: `정말 삭제하시겠습니까?`,
+	CONFIRM_REMOVE: '정말 삭제하시겠습니까?',
 	PROMPT_EDIT_MENU: '메뉴명을 수정하세요.',
 });

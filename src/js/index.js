@@ -8,6 +8,12 @@ function getMenuTemplate(name) {
 <span class="w-100 pl-2 menu-name">${name}</span>
 <button
   type="button"
+  class="bg-gray-50 text-gray-500 text-sm mr-1 menu-sold-out-button"
+>
+  품절
+</button>
+<button
+  type="button"
   class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
 >
   수정
@@ -66,11 +72,14 @@ function addMenu(e) {
 function clickMenuButton(e) {
   const menuItem = e.target.closest(".menu-list-item");
   if (e.target.tagName !== "BUTTON") return;
-  if (e.target.classList.contains("menu-remove-button")) {
-    removeMenu(menuItem);
+  if (e.target.classList.contains("menu-sold-out-button")) {
+    toggleSoldOut(menuItem);
   }
   if (e.target.classList.contains("menu-edit-button")) {
     editMenu(menuItem);
+  }
+  if (e.target.classList.contains("menu-remove-button")) {
+    removeMenu(menuItem);
   }
 }
 
@@ -98,6 +107,11 @@ function removeMenu(menuItem) {
   if (!confirm) return;
   menuItem.remove();
   countMenu();
+}
+
+function toggleSoldOut(menuItem) {
+  const menuName = menuItem.querySelector(".menu-name");
+  menuName.classList.toggle("sold-out");
 }
 
 menuForm.addEventListener("submit", addMenu);

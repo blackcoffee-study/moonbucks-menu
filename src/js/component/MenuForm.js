@@ -14,10 +14,10 @@ export default class MenuForm {
 
     onSubmit(event) {
         var menuName = this.$menuInput.value;
-        var returnValue = this.onDataCheck(menuName);
+        var returnValue = this.dataCheck(menuName);
 
         if(returnValue.value) {
-            this.onAdd(menuName);
+            this.onAdd({name: menuName, isSoldOut: false});
             this.$menuInput.value = "";
         } else {
             alert(returnValue.reason);
@@ -25,7 +25,7 @@ export default class MenuForm {
         event.preventDefault();
     }
 
-    onDataCheck(data) {
+    dataCheck(data) {
         var returnValue = {reason:"", value:true};
 
         if(data.trim() === "") {

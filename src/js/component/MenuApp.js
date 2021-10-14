@@ -1,19 +1,25 @@
 import Common from "./Common.js";
 import MenuForm from "./MenuForm.js";
 import Menu from "./Menu.js";
+import MenuCategory from "./MenuCategory.js";
+import { SELECTORS } from "../Constants.js";
 
 export default class MenuApp {
-    $menuForm = document.getElementById("espresso-menu-form");
-    $menuList = document.getElementById("espresso-menu-list");
-    $menuItems = document.querySelectorAll(".menu-list-item");
-    $menuCount = document.getElementsByClassName("menu-count");
+    $menuForm = document.querySelector(SELECTORS.ID.ESPRESS_MENU_FROM);
+    $menuList = document.querySelector(SELECTORS.ID.ESPRESSO_MENU_LIST);
+    $menuItems = document.querySelectorAll(SELECTORS.CLASS.MENU_LIST_ITEM);
+    $menuCount = document.querySelector(SELECTORS.CLASS.MENU_COUNT);
+    $menuCategory = document.querySelectorAll(".cafe-category-name");
 
     menuForm = null;
     menu = null;
+    menuCategory = null;
     common = null;
+    selectedCategory = "";
 
     constructor() {
         this.menu = new Menu({
+            onSoldOutMenu: (menu => {this.onSoldOutMenu(menu)}),
             onEditMenu: (menu => {this.onEditMenu(menu)}),
             onRemoveMenu: (menu => {this.onRemoveMenu(menu)})
         });
@@ -23,17 +29,32 @@ export default class MenuApp {
             onAdd: (value => {
                 var data = {
                     code: this.common.getUUID(),
-                    name: value,
+                    category: this.selectedCategory,
+                    isSoldOut: value.isSoldOut,
+                    name: value.name,
                 }
 
                 this.onAddMenu(data);
             })
         });
+
+        this.menuCategory = new MenuCategory({
+            target: this.$menuCategory,
+            onSelectCategory: (event => this.onSelectCategory(event))
+        })
     }
 
     onAddMenu(menu) {
         this.$menuList.append(this.menu.getMenuForm(menu));
         this.setMenuCount();
+    }
+
+    onSoldOutMenu(menu) {
+        if(menu.className.includes("sold-out")) {
+            menu.classList.remove("sold-out");
+        } else {
+            menu.classList.add("sold-out");
+        }
     }
 
     onEditMenu(menu) {
@@ -50,9 +71,14 @@ export default class MenuApp {
         }
     }
 
-    setMenuCount() {
-        var count = this.$menuList.querySelectorAll('.menu-list-item').length;
+    onSelectCategory(event) {
+        this.selectedCategory = event.target.dataset.categoryName;
+    }
 
-        this.$menuCount[0].innerText = `총 ${count}개`
+    setMenuCount() {
+        var count = document.querySelectorAll(SELECTORS.CLASS.MENU_LIST_ITEM).length;
+        console.log(document.querySelectorAll(SELECTORS.CLASS.MENU_LIST_ITEM));
+
+        this.$menuCount.innerText = `총 ${count}개`;
     }
 }

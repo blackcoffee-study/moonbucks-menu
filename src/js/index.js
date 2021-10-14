@@ -53,12 +53,34 @@ const removeMenu = function (event) {
   setMenu(menuList);
 };
 
+const soldOutMenu = function (event) {
+  const li = event.target.parentElement;
+  const menuId = parseInt(li.id);
+  const menuName = li.children[0];
+
+  menuList[menuCategoryName].forEach(menu => {
+    if (menu.id === menuId) {
+      menuName.classList.toggle('sold-out');
+      [...menuName.classList].includes('sold-out')
+        ? (menu.soldOut = true)
+        : (menu.soldOut = false);
+    }
+  });
+  setMenu(menuList);
+};
+
 const renderMenu = function (menu) {
   const templete = menu
     .map(
       item => `
       <li class="menu-list-item d-flex items-center py-2" id=${item.id}>
           <span class="w-100 pl-2 menu-name">${item.name}</span>
+          <button
+            type="button"
+            class="bg-gray-50 text-gray-500 text-sm mr-1 menu-sold-out-button"
+          >
+            품절
+          </button>
           <button
             type="button"
             class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
@@ -83,14 +105,16 @@ const handleButtons = function (id) {
   const $menuItem = document.getElementById(`${id}`);
   const $btnEdit = $menuItem.querySelector('.menu-edit-button');
   const $btnRemove = $menuItem.querySelector('.menu-remove-button');
+  const $btnSoldout = $menuItem.querySelector('.menu-sold-out-button');
 
   $btnEdit.addEventListener('click', editMenu);
   $btnRemove.addEventListener('click', removeMenu);
+  $btnSoldout.addEventListener('click', soldOutMenu);
 };
 
 const createMenu = function (menu) {
   const id = Date.now();
-  menuList[menuCategoryName].push({ name: menu, id });
+  menuList[menuCategoryName].push({ name: menu, id, soldOut: false });
   renderMenu(menuList[menuCategoryName]);
   menuCounter();
   handleButtons(id);

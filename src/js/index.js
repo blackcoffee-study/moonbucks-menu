@@ -1,15 +1,17 @@
-const inputForm = document.querySelector('#espresso-menu-form');
-const inputBtn = document.querySelector('#espresso-menu-submit-button');
-const input = document.querySelector('#espresso-menu-name');
-const menuList = document.querySelector('#espresso-menu-list');
-const menuCount = document.querySelector('.menu-count');
+const $ = (selector) => document.querySelector(selector);
 
-function takeInput() {
-    const inputValue = input.value;
+const menuForm = $('#espresso-menu-form');
+const menuSubmitBtn = $('#espresso-menu-submit-button');
+const menuName = $('#espresso-menu-name');
+const menuList = $('#espresso-menu-list');
+const menuCount = $('.menu-count');
+
+function getMenuName() {
+    const inputValue = menuName.value;
     if (inputValue === '') {
         return;
     }
-    input.value = '';
+    menuName.value = '';
     addMenu(inputValue);
 }
 
@@ -31,7 +33,7 @@ function addMenu(name) {
         삭제
         </button>`;
     menuList.appendChild(menu);
-    displayCount();
+    displayMenuCount();
 }
 
 function editMenu(menu) {
@@ -51,19 +53,19 @@ function deleteMenu(menu) {
         return;
     }
     menuList.removeChild(menu);
-    displayCount();
+    displayMenuCount();
 }
 
-function displayCount() {
+function displayMenuCount() {
     menuCount.innerText = `총 ${menuList.childElementCount}개`;
 }
 
-inputForm.addEventListener('submit', (event) => {
+menuForm.addEventListener('submit', (event) => {
     event.preventDefault();
-    takeInput();
+    getMenuName();
 });
 
-inputBtn.addEventListener('click', takeInput);
+menuSubmitBtn.addEventListener('click', getMenuName);
 
 menuList.addEventListener('click', (event) => {
     const targetBtn = event.target;

@@ -10,8 +10,13 @@ const menuCounter = function () {
   $menuCount.innerText = `총 ${menuList.length}개`;
 };
 
+const setEspressoMenu = function (menu) {
+  localStorage.setItem('espressoMenu', JSON.stringify(menu));
+};
+
 const editEspressoMenu = function (event) {
   const li = event.target.parentElement;
+  const menuId = parseInt(li.id);
   const menuName = li.children[0];
   const editEspressoMenuValue = prompt(
     '메뉴명을 수정하세요.',
@@ -19,24 +24,26 @@ const editEspressoMenu = function (event) {
   );
   if (!editEspressoMenuValue) return;
 
-  menuList = menuList.map(
-    menu => menu.id === parseInt(li.id) && (menu.name = editEspressoMenuValue)
-  );
+  menuList.forEach(menu => {
+    if (menu.id === menuId) menu.name = editEspressoMenuValue;
+  });
+  setEspressoMenu(menuList);
   menuName.innerText = editEspressoMenuValue;
 };
 
 const removeEspressoMenu = function (event) {
   const li = event.target.parentElement;
+  const menuId = parseInt(li.id);
   const removeConfirm = confirm('정말 삭제하시겠습니까?');
   if (!removeConfirm) return;
 
   li.remove();
-  menuList = menuList.filter(menu => menu.id !== parseInt(li.id));
+  menuList = menuList.filter(menu => menu.id !== menuId);
   menuCounter();
+  setEspressoMenu(menuList);
 };
 
-const printEspressoMenu = function (name) {
-  const id = Date.now();
+const renderEspressoMenu = function (name, id) {
   $espressoMenuList.insertAdjacentHTML(
     'beforeend',
     `
@@ -57,15 +64,25 @@ const printEspressoMenu = function (name) {
     </li>
   `
   );
-  menuList.push({ name, id });
-  menuCounter();
+};
 
+const handleButtons = function (id) {
   const $menuItem = document.getElementById(`${id}`);
   const $btnEdit = $menuItem.querySelector('.menu-edit-button');
   const $btnRemove = $menuItem.querySelector('.menu-remove-button');
 
   $btnEdit.addEventListener('click', editEspressoMenu);
   $btnRemove.addEventListener('click', removeEspressoMenu);
+};
+
+const createEspressoMenu = function (name) {
+  const id = Date.now();
+  renderEspressoMenu(name, id);
+  menuList.push({ name, id });
+  menuCounter();
+
+  handleButtons(id);
+  setEspressoMenu(menuList);
 };
 
 const submitEspressoMenu = function (event) {
@@ -77,9 +94,21 @@ const submitEspressoMenu = function (event) {
     return;
   }
 
-  printEspressoMenu(espressoMenuValue);
+  createEspressoMenu(espressoMenuValue);
   $espressoMenuInput.value = '';
 };
 
 $espressoMenuForm.addEventListener('submit', submitEspressoMenu);
 $btnSubmitEspressoMenu.addEventListener('click', submitEspressoMenu);
+
+const getEspressoMenu = JSON.parse(localStorage.getItem('espressoMenu'));
+if (getEspressoMenu !== null) {
+  menuList = getEspressoMenu;
+  getEspressoMenu.forEach(espresso => {
+    const { name, id } = espresso;
+
+    renderEspressoMenu(name, id);
+    handleButtons(id);
+    menuCounter();
+  });
+}

@@ -33,12 +33,12 @@ function MenuApp() {
         return JSON.parse(localStorage.getItem(this.LOCALSTORAGE_KEY_MENU));
     };
 
-    // event handleres
+    // event handlers
     this.handleMenuItemAdd = (name) => {
         const key = this.currentCategory;
         const newMenuItem = {
             name,
-            soludOut: false,
+            soldOut: false,
         };
         const menuItems = { ...this.menuItems };
         menuItems[key].push(newMenuItem);
@@ -68,7 +68,17 @@ function MenuApp() {
         this.setState(menuItems);
     };
 
-    this.handleMenuItemSoldOut = (menuItem) => {};
+    this.handleMenuItemSoldOut = (menuItem) => {
+        const key = this.currentCategory;
+        const index = menuItem.dataset.menuId;
+        const menuItems = { ...this.menuItems };
+        if (menuItem.children[0].classList.toggle('sold-out')) {
+            menuItems[key][index].soldOut = true;
+        } else {
+            menuItems[key][index].soldOut = false;
+        }
+        this.setState(menuItems);
+    };
 
     this.handleCategoryClick = (clickedCategory) => {
         const clickedCategoryName = clickedCategory.dataset.categoryName;
@@ -142,6 +152,7 @@ function MenuInput({ onMenuItemAdd }) {
     this.handleMenuItemAdd = () => {
         const name = menuName.value;
         if (name === '') {
+            alert('값을 입력해주세요.');
             return;
         }
         menuName.value = '';
@@ -181,7 +192,9 @@ function MenuList({ onMenuItemNameEdit, onMenuItemDelete, onMenuItemSoldOut }) {
         const template = menuItems[currentCategory].map(
             (menuItem, idx) => `
             <li data-menu-id="${idx}" class="menu-list-item d-flex items-center py-2">
-                <span class="w-100 pl-2 menu-name">${menuItem.name}</span>
+                <span class="w-100 pl-2 menu-name${
+                    menuItem.soldOut === true ? ' sold-out' : ''
+                }">${menuItem.name}</span>
                 <button
                 type="button"
                 class="bg-gray-50 text-gray-500 text-sm mr-1 menu-sold-out-button"
@@ -218,7 +231,7 @@ function MenuList({ onMenuItemNameEdit, onMenuItemDelete, onMenuItemSoldOut }) {
         let translatedCategory;
         switch (this.currentCategory) {
             case 'espresso':
-                translatedCategory = '☕ 에스프레소';
+                translatedCategory = '☕️ 에스프레소';
                 break;
             case 'frappuccino':
                 translatedCategory = '🥤 프라푸치노';

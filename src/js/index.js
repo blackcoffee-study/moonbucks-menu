@@ -150,8 +150,9 @@ function MenuInput({ onMenuItemAdd }) {
 }
 
 function MenuList({ onMenuItemNameEdit, onMenuItemDelete, onMenuItemSoldOut }) {
-    const menuList = $('#menu-list');
+    const categoryTitle = $('#category-title');
     const menuCount = $('.menu-count');
+    const menuList = $('#menu-list');
 
     menuList.addEventListener('click', (event) => {
         const targetBtn = event.target;
@@ -203,13 +204,36 @@ function MenuList({ onMenuItemNameEdit, onMenuItemDelete, onMenuItemSoldOut }) {
         `
         );
         menuList.innerHTML = template.join('');
-        this.displayMenuCount();
+        this.updateMenuCount();
+        this.changeCategoryTitle();
     };
 
-    this.displayMenuCount = () => {
+    this.updateMenuCount = () => {
         menuCount.innerText = `총 ${
             this.menuItems[this.currentCategory].length
         }개`;
+    };
+
+    this.changeCategoryTitle = () => {
+        let translatedCategory;
+        switch (this.currentCategory) {
+            case 'espresso':
+                translatedCategory = '☕ 에스프레소';
+                break;
+            case 'frappuccino':
+                translatedCategory = '🥤 프라푸치노';
+                break;
+            case 'blended':
+                translatedCategory = '🍹 블렌디드';
+                break;
+            case 'teavana':
+                translatedCategory = '🫖 티바나';
+                break;
+            case 'desert':
+                translatedCategory = '🍰 디저트';
+                break;
+        }
+        categoryTitle.innerText = `${translatedCategory} 메뉴 관리`;
     };
 }
 

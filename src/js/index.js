@@ -1,22 +1,47 @@
+'use strict';
+
 const $ = (selector) => document.querySelector(selector);
 
 function MenuApp() {
-    this.menuItems = [];
-    this.menuCount = $('.menu-count');
+    this.LOCALSTORAGE_KEY_MENU = 'menu';
 
+    // state management functions
     this.setState = (updatedMenuItems) => {
         this.menuItems = updatedMenuItems;
-        this.MenuList.setState(this.menuItems);
-        this.displayMenuCount();
+        this.saveToLocalStorage();
+        this.MenuList.setState(this.currentCategory, this.menuItems);
     };
 
-    this.displayMenuCount = () => {
-        this.menuCount.innerText = `총 ${this.menuItems.length}개`;
+    this.changeCurrentCategory = (newCategory) => {
+        this.currentCategory = newCategory;
+        this.setState(this.menuItems);
     };
 
+    this.getCategoryList = (categoryList) => {
+        this.categoryList = categoryList;
+    };
+
+    // local storage functions
+    this.saveToLocalStorage = () => {
+        localStorage.setItem(
+            this.LOCALSTORAGE_KEY_MENU,
+            JSON.stringify(this.menuItems)
+        );
+    };
+
+    this.getFromLocalStorage = () => {
+        return JSON.parse(localStorage.getItem(this.LOCALSTORAGE_KEY_MENU));
+    };
+
+    // event handleres
     this.handleMenuItemAdd = (name) => {
-        const newMenuItem = new MenuItem(name);
-        const menuItems = [...this.menuItems, newMenuItem];
+        const key = this.currentCategory;
+        const newMenuItem = {
+            name,
+            soludOut: false,
+        };
+        const menuItems = { ...this.menuItems };
+        menuItems[key].push(newMenuItem);
         this.setState(menuItems);
     };
 
@@ -25,9 +50,10 @@ function MenuApp() {
         if (newName === null || newName === '') {
             return;
         }
+        const key = this.currentCategory;
         const index = menuItem.dataset.menuId;
-        const menuItems = [...this.menuItems];
-        menuItems[index].name = newName;
+        const menuItems = { ...this.menuItems };
+        menuItems[key][index].name = newName;
         this.setState(menuItems);
     };
 
@@ -35,23 +61,68 @@ function MenuApp() {
         if (!window.confirm('정말 삭제하시겠습니까?')) {
             return;
         }
+        const key = this.currentCategory;
         const index = menuItem.dataset.menuId;
-        const menuItems = [...this.menuItems];
-        menuItems.splice(index, 1);
+        const menuItems = { ...this.menuItems };
+        menuItems[key].splice(index, 1);
         this.setState(menuItems);
     };
 
     this.handleMenuItemSoldOut = (menuItem) => {};
 
-    this.MenuInput = new MenuInput({
-        onMenuItemAdd: this.handleMenuItemAdd,
+    this.handleCategoryClick = (clickedCategory) => {
+        const clickedCategoryName = clickedCategory.dataset.categoryName;
+        this.changeCurrentCategory(clickedCategoryName);
+    };
+
+    // init
+    (function () {
+        this.Categories = new Categories({
+            getCategoryList: this.getCategoryList,
+            onCategoryClick: this.handleCategoryClick,
+        });
+
+        this.MenuInput = new MenuInput({
+            onMenuItemAdd: this.handleMenuItemAdd,
+        });
+
+        this.MenuList = new MenuList({
+            onMenuItemNameEdit: this.handleMenuItemNameEdit,
+            onMenuItemDelete: this.handleMenuItemDelete,
+            onMenuItemSoldOut: this.handleMenuItemSoldOut,
+        });
+
+        this.currentCategory = 'espresso';
+        const loadedMenuItems = this.getFromLocalStorage();
+        if (loadedMenuItems) {
+            this.setState(loadedMenuItems);
+        } else {
+            const menuItems = {};
+            const categoryList = this.categoryList;
+            categoryList.forEach((category) => {
+                menuItems[category] = [];
+            });
+            this.setState(menuItems);
+        }
+    }.bind(this)());
+}
+
+function Categories({ getCategoryList, onCategoryClick }) {
+    const categoryList = $('.cafe-category');
+
+    categoryList.addEventListener('click', (event) => {
+        const targetCategory = event.target;
+        if (targetCategory.tagName !== 'BUTTON') {
+            return;
+        }
+        onCategoryClick(targetCategory);
     });
 
-    this.MenuList = new MenuList({
-        onMenuItemNameEdit: this.handleMenuItemNameEdit,
-        onMenuItemDelete: this.handleMenuItemDelete,
-        onMenuItemSoldOut: this.handleMenuItemSoldOut,
-    });
+    getCategoryList(
+        Array.from(categoryList.children).map(
+            (category) => category.dataset.categoryName
+        )
+    );
 }
 
 function MenuInput({ onMenuItemAdd }) {
@@ -80,6 +151,7 @@ function MenuInput({ onMenuItemAdd }) {
 
 function MenuList({ onMenuItemNameEdit, onMenuItemDelete, onMenuItemSoldOut }) {
     const menuList = $('#menu-list');
+    const menuCount = $('.menu-count');
 
     menuList.addEventListener('click', (event) => {
         const targetBtn = event.target;
@@ -98,13 +170,14 @@ function MenuList({ onMenuItemNameEdit, onMenuItemDelete, onMenuItemSoldOut }) {
         }
     });
 
-    this.setState = (menuItems) => {
+    this.setState = (currentCategory, menuItems) => {
         this.menuItems = menuItems;
-        this.render(this.menuItems);
+        this.currentCategory = currentCategory;
+        this.render(this.currentCategory, this.menuItems);
     };
 
-    this.render = (menuItems) => {
-        const template = menuItems.map(
+    this.render = (currentCategory, menuItems) => {
+        const template = menuItems[currentCategory].map(
             (menuItem, idx) => `
             <li data-menu-id="${idx}" class="menu-list-item d-flex items-center py-2">
                 <span class="w-100 pl-2 menu-name">${menuItem.name}</span>
@@ -113,7 +186,7 @@ function MenuList({ onMenuItemNameEdit, onMenuItemDelete, onMenuItemSoldOut }) {
                 class="bg-gray-50 text-gray-500 text-sm mr-1 menu-sold-out-button"
                 >
                 품절
-                </button>     
+                </button>
                 <button
                 type="button"
                 class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
@@ -130,13 +203,13 @@ function MenuList({ onMenuItemNameEdit, onMenuItemDelete, onMenuItemSoldOut }) {
         `
         );
         menuList.innerHTML = template.join('');
+        this.displayMenuCount();
     };
-}
 
-function MenuItem(name) {
-    return {
-        name,
-        soludOut: false,
+    this.displayMenuCount = () => {
+        menuCount.innerText = `총 ${
+            this.menuItems[this.currentCategory].length
+        }개`;
     };
 }
 

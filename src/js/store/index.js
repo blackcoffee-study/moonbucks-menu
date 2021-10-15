@@ -1,4 +1,4 @@
-import { createStore } from '../core/myRedux';
+import { applyMiddleware, createStore } from '../core/myRedux';
 
 const tabType = Object.freeze({
 	에스프레소: '에스프레소',
@@ -111,4 +111,12 @@ const menuReducer = (state, action) => {
 	}
 };
 
-export default createStore(menuReducer, initState);
+const store = createStore(menuReducer, initState);
+
+const logger = (store) => (next) => (action) => {
+	console.log('dipatching: ', action);
+	next(action);
+	console.log('next State: ', store.getState());
+};
+
+export default applyMiddleware(store, [logger]);

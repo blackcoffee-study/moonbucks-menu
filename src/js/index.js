@@ -21,7 +21,7 @@ addEvent($categoryTab, EVENTS.click, (e) => {
 	console.log(target);
 	if (target.closest('[data-category-name]')) {
 		const clickedTab = target.dataset['categoryName'];
-		console.log(clickedTab);
+		// logAndDispatch(store, changeTab(clickedTab));
 		store.dispatch(changeTab(clickedTab));
 	}
 });
@@ -104,7 +104,7 @@ const onEdit = (e) => {
 		const { menus } = store.getState();
 		const currentMenuList = menus[currentTab];
 		const menu = currentMenuList.find((es) => es.id === id);
-		const newItem = prompt(MESSAGES.PROMPT_EDIT_MENU, name);
+		const newItem = prompt(MESSAGES.PROMPT_EDIT_MENU, menu.name);
 		if (newItem) {
 			store.dispatch(editMenu({ ...menu, name: newItem }));
 		}

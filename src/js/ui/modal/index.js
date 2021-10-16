@@ -12,3 +12,5 @@ const onModalClose = () => {
 
 $modalTriggerBtn.addEventListener("click", onModalShow);
 $modalClose.addEventListener("click", onModalClose);
+
+export {onModalClose, onModalShow}

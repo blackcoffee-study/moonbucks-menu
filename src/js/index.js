@@ -1,15 +1,18 @@
-function preventFormDefault(menuForm){
+const $ = (selector) => document.querySelector(selector);
+const $All = (selector) => document.querySelector(selector);
+
+function preventFormDefault(menuForm) {
     menuForm.addEventListener('submit', (e) => {
         e.preventDefault();
     })
 }
 
-function countMenuItem($menuItem, menuCount){
+function countMenuItem($menuItem, menuCount) {
     menuCount.innerText = `총 ${$menuItem.length}개`
 }
 
-function addMenuItem(InputMenuName, menuList){
-    if(InputMenuName.value === '') {alert('메뉴를 입력해주세요.');}
+function addMenuItem(InputMenuName, menuList) {
+    if (InputMenuName.value === '') alert('메뉴를 입력해주세요.');
     else {
         const menuName = InputMenuName.value;
         const menuItemTemplate  = (menuName) => {
@@ -37,60 +40,60 @@ function addMenuItem(InputMenuName, menuList){
     }
 }
 
-function adminAddMenuItem(category, menuList){
-    const menuForm = document.querySelector(`#${category}-menu-form`);
-    const InputMenuName = document.querySelector(`#${category}-menu-name`);
-    const menuSubmitButton = document.querySelector(`#${category}-menu-submit-button`);
-    const menuCount = document.querySelector('.menu-count')
+function adminAddingMenuItem(category, menuList) {
+    const menuForm = $(`#${category}-menu-form`);
+    const InputMenuName = $(`#${category}-menu-name`);
+    const menuSubmitButton = $(`#${category}-menu-submit-button`);
+    const menuCount = $('.menu-count')
 
     preventFormDefault(menuForm);
 
     InputMenuName.addEventListener('keydown', (e) => {
-        if(e.key === "Enter") {
+        if (e.key === "Enter") {
             addMenuItem(InputMenuName, menuList);
-            const $menuItem = document.querySelectorAll('.menu-list-item');
+            const $menuItem = $All('.menu-list-item');
             countMenuItem($menuItem, menuCount);
         }
     });
 
     menuSubmitButton.addEventListener('click', () => {
         addMenuItem(InputMenuName, menuList);
-        const $menuItem = document.querySelectorAll('.menu-list-item');
+        const $menuItem = $All('.menu-list-item');
         countMenuItem($menuItem, menuCount);
     });
 }
 
-function editMenuItem(menuEditBtn){
+function editMenuItem(menuEditBtn) {
     const menuItemSpan = menuEditBtn.previousElementSibling;
     let menuName = menuItemSpan.innerText
 
     let newMenuName = prompt(`메뉴명을 수정하세요.`, menuName); 
 
-    while(newMenuName == '')
+    while (newMenuName == '')
         newMenuName = prompt('다시 입력하세요.', menuName);
     
-    if(newMenuName != null){
+    if (newMenuName != null){
         menuName = newMenuName;
         menuItemSpan.innerText = menuName;
     }
 }
 
-function removeMenuItem(menuRemoveBtn){
+function removeMenuItem(menuRemoveBtn) {
     const menuItem = menuRemoveBtn.parentElement;
-    if(confirm('삭제하시겠습니까?')) {menuItem.remove();}
+    if (confirm('삭제하시겠습니까?')) menuItem.remove();
 }
 
-function app(){
-    const category = document.querySelectorAll('.cafe-category-name')[0].getAttribute('data-category-name');
-    const menuList = document.querySelector(`#${category}-menu-list`);
+function app() {
+    const category = $All('.cafe-category-name')[0].getAttribute('data-category-name');
+    const menuList = $(`#${category}-menu-list`);
 
-    adminAddMenuItem(category, menuList);
+    adminAddingMenuItem(category, menuList);
     
     menuList.addEventListener('click', (e) => {
-        if(e.target.classList.contains('menu-edit-button')){
+        if (e.target.classList.contains('menu-edit-button')){
             const menuEditBtn = e.target;
             editMenuItem(menuEditBtn);
-        } else if(e.target.classList.contains('menu-remove-button')){
+        } else if (e.target.classList.contains('menu-remove-button')){
             const menuRemoveBtn = e.target;
             removeMenuItem(menuRemoveBtn);
         }

@@ -5,9 +5,9 @@ export default function MenuHeader($target) {
   const $menuCount = $($target)('.menu-count');
   const $menuTitle = $($target)('h2');
 
-  this.setState = ({ categoryName, menuList }) => {
+  this.setState = ({ categoryName, menuItems }) => {
     this.categoryName = categoryName;
-    this.count = menuList.length;
+    this.count = menuItems.length;
     render(this.categoryName, this.count);
   };
 

@@ -5,8 +5,8 @@ export default function MenuList($target, { onEdit, onRemove }) {
   this.$menuList = $target;
   this.$menuList.addEventListener('click', e => handleMenuListClick(e));
 
-  this.setState = ({ menuList }) => {
-    this.menuList = menuList;
+  this.setState = ({ menuItems }) => {
+    this.menuList = menuItems;
     render(this.menuList);
   };
 

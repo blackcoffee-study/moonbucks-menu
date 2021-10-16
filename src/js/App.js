@@ -4,11 +4,19 @@ import MenuList from './component/MenuList.js';
 import Navigator from './component/Navigator.js';
 import { $ } from './lib/utils.js';
 
+const menuItems = {
+  espresso: [],
+  frappuccino: [],
+  blended: [],
+  teavana: [],
+  desert: [],
+};
+
 export default function App($target) {
   this.$ = $($target);
   this.state = {
     categoryName: 'espresso',
-    menuList: [],
+    menuItems: menuItems.espresso,
   };
 
   this.init = () => {
@@ -27,29 +35,31 @@ export default function App($target) {
     this.state = state;
     this.menuHeader.setState(state);
     this.menuList.setState(state);
+    menuItems[state.categoryName] = state.menuItems;
   };
 
   const setCategoryName = name => {
-    // NOTE: 그냥 setState 함수 만들어놓고, 거따가 name 파라미터로 넘겨줘도 될듯
-    this.state.categoryName = name;
-    this.setState(this.state);
+    const state = {
+      categoryName: name,
+      menuItems: menuItems[name],
+    };
+    this.setState(state);
   };
 
   const addMenu = menuName => {
-    // TODO: state 상태 확인하기 위해 불변성 넣어야하지않나?
-    this.state.menuList.push(menuName);
-    this.setState(this.state);
+    const menuItems = [...this.state.menuItems, menuName];
+    this.setState({ ...this.state, menuItems });
   };
 
   const editMenu = (menuName, newName) => {
-    this.state.menuList = this.state.menuList.map(el =>
+    const menuItems = this.state.menuItems.map(el =>
       el === menuName ? newName : el,
     );
-    this.setState(this.state);
+    this.setState({ ...this.state, menuItems });
   };
 
   const removeMenu = menuName => {
-    this.state.menuList = this.state.menuList.filter(el => el !== menuName);
-    this.setState(this.state);
+    const menuItems = this.state.menuItems.filter(el => el !== menuName);
+    this.setState({ ...this.state, menuItems });
   };
 }

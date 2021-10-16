@@ -1,5 +1,5 @@
 const $ = (selector) => document.querySelector(selector);
-const $All = (selector) => document.querySelector(selector);
+const $All = (selector) => document.querySelectorAll(selector);
 
 function preventFormDefault(menuForm) {
     menuForm.addEventListener('submit', (e) => {
@@ -11,7 +11,7 @@ function countMenuItem($menuItem, menuCount) {
     menuCount.innerText = `총 ${$menuItem.length}개`
 }
 
-function addMenuItem(InputMenuName, menuList) {
+function addingMenuItem(InputMenuName, menuList) {
     if (InputMenuName.value === '') alert('메뉴를 입력해주세요.');
     else {
         const menuName = InputMenuName.value;
@@ -50,14 +50,14 @@ function adminAddingMenuItem(category, menuList) {
 
     InputMenuName.addEventListener('keydown', (e) => {
         if (e.key === "Enter") {
-            addMenuItem(InputMenuName, menuList);
+            addingMenuItem(InputMenuName, menuList);
             const $menuItem = $All('.menu-list-item');
             countMenuItem($menuItem, menuCount);
         }
     });
 
     menuSubmitButton.addEventListener('click', () => {
-        addMenuItem(InputMenuName, menuList);
+        addingMenuItem(InputMenuName, menuList);
         const $menuItem = $All('.menu-list-item');
         countMenuItem($menuItem, menuCount);
     });

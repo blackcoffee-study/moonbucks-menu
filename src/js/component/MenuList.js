@@ -1,7 +1,7 @@
 import { $, hasClass, isEmpty } from '../lib/utils.js';
 import { ERROR_MESSAGE, ALERT_MESSAGE } from '../lib/constants.js';
 
-export default function MenuList($target, { onEdit, onRemove }) {
+export default function MenuList($target, { onEdit, onRemove, onSoldOut }) {
   this.$menuList = $target;
   this.$menuList.addEventListener('click', e => handleMenuListClick(e));
 
@@ -21,6 +21,10 @@ export default function MenuList($target, { onEdit, onRemove }) {
 
     if (hasClass($target, 'menu-remove-button')) {
       handleRemoveButtonClick(menuName);
+    }
+
+    if (hasClass($target, 'menu-sold-out-button')) {
+      handleSoldOutButtonClick(menuName);
     }
   };
 
@@ -43,6 +47,10 @@ export default function MenuList($target, { onEdit, onRemove }) {
     }
   };
 
+  const handleSoldOutButtonClick = menuName => {
+    onSoldOut(menuName);
+  };
+
   const render = menuList => {
     $target.innerHTML = '';
     menuList.forEach(menu => renderMenuItem(menu, this.$menuList));
@@ -53,14 +61,32 @@ export default function MenuList($target, { onEdit, onRemove }) {
     $menuList.append($menuItem);
   };
 
-  const createMenuItemTemplate = name => {
+  const createMenuItemTemplate = ({ name, soldOut }) => {
     const $template = document.createElement('template');
     $template.innerHTML = `
         <li class="menu-list-item d-flex items-center py-2">
-          <span class="w-100 pl-2 menu-name">${name}</span>
-          <button type="button" class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button">수정</button>
-          <button type="button" class="bg-gray-50 text-gray-500 text-sm menu-remove-button">삭제</button>
-        </li>`;
+        <span class="w-100 pl-2 menu-name ${
+          soldOut ? 'sold-out' : ''
+        } ">${name}</span>
+        <button
+          type="button"
+          class="bg-gray-50 text-gray-500 text-sm mr-1 menu-sold-out-button"
+        >
+          품절
+        </button>
+        <button
+          type="button"
+          class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
+        >
+          수정
+        </button>
+        <button
+          type="button"
+          class="bg-gray-50 text-gray-500 text-sm menu-remove-button"
+        >
+          삭제
+        </button>
+      </li>`;
 
     return $template;
   };

@@ -28,6 +28,7 @@ export default function App($target) {
     this.menuList = new MenuList(this.$('#espresso-menu-list'), {
       onEdit: editMenu,
       onRemove: removeMenu,
+      onSoldOut: soldOutMenu,
     });
   };
 
@@ -47,19 +48,31 @@ export default function App($target) {
   };
 
   const addMenu = menuName => {
-    const menuItems = [...this.state.menuItems, menuName];
+    const menuItems = [...this.state.menuItems, new MenuItem(menuName)];
     this.setState({ ...this.state, menuItems });
   };
 
   const editMenu = (menuName, newName) => {
     const menuItems = this.state.menuItems.map(el =>
-      el === menuName ? newName : el,
+      el.name === menuName ? new MenuItem(newName) : el,
     );
     this.setState({ ...this.state, menuItems });
   };
 
   const removeMenu = menuName => {
-    const menuItems = this.state.menuItems.filter(el => el !== menuName);
+    const menuItems = this.state.menuItems.filter(el => el.name !== menuName);
+    this.setState({ ...this.state, menuItems });
+  };
+
+  const soldOutMenu = menuName => {
+    const menuItems = this.state.menuItems.map(el =>
+      el.name === menuName ? new MenuItem(menuName, !el.soldOut) : el,
+    );
     this.setState({ ...this.state, menuItems });
   };
 }
+
+const MenuItem = function (name, soldOut = false) {
+  this.name = name;
+  this.soldOut = soldOut;
+};

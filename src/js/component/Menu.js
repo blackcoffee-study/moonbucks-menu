@@ -1,3 +1,5 @@
+import { SELECTORS } from "../Constants.js";
+
 export default class Menu {
     onSoldOutMenu = null
     onEditMenu = null;
@@ -11,34 +13,46 @@ export default class Menu {
 
     getMenuForm(menu) {
         var liElement = document.createElement("li");
-        var spanElement = document.createElement("span");
-        var soldOutButtonElement = document.createElement("button");
-        var editButtonElement = document.createElement("button");
-        var removeButtonElement = document.createElement("button");
-
+        
         liElement.setAttribute("id", menu.code);
         liElement.setAttribute("data-cateogry", menu.category);
-        liElement.setAttribute("class", `menu-list-item d-flex items-center py-2 ${menu.isSoldOut ? "sold-out" : ""}`);
-        
-        spanElement.setAttribute("class", "w-100 pl-2 menu-name");
-        spanElement.innerHTML = menu.name;
+        liElement.setAttribute("class", "menu-list-item d-flex items-center py-2");
 
-        soldOutButtonElement.setAttribute("class", "bg-gray-50 text-gray-500 text-sm mr-1 menu-sold-out-button");
-        soldOutButtonElement.innerHTML = "품절";
-        soldOutButtonElement.addEventListener("click", () => this.onSoldOutMenu(spanElement));
+        liElement.addEventListener("click", ({target}) => {
+            console.log(target.classList);
+            if(target.classList.contains(SELECTORS.CLASS.MENU_SOLD_OUT_BUTTON.slice(1, SELECTORS.CLASS.MENU_SOLD_OUT_BUTTON.length))) {
+                this.onSoldOutMenu(liElement);
+            }
 
-        editButtonElement.setAttribute("class", "bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button");
-        editButtonElement.innerHTML = "수정";
-        editButtonElement.addEventListener("click", () => this.onEditMenu(liElement));
+            if(target.classList.contains(SELECTORS.CLASS.MENU_EDIT_BUTTON.slice(1, SELECTORS.CLASS.MENU_EDIT_BUTTON.length))) {
+                this.onEditMenu(liElement);
+            }
 
-        removeButtonElement.setAttribute("class", "bg-gray-50 text-gray-500 text-sm menu-remove-button");
-        removeButtonElement.innerHTML = "삭제";
-        removeButtonElement.addEventListener("click", () => this.onRemoveMenu(liElement));
+            if(target.classList.contains(SELECTORS.CLASS.MENU_REMOVE_BUTTON.slice(1, SELECTORS.CLASS.MENU_REMOVE_BUTTON.length))) {
+                this.onRemoveMenu(liElement);
+            }
+        });
 
-        liElement.append(spanElement);
-        liElement.append(soldOutButtonElement);
-        liElement.append(editButtonElement);
-        liElement.append(removeButtonElement);
+        liElement.innerHTML = `
+            <span class="w-100 pl-2 menu-name ${menu.isSoldOut ? 'sold-out' : ''}">${menu.name}</span>
+            <button
+                type="button"
+                class="bg-gray-50 text-gray-500 text-sm mr-1 menu-sold-out-button"
+            >
+                품절
+            </button>
+            <button
+                type="button"
+                class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
+            >
+                수정
+            </button>
+            <button
+                type="button"
+                class="bg-gray-50 text-gray-500 text-sm menu-remove-button"
+            >
+                삭제
+            </button>`;
 
         return liElement;
     }

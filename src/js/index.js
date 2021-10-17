@@ -30,15 +30,9 @@ function init() {
 
     $('#menu-list').addEventListener('click', function (event) {
         if (event.target.classList.contains('menu-edit-button')) {
-            event.target.previousElementSibling.innerText = prompt(
-                '메뉴명을 수정하세요',
-                event.target.previousElementSibling.innerText,
-            );
+            updateMenu(event);
         } else if (event.target.classList.contains('menu-remove-button')) {
-            if (confirm('정말 삭제하시겠습니까?')) {
-                event.target.parentElement.remove();
-                showMenuCount();
-            }
+            deleteMenu(event);
         }
     });
 
@@ -56,8 +50,8 @@ function init() {
 function showMenu() {
     const currentMenu = currentMenuList[currentCategoryName];
     $('#menu-list').innerHTML = '';
-    currentMenu.forEach(menuName => {
-        const menuItem = `<li class="menu-list-item d-flex items-center py-2">
+    currentMenu.forEach((menuName, idx) => {
+        const menuItem = `<li data-menu-idx=${idx} class="menu-list-item d-flex items-center py-2">
         <span class="w-100 pl-2 menu-name">${menuName}</span>
         <button 
         type="button" 
@@ -90,6 +84,26 @@ function addMenu() {
     $menuName.value = '';
     showMenu();
     showMenuCount();
+}
+
+function updateMenu(e) {
+    e.target.previousElementSibling.innerText = prompt(
+        '메뉴명을 수정하세요',
+        e.target.previousElementSibling.innerText,
+    );
+}
+
+function deleteMenu(e) {
+    if (confirm('정말 삭제하시겠습니까?')) {
+        const $menuItem = e.target.closest('.menu-list-item');
+        const idx = $menuItem.dataset.menuIdx;
+        currentMenuList[currentCategoryName].splice(idx, 1);
+        setToLocalStorage(currentMenuList);
+
+        $menuItem.remove();
+        showMenu();
+        showMenuCount();
+    }
 }
 
 function showMenuCount() {

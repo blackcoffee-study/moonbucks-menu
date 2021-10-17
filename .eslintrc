@@ -1,0 +1,33 @@
+{
+    "plugins": [
+      "prettier"
+    ],
+    
+    "extends": [
+      "eslint:recommended",
+      "plugin:prettier/recommended"
+    ],
+    
+    "parserOptions": {
+      "ecmaVersion": 7,
+      "sourceType": "script",
+      "ecmaFeatures": {
+        "jsx": false
+      }
+    },
+    
+    // linter가 파일을 분석할 때, 미리 정의된 전역변수에 무엇이 있는지 명시하는 속성
+    "env": {
+      "browser": false,
+      "node": true
+    },
+    "ignorePatterns": [
+      "node_modules/"
+    ],
+    
+    // ESLint 룰을 설정
+    "rules": {
+      // prettier에 맞게 룰을 설정
+      "prettier/prettier": "error"
+    }
+  }

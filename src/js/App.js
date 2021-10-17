@@ -3,20 +3,13 @@ import MenuHeader from './component/MenuHeader.js';
 import MenuList from './component/MenuList.js';
 import Navigator from './component/Navigator.js';
 import { $ } from './lib/utils.js';
-
-const menuItems = {
-  espresso: [],
-  frappuccino: [],
-  blended: [],
-  teavana: [],
-  desert: [],
-};
+import store from './store/store.js';
 
 export default function App($target) {
   this.$ = $($target);
   this.state = {
     categoryName: 'espresso',
-    menuItems: menuItems.espresso,
+    menuItems: [],
   };
 
   this.init = () => {
@@ -30,19 +23,24 @@ export default function App($target) {
       onRemove: removeMenu,
       onSoldOut: soldOutMenu,
     });
+
+    this.setState({
+      ...this.state,
+      menuItems: store.getLocalStorage()[this.state.categoryName],
+    });
   };
 
   this.setState = state => {
     this.state = state;
     this.menuHeader.setState(state);
     this.menuList.setState(state);
-    menuItems[state.categoryName] = state.menuItems;
+    store.setLocalStorage(state.categoryName, state.menuItems);
   };
 
   const setCategoryName = name => {
     const state = {
       categoryName: name,
-      menuItems: menuItems[name],
+      menuItems: store.menuItems[name],
     };
     this.setState(state);
   };

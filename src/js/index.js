@@ -1,4 +1,4 @@
-const $btnMenu = document.querySelector('#app nav');
+const $btnMoonbucksMenu = document.querySelector('#app nav');
 const $menuName = document.querySelector('main h2');
 const $menuCount = document.querySelector('.menu-count');
 const $menuForm = document.querySelector('#menu-form');
@@ -99,6 +99,7 @@ const renderMenu = function (menu) {
     .join('');
   $menuList.innerHTML = templete;
   menu.forEach(item => handleButtons(item.id));
+  menuCounter();
 };
 
 const handleButtons = function (id) {
@@ -140,7 +141,7 @@ $btnSubmitMenu.addEventListener('click', submitMenu);
 const getMenu = JSON.parse(localStorage.getItem('menu'));
 if (getMenu !== null) menuList = getMenu;
 
-$btnMenu.addEventListener('click', event => {
+$btnMoonbucksMenu.addEventListener('click', event => {
   if (event.target.localName === 'nav') return;
 
   menuCategoryName = event.target.dataset.categoryName;
@@ -148,7 +149,6 @@ $btnMenu.addEventListener('click', event => {
   $menuName.innerText = `${menuName} 메뉴 관리`;
 
   renderMenu(menuList[menuCategoryName]);
-  menuCounter();
 });
 
 renderMenu(menuList[menuCategoryName]);

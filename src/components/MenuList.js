@@ -27,14 +27,17 @@ function MenuList({ $target, state, onEditMenu, onRemoveMenu }) {
   };
 
   this.render = () => {
-    if (this.state.menu.length < 1) {
+    const currentMenu = this.state.menu[this.state.currentCategory];
+
+    if (currentMenu.length < 1) {
       this.$target.innerHTML = `
       <li class="menu-list-item d-flex items-center py-2">
         <span class="w-100 pl-2 menu-name">메뉴를 입력해 주세요</span> 
       </li>`;
       return;
     }
-    const menuListHtml = this.state.menu
+
+    const menuListHtml = currentMenu
       .map(
         (menuItem) => `
           <li class="menu-list-item d-flex items-center py-2" id=${menuItem.id}>

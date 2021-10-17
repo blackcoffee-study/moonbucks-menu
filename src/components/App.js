@@ -2,6 +2,8 @@ import MenuInput from './MenuInput.js';
 import MenuAddButton from './MenuAddButton.js';
 import MenuCount from './MenuCount.js';
 import MenuList from './MenuList.js';
+import MenuNavigation from './MenuNavigation.js';
+import MenuCategoryTitle from './MenuCategoryTitle.js';
 import { $, $all } from '../lib/utils.js';
 
 function App($target) {
@@ -23,6 +25,18 @@ function App($target) {
     this.state = nextState;
     this.menuList.setState(this.state);
     this.menuCount.setState(this.state);
+    this.menuNavigation.setState(this.state);
+    this.menuCategoryTitle.setState(this.state);
+  };
+
+  this.onSelectCategory = (nextCategory) => {
+    const nextState = {
+      ...this.state,
+      currentCategory: nextCategory,
+    };
+
+    this.setState(nextState);
+    console.log(this.state);
   };
 
   this.onAddMenu = (menu) => {
@@ -79,6 +93,16 @@ function App($target) {
       this.setState(nextState);
     }
   };
+  this.menuCategoryTitle = new MenuCategoryTitle({
+    $target: this.$('.heading h2'),
+    state: this.state,
+  });
+
+  this.menuNavigation = new MenuNavigation({
+    $target: this.$('nav'),
+    state: this.state,
+    onSelectCategory: this.onSelectCategory,
+  });
 
   this.menuInput = new MenuInput({
     $target: this.$('.input-field'),
@@ -97,7 +121,7 @@ function App($target) {
   });
 
   this.menuList = new MenuList({
-    $target: this.$('#espresso-menu-list'),
+    $target: this.$('#menu-list'),
     state: this.state,
     onEditMenu: this.onEditMenu,
     onRemoveMenu: this.onRemoveMenu,

@@ -5,6 +5,8 @@ import MenuList from './MenuList.js';
 import MenuNavigation from './MenuNavigation.js';
 import MenuCategoryTitle from './MenuCategoryTitle.js';
 import { $, $all } from '../lib/utils.js';
+import { LOCALSTORAGE_KEY } from '../lib/constant.js';
+import { setLocalStorage, getLocalStorage } from '../lib/localstorage.js';
 
 function App($target) {
   this.$ = $($target);
@@ -13,16 +15,21 @@ function App($target) {
 
   this.init = () => {
     const categories = this.$all('header button');
-    const newState = [];
+    const initialMenu = [];
     categories.forEach(
       (category) =>
-        (newState[category.attributes['data-category-name'].value] = [])
+        (initialMenu[category.attributes['data-category-name'].value] = [])
     );
-    this.setState({ menu: newState, currentCategory: 'espresso' });
+    const nextState = getLocalStorage(LOCALSTORAGE_KEY)
+      ? getLocalStorage(LOCALSTORAGE_KEY)
+      : { menu: initialMenu, currentCategory: 'espresso' };
+
+    this.setState(nextState);
   };
 
   this.setState = (nextState) => {
     this.state = nextState;
+    setLocalStorage(LOCALSTORAGE_KEY, this.state);
     this.menuList.setState(this.state);
     this.menuCount.setState(this.state);
     this.menuNavigation.setState(this.state);

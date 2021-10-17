@@ -5,3 +5,5 @@ export const CATEGORY = {
   teavana: '티바나',
   desert: '디저트',
 };
+
+export const LOCALSTORAGE_KEY = 'moonbucks';

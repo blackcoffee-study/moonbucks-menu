@@ -1,4 +1,5 @@
 import { $, isEmpty } from '../lib/utils.js';
+import { ERROR_MESSAGE } from '../lib/constants.js';
 
 export default function MenuForm($target, { onSubmit }) {
   const $menuNameInput = $($target)('input');
@@ -8,7 +9,7 @@ export default function MenuForm($target, { onSubmit }) {
     e.preventDefault();
 
     if (isEmpty($menuNameInput.value)) {
-      alert('값을 입력해주세요');
+      alert(ERROR_MESSAGE.EMPTY);
       return;
     }
 

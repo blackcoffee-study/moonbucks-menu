@@ -31,8 +31,8 @@ export default function MenuList($target, { onEdit, onRemove, onSoldOut }) {
   const handleEditButtonClick = menuName => {
     const newName = prompt(ALERT_MESSAGE.EDIT, menuName);
 
-    // NOTE: 결과로 {결과, 메세지 내보내느거 괜찮은듯. throw error하거나}
     if (newName === null) return; //취소한 경우
+
     if (isEmpty(newName)) {
       alert(ERROR_MESSAGE.EMPTY);
       return;

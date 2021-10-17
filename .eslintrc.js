@@ -10,5 +10,6 @@ module.exports = {
   },
   rules: {
     'no-use-before-define': ['off', 'nofunc'],
+    'import/extensions': 'ignorePackages',
   },
 };

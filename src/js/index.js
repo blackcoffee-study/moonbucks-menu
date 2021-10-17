@@ -1,12 +1,6 @@
-import store, {
-	addMenu,
-	changeTab,
-	editMenu,
-	removeMenu,
-	toggleSoldOut,
-} from '../js/store/index.js';
+import store, { stateFunctions, actions } from '../js/store/index.js';
 import { EVENTS, SELECTORS, MESSAGES } from './constants.js';
-import { $, addEvent, getUUID } from './utils/index.js';
+import { $, addEvent } from './utils/index.js';
 
 const $menuTitle = $('.menu-title');
 const $inputLabel = $('.input-label');
@@ -18,11 +12,9 @@ const $categoryTab = $('.nav-category-tab');
 
 addEvent($categoryTab, EVENTS.click, (e) => {
 	const { target } = e;
-	console.log(target);
 	if (target.closest('[data-category-name]')) {
 		const clickedTab = target.dataset['categoryName'];
-		// logAndDispatch(store, changeTab(clickedTab));
-		store.dispatch(changeTab(clickedTab));
+		actions.changeTabAct(clickedTab);
 	}
 });
 
@@ -79,7 +71,7 @@ const onDelete = (e) => {
 		const answer = confirm(MESSAGES.CONFIRM_REMOVE);
 		if (answer) {
 			const id = target.dataset.id;
-			store.dispatch(removeMenu(id));
+			actions.deleteMenuAct(id);
 		}
 	}
 };
@@ -87,26 +79,18 @@ const onDelete = (e) => {
 const onToggleSoldOut = (e) => {
 	const { target } = e;
 	if (target.closest('.menu-sold-out-button')) {
-		console.log(target);
 		const id = target.dataset.id;
-		const { currentTab } = store.getState();
-		const { menus } = store.getState();
-		const currentMenuList = menus[currentTab];
-		const menu = currentMenuList.find((es) => es.id === id);
-		store.dispatch(toggleSoldOut({ ...menu, isSoldOut: !menu.isSoldOut }));
+		actions.toggleSoldOutByCurrentMenuIdAct(id);
 	}
 };
 const onEdit = (e) => {
 	const { target } = e;
 	if (target.closest(SELECTORS.CLASS.MENU_EDIT_BUTTON)) {
 		const id = target.dataset.id;
-		const { currentTab } = store.getState();
-		const { menus } = store.getState();
-		const currentMenuList = menus[currentTab];
-		const menu = currentMenuList.find((es) => es.id === id);
-		const newItem = prompt(MESSAGES.PROMPT_EDIT_MENU, menu.name);
-		if (newItem) {
-			store.dispatch(editMenu({ ...menu, name: newItem }));
+		const menu = stateFunctions.findCurrentMenuById(id);
+		const newName = prompt(MESSAGES.PROMPT_EDIT_MENU, menu.name);
+		if (newName) {
+			actions.editMenuAct(id, newName);
 		}
 	}
 };
@@ -114,9 +98,7 @@ const onEdit = (e) => {
 const onSubmit = (e) => {
 	e.preventDefault();
 	if ($input.value) {
-		store.dispatch(
-			addMenu({ id: getUUID(), name: $input.value, isSoldOut: false })
-		);
+		actions.addMenuAct($input.value);
 		$input.value = '';
 	}
 };
@@ -127,9 +109,8 @@ addEvent($ul, EVENTS.click, onEdit);
 addEvent($form, EVENTS.submit, onSubmit);
 
 const render = () => {
-	const { currentTab } = store.getState();
-	const { menus } = store.getState();
-	const currentMenuList = menus[currentTab];
+	const currentTab = stateFunctions.getCurrentTab();
+	const currentMenuList = stateFunctions.getCurrentMenuList();
 	$ul.innerHTML = currentMenuList.map(menuItemTemplate).join('');
 	$input.setAttribute('placeholder', `${currentTab} 메뉴 이름`);
 	$input.focus();

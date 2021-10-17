@@ -1,4 +1,7 @@
+import { addLocalStorage } from '../core/middlewares/addLocalStorage';
+import { logger } from '../core/middlewares/logger';
 import { applyMiddleware, createStore } from '../core/myRedux';
+import { getUUID } from '../utils';
 
 const tabType = Object.freeze({
 	에스프레소: '에스프레소',
@@ -7,13 +10,6 @@ const tabType = Object.freeze({
 	티바나: '티바나',
 	디저트: '디저트',
 });
-
-const initState = {
-	currentTab: tabType.에스프레소,
-	menus: {
-		...Object.keys(tabType).reduce((acc, key) => ({ ...acc, [key]: [] }), {}),
-	},
-};
 
 const menuActionType = Object.freeze({
 	ADD: 'ADD',
@@ -24,41 +20,54 @@ const menuActionType = Object.freeze({
 	CAHNGE_TAB: 'CAHNGE_TAB',
 });
 
-export const toggleSoldOut = (menu) => {
+const defaultState = {
+	currentTab: tabType.에스프레소,
+	menus: {
+		...Object.keys(tabType).reduce((acc, key) => ({ ...acc, [key]: [] }), {}),
+	},
+};
+
+const getInitState = () => {
+	return JSON.parse(localStorage.getItem('storeState')) || defaultState;
+};
+
+// actions
+const toggleSoldOut = (menu) => {
 	return {
 		type: menuActionType.SOLD_OUT,
 		payload: { targetId: menu.id, menu },
 	};
 };
 
-export const changeTab = (tab) => {
+const changeTab = (tab) => {
 	return {
 		type: menuActionType.CAHNGE_TAB,
 		payload: { tab },
 	};
 };
 
-export const addMenu = (menu) => {
+const addMenu = (menu) => {
 	return {
 		type: menuActionType.ADD,
 		payload: { menu },
 	};
 };
 
-export const editMenu = (menu) => {
+const editMenu = (menu) => {
 	return {
 		type: menuActionType.NAME_EDIT,
 		payload: { targetId: menu.id, menu },
 	};
 };
 
-export const removeMenu = (id) => {
+const removeMenu = (id) => {
 	return {
 		type: menuActionType.REMOVE,
 		payload: { id },
 	};
 };
-const menuReducer = (state, action) => {
+
+const reducer = (state, action) => {
 	switch (action.type) {
 		case menuActionType.CAHNGE_TAB: {
 			return {
@@ -90,10 +99,6 @@ const menuReducer = (state, action) => {
 				menus: { ...state.menus, [state.currentTab]: newMenu },
 			};
 		}
-		// case 문에서 EDIT에서와 REMOVE에서 중괄호를 감싸지 않으면
-		// Identifier 'newmenu' has already been declared. (44:9) 이런 에러가 나오던데
-		// switch문에서  case간은 원래 동일한 스코프인건가요? 저는 서로 독립적인 스코프라 생각하고 있었는데...
-		// 각각의 케이스마다 괄호스코프를 부여해서 해당 에러는 없애긴 했는데 제가 지금까지 잘못 이해하고 있었나요,..ㅎㅎ?
 		case menuActionType.REMOVE: {
 			const {
 				payload: { id },
@@ -111,12 +116,50 @@ const menuReducer = (state, action) => {
 	}
 };
 
-const store = createStore(menuReducer, initState);
+const store = applyMiddleware(createStore(reducer, getInitState()), [
+	logger,
+	addLocalStorage,
+]);
 
-const logger = (store) => (next) => (action) => {
-	console.log('dipatching: ', action);
-	next(action);
-	console.log('next State: ', store.getState());
+// select states
+const getMenus = () => store.getState().menus;
+
+const getCurrentTab = () => {
+	return store.getState().currentTab;
 };
 
-export default applyMiddleware(store, [logger]);
+const getCurrentMenuList = () => getMenus()[getCurrentTab()];
+const findCurrentMenuById = (id) =>
+	getCurrentMenuList().find((menu) => menu.id === id);
+
+// select actions
+const deleteMenuAct = (id) => store.dispatch(removeMenu(id));
+const changeTabAct = (selectedTab) => store.dispatch(changeTab(selectedTab));
+const toggleSoldOutByCurrentMenuIdAct = (id) => {
+	const menu = findCurrentMenuById(id);
+	store.dispatch(toggleSoldOut({ ...menu, isSoldOut: !menu.isSoldOut }));
+};
+const addMenuAct = (inputedName) => {
+	store.dispatch(
+		addMenu({ id: getUUID(), name: inputedName, isSoldOut: false })
+	);
+};
+const editMenuAct = (id, newName) => {
+	const menu = findCurrentMenuById(id);
+
+	store.dispatch(editMenu({ ...menu, name: newName }));
+};
+
+export const stateFunctions = {
+	getCurrentMenuList,
+	getCurrentTab,
+	findCurrentMenuById,
+};
+export const actions = {
+	deleteMenuAct,
+	changeTabAct,
+	toggleSoldOutByCurrentMenuIdAct,
+	addMenuAct,
+	editMenuAct,
+};
+export default store;

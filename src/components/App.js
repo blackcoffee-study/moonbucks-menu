@@ -41,17 +41,15 @@ function App($target) {
       ...this.state,
       currentCategory: nextCategory,
     };
-
     this.setState(nextState);
-    console.log(this.state);
   };
 
   this.onAddMenu = (menu) => {
     const newMenuItem = {
       id: String(new Date()).replaceAll(' ', ''),
       name: menu,
+      isSoldout: false,
     };
-
     const nextState = {
       ...this.state,
       menu: {
@@ -86,6 +84,26 @@ function App($target) {
     this.setState(nextState);
   };
 
+  this.onSoldoutMenu = (menuId) => {
+    const nextState = {
+      ...this.state,
+      menu: {
+        ...this.state.menu,
+        [this.state.currentCategory]: this.state.menu[
+          this.state.currentCategory
+        ].map((menu) =>
+          menu.id === menuId
+            ? {
+                ...menu,
+                isSoldout: !menu.isSoldout,
+              }
+            : menu
+        ),
+      },
+    };
+    this.setState(nextState);
+  };
+
   this.onRemoveMenu = (menuId) => {
     if (confirm('선택한 메뉴를 삭제하시겠습니까?')) {
       const nextState = {
@@ -100,6 +118,7 @@ function App($target) {
       this.setState(nextState);
     }
   };
+
   this.menuCategoryTitle = new MenuCategoryTitle({
     $target: this.$('.heading h2'),
     state: this.state,
@@ -132,6 +151,7 @@ function App($target) {
     state: this.state,
     onEditMenu: this.onEditMenu,
     onRemoveMenu: this.onRemoveMenu,
+    onSoldoutMenu: this.onSoldoutMenu,
   });
 }
 

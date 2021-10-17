@@ -1,37 +1,59 @@
 const $ = selector => document.querySelector(selector);
 
-$('#espresso-menu-submit-button').addEventListener('click', addMenu);
+let currentCategoryName = '';
+const currentMenuList = {
+    espressoMenu: [],
+    frappuccinoMenu: [],
+    blendedMenu: [],
+    teavanaMenu: [],
+    desertMenu: [],
+};
+init();
 
-$('#espresso-menu-name').addEventListener('keypress', function (event) {
-    if (event.key != 'Enter') {
-        return;
+const getFromLocalStorage = item => JSON.parse(localStorage.getItem(item));
+
+function init() {
+    if (localStorage.getItem('menu')) {
+        currentMenuList = getFromLocalStorage('menu');
     }
-    event.preventDefault();
-    addMenu();
-});
 
-$('#espresso-menu-list').addEventListener('click', function (event) {
-    if (
-        event.target.nodeName == 'BUTTON' &&
-        event.target.classList.contains('menu-edit-button')
-    ) {
-        event.target.previousElementSibling.innerText = prompt(
-            '메뉴명을 수정하세요',
-            event.target.previousElementSibling.innerText,
-        );
-    } else if (
-        event.target.nodeName == 'BUTTON' &&
-        event.target.classList.contains('menu-remove-button')
-    ) {
-        if (confirm('정말 삭제하시겠습니까?')) {
-            event.target.parentElement.remove();
-            showMenuCount();
+    $('#menu-submit-button').addEventListener('click', addMenu);
+
+    $('#menu-name').addEventListener('keypress', function (event) {
+        if (event.key != 'Enter') {
+            return;
         }
-    }
-});
+        event.preventDefault();
+        addMenu();
+    });
+
+    $('#menu-list').addEventListener('click', function (event) {
+        if (event.target.classList.contains('menu-edit-button')) {
+            event.target.previousElementSibling.innerText = prompt(
+                '메뉴명을 수정하세요',
+                event.target.previousElementSibling.innerText,
+            );
+        } else if (event.target.classList.contains('menu-remove-button')) {
+            if (confirm('정말 삭제하시겠습니까?')) {
+                event.target.parentElement.remove();
+                showMenuCount();
+            }
+        }
+    });
+
+    $('nav').addEventListener('click', e => {
+        if (e.target.classList.contains('cafe-category-name')) {
+            $('#category-title').innerText = `${e.target.innerText} 메뉴 관리`;
+            currentCategoryName = e.target.dataset.categoryName;
+            showMenu();
+        }
+    });
+}
+
+function showMenu() {}
 
 function addMenu() {
-    const $menuName = $('#espresso-menu-name');
+    const $menuName = $('#menu-name');
     if ($menuName.value.trim() == '') {
         alert('값을 입력해주세요.');
         $menuName.value = '';
@@ -54,12 +76,12 @@ function addMenu() {
         </button>
         </li>`;
 
-    $('#espresso-menu-list').innerHTML += menuItem;
+    $('#menu-list').innerHTML += menuItem;
     $menuName.value = '';
     showMenuCount();
 }
 
 function showMenuCount() {
-    const menuCount = $('#espresso-menu-list').childElementCount;
+    const menuCount = $('#menu-list').childElementCount;
     $('.menu-count').innerText = `총 ${menuCount}개`;
 }

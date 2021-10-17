@@ -1,16 +1,17 @@
 const $ = selector => document.querySelector(selector);
 
-let currentCategoryName = '';
-const currentMenuList = {
-    espressoMenu: [],
-    frappuccinoMenu: [],
-    blendedMenu: [],
-    teavanaMenu: [],
-    desertMenu: [],
+let currentCategoryName = 'espresso';
+let currentMenuList = {
+    espresso: [],
+    frappuccino: [],
+    blended: [],
+    teavana: [],
+    desert: [],
 };
-init();
 
 const getFromLocalStorage = item => JSON.parse(localStorage.getItem(item));
+const setToLocalStorage = menu =>
+    localStorage.setItem('menu', JSON.stringify(menu));
 
 function init() {
     if (localStorage.getItem('menu')) {
@@ -48,20 +49,16 @@ function init() {
             showMenu();
         }
     });
+
+    showMenu();
 }
 
-function showMenu() {}
-
-function addMenu() {
-    const $menuName = $('#menu-name');
-    if ($menuName.value.trim() == '') {
-        alert('값을 입력해주세요.');
-        $menuName.value = '';
-        return;
-    }
-
-    const menuItem = `<li class="menu-list-item d-flex items-center py-2">
-        <span class="w-100 pl-2 menu-name">${$menuName.value}</span>
+function showMenu() {
+    const currentMenu = currentMenuList[currentCategoryName];
+    $('#menu-list').innerHTML = '';
+    currentMenu.forEach(menuName => {
+        const menuItem = `<li class="menu-list-item d-flex items-center py-2">
+        <span class="w-100 pl-2 menu-name">${menuName}</span>
         <button 
         type="button" 
         class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
@@ -76,8 +73,22 @@ function addMenu() {
         </button>
         </li>`;
 
-    $('#menu-list').innerHTML += menuItem;
+        $('#menu-list').innerHTML += menuItem;
+    });
+}
+
+function addMenu() {
+    const $menuName = $('#menu-name');
+    if ($menuName.value.trim() == '') {
+        alert('값을 입력해주세요.');
+        $menuName.value = '';
+        return;
+    }
+
+    currentMenuList[currentCategoryName].push($menuName.value);
+    setToLocalStorage(currentMenuList);
     $menuName.value = '';
+    showMenu();
     showMenuCount();
 }
 
@@ -85,3 +96,5 @@ function showMenuCount() {
     const menuCount = $('#menu-list').childElementCount;
     $('.menu-count').innerText = `총 ${menuCount}개`;
 }
+
+init();

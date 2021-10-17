@@ -1,4 +1,4 @@
-import { isEmptyInput } from '../utils/checkCondition.js';
+import { isEmptyInput } from '../lib/checkCondition.js';
 
 function MenuAddButton({ $target, $menuInput, onAddMenu }) {
   this.$target = $target;

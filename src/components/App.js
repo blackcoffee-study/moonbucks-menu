@@ -2,9 +2,10 @@ import MenuInput from './MenuInput.js';
 import MenuAddButton from './MenuAddButton.js';
 import MenuCount from './MenuCount.js';
 import MenuList from './MenuList.js';
+import { $ } from '../lib/utils.js';
 
 function App($target) {
-  this.$target = $target;
+  this.$ = $($target);
   this.state = {
     menu: [],
   };
@@ -49,22 +50,22 @@ function App($target) {
   };
 
   this.menuInput = new MenuInput({
-    $target: this.$target.querySelector('.input-field'),
+    $target: this.$('.input-field'),
     onAddMenu: this.onAddMenu,
   });
   this.menuAddButton = new MenuAddButton({
-    $target: this.$target.querySelector('.input-submit'),
-    $menuInput: this.$target.querySelector('.input-field'),
+    $target: this.$('.input-submit'),
+    $menuInput: this.$('.input-field'),
     onAddMenu: this.onAddMenu,
   });
 
   this.menuCount = new MenuCount({
-    $target: this.$target.querySelector('.menu-count'),
+    $target: this.$('.menu-count'),
     state: this.state,
   });
 
   this.menuList = new MenuList({
-    $target: this.$target.querySelector('#espresso-menu-list'),
+    $target: this.$('#espresso-menu-list'),
     state: this.state,
     onEditMenu: this.onEditMenu,
     onRemoveMenu: this.onRemoveMenu,

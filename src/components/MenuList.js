@@ -1,4 +1,4 @@
-import { isNodeNameButton, isIncludesClass } from '../utils/checkCondition.js';
+import { isNodeNameButton, isIncludesClass } from '../lib/checkCondition.js';
 
 function MenuList({ $target, state, onEditMenu, onRemoveMenu }) {
   this.$target = $target;

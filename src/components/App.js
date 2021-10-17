@@ -52,7 +52,7 @@ function App($target) {
     $target: this.$target.querySelector('.input-field'),
     onAddMenu: this.onAddMenu,
   });
-  this.MenuAddButton = new MenuAddButton({
+  this.menuAddButton = new MenuAddButton({
     $target: this.$target.querySelector('.input-submit'),
     $menuInput: this.$target.querySelector('.input-field'),
     onAddMenu: this.onAddMenu,

@@ -87,10 +87,20 @@ function addMenu() {
 }
 
 function updateMenu(e) {
-    e.target.previousElementSibling.innerText = prompt(
-        '메뉴명을 수정하세요',
-        e.target.previousElementSibling.innerText,
-    );
+    const $menuName = e.target.previousElementSibling;
+    const newMenuName = prompt('메뉴명을 수정하세요', $menuName.innerText);
+    if (newMenuName == null) {
+        return;
+    } else if (newMenuName.trim() == '') {
+        alert('값을 입력해주세요.');
+        return;
+    }
+
+    const $menuItem = e.target.closest('.menu-list-item');
+    const idx = $menuItem.dataset.menuIdx;
+    currentMenuList[currentCategoryName][idx] = newMenuName;
+    setToLocalStorage(currentMenuList);
+    showMenu();
 }
 
 function deleteMenu(e) {

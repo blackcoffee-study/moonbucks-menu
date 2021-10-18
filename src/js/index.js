@@ -7,7 +7,9 @@ function preventFormDefault(menuForm) {
     })
 }
 
-function countMenuItem($menuItem, menuCount) {
+function countMenuItem() {
+    const menuCount = $('.menu-count')
+    const $menuItem = $All('.menu-list-item');
     menuCount.innerText = `총 ${$menuItem.length}개`
 }
 
@@ -44,22 +46,19 @@ function adminAddingMenuItem(category, menuList) {
     const menuForm = $(`#${category}-menu-form`);
     const InputMenuName = $(`#${category}-menu-name`);
     const menuSubmitButton = $(`#${category}-menu-submit-button`);
-    const menuCount = $('.menu-count')
 
     preventFormDefault(menuForm);
 
     InputMenuName.addEventListener('keydown', (e) => {
         if (e.key === "Enter") {
             addingMenuItem(InputMenuName, menuList);
-            const $menuItem = $All('.menu-list-item');
-            countMenuItem($menuItem, menuCount);
+            countMenuItem();
         }
     });
 
     menuSubmitButton.addEventListener('click', () => {
         addingMenuItem(InputMenuName, menuList);
-        const $menuItem = $All('.menu-list-item');
-        countMenuItem($menuItem, menuCount);
+        countMenuItem();
     });
 }
 
@@ -81,14 +80,15 @@ function editMenuItem(menuEditBtn) {
 function removeMenuItem(menuRemoveBtn) {
     const menuItem = menuRemoveBtn.parentElement;
     if (confirm('삭제하시겠습니까?')) menuItem.remove();
+    countMenuItem()
 }
 
 function app() {
     const category = $All('.cafe-category-name')[0].getAttribute('data-category-name');
     const menuList = $(`#${category}-menu-list`);
-
-    adminAddingMenuItem(category, menuList);
     
+    adminAddingMenuItem(category, menuList);
+
     menuList.addEventListener('click', (e) => {
         if (e.target.classList.contains('menu-edit-button')){
             const menuEditBtn = e.target;
@@ -98,6 +98,9 @@ function app() {
             removeMenuItem(menuRemoveBtn);
         }
     });
+
+
+
 }
 
 app();

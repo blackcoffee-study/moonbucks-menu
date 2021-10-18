@@ -1,5 +1,4 @@
 import App from './App.js';
+import { $ } from './utils.js';
 
-const app = new App(document.querySelector('#app'));
-
-app.init();
+const app = new App($('#app'));

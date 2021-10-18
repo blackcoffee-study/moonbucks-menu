@@ -109,6 +109,7 @@ export class XApp {
         this.data = {};
         this.methods = {};
         this.elements = {};
+        this.hooks = {};
     }
 
     setHandler(el) {
@@ -146,5 +147,18 @@ export class XApp {
 
     setData(data) {
         this.data = { ...data };
+    }
+
+    setHooks(hooks) {
+        for (const key in hooks) {
+            this.hooks[key] = hooks[key];
+        }
+    }
+
+    async start() {
+        this.render();
+        if (this.hooks.onReady) {
+            await this.hooks.onReady.call(this);
+        }
     }
 }

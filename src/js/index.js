@@ -1,6 +1,8 @@
 import App from './pages/app.js';
+
+const qs = (selector) => document.querySelector(selector);
 new App(
-    document.querySelector('main'), 
-    document.querySelector('.menu-count'),
-    document.getElementById('espresso-menu-list')
+    qs('main'),
+    qs('.menu-count'),
+    qs('#espresso-menu-list')
     );

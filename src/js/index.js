@@ -1,11 +1,13 @@
-const $form = document.querySelector('#espresso-menu-form');
-const $input = document.querySelector('#espresso-menu-name');
-const $submitButton = document.querySelector('#espresso-menu-submit-button');
-const $list = document.querySelector('#espresso-menu-list');
-const $menuCount = document.querySelector('.menu-count');
+const $ = (selector) => document.querySelector(selector);
+
+const $menuForm = $('#espresso-menu-form');
+const $menuName = $('#espresso-menu-name');
+const $menuSubmitButton = $('#espresso-menu-submit-button');
+const $menuList = $('#espresso-menu-list');
+const $menuCount = $('.menu-count');
 let menuCounter = 0
 
-const addMenu = (meunValue) => {
+const addMenuItem = (meunValue) => {
   const newMenu = document.createElement('li');
   newMenu.className = 'menu-list-item d-flex items-center py-2';
 
@@ -19,25 +21,25 @@ const addMenu = (meunValue) => {
   </button>
   `;
 
-  $list.appendChild(newMenu);
+  $menuList.appendChild(newMenu);
 }
 
-const submitMenu = (event) => {
+const submitMenuItem = (event) => {
   event.preventDefault();
-  const inputValue = $input.value;
+  const inputValue = $menuName.value;
 
   if (inputValue === '') {
     alert('값을 입력해주세요.');
     return;
   }
 
-  addMenu(inputValue);
-  $input.value = '';
+  addMenuItem(inputValue);
+  $menuName.value = '';
   menuCounter += 1;
   updateMenuCount()
 };
 
-const editMenu = (target) => {
+const editMenuItem = (target) => {
   for (const child of target.childNodes) {
     if (child.classList && child.classList.contains('menu-name')) {
       const string = window.prompt('메뉴명을 수정하세요', child.innerText);
@@ -55,7 +57,7 @@ const removeMenu = (target) => {
     return;
   }
 
-  $list.removeChild(target);
+  $menuList.removeChild(target);
   menuCounter -= 1;
   updateMenuCount();
 }
@@ -72,14 +74,14 @@ const listClickListener = (event) => {
   const targetListItem = target.closest('li');
 
   if (target.classList.contains('menu-edit-button')) {
-    editMenu(targetListItem)
+    editMenuItem(targetListItem)
   } else if (target.classList.contains('menu-remove-button')) {
     removeMenu(targetListItem)
   }
 
 }
 
-$submitButton.addEventListener('click', submitMenu);
-$form.addEventListener('submit', submitMenu);
+$menuSubmitButton.addEventListener('click', submitMenuItem);
+$menuForm.addEventListener('submit', submitMenuItem);
 
-$list.addEventListener('click', listClickListener)
+$menuList.addEventListener('click', listClickListener)

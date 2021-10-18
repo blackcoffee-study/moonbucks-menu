@@ -77,6 +77,9 @@ export default class Management extends Component {
         let targetItemIndex = $span.getAttribute('key');
 
         menuList.deletedItem(+targetItemIndex);
+      } else if (target.matches('.menu-sold-out-button')) {
+        let $span = target.previousSibling.previousSibling;
+        $span.classList.toggle('sold-out');
       }
     });
   }

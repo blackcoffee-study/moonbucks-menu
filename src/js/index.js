@@ -23,7 +23,7 @@ function addItem() {
         <button type="button" id="espresso-menu-edit-button" class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button">
             수정
         </button>
-        <button type="button" class="bg-gray-50 text-gray-500 text-sm menu-remove-button">
+        <button type="button" id="espresso-menu-remove-button" class="bg-gray-50 text-gray-500 text-sm menu-remove-button">
             삭제
         </button>
     `
@@ -31,8 +31,12 @@ function addItem() {
     $espressoNameInput.value = "";
 
     const $espressoEdit = $('#espresso-menu-edit-button');
+    const $espressoRemove = $('#espresso-menu-remove-button');
     $espressoEdit.addEventListener('click', function() {
         editItem($menuItem)
+    });
+    $espressoRemove.addEventListener('click', function() {
+        removeItem($menuItem)
     });
 }
 
@@ -48,6 +52,12 @@ function editItem(item) {
         }
     }
     // 구현하기 너무 난해해서 [11기 Liz님]의 코드를 인용하였습니다 ㅜㅜㅜㅜ
+}
+
+function removeItem(item) {
+    if (confirm("정말 삭제하시겠습니까?") == true) {
+        $espressoList.removeChild(item)
+    }
 }
 
 function init() {

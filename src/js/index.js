@@ -3,22 +3,21 @@
 const $ = (selector) => document.querySelector(selector);
 
 function MenuApp() {
+    this.menuItems;
+    this.currentCategory = 'espresso';
     this.LOCALSTORAGE_KEY_MENU = 'menu';
 
     // state management functions
     this.setState = (updatedMenuItems) => {
         this.menuItems = updatedMenuItems;
         this.saveToLocalStorage();
-        this.MenuList.setState(this.currentCategory, this.menuItems);
+        this.MenuList.setState(this.menuItems, this.currentCategory);
+        this.Category.setState(this.currentCategory);
     };
 
-    this.changeCurrentCategory = (newCategory) => {
-        this.currentCategory = newCategory;
+    this.changeCurrentCategory = (updatedCategory) => {
+        this.currentCategory = updatedCategory;
         this.setState(this.menuItems);
-    };
-
-    this.getCategoryList = (categoryList) => {
-        this.categoryList = categoryList;
     };
 
     // local storage functions
@@ -34,14 +33,19 @@ function MenuApp() {
     };
 
     // event handlers
+    this.handleCategoryClick = (clickedCategory) => {
+        const clickedCategoryName = clickedCategory.dataset.categoryName;
+        this.changeCurrentCategory(clickedCategoryName);
+    };
+
     this.handleMenuItemAdd = (name) => {
-        const key = this.currentCategory;
+        const menuItemsKey = this.currentCategory;
         const newMenuItem = {
             name,
             soldOut: false,
         };
         const menuItems = { ...this.menuItems };
-        menuItems[key].push(newMenuItem);
+        menuItems[menuItemsKey].push(newMenuItem);
         this.setState(menuItems);
     };
 
@@ -50,10 +54,10 @@ function MenuApp() {
         if (newName === null || newName === '') {
             return;
         }
-        const key = this.currentCategory;
+        const menuItemsKey = this.currentCategory;
         const index = menuItem.dataset.menuId;
         const menuItems = { ...this.menuItems };
-        menuItems[key][index].name = newName;
+        menuItems[menuItemsKey][index].name = newName;
         this.setState(menuItems);
     };
 
@@ -61,34 +65,28 @@ function MenuApp() {
         if (!window.confirm('정말 삭제하시겠습니까?')) {
             return;
         }
-        const key = this.currentCategory;
+        const menuItemsKey = this.currentCategory;
         const index = menuItem.dataset.menuId;
         const menuItems = { ...this.menuItems };
-        menuItems[key].splice(index, 1);
+        menuItems[menuItemsKey].splice(index, 1);
         this.setState(menuItems);
     };
 
     this.handleMenuItemSoldOut = (menuItem) => {
-        const key = this.currentCategory;
+        const menuItemsKey = this.currentCategory;
         const index = menuItem.dataset.menuId;
         const menuItems = { ...this.menuItems };
         if (menuItem.children[0].classList.toggle('sold-out')) {
-            menuItems[key][index].soldOut = true;
+            menuItems[menuItemsKey][index].soldOut = true;
         } else {
-            menuItems[key][index].soldOut = false;
+            menuItems[menuItemsKey][index].soldOut = false;
         }
         this.setState(menuItems);
     };
 
-    this.handleCategoryClick = (clickedCategory) => {
-        const clickedCategoryName = clickedCategory.dataset.categoryName;
-        this.changeCurrentCategory(clickedCategoryName);
-    };
-
-    // init
+    // init <-> class constructor
     (function () {
-        this.Categories = new Categories({
-            getCategoryList: this.getCategoryList,
+        this.Category = new Category({
             onCategoryClick: this.handleCategoryClick,
         });
 
@@ -102,25 +100,30 @@ function MenuApp() {
             onMenuItemSoldOut: this.handleMenuItemSoldOut,
         });
 
-        this.currentCategory = 'espresso';
         const loadedMenuItems = this.getFromLocalStorage();
         if (loadedMenuItems) {
             this.setState(loadedMenuItems);
         } else {
             const menuItems = {};
-            const categoryList = this.categoryList;
-            categoryList.forEach((category) => {
-                menuItems[category] = [];
+            const categoryList = this.Category.getCategoryList();
+            categoryList.forEach((categoryName) => {
+                menuItems[categoryName] = [];
             });
             this.setState(menuItems);
         }
     }.bind(this)());
 }
 
-function Categories({ getCategoryList, onCategoryClick }) {
-    const categoryList = $('.cafe-category');
+function Category({ onCategoryClick }) {
+    this.categoryTitle = $('#category-title');
+    this.categoryList = $('.cafe-category');
 
-    categoryList.addEventListener('click', (event) => {
+    this.setState = (currentCategory) => {
+        this.currentCategory = currentCategory;
+        this.render(this.currentCategory);
+    };
+
+    this.categoryList.addEventListener('click', (event) => {
         const targetCategory = event.target;
         if (targetCategory.tagName !== 'BUTTON') {
             return;
@@ -128,44 +131,71 @@ function Categories({ getCategoryList, onCategoryClick }) {
         onCategoryClick(targetCategory);
     });
 
-    getCategoryList(
-        Array.from(categoryList.children).map(
+    this.getCategoryList = () => {
+        return Array.from(this.categoryList.children).map(
             (category) => category.dataset.categoryName
-        )
-    );
+        );
+    };
+
+    this.render = (currentCategory) => {
+        let translatedCategory;
+        switch (currentCategory) {
+            case 'espresso':
+                translatedCategory = '☕️ 에스프레소';
+                break;
+            case 'frappuccino':
+                translatedCategory = '🥤 프라푸치노';
+                break;
+            case 'blended':
+                translatedCategory = '🍹 블렌디드';
+                break;
+            case 'teavana':
+                translatedCategory = '🫖 티바나';
+                break;
+            case 'desert':
+                translatedCategory = '🍰 디저트';
+                break;
+        }
+        this.categoryTitle.innerText = `${translatedCategory} 메뉴 관리`;
+    };
 }
 
 function MenuInput({ onMenuItemAdd }) {
-    const menuForm = $('#menu-form');
-    const menuSubmitBtn = $('#menu-submit-button');
-    const menuName = $('#menu-name');
+    this.menuForm = $('#menu-form');
+    this.menuSubmitBtn = $('#menu-submit-button');
+    this.menuName = $('#menu-name');
 
-    menuForm.addEventListener('submit', (event) => {
+    this.menuForm.addEventListener('submit', (event) => {
         event.preventDefault();
         this.handleMenuItemAdd();
     });
 
-    menuSubmitBtn.addEventListener('click', () => {
+    this.menuSubmitBtn.addEventListener('click', () => {
         this.handleMenuItemAdd();
     });
 
     this.handleMenuItemAdd = () => {
-        const name = menuName.value;
+        const name = this.menuName.value;
         if (name === '') {
             alert('값을 입력해주세요.');
             return;
         }
-        menuName.value = '';
+        this.menuName.value = '';
         onMenuItemAdd(name);
     };
 }
 
 function MenuList({ onMenuItemNameEdit, onMenuItemDelete, onMenuItemSoldOut }) {
-    const categoryTitle = $('#category-title');
-    const menuCount = $('.menu-count');
-    const menuList = $('#menu-list');
+    this.menuCount = $('.menu-count');
+    this.menuList = $('#menu-list');
 
-    menuList.addEventListener('click', (event) => {
+    this.setState = (menuItems, menuItemsKey) => {
+        this.menuItems = menuItems;
+        this.menuItemsKey = menuItemsKey;
+        this.render(this.menuItems, this.menuItemsKey);
+    };
+
+    this.menuList.addEventListener('click', (event) => {
         const targetBtn = event.target;
         if (targetBtn.tagName !== 'BUTTON') {
             return;
@@ -182,14 +212,8 @@ function MenuList({ onMenuItemNameEdit, onMenuItemDelete, onMenuItemSoldOut }) {
         }
     });
 
-    this.setState = (currentCategory, menuItems) => {
-        this.menuItems = menuItems;
-        this.currentCategory = currentCategory;
-        this.render(this.currentCategory, this.menuItems);
-    };
-
-    this.render = (currentCategory, menuItems) => {
-        const template = menuItems[currentCategory].map(
+    this.render = (menuItems, menuItemsKey) => {
+        const template = menuItems[menuItemsKey].map(
             (menuItem, idx) => `
             <li data-menu-id="${idx}" class="menu-list-item d-flex items-center py-2">
                 <span class="w-100 pl-2 menu-name${
@@ -216,37 +240,8 @@ function MenuList({ onMenuItemNameEdit, onMenuItemDelete, onMenuItemSoldOut }) {
             </li>
         `
         );
-        menuList.innerHTML = template.join('');
-        this.updateMenuCount();
-        this.changeCategoryTitle();
-    };
-
-    this.updateMenuCount = () => {
-        menuCount.innerText = `총 ${
-            this.menuItems[this.currentCategory].length
-        }개`;
-    };
-
-    this.changeCategoryTitle = () => {
-        let translatedCategory;
-        switch (this.currentCategory) {
-            case 'espresso':
-                translatedCategory = '☕️ 에스프레소';
-                break;
-            case 'frappuccino':
-                translatedCategory = '🥤 프라푸치노';
-                break;
-            case 'blended':
-                translatedCategory = '🍹 블렌디드';
-                break;
-            case 'teavana':
-                translatedCategory = '🫖 티바나';
-                break;
-            case 'desert':
-                translatedCategory = '🍰 디저트';
-                break;
-        }
-        categoryTitle.innerText = `${translatedCategory} 메뉴 관리`;
+        this.menuList.innerHTML = template.join('');
+        this.menuCount.innerText = `총 ${menuItems[menuItemsKey].length}개`;
     };
 }
 

@@ -20,14 +20,7 @@ const store = {
   },
 };
 
-// 1. localStorage에 데이터를 저장하여 새로고침해도 데이터가 남아있게 한다.
-// 2. 에스프레소, 프라푸치노, 블렌디드, 티바나, 디저트 각각의 종류별로 메뉴판을 관리할 수 있게 만든다.
-// 3. 페이지에 최초로 접근할 때는 에스프레소 메뉴가 먼저 보이게 한다.
-// 4. 품절 상태인 경우를 보여줄 수 있게, 품절 버튼을 추가하고 sold-out class를 추가하여 상태를 변경한다.
-//    품절일경우: <span class="w-100 pl-2 menu-name sold-out">${name}</span>
-
 function App() {
-  //this.menu = [];
   this.menu = {
     espresso: [],
     frappuccino: [],

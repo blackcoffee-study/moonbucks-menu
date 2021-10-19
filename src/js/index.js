@@ -1,36 +1,49 @@
 import { $, $all } from "./utils/DOM.js";
-import { addMenu, paintMenu } from "./utils/commons.js";
-import { getAllMenus } from "./utils/storage.js";
+import {
+	addMenu,
+	loadMenuList,
+	makeMenu,
+	paintMenuList,
+} from "./utils/commons.js";
+
+const $allMenuCounts = $(".menu-count");
 
 const addEvents = (category) => {
 	const $menuName = $(`#${category}-menu-name`);
 	const $menuList = $(`#${category}-menu-list`);
 	const $menuForm = $(`#${category}-menu-form`);
 	const $addMenuButton = $(`#${category}-menu-submit-button`);
-	const $allMenuCounts = $(".menu-count");
 
 	$menuForm.addEventListener("submit", (event) =>
-		addMenu(event, $menuName, $menuList, $allMenuCounts, category)
+		addMenu($menuName, $menuList, $allMenuCounts, category, event)
 	);
 	$addMenuButton.addEventListener("click", (event) =>
-		addMenu(event, $menuName, $menuList, $allMenuCounts, category)
+		addMenu($menuName, $menuList, $allMenuCounts, category, event)
 	);
 };
 
 const initialize = () => {
 	const $allCategoryNames = $all(".cafe-category-name");
-
+	const firstCategory = $allCategoryNames[0].dataset.categoryName;
 	[...$allCategoryNames].forEach((category) =>
 		category.addEventListener("click", (event) => {
 			event.preventDefault();
-			paintMenu(category.dataset.categoryName);
+			paintMenuList(category.dataset.categoryName);
 			addEvents(category.dataset.categoryName);
 		})
 	);
-	paintMenu($allCategoryNames[0].dataset.categoryName);
-	addEvents($allCategoryNames[0].dataset.categoryName);
 
-	getAllMenus();
+	paintMenuList(firstCategory);
+	const loadedMenuList = loadMenuList(firstCategory);
+	loadedMenuList.forEach((loadedMenu) => {
+		const madeMenu = makeMenu(
+			loadedMenu,
+			$allMenuCounts,
+			$(`#${firstCategory}-menu-list`)
+		);
+		$(`#${firstCategory}-menu-list`).appendChild(madeMenu);
+	});
+	addEvents(firstCategory);
 };
 
 window.onload = () => initialize();

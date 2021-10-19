@@ -43,7 +43,9 @@ export default class Management extends Component {
     const $inputItem = this._utils.$('#espresso-menu-name');
     const $menuAddButton = this._utils.$('#espresso-menu-submit-button');
     const $list = this._utils.$('#espresso-menu-list');
+
     let menuList = new MenuList($list);
+
     $inputItem.addEventListener('keydown', event => {
       if (event.key !== 'Enter') return;
       if (!$inputItem.value) return;
@@ -53,8 +55,8 @@ export default class Management extends Component {
     });
 
     $menuAddButton.addEventListener('click', event => {
-      event.preventDefault();
       if (!$inputItem.value) return;
+      event.preventDefault();
       menuList.addItem($inputItem.value);
       $inputItem.value = '';
     });
@@ -62,24 +64,17 @@ export default class Management extends Component {
     $list.addEventListener('click', event => {
       const { target } = event;
       event.preventDefault();
+      if (!target.matches('button')) return;
+      const $span = this._utils.$sibling(target, 'li', 'span');
+      const targetItemIndex = $span.getAttribute('key');
+
       if (target.matches('.menu-edit-button')) {
-        let $span = target.previousSibling.previousSibling;
-
-        let targetItemIndex = $span.getAttribute('key');
-        let targetItemText = $span.textContent;
-
+        let targetItemText = $span.textContent.trim();
         menuList.editedItem(+targetItemIndex, targetItemText);
       } else if (target.matches('.menu-remove-button')) {
-        let $span =
-          target.previousSibling.previousSibling.previousSibling
-            .previousSibling;
-
-        let targetItemIndex = $span.getAttribute('key');
-
         menuList.deletedItem(+targetItemIndex);
       } else if (target.matches('.menu-sold-out-button')) {
-        let $span = target.previousSibling.previousSibling;
-        $span.classList.toggle('sold-out');
+        menuList.soldOutItem(+targetItemIndex, target.textContent.trim());
       }
     });
   }

@@ -27,12 +27,12 @@ export const SOLDOUT_MENU_FAILURE = 'SOLDOUT_MENU_FAILURE';
 export const WORKING_MIDDLEWARE = true;
 
 // UTIL
-export const LOCALSTORAGE_KEY = [
+export const LOCALSTORAGE_KEY = Object.freeze([
   'espresso',
   'frappuccino',
   'blended',
   'teavana',
   'desert',
-];
+]);
 export const ENTER_KEYCODE = 'Enter';
 export const ESC_KEYCODE = 'Escape';

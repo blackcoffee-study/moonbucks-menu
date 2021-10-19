@@ -1,4 +1,8 @@
 import utils from '../../utils/index.js';
+/**
+ * @TODO : 이벤트 로직을 분리한 뒤 루트 컴포넌트에 의존성 주입
+ */
+// import events from '../../events/index.js';
 import store from '../../store/index.js';
 import changeToDiff from './index.js';
 

@@ -3,7 +3,7 @@ import MenuList from './component/MenuList.js';
 import MenuNav from './component/MenuNav.js';
 import MenuTitle from './component/MenuTitle.js';
 import { $, $$ } from './utils.js';
-import {setLocaStorage, getLocalStorage} from './store.js';
+import {setLocaStorage, getLocalStorage, getMenuList, setMenuList} from './store.js';
 
 export default class App {
   $target;
@@ -26,7 +26,7 @@ export default class App {
     this.mounted();
   }
   mounted() {
-    const {$state, onChangeCategory} =this;
+    const {$state, onChangeCategory, onAddMenu} =this;
 
     this.menuNav = new MenuNav($('#menu-nav'), {
       $state,
@@ -36,7 +36,8 @@ export default class App {
       $state
     });
     this.menuInput = new MenuInput($('#espresso-menu-form'), {
-
+      $state,
+      onAddMenu : onAddMenu.bind(this),
     });
     this.menuList = new MenuList($('#espresso-menu-list'), {
       $state
@@ -49,14 +50,20 @@ export default class App {
     setLocaStorage('menu',this.$state);
     this.menuTitle.setState(getLocalStorage('menu'));
   }
-  onAddMenu(content){
+  onAddMenu(category, content){
     const id = Math.random().toString(36).substr(2,12)
     const isSoldout = false;
     const name = content;
 
-  }
-  setState(){
-    this.menuTitle.setState();
-    this.menuList.setState();
+    const List = getMenuList(category);
+    List.push({
+      id,
+      isSoldout : false,
+      name : content,
+    })
+
+    setMenuList(category, List);   
+    this.menuTitle.setState(getLocalStorage('menu'));
+    this.menuList.setState(getLocalStorage('menu'));
   }
 }

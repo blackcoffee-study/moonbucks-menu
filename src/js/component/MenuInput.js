@@ -1,21 +1,23 @@
 import component from '../core/component.js';
+import {$} from '../utils.js'
 
 export default class MenuInput extends component {
   setup() {
-    this.$state = this.$props.$state;
+    this.$state = this.$props;
+    console.log(this.$state);
   }
   template() {
     return `
         <div class="d-flex w-100">
         <label for="espresso-menu-name" class="input-label" hidden>
-          에스프레소 메뉴 이름
+          메뉴 이름
         </label>
         <input
                 type="text"
                 id="espresso-menu-name"
                 name="espressoMenuName"
                 class="input-field"
-                placeholder="에스프레소 메뉴 이름"
+                placeholder="메뉴 이름"
                 autocomplete="off"
                 value=""
         />
@@ -29,5 +31,22 @@ export default class MenuInput extends component {
         </button>
       </div>
         `;
+  }
+  mounted(){
+    $("#espresso-menu-form").addEventListener('submit', (e)=>{
+      e.preventDefault();
+    })
+    $('#espresso-menu-submit-button').addEventListener('click',(e)=>{
+      const name = $('#espresso-menu-name').value;
+      console.log(name)
+      this.$state.onAddMenu(this.$state.$state.category, name);
+    })
+
+    $('#espresso-menu-name').addEventListener('keyup',(e)=>{
+      if(e.key ==='Enter'){
+        this.$state.onAddMenu( this.$state.$state.category, e.target.value)
+      }
+      
+    })
   }
 }

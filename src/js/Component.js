@@ -3,7 +3,7 @@ export default class Component{
     state;
     props;
     target;
-
+    Navkey;
     constructor(target,props) {
         this.props=props;
         this.target=target;

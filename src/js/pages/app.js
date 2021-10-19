@@ -18,7 +18,7 @@ export default class App {
     }
 
     init() {
-        this.menuItem = new MenuItem(this._menuList, this.onMenuClick);
+        this.menuItem = new MenuItem(this._menuList, this.clickMenuItem);
         this.menuItemCounter = new MenuItemCounter(this._count);
         this.menuCategory = new MenuCategory(this._categoryHeader);
         this.localStorageMenu = new LocalStorageMenu();
@@ -70,7 +70,7 @@ export default class App {
         });
     }
 
-    onMenuClick = (action) => {
+    clickMenuItem = (action) => {
         const isExistClassName = (_className) => action.menuItemClassList.contains(_className);
         if (isExistClassName('menu-edit-button')) {
             this.clickEditBtn(action.menuId);

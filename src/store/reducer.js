@@ -52,6 +52,7 @@ const reducer = (state = initialState, action) => {
     case SOLDOUT_MENU_SUCCESS:
       return {
         ...state,
+        [action.category]: action.data,
       };
     default:
       return state;

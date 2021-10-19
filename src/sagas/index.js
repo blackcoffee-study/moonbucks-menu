@@ -4,6 +4,12 @@ import {
   LOAD_MENU_SUCCESS,
   UPDATE_MENU_SUCCESS,
   DELETE_MENU_SUCCESS,
+  LOAD_MENU_FAILURE,
+  CREATE_MENU_FAILURE,
+  UPDATE_MENU_FAILURE,
+  DELETE_MENU_FAILURE,
+  SOLDOUT_MENU_SUCCESS,
+  SOLDOUT_MENU_FAILURE,
 } from '../constants/index.js';
 
 export default reducer => {
@@ -43,6 +49,8 @@ const watchLoadMenu = action => {
     action.type = LOAD_MENU_SUCCESS;
     action.data = localState[action.category];
   } catch (error) {
+    action.type = LOAD_MENU_FAILURE;
+    action.message = error;
     console.log(error);
   }
 };
@@ -58,6 +66,8 @@ const watchCreateMenu = action => {
     action.type = CREATE_MENU_SUCCESS;
     setStorage(action.category, action.data);
   } catch (error) {
+    action.type = CREATE_MENU_FAILURE;
+    action.message = error;
     console.log(error);
   }
 };
@@ -73,6 +83,8 @@ const watchUpdateMenu = action => {
     action.type = UPDATE_MENU_SUCCESS;
     setStorage(action.category, action.data);
   } catch (error) {
+    action.type = UPDATE_MENU_FAILURE;
+    action.message = error;
     console.log(error);
   }
 };
@@ -88,6 +100,8 @@ const watchDeleteMenu = action => {
     action.type = DELETE_MENU_SUCCESS;
     setStorage(action.category, action.data);
   } catch (error) {
+    action.type = DELETE_MENU_FAILURE;
+    action.message = error;
     console.log(error);
   }
 };
@@ -100,9 +114,11 @@ const watchDeleteMenu = action => {
  */
 const watchSoldoutMenu = action => {
   try {
-    action.type = CREATE_MENU_SUCCESS;
+    action.type = SOLDOUT_MENU_SUCCESS;
     setStorage(action.category, action.data);
   } catch (error) {
+    action.type = SOLDOUT_MENU_FAILURE;
+    action.message = error;
     console.log(error);
   }
 };

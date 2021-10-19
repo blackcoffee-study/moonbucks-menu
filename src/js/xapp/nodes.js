@@ -63,8 +63,6 @@ export class ElementTemplateNode extends TemplateNode {
 
         this.binds.forEach(bind => {
             const value = function () {
-                console.log(this);
-                console.log(binding);
                 return eval(bind.value);
             }.call({ ...xApp, ...binding });
             let property = bind.property;

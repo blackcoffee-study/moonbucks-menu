@@ -2,9 +2,7 @@ import component from '../core/component.js';
 
 export default class MenuTitle extends component {
   setup() {
-    console.log(this.$props);
     this.$state = this.$props.$state;
-    console.log(this.$state.category)
   }
   template() {
     const category = this.getCategory(this.$state.category)

@@ -34,13 +34,33 @@ const setMenuList = (category, list) => {
   const data = getLocalStorage('menu');
 
   switch(category){
-    case 'espresso'     : data.espresso = list; break;
-    case 'frappuccino'  : data.frappuccino = list; break;
-    case 'blended'      : data.blended = list; break;
-    case 'teavana'      : data.teavana = list; break;
-    case 'desert'       : data.desert = list; break;
+    case 'espresso'     : {
+      data.espresso = list;
+      setLocaStorage('menu', data);
+      break;
+    }
+    case 'frappuccino'  : 
+    {
+      data.frappuccino = list;
+      setLocaStorage('menu', data);
+      break;
+    }
+    case 'blended'      : {
+      data.blended = list;
+      setLocaStorage('menu', data);
+      break;
+    }
+    case 'teavana'      : {
+      data.teavana = list; 
+      setLocaStorage('menu', data);
+      break;
+    }
+    case 'desert'       : {
+      data.desert = list; 
+      setLocaStorage('menu', data);
+      break;
+    }
   }
-  setLocaStorage('menu', data);
 }
 
 export {setLocaStorage, getLocalStorage, initLocalStorage, getMenuList, setMenuList};

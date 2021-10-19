@@ -24,7 +24,7 @@ export default class App {
     this.mounted();
   }
   mounted() {
-    const {$state, onChangeCategory, onAddMenu} =this;
+    const {$state, onChangeCategory, onAddMenu, onSoldoutMenu, onDeleteMenu, onUpdataMenu} =this;
 
     this.menuNav = new MenuNav($('#menu-nav'), {
       $state,
@@ -38,13 +38,14 @@ export default class App {
       onAddMenu : onAddMenu.bind(this),
     });
     this.menuList = new MenuList($('#espresso-menu-list'), {
-      $state
+      $state,
+      onSoldoutMenu : onSoldoutMenu.bind(this),
+      onDeleteMenu : onDeleteMenu.bind(this),
+      onUpdataMenu : onUpdataMenu.bind(this),
     });
   }
   onChangeCategory(category){
-    console.log(category);
     this.$state.category = category;
-    console.log(this.$state);
     setLocaStorage('menu',this.$state);
     this.menuTitle.setState(getLocalStorage('menu'));
     this.menuList.setState(getLocalStorage('menu'));
@@ -64,12 +65,23 @@ export default class App {
   }
 
 
-  onSoldoutMenu(){
-
+  onSoldoutMenu(category, id){
+    const List = getMenuList(category);
+    List.map(menu =>{
+      if(menu.id === id) {
+        List.push({id:todo.id, content:todo.content, activate:!todo.activate})
+      } 
+    })
   }
 
-  onDeleteMenu(){
+  onDeleteMenu(category, id){
+    const List = getMenuList(category);
+    const newList = List.filter(menu => menu.id !== id);
+    setMenuList(category, newList);
+    this.menuList.setState(getLocalStorage('menu'));
+  }
+
+  onUpdataMenu(category, id){
 
   }
-  
 }

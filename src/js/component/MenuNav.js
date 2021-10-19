@@ -4,8 +4,6 @@ import { $ } from '../utils.js';
 export default class MenuNav extends component {
   setup() {
     this.$state = this.$props;
-    //this.onChangeCategory =this.$props.onChangeCategory;
-    console.log(this.$props);
   }
   template() {
     return `
@@ -43,7 +41,6 @@ export default class MenuNav extends component {
   }
   mounted(){
         const categoryBtn = $('#menu-nav');
-        console.log(categoryBtn);
         categoryBtn.addEventListener('click',(e) =>{
             const clickedCategory = e.target.dataset.categoryName;
             this.$state.onChangeCategory(clickedCategory);

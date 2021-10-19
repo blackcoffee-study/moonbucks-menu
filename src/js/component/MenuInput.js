@@ -4,7 +4,6 @@ import {$} from '../utils.js'
 export default class MenuInput extends component {
   setup() {
     this.$state = this.$props;
-    console.log(this.$state);
   }
   template() {
     return `
@@ -38,7 +37,6 @@ export default class MenuInput extends component {
     })
     $('#espresso-menu-submit-button').addEventListener('click',(e)=>{
       const name = $('#espresso-menu-name').value;
-      console.log(name)
       this.$state.onAddMenu(this.$state.$state.category, name);
     })
 

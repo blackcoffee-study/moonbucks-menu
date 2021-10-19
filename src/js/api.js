@@ -1,11 +1,11 @@
 export class MenuAPI {
-    async getAvailableMenus() {}
+    async getCategories() {}
     async getMenu() {}
     async saveMenu() {}
 }
 
 export class LocalStorageMenuAPI extends MenuAPI {
-    async getAvailableMenus() {
+    async getCategories() {
         return [
             {
                 name: "에스프레소",

@@ -9,8 +9,8 @@ function createApp() {
     });
 
     app.setData({
-        menuTypes: [],
-        menuSelected: {
+        categories: [],
+        categorySelected: {
             name: "",
             key: "",
         },
@@ -26,7 +26,7 @@ function createApp() {
                 this.data.menuList.push({ content: this.data.menuInput });
                 this.data.menuCount++;
                 this.data.menuInput = "";
-                await api.saveMenu(this.data.menuSelected.key, this.data.menuList);
+                await api.saveMenu(this.data.categorySelected.key, this.data.menuList);
                 this.render();
                 this.elements.menuInput.focus();
             }
@@ -41,7 +41,7 @@ function createApp() {
 
                 this.render();
 
-                await api.saveMenu(this.data.menuSelected.key, this.data.menuList);
+                await api.saveMenu(this.data.categorySelected.key, this.data.menuList);
             }
         },
         async deleteMenu(e, item) {
@@ -51,13 +51,13 @@ function createApp() {
                 this.data.menuList.splice(idx, 1);
 
                 this.render();
-                await api.saveMenu(this.data.menuSelected.key, this.data.menuList);
+                await api.saveMenu(this.data.categorySelected.key, this.data.menuList);
             }
         },
         async changeMenuType(e, item) {
-            this.data.menuSelected = item;
+            this.data.categorySelected = item;
 
-            const menu = await api.getMenu(this.data.menuSelected.key);
+            const menu = await api.getMenu(this.data.categorySelected.key);
             this.data.menuList = menu;
 
             this.render();
@@ -66,9 +66,9 @@ function createApp() {
 
     app.setHooks({
         async onReady() {
-            const menuTypes = await api.getAvailableMenus();
-            this.data.menuTypes = menuTypes;
-            this.data.menuSelected = menuTypes[0];
+            const categories = await api.getCategories();
+            this.data.categories = categories;
+            this.data.categorySelected = categories[0];
 
             // this.render();
             // await this.methods.changeMenuType(null, menuTypes[0]);

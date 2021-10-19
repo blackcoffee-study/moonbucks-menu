@@ -18,7 +18,7 @@
                         </a>
                         <nav class="d-flex justify-center flex-wrap">
                             <button
-                                x-for="menuTypes"
+                                x-for="categories"
                                 x-on:click="changeMenuType,item"
                                 class="cafe-category-name btn bg-white shadow mx-1"
                             >
@@ -29,7 +29,7 @@
                     <main class="mt-10 d-flex justify-center">
                         <div class="wrapper bg-white p-10">
                             <div class="heading d-flex justify-between">
-                                <h2 class="mt-1">${menuSelected.icon} ${menuSelected.name} 메뉴 관리</h2>
+                                <h2 class="mt-1">${categorySelected.icon} ${categorySelected.name} 메뉴 관리</h2>
                                 <span class="mr-2 mt-4 menu-count">총 ${menuCount}개</span>
                             </div>
                             <form id="espresso-menu-form" x-on:submit="createMenu">

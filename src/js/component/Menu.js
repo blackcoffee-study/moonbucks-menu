@@ -12,28 +12,10 @@ export default class Menu {
     }
 
     getMenuForm(menu) {
-        var liElement = document.createElement("li");
-        
-        liElement.setAttribute("id", menu.code);
-        liElement.setAttribute("data-cateogry", menu.category);
-        liElement.setAttribute("class", "menu-list-item d-flex items-center py-2");
+        var menuElement = document.createElement("template");
 
-        liElement.addEventListener("click", ({target}) => {
-            console.log(target.classList);
-            if(target.classList.contains(SELECTORS.CLASS.MENU_SOLD_OUT_BUTTON.slice(1, SELECTORS.CLASS.MENU_SOLD_OUT_BUTTON.length))) {
-                this.onSoldOutMenu(liElement);
-            }
-
-            if(target.classList.contains(SELECTORS.CLASS.MENU_EDIT_BUTTON.slice(1, SELECTORS.CLASS.MENU_EDIT_BUTTON.length))) {
-                this.onEditMenu(liElement);
-            }
-
-            if(target.classList.contains(SELECTORS.CLASS.MENU_REMOVE_BUTTON.slice(1, SELECTORS.CLASS.MENU_REMOVE_BUTTON.length))) {
-                this.onRemoveMenu(liElement);
-            }
-        });
-
-        liElement.innerHTML = `
+        menuElement.innerHTML = `
+        <li class="menu-list-item d-flex items-center py-2" id="${menu.code}" data-cateogry="${menu.category}">
             <span class="w-100 pl-2 menu-name ${menu.isSoldOut ? 'sold-out' : ''}">${menu.name}</span>
             <button
                 type="button"
@@ -52,8 +34,9 @@ export default class Menu {
                 class="bg-gray-50 text-gray-500 text-sm menu-remove-button"
             >
                 삭제
-            </button>`;
+            </button>
+        </li>`;
 
-        return liElement;
+        return menuElement.content;
     }
 }

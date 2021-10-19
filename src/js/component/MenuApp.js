@@ -7,11 +7,11 @@ import Store from "./store.js";
 import { $ } from "../DOM.js"
 
 export default class MenuApp {
-    $menuForm = $(SELECTORS.ID.ESPRESS_MENU_FROM);
-    $menuList = $(SELECTORS.ID.ESPRESSO_MENU_LIST);
-    $menuCount = $(SELECTORS.CLASS.MENU_COUNT);
-    $menuCategory = $(SELECTORS.CLASS.CAFE_CATEGORY_LIST);
-    $menuTitle = $(SELECTORS.CLASS.MENU_TITLE);
+    $menuForm = null;
+    $menuList = null;
+    $menuCount = null;
+    $menuCategory = null;
+    $menuTitle = null;
 
     menuForm = null;
     menu = null;
@@ -21,12 +21,33 @@ export default class MenuApp {
     store = null;
 
     constructor() {
-        console.log();
+        this.$menuForm = $(SELECTORS.ID.ESPRESS_MENU_FROM);
+        this.$menuList = $(SELECTORS.ID.ESPRESSO_MENU_LIST);
+        this.$menuCount = $(SELECTORS.CLASS.MENU_COUNT);
+        this.$menuCategory = $(SELECTORS.CLASS.CAFE_CATEGORY_LIST);
+        this.$menuTitle = $(SELECTORS.CLASS.MENU_TITLE);
+
         this.common = new Common();
         this.menu = new Menu({
             onSoldOutMenu: (menu => {this.onSoldOutMenu(menu)}),
             onEditMenu: (menu => {this.onEditMenu(menu)}),
             onRemoveMenu: (menu => {this.onRemoveMenu(menu)})
+        });
+
+        this.$menuList.addEventListener("click", (event) => {
+            let menuItemElement = event.target.closest("li");
+
+            if(event.target.classList.contains(SELECTORS.CLASS.MENU_SOLD_OUT_BUTTON.replace(".", ""))) {
+                this.onSoldOutMenu(menuItemElement);
+            }
+
+            if(event.target.classList.contains(SELECTORS.CLASS.MENU_EDIT_BUTTON.replace(".", ""))) {
+                this.onEditMenu(menuItemElement);
+            }
+
+            if(event.target.classList.contains(SELECTORS.CLASS.MENU_REMOVE_BUTTON.replace(".", ""))) {
+                this.onRemoveMenu(menuItemElement);
+            }
         });
 
         this.store = new Store("espresso");  
@@ -58,7 +79,6 @@ export default class MenuApp {
 
     onAddMenu(menu) {
         this.$menuList.append(this.menu.getMenuForm(menu));
-
         this.store.addMenu(menu);
         this.setMenuCount();
     }

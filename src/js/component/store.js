@@ -1,6 +1,4 @@
 export default class Store {
-    menuList = [];
-    selectedCategory = "";
     
     constructor(category) {
         this.setSelecedCategory(category);

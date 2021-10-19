@@ -43,8 +43,10 @@ export class ElementTemplateNode extends TemplateNode {
     constructor() {
         super();
         this.el = null;
-        /** @type {{property: string, value: string, binding: Object}[]} */
+        /** @type {{property: string, value: string}[]} */
         this.events = [];
+        /** @type {{property: string, value: string}[]} */
+        this.binds = [];
         this.name = null;
     }
 
@@ -57,6 +59,21 @@ export class ElementTemplateNode extends TemplateNode {
                 node.xEvents = [];
             }
             node.xEvents.push({ property: event.property, value: event.value, binding: binding });
+        });
+
+        this.binds.forEach(bind => {
+            const value = function () {
+                console.log(this);
+                console.log(binding);
+                return eval(bind.value);
+            }.call({ ...xApp, ...binding });
+            let property = bind.property;
+
+            if (bind.property === "class") {
+                property = "className";
+            }
+
+            node[property] = value;
         });
 
         if (this.name) {

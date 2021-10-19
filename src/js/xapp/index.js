@@ -75,6 +75,15 @@ class Template {
                 }
             });
 
+            attrs.forEach(attr => {
+                if (attr.name?.startsWith("x-bind")) {
+                    const property = attr.name.split(":")[1];
+                    const value = attr.textContent;
+
+                    elementNode.binds.push({ property, value });
+                }
+            });
+
             for (const child of currentDomNode.childNodes) {
                 const ch = this._parse(child);
                 if (ch) {

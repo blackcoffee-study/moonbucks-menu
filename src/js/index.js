@@ -54,6 +54,15 @@ function createApp() {
                 await api.saveMenu(this.data.categorySelected.key, this.data.menuList);
             }
         },
+        async soldoutMenu(e, item) {
+            if (item.soldout) {
+                item.soldout = false;
+            } else {
+                item.soldout = true;
+            }
+            await api.saveMenu(this.data.categorySelected.key, this.data.menuList);
+            this.render();
+        },
         async changeMenuType(e, item) {
             this.data.categorySelected = item;
 

@@ -59,7 +59,16 @@
                             </form>
                             <ul id="espresso-menu-list" class="mt-3 pl-0">
                                 <li x-for="menuList" class="menu-list-item d-flex items-center py-2">
-                                    <span class="w-100 pl-2 menu-name">${item.content}</span>
+                                    <span x-bind:class="`w-100 pl-2 menu-name ${this.item.soldout ? 'sold-out' : ''}`"
+                                        >${item.content}</span
+                                    >
+                                    <button
+                                        x-on:click="soldoutMenu,item"
+                                        type="button"
+                                        class="bg-gray-50 text-gray-500 text-sm mr-1 menu-sold-out-button"
+                                    >
+                                        품절
+                                    </button>
                                     <button
                                         x-on:click="editMenu,item"
                                         type="button"

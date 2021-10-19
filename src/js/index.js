@@ -59,6 +59,7 @@ function createApp() {
 
             const menu = await api.getMenu(this.data.categorySelected.key);
             this.data.menuList = menu;
+            this.data.menuCount = menu.length;
 
             this.render();
         },
@@ -70,8 +71,7 @@ function createApp() {
             this.data.categories = categories;
             this.data.categorySelected = categories[0];
 
-            // this.render();
-            // await this.methods.changeMenuType(null, menuTypes[0]);
+            await this.methods.changeMenuType.call(this, null, categories[0]);
             this.render();
         },
     });

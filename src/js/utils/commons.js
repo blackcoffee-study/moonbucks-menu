@@ -1,4 +1,5 @@
 import { $, createElement } from './DOM.js';
+import { menuTemplate } from '../templates.js';
 
 export const makeMenu = (menu, menuCounts, menuList) => {
     const menuContainer = createElement('li');
@@ -52,9 +53,13 @@ export const editMenu = (event) => {
     event.preventDefault();
     const newMenu = prompt('수정할 메뉴를 작성해주세요.');
     if (newMenu) {
-        const menu = $('.menu-name', event.target.parentNode);
-        menu.innerText = newMenu;
+        const $menu = $('.menu-name', event.target.parentNode);
+        $menu.innerText = newMenu;
     }
 };
 
 export const countMenu = (menuList) => menuList.children.length;
+
+export const paintMenu = (category) => {
+    $('main').innerHTML = menuTemplate(category);
+};

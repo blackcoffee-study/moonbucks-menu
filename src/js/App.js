@@ -21,8 +21,6 @@ export default class App {
       'desert' :[]
     }
     this.$state = getLocalStorage('menu') ?? setLocaStorage('menu', data)
-    console.log(this.$state);
-    console.log(this.$state.category);
     this.mounted();
   }
   mounted() {
@@ -49,21 +47,29 @@ export default class App {
     console.log(this.$state);
     setLocaStorage('menu',this.$state);
     this.menuTitle.setState(getLocalStorage('menu'));
+    this.menuList.setState(getLocalStorage('menu'));
   }
   onAddMenu(category, content){
     const id = Math.random().toString(36).substr(2,12)
-    const isSoldout = false;
-    const name = content;
-
+   
     const List = getMenuList(category);
     List.push({
       id,
-      isSoldout : false,
+      isSoldout : true,
       name : content,
     })
-
-    setMenuList(category, List);   
+    setMenuList(category, List);  
     this.menuTitle.setState(getLocalStorage('menu'));
     this.menuList.setState(getLocalStorage('menu'));
   }
+
+
+  onSoldoutMenu(){
+
+  }
+
+  onDeleteMenu(){
+
+  }
+  
 }

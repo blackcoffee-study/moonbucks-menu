@@ -1,5 +1,5 @@
 const $ = (arg) => document.querySelector(arg);
-const drinkItemTemplate = (
+const menuItemTemplate = (
   name
 ) => `<li class="menu-list-item d-flex items-center py-2">
   <span class="w-100 pl-2 menu-name">${name}</span>
@@ -26,12 +26,12 @@ function addMenuItem() {
     return;
   }
 
-  menuList.insertAdjacentHTML("beforeend", drinkItemTemplate(menuName.value));
+  menuList.insertAdjacentHTML("beforeend", menuItemTemplate(menuName.value));
   menuName.value = "";
   $(".menu-count").innerText = menuCount(menuList.children.length);
 }
 
-function start() {
+function startApp() {
   $("#espresso-menu-submit-button").addEventListener("click", function () {
     addMenuItem();
   });
@@ -59,4 +59,4 @@ function start() {
   });
 }
 
-start();
+startApp();

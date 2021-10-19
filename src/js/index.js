@@ -31,6 +31,23 @@ function addMenuItem() {
   $(".menu-count").innerText = menuCount(menuList.children.length);
 }
 
+const editEventHandler = (e) => {
+  if (e.target.classList.contains("menu-edit-button")) {
+    const menuName = e.target.closest("li").querySelector(".menu-name");
+    menuName.innerText = prompt("메뉴명을 입력하세요", menuName.innerText);
+  }
+};
+
+const removeEventHandler = (e) => {
+  if (
+    e.target.classList.contains("menu-remove-button") &&
+    confirm("정말로 삭제하시겠습니까?")
+  ) {
+    e.target.parentElement.remove();
+    $(".menu-count").innerText = menuCount(menuList.children.length);
+  }
+};
+
 function startApp() {
   $("#espresso-menu-submit-button").addEventListener("click", function () {
     addMenuItem();
@@ -41,22 +58,8 @@ function startApp() {
     addMenuItem();
   });
 
-  menuList.addEventListener("click", function (e) {
-    if (e.target.classList.contains("menu-edit-button")) {
-      const menuName = e.target.closest("li").querySelector(".menu-name");
-      menuName.innerText = prompt("메뉴명을 입력하세요", menuName.innerText);
-    }
-  });
-
-  menuList.addEventListener("click", function (e) {
-    if (
-      e.target.classList.contains("menu-remove-button") &&
-      confirm("정말로 삭제하시겠습니까?")
-    ) {
-      e.target.parentElement.remove();
-      $(".menu-count").innerText = menuCount(menuList.children.length);
-    }
-  });
+  menuList.addEventListener("click", editEventHandler);
+  menuList.addEventListener("click", removeEventHandler);
 }
 
 startApp();

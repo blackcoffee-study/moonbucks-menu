@@ -1,14 +1,16 @@
-const inputEspressoMenu = document.getElementById('espresso-menu-name');
-const espressoMenuForm = document.getElementById('espresso-menu-form');
-const espressoMenuList = document.getElementById('espresso-menu-list');
-const addMenuButton = document.getElementById('espresso-menu-submit-button');
-const allMenuCount = document.querySelector('.menu-count');
+import { $, createElement } from './utils/DOM.js';
+
+const inputEspressoMenu = $('#espresso-menu-name');
+const espressoMenuList = $('#espresso-menu-list');
+const espressoMenuForm = $('#espresso-menu-form');
+const addMenuButton = $('#espresso-menu-submit-button');
+const allMenuCount = $('.menu-count');
 
 const makeEspressoMenu = (menu) => {
-    const container = document.createElement('li');
-    const name = document.createElement('span');
-    const editButton = document.createElement('button');
-    const removeButton = document.createElement('button');
+    const container = createElement('li');
+    const name = createElement('span');
+    const editButton = createElement('button');
+    const removeButton = createElement('button');
 
     container.className = 'menu-list-item d-flex items-center py-2';
     name.className = 'w-100 pl-2 menu-name';
@@ -54,7 +56,7 @@ const editEspressoMenu = (event) => {
     event.preventDefault();
     const newMenu = prompt('수정할 메뉴를 작성해주세요.');
     if (newMenu) {
-        const menu = event.target.parentNode.querySelector('.menu-name');
+        const menu = $('.menu-name', event.target.parentNode);
         menu.innerText = newMenu;
     }
 };

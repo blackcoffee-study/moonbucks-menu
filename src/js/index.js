@@ -1,47 +1,47 @@
 import { $, createElement } from './utils/DOM.js';
 
-const inputEspressoMenu = $('#espresso-menu-name');
+const espressoMenuName = $('#espresso-menu-name');
 const espressoMenuList = $('#espresso-menu-list');
 const espressoMenuForm = $('#espresso-menu-form');
 const addMenuButton = $('#espresso-menu-submit-button');
 const allMenuCount = $('.menu-count');
 
 const makeEspressoMenu = (menu) => {
-    const container = createElement('li');
-    const name = createElement('span');
+    const menuContainer = createElement('li');
+    const menuName = createElement('span');
     const editButton = createElement('button');
     const removeButton = createElement('button');
 
-    container.className = 'menu-list-item d-flex items-center py-2';
-    name.className = 'w-100 pl-2 menu-name';
+    menuContainer.className = 'menu-list-item d-flex items-center py-2';
+    menuName.className = 'w-100 pl-2 menu-name';
     editButton.className =
         'bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button';
     removeButton.className =
         'bg-gray-50 text-gray-500 text-sm menu-remove-button';
 
-    name.innerText = menu;
+    menuName.innerText = menu;
     removeButton.innerText = '삭제';
     editButton.innerText = '수정';
 
     removeButton.addEventListener('click', removeEspressoMenu);
     editButton.addEventListener('click', editEspressoMenu);
 
-    container.appendChild(name);
-    container.appendChild(editButton);
-    container.appendChild(removeButton);
+    menuContainer.appendChild(menuName);
+    menuContainer.appendChild(editButton);
+    menuContainer.appendChild(removeButton);
 
-    return container;
+    return menuContainer;
 };
 
 const addEspressoMenu = (event) => {
     event.preventDefault();
-    if (!inputEspressoMenu.value) return;
+    if (!espressoMenuName.value) return;
 
-    const newMenu = makeEspressoMenu(inputEspressoMenu.value);
+    const newMenu = makeEspressoMenu(espressoMenuName.value);
     espressoMenuList.appendChild(newMenu);
 
     allMenuCount.innerText = `총 ${countMenu()}개`;
-    inputEspressoMenu.value = '';
+    espressoMenuName.value = '';
 };
 
 const removeEspressoMenu = (event) => {
@@ -63,5 +63,9 @@ const editEspressoMenu = (event) => {
 
 const countMenu = () => espressoMenuList.children.length;
 
-espressoMenuForm.addEventListener('submit', addEspressoMenu);
-addMenuButton.addEventListener('click', addEspressoMenu);
+const initialize = () => {
+    espressoMenuForm.addEventListener('submit', addEspressoMenu);
+    addMenuButton.addEventListener('click', addEspressoMenu);
+};
+
+window.onload = () => initialize();

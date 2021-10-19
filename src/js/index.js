@@ -38,7 +38,7 @@ function App() {
                         type="button"
                         class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
                     >
-                        수정
+                        수정!!
                     </button>
                     <button
                         type="button"

@@ -1,14 +1,13 @@
 export default class MenuItem {
-    constructor(_app, _onMenuClick) {
-        this._app = _app;
-        this._onMenuClick = _onMenuClick;
+    constructor(app, onMenuClick) {
+        this._app = app;
+        this._onMenuClick = onMenuClick;
         this._state = [];
         this.setEventListener();
     }
 
     setState(newState) {
         this._state = newState;
-        this.render();
     }
 
     render() {
@@ -48,6 +47,6 @@ export default class MenuItem {
             const menuId = e.target.closest('li').dataset.menuId;
             
             this._onMenuClick({menuItemClassList: menuItemClassList, menuId: menuId});
-        })
+        });
     }
 }

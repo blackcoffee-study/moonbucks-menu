@@ -1,7 +1,7 @@
 
-export default class MenuCount {
-    constructor(_app) {
-        this._app = _app;
+export default class MenuItemCounter {
+    constructor(app) {
+        this._app = app;
         this._state = [];
         this.setState();
     }

@@ -1,5 +1,6 @@
 import { $, createElement } from './DOM.js';
 import { menuTemplate } from '../templates.js';
+import { getAllMenus, getMenus } from './storage.js';
 
 export const makeMenu = (menu, menuCounts, menuList) => {
     const menuContainer = createElement('li');
@@ -30,9 +31,17 @@ export const makeMenu = (menu, menuCounts, menuList) => {
     return menuContainer;
 };
 
-export const addMenu = (event, menuName, menuList, menuCounts) => {
+export const addMenu = (event, menuName, menuList, menuCounts, category) => {
     event.preventDefault();
     if (!menuName.value) return;
+
+    const prevMenuList = getMenus(category);
+    const newMenuList = {
+        ...prevMenuList,
+        menus: [...prevMenuList.menus, menuName.value],
+    };
+    const allMenus = getAllMenus();
+    console.log(allMenus);
 
     const newMenu = makeMenu(menuName.value, menuCounts, menuList);
     menuList.appendChild(newMenu);
@@ -62,4 +71,9 @@ export const countMenu = (menuList) => menuList.children.length;
 
 export const paintMenu = (category) => {
     $('main').innerHTML = menuTemplate(category);
+};
+
+export const editMenuList = (menu, category) => {
+    const prevMenuList = getMenus(category);
+    console.log(prevMenuList);
 };

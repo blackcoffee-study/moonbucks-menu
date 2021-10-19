@@ -1,5 +1,6 @@
 import { $, $all } from './utils/DOM.js';
 import { addMenu, paintMenu } from './utils/commons.js';
+import { getAllMenus } from './utils/storage.js';
 
 const addEvents = (category) => {
     const $menuName = $(`#${category}-menu-name`);
@@ -9,10 +10,10 @@ const addEvents = (category) => {
     const $allMenuCounts = $('.menu-count');
 
     $menuForm.addEventListener('submit', (event) =>
-        addMenu(event, $menuName, $menuList, $allMenuCounts),
+        addMenu(event, $menuName, $menuList, $allMenuCounts, category),
     );
     $addMenuButton.addEventListener('click', (event) =>
-        addMenu(event, $menuName, $menuList, $allMenuCounts),
+        addMenu(event, $menuName, $menuList, $allMenuCounts, category),
     );
 };
 
@@ -28,6 +29,8 @@ const initialize = () => {
     );
     paintMenu($allCategoryNames[0].dataset.categoryName);
     addEvents($allCategoryNames[0].dataset.categoryName);
+
+    getAllMenus();
 };
 
 window.onload = () => initialize();

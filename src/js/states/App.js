@@ -1,46 +1,41 @@
-import MenuList from './MenuList.js'
+import Menu from './Menu.js'
 
-const App = class extends Set {
-  constructor () {
-    super()
-  }
-
-  static load (json) {
-    const app = new App()
-    json.forEach(f => {
-      app.addMenuList(MenuList.load(f))
-    })
-    return app
-  }
-
-  toJSON () {
-    return this.getInfo()
-  }
-
-  addMenuList (menuList) {
-    if (!menuList instanceof MenuList) return console.log('invalid menuList')
-    super.add(menuList)
-  }
-
-  _getTargetMenu(category){
-    return this.getInfo().find(({ title }) => title === category)
-  }
-
-  getCurrentMenuList (category = 'espresso') {
-    const currentMenuList = this._getTargetMenu(category)
-    if (currentMenuList) {
-      return currentMenuList
+const MenuList = class extends Set {
+    constructor(title = 'espresso') {
+        super()
+        this.title = title
     }
-    super.add(MenuList.get(category))
-    return this._getTargetMenu(category)
 
-  }
+    static get(title) {
+        return new MenuList(title)
+    }
 
-  getInfo () {
-    return Array.from(super.values())
-  }
+    static load(json) {
+        const menuList = new MenuList(json.title);
+        json.menuList.forEach(t => {
+            menuList.addMenu(Menu.load(t))
+        })
+        return menuList;
+    }
+
+    toJSON() {
+        return this.getInfo();
+    }
+
+    addMenu(menu) {
+        if (!menu instanceof Menu) return console.log('invalid menu')
+        super.add(menu)
+    }
+
+    removeMenu(menu) {
+        if (!menu instanceof Menu) return console.log('invalid menu')
+        super.delete(menu)
+    }
+
+    getInfo() {
+        return {title: this.title, menuList: Array.from(super.values())}
+    }
 
 }
 
-export default App
-
+export default MenuList

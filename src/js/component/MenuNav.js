@@ -1,13 +1,15 @@
 import component from '../core/component.js';
+import { $ } from '../utils.js';
 
 export default class MenuNav extends component {
   setup() {
-    this.$state = this.$props.$state;
+    this.$state = this.$props;
+    //this.onChangeCategory =this.$props.onChangeCategory;
+    console.log(this.$props);
   }
   template() {
     return `
-            <nav id="menu-nav" class="d-flex justify-center flex-wrap">
-                <button
+                 <button
                         data-category-name="espresso"
                         class="cafe-category-name btn bg-white shadow mx-1"
                 >
@@ -37,6 +39,14 @@ export default class MenuNav extends component {
                 >
                 🍰 디저트
                 </button>
-            </nav>`;
+        `;
+  }
+  mounted(){
+        const categoryBtn = $('#menu-nav');
+        console.log(categoryBtn);
+        categoryBtn.addEventListener('click',(e) =>{
+            const clickedCategory = e.target.dataset.categoryName;
+            this.$state.onChangeCategory(clickedCategory);
+        });
   }
 }

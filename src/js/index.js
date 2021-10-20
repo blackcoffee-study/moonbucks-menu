@@ -1,10 +1,12 @@
-const $btnMoonbucksMenu = document.querySelector('#app nav');
-const $menuName = document.querySelector('main h2');
-const $menuCount = document.querySelector('.menu-count');
-const $menuForm = document.querySelector('#menu-form');
-const $menuInput = $menuForm.querySelector('input');
-const $btnSubmitMenu = $menuForm.querySelector('button');
-const $menuList = document.querySelector('#menu-list');
+import { $ } from './utility/DOMSelector.js';
+
+const $btnMoonbucksMenu = $('#app nav');
+const $menuName = $('main h2');
+const $menuCount = $('.menu-count');
+const $menuForm = $('#menu-form');
+const $menuInput = $('#menu-form input');
+const $btnSubmitMenu = $('#menu-form button');
+const $menuList = $('#menu-list');
 
 let menuList = {
   espresso: [],
@@ -26,9 +28,9 @@ const setMenu = function (menu) {
 };
 
 const editMenu = function (event) {
-  const li = event.target.parentElement;
-  const menuId = parseInt(li.id);
-  const menuName = li.children[0];
+  const $li = event.target.parentElement;
+  const menuId = parseInt($li.id);
+  const menuName = $li.children[0];
   const editMenuValue = prompt('메뉴명을 수정하세요.', menuName.innerText);
   if (!editMenuValue) return;
 
@@ -40,12 +42,12 @@ const editMenu = function (event) {
 };
 
 const removeMenu = function (event) {
-  const li = event.target.parentElement;
-  const menuId = parseInt(li.id);
+  const $li = event.target.parentElement;
+  const menuId = parseInt($li.id);
   const removeConfirm = confirm('정말 삭제하시겠습니까?');
   if (!removeConfirm) return;
 
-  li.remove();
+  $li.remove();
   menuList[menuCategoryName] = menuList[menuCategoryName].filter(
     menu => menu.id !== menuId
   );
@@ -54,9 +56,9 @@ const removeMenu = function (event) {
 };
 
 const soldOutMenu = function (event) {
-  const li = event.target.parentElement;
-  const menuId = parseInt(li.id);
-  const menuName = li.children[0];
+  const $li = event.target.parentElement;
+  const menuId = parseInt($li.id);
+  const menuName = $li.children[0];
 
   menuList[menuCategoryName].forEach(menu => {
     if (menu.id === menuId) {
@@ -104,9 +106,9 @@ const renderMenu = function (menu) {
 
 const handleButtons = function (id) {
   const $menuItem = document.getElementById(`${id}`);
-  const $btnEdit = $menuItem.querySelector('.menu-edit-button');
-  const $btnRemove = $menuItem.querySelector('.menu-remove-button');
-  const $btnSoldout = $menuItem.querySelector('.menu-sold-out-button');
+  const $btnEdit = $('.menu-edit-button', $menuItem);
+  const $btnRemove = $('.menu-remove-button', $menuItem);
+  const $btnSoldout = $('.menu-sold-out-button', $menuItem);
 
   $btnEdit.addEventListener('click', editMenu);
   $btnRemove.addEventListener('click', removeMenu);

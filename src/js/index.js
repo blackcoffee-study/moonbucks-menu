@@ -99,7 +99,7 @@ function MenuApp() {
             onMenuItemDelete: this.handleMenuItemDelete,
             onMenuItemSoldOut: this.handleMenuItemSoldOut,
         });
-
+      
         const loadedMenuItems = this.getFromLocalStorage();
         if (loadedMenuItems) {
             this.setState(loadedMenuItems);

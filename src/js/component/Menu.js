@@ -1,8 +1,4 @@
-export default class Menu {
-    onSoldOutMenu = null
-    onEditMenu = null;
-    onRemoveMenu = null;
-    
+export default class Menu {    
     constructor({onSoldOutMenu, onEditMenu, onRemoveMenu}) {
         this.onSoldOutMenu = onSoldOutMenu;
         this.onEditMenu = onEditMenu;

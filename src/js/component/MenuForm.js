@@ -1,8 +1,10 @@
+import { SELECTORS } from "../Constants.js";
+import { $ } from "../DOM.js"
 export default class MenuForm {
     constructor({target, submit, onAdd}) {
         this.$menuForm = target;
         this.$submit = submit;
-        this.$menuInput = document.getElementById("espresso-menu-name");
+        this.$menuInput =  $(SELECTORS.ID.ESPRESSO_MENU_NAME);
 
         this.$menuForm.addEventListener("submit", (event) => this.onSubmit(event));
         this.$submit.addEventListener("click", (event) => this.onSubmit(event));

@@ -1,11 +1,11 @@
 'use strict';
 
 const $ = (selector) => document.querySelector(selector);
+const LOCALSTORAGE_KEY_MENU = 'menu';
+const BUTTON = 'BUTTON';
 
 function MenuApp() {
-    this.menuItems;
     this.currentCategory = 'espresso';
-    this.LOCALSTORAGE_KEY_MENU = 'menu';
 
     // state management functions
     this.setState = (updatedMenuItems) => {
@@ -23,13 +23,13 @@ function MenuApp() {
     // local storage functions
     this.saveToLocalStorage = () => {
         localStorage.setItem(
-            this.LOCALSTORAGE_KEY_MENU,
+            LOCALSTORAGE_KEY_MENU,
             JSON.stringify(this.menuItems)
         );
     };
 
     this.getFromLocalStorage = () => {
-        return JSON.parse(localStorage.getItem(this.LOCALSTORAGE_KEY_MENU));
+        return JSON.parse(localStorage.getItem(LOCALSTORAGE_KEY_MENU));
     };
 
     // event handlers
@@ -51,7 +51,7 @@ function MenuApp() {
 
     this.handleMenuItemNameEdit = (menuItem) => {
         const newName = window.prompt('메뉴명을 수정해주세요');
-        if (newName === null || newName === '') {
+        if (!newName) {
             return;
         }
         const menuItemsKey = this.currentCategory;
@@ -125,7 +125,7 @@ function Category({ onCategoryClick }) {
 
     this.categoryList.addEventListener('click', (event) => {
         const targetCategory = event.target;
-        if (targetCategory.tagName !== 'BUTTON') {
+        if (targetCategory.tagName !== BUTTON) {
             return;
         }
         onCategoryClick(targetCategory);
@@ -138,25 +138,14 @@ function Category({ onCategoryClick }) {
     };
 
     this.render = (currentCategory) => {
-        let translatedCategory;
-        switch (currentCategory) {
-            case 'espresso':
-                translatedCategory = '☕️ 에스프레소';
-                break;
-            case 'frappuccino':
-                translatedCategory = '🥤 프라푸치노';
-                break;
-            case 'blended':
-                translatedCategory = '🍹 블렌디드';
-                break;
-            case 'teavana':
-                translatedCategory = '🫖 티바나';
-                break;
-            case 'desert':
-                translatedCategory = '🍰 디저트';
-                break;
-        }
-        this.categoryTitle.innerText = `${translatedCategory} 메뉴 관리`;
+        const categoryList = {
+            espresso: '☕️ 에스프레소',
+            frappuccino: '🥤 프라푸치노',
+            blended: '🍹 블렌디드',
+            teavana: '🫖 티바나',
+            desert: '🍰 디저트',
+        };
+        this.categoryTitle.innerText = `${categoryList[currentCategory]} 메뉴 관리`;
     };
 }
 
@@ -176,7 +165,7 @@ function MenuInput({ onMenuItemAdd }) {
 
     this.handleMenuItemAdd = () => {
         const name = this.menuName.value;
-        if (name === '') {
+        if (!name) {
             alert('값을 입력해주세요.');
             return;
         }
@@ -197,7 +186,7 @@ function MenuList({ onMenuItemNameEdit, onMenuItemDelete, onMenuItemSoldOut }) {
 
     this.menuList.addEventListener('click', (event) => {
         const targetBtn = event.target;
-        if (targetBtn.tagName !== 'BUTTON') {
+        if (targetBtn.tagName !== BUTTON) {
             return;
         }
         const targetMenuItem = targetBtn.closest('li');
@@ -213,8 +202,9 @@ function MenuList({ onMenuItemNameEdit, onMenuItemDelete, onMenuItemSoldOut }) {
     });
 
     this.render = (menuItems, menuItemsKey) => {
-        const template = menuItems[menuItemsKey].map(
-            (menuItem, idx) => `
+        this.menuList.innerHTML = menuItems[menuItemsKey]
+            .map(
+                (menuItem, idx) => `
             <li data-menu-id="${idx}" class="menu-list-item d-flex items-center py-2">
                 <span class="w-100 pl-2 menu-name${
                     menuItem.soldOut === true ? ' sold-out' : ''
@@ -239,8 +229,8 @@ function MenuList({ onMenuItemNameEdit, onMenuItemDelete, onMenuItemSoldOut }) {
                 </button>
             </li>
         `
-        );
-        this.menuList.innerHTML = template.join('');
+            )
+            .join('');
         this.menuCount.innerText = `총 ${menuItems[menuItemsKey].length}개`;
     };
 }

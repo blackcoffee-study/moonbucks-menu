@@ -7,31 +7,19 @@ import Store from "./store.js";
 import { $ } from "../DOM.js"
 
 export default class MenuApp {
-    $menuForm = null;
-    $menuList = null;
-    $menuCount = null;
-    $menuCategory = null;
-    $menuTitle = null;
-
-    menuForm = null;
-    menu = null;
-    menuCategory = null;
-    common = null;
-    selectedCategory = "";
-    store = null;
-
     constructor() {
         this.$menuForm = $(SELECTORS.ID.ESPRESS_MENU_FROM);
+        this.$submitButton = $(SELECTORS.ID.ESPRESSO_MENU_SUBMIT_BUTTON);
         this.$menuList = $(SELECTORS.ID.ESPRESSO_MENU_LIST);
         this.$menuCount = $(SELECTORS.CLASS.MENU_COUNT);
         this.$menuCategory = $(SELECTORS.CLASS.CAFE_CATEGORY_LIST);
-        this.$menuTitle = $(SELECTORS.CLASS.MENU_TITLE);
+        this.$menuTitle = $(SELECTORS.CLASS.MENU_TITLE);    
 
         this.common = new Common();
         this.menu = new Menu({
-            onSoldOutMenu: (menu => {this.onSoldOutMenu(menu)}),
-            onEditMenu: (menu => {this.onEditMenu(menu)}),
-            onRemoveMenu: (menu => {this.onRemoveMenu(menu)})
+            onSoldOutMenu: menu => this.onSoldOutMenu(menu),
+            onEditMenu: menu => this.onEditMenu(menu),
+            onRemoveMenu: menu => this.onRemoveMenu(menu)
         });
 
         this.$menuList.addEventListener("click", (event) => {
@@ -57,8 +45,9 @@ export default class MenuApp {
 
         this.menuForm = new MenuForm({
             target: this.$menuForm,
+            submit: this.$submitButton,
             onAdd: (value => {
-                var data = {
+                let data = {
                     code: this.common.getUUID(),
                     category: this.store.getSelectedCategory(),
                     isSoldOut: value.isSoldOut,
@@ -92,8 +81,8 @@ export default class MenuApp {
     }
 
     onEditMenu(menu) {
-        var originMenuName = this.store.getMenu(menu.getAttribute("id"))[0].name;
-        var editMenuName = prompt("수정할 이름을 입력하세요", originMenuName);
+        let originMenuName = this.store.getMenu(menu.getAttribute("id"))[0].name;
+        let editMenuName = prompt("수정할 이름을 입력하세요", originMenuName);
 
         this.store.onEditMenuName(menu.getAttribute("id"), (editMenuName === null || editMenuName.trim(" ").length === 0) ? originMenuName : editMenuName);
         this.$menuList.innerHTML = "";
@@ -111,7 +100,7 @@ export default class MenuApp {
     }
 
     onSelectCategory(event) {
-        var menuItems = [];
+        let menuItems = [];
 
         this.store.setSelecedCategory(event.getAttribute("data-category-name"));
         menuItems = this.store.getShowMenuList();
@@ -127,7 +116,7 @@ export default class MenuApp {
     }
 
     setMenuCount() {
-        var count = this.store.getShowMenuList().length;
+        let count = this.store.getShowMenuList().length;
 
         this.$menuCount.innerText = `총 ${count}개`;
     }

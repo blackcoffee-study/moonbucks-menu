@@ -1,5 +1,3 @@
-import { SELECTORS } from "../Constants.js";
-
 export default class Menu {
     onSoldOutMenu = null
     onEditMenu = null;
@@ -12,7 +10,7 @@ export default class Menu {
     }
 
     getMenuForm(menu) {
-        var menuElement = document.createElement("template");
+        let menuElement = document.createElement("template");
 
         menuElement.innerHTML = `
         <li class="menu-list-item d-flex items-center py-2" id="${menu.code}" data-cateogry="${menu.category}">

@@ -1,9 +1,6 @@
 import { SELECTORS } from "../Constants.js";
 
-export default class MenuCategory {
-    menuCategory = null;
-    onSelectCategory = null;
-    
+export default class MenuCategory {    
     constructor({target, onSelectCategory}) {
         this.menuCategory = target;
         this.onSelectCategory = onSelectCategory;

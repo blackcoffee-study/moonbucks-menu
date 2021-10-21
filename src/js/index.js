@@ -1,68 +1,63 @@
 import { $ } from './utils/DOM.js'
 
-const $espressoNameInput = $('#espresso-menu-name');
-const $espressoSubmitButton = $('#espresso-menu-submit-button');
-const $espressoList = $('#espresso-menu-list');
-const $espressoForm = $('#espresso-menu-form');
+const $nameInput = $('#espresso-menu-name');
+const $submitButton = $('#espresso-menu-submit-button');
+const $menuList = $('#espresso-menu-list');
+const $menuForm = $('#espresso-menu-form');
 
-function addMenu(event) {
-    event.preventDefault();
-    if ($espressoNameInput.value === "") { 
+function addMenu(e) {
+    e.preventDefault();
+    if ($nameInput.value.trim() === "") {
         return
     }
-    else {
-        addItem();
-    }
+    addTemplate();
 }
 
-function addItem() {
+function addTemplate() {
     const $menuItem = document.createElement('li');
-    $menuItem.setAttribute("class", "espresso-menu-item d-flex items-center py-2");
+    $menuItem.setAttribute("class", "espresso-menu-item d-flex items-center py-2"); // ... .classList.add()
     $menuItem.innerHTML = `
-        <span class="w-100 pl-2 menu-name">${$espressoNameInput.value}</span>
-        <button type="button" id="espresso-menu-edit-button" class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button">
+        <span class="w-100 pl-2 menu-name">${$nameInput.value}</span>
+        <button type="button" class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button">
             수정
         </button>
-        <button type="button" id="espresso-menu-remove-button" class="bg-gray-50 text-gray-500 text-sm menu-remove-button">
+        <button type="button" class="bg-gray-50 text-gray-500 text-sm menu-remove-button">
             삭제
-        </button>
-    `
-    $espressoList.appendChild($menuItem);
-    $espressoNameInput.value = "";
-
-    const $espressoEdit = $('#espresso-menu-edit-button');
-    const $espressoRemove = $('#espresso-menu-remove-button');
-    $espressoEdit.addEventListener('click', function() {
-        editItem($menuItem)
-    });
-    $espressoRemove.addEventListener('click', function() {
-        removeItem($menuItem)
-    });
+        </button>`
+        
+        $menuList.appendChild($menuItem);
+        $nameInput.value = "";
 }
 
-function editItem(item) {
+function editItem(e) {
+    console.log(e.target.parentNode.childNodes[1].innerHTML);
     const newName = window.prompt('메뉴를 수정하세요');
 
     if (newName === null) {
         return;
     }
-    for (const child of item.childNodes) {
-        if (child.classList && child.classList.contains('menu-name')) {
-            child.innerText = newName;
-        }
-    }
-    // 구현하기 너무 난해해서 [11기 Liz님]의 코드를 인용하였습니다 ㅜㅜㅜㅜ
+
+    e.target.parentNode.childNodes[1].innerHTML = newName;
 }
 
-function removeItem(item) {
-    if (confirm("정말 삭제하시겠습니까?") == true) {
-        $espressoList.removeChild(item)
+function removeItem(e) {
+    if (confirm("정말 삭제하시겠습니까?")) {
+        e.target.parentNode.remove();
     }
 }
 
 function init() {
-    $espressoSubmitButton.addEventListener('click', addMenu);
-    $espressoForm.addEventListener('submit', addMenu);
+    $submitButton.addEventListener('click', addMenu);
+    $menuForm.addEventListener('submit', addMenu);
+    $menuList.addEventListener('click', function(e) {
+        if (e.target.classList.contains("menu-edit-button")) {
+            e.preventDefault();
+            editItem(e);
+        } else if (e.target.classList.contains("menu-remove-button")) {
+            e.preventDefault();
+            removeItem(e);
+        }
+    })
 }
 
 init();

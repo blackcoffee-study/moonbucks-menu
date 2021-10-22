@@ -1,4 +1,3 @@
-import EditDelete from "./componant/EditDelete.js";
 import LocalAdd from "./componant/Localadd.js";
 import MenuForm from "./componant/menuForm.js";
 import Render from "./componant/Render.js";
@@ -8,23 +7,31 @@ export default function App({ target }) {
   this.$target = target;
   this.state = {
     menu: [],
+    soldOut: [],
     navMenu: "espresso",
   };
 
   this.setState = ({ newState, newMenu }) => {
-    LocalAdd(this.state);
     if (newState) {
       this.state.menu = [...this.state.menu, newState];
+      this.state.soldOut = [...this.state.soldOut, false];
+      LocalAdd(this.state);
     } else {
       this.state.navMenu = newMenu;
-      localStorage.getItem(this.state.navMenu)
-        ? (this.state.menu = JSON.parse(
-            localStorage.getItem(this.state.navMenu)
-          ))
-        : (this.state.menu = []);
+      if (localStorage.getItem(this.state.navMenu)) {
+        this.state.menu = JSON.parse(
+          localStorage.getItem(this.state.navMenu)
+        ).menu;
+        this.state.soldOut = JSON.parse(
+          localStorage.getItem(this.state.navMenu)
+        ).soldOut;
+      } else {
+        this.state.menu = [];
+        this.state.soldOut = [];
+      }
     }
-
     new Render($("#espresso-menu-list"), this.state);
+    console.log(this.state);
   };
 
   new MenuForm({
@@ -38,7 +45,6 @@ export default function App({ target }) {
       if (input_value === "") return;
       else {
         this.setState({ newState: input_value, newMenu: this.state.navMenu });
-        input_value = "";
       }
     },
   });
@@ -67,10 +73,32 @@ export default function App({ target }) {
     if (target.closest(".espresso-menu-delete-btn")) {
       if (confirm("삭제하시겠습니까?")) {
         const idx = target.dataset.index;
-        this.state.menu.splice(idx, 1);
-        this.setState({ newState: null, newMenu: this.state.navMenu });
 
-        console.log(this.state);
+        this.state.menu.splice(idx, 1);
+        this.state.soldOut.splice(idx, 1);
+
+        LocalAdd(this.state);
+        this.setState({ newState: null, newMenu: this.state.navMenu });
+      }
+    }
+  }
+
+  function onSoldOut(e) {
+    e.preventDefault();
+
+    const { target } = e;
+
+    if (target.closest(".espresso-menu-soldout-btn")) {
+      const idx = target.dataset.index;
+      this.state.soldOut[idx] = !this.state.soldOut[idx];
+      LocalAdd(this.state);
+      this.setState({ newState: null, newMenu: this.state.navMenu });
+      const menuText = $All(".menu-list-item span")[idx];
+
+      if (this.state.soldOut[idx]) {
+        menuText.style.textDecoration = "line-through";
+      } else {
+        menuText.style.textDecoration = "none";
       }
     }
   }
@@ -86,7 +114,10 @@ export default function App({ target }) {
 
   addEvent("click", $("#espresso-menu-list"), onEdit.bind(this));
   addEvent("click", $("#espresso-menu-list"), onDelete.bind(this));
+  addEvent("click", $("#espresso-menu-list"), onSoldOut.bind(this));
   addEvent("click", $("nav"), onSelecteNavMenu.bind(this));
+
+  this.setState({ newState: null, newMenu: this.state.navMenu });
 }
 
 /* const cafe_category_name = document.querySelectorAll(".cafe-category-name");

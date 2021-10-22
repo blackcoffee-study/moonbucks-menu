@@ -193,7 +193,7 @@ function viewMenu (menuList) {
     let $menuItem = $All('.menu-list-item');
 
     if ($menuItem) {
-        $menuItem.forEach((menuItem) => menuList.removeChild(menuItem))
+        $menuItem.forEach((menuItem) => menuList.removeChild(menuItem));
     }
 
     if (initMenu[currentCategory]) {

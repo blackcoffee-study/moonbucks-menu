@@ -6,4 +6,4 @@ export const CATEGORY = {
   desert: '디저트',
 };
 
-export const LOCALSTORAGE_KEY = 'moonbucks';
+export const LOCALSTORAGE_KEY = 'moonbucks_category';

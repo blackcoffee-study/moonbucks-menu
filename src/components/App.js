@@ -7,48 +7,63 @@ import MenuCategoryTitle from './MenuCategoryTitle.js';
 import { $, $all } from '../lib/utils.js';
 import { LOCALSTORAGE_KEY } from '../lib/constant.js';
 import { setLocalStorage, getLocalStorage } from '../lib/localstorage.js';
+import { api } from '../api/api.js';
 
 function App($target) {
   this.$ = $($target);
   this.$all = $all($target);
   this.state = {};
 
-  this.init = () => {
+  this.init = async () => {
     const categories = this.$all('header button');
     const initialMenu = [];
     categories.forEach(
       (category) =>
         (initialMenu[category.attributes['data-category-name'].value] = [])
     );
-    const nextState = getLocalStorage(LOCALSTORAGE_KEY)
-      ? getLocalStorage(LOCALSTORAGE_KEY)
-      : { menu: initialMenu, currentCategory: 'espresso' };
+
+    const nextCurrentCategory = 'espresso';
+    const nextMenu = await this.getMenuList(nextCurrentCategory);
+
+    const nextState = {
+      menu: nextMenu,
+      currentCategory: nextCurrentCategory,
+    };
 
     this.setState(nextState);
+    console.log(this.state);
   };
 
-  this.setState = (nextState) => {
+  this.setState = async (nextState) => {
     this.state = nextState;
-    setLocalStorage(LOCALSTORAGE_KEY, this.state);
     this.menuList.setState(this.state);
     this.menuCount.setState(this.state);
     this.menuNavigation.setState(this.state);
     this.menuCategoryTitle.setState(this.state);
   };
 
-  this.onSelectCategory = (nextCategory) => {
+  this.onSelectCategory = async (nextCategory) => {
+    const nextMenu = await this.getMenuList(nextCategory);
     const nextState = {
-      ...this.state,
+      menu: nextMenu,
       currentCategory: nextCategory,
     };
     this.setState(nextState);
+  };
+
+  this.getMenuList = async (nextCurrentCategory) => {
+    try {
+      return await api.getMenu(nextCurrentCategory);
+    } catch (e) {
+      alert(`[${e.name}] : 메뉴 조회 시 에러가 발생하였습니다.`);
+    }
   };
 
   this.onAddMenu = (menu) => {
     const newMenuItem = {
       id: String(new Date()).replaceAll(' ', ''),
       name: menu,
-      isSoldout: false,
+      isSoldOut: false,
     };
     const nextState = {
       ...this.state,
@@ -95,7 +110,7 @@ function App($target) {
           menu.id === menuId
             ? {
                 ...menu,
-                isSoldout: !menu.isSoldout,
+                isSoldOut: !menu.isSoldOut,
               }
             : menu
         ),

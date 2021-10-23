@@ -32,8 +32,7 @@ function MenuList({ $target, state, onEditMenu, onRemoveMenu, onSoldoutMenu }) {
   };
 
   this.render = () => {
-    const currentMenu = this.state.menu[this.state.currentCategory];
-
+    const currentMenu = this.state.menu;
     if (currentMenu.length < 1) {
       this.$target.innerHTML = `
       <li class="menu-list-item d-flex items-center py-2">
@@ -47,7 +46,7 @@ function MenuList({ $target, state, onEditMenu, onRemoveMenu, onSoldoutMenu }) {
         (menuItem) => `
           <li class="menu-list-item d-flex items-center py-2" id=${menuItem.id}>
             <span class="w-100 pl-2 menu-name ${
-              menuItem.isSoldout ? 'sold-out' : ''
+              menuItem.isSoldOut ? 'sold-out' : ''
             }">${menuItem.name}</span>
             <button
               type="button"

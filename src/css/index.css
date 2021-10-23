@@ -34,7 +34,7 @@ hr {
 }
 
 ul li button {
-  width: 60px;
+  width: 50px;
   line-height: inherit;
   cursor: pointer;
   height: auto;
@@ -50,4 +50,8 @@ ul li button:hover {
 .sold-out {
   text-decoration: line-through;
   color: gray;
+}
+
+#espresso-menu-list {
+  list-style: none;
 }

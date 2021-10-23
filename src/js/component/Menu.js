@@ -1,10 +1,6 @@
-import { SELECTORS } from "../Constants.js";
+import { SELECTORS } from "../constant/element.js";
 
-export default class Menu {
-    onSoldOutMenu = null
-    onEditMenu = null;
-    onRemoveMenu = null;
-    
+export default class Menu {    
     constructor({onSoldOutMenu, onEditMenu, onRemoveMenu}) {
         this.onSoldOutMenu = onSoldOutMenu;
         this.onEditMenu = onEditMenu;
@@ -12,14 +8,13 @@ export default class Menu {
     }
 
     getMenuForm(menu) {
-        var liElement = document.createElement("li");
+        let liElement = document.createElement("li");
         
-        liElement.setAttribute("id", menu.code);
+        liElement.setAttribute("id", menu.id);
         liElement.setAttribute("data-cateogry", menu.category);
         liElement.setAttribute("class", "menu-list-item d-flex items-center py-2");
 
         liElement.addEventListener("click", ({target}) => {
-            console.log(target.classList);
             if(target.classList.contains(SELECTORS.CLASS.MENU_SOLD_OUT_BUTTON.slice(1, SELECTORS.CLASS.MENU_SOLD_OUT_BUTTON.length))) {
                 this.onSoldOutMenu(liElement);
             }

@@ -2,8 +2,10 @@ import MenuInput from './component/MenuInput.js';
 import MenuList from './component/MenuList.js';
 import MenuNav from './component/MenuNav.js';
 import MenuTitle from './component/MenuTitle.js';
-import { $, $$ } from './utils.js';
-import {setLocaStorage, getLocalStorage, getMenuList, setMenuList} from './store.js';
+import { $, $$, getRandomID } from './utils.js';
+import {setLocaStorage, getLocalStorage, getMenuList, setMenuList, initLocalStorage} from './store.js';
+
+
 
 export default class App {
   $target;
@@ -12,76 +14,78 @@ export default class App {
     this.setup();
   }
   setup() {
-    const data = {
-      'category' : 'espresso',
-      'espresso' : [],
-      'frappuccino' :[],
-      'blended' : [],
-      'teavana' :[],
-      'desert' :[]
-    }
-    this.$state = getLocalStorage('menu') ?? setLocaStorage('menu', data)
+    this.category ='espresso';
+    this.$state = initLocalStorage();
+    this.mounted();
+  }
+  setState(newState){
+    this.$state = newState;
     this.mounted();
   }
   mounted() {
-    const {$state, onChangeCategory, onAddMenu, onSoldoutMenu, onDeleteMenu, onUpdataMenu} =this;
+    const {$state, category, onChangeCategory, onAddMenu, onSoldoutMenu, onDeleteMenu, onUpdateMenu} =this;
 
     this.menuNav = new MenuNav($('#menu-nav'), {
       $state,
+      category,
       onChangeCategory : onChangeCategory.bind(this),
     });
     this.menuTitle = new MenuTitle($('#sub-title'), {
-      $state
+      $state,
+      category
     });
     this.menuInput = new MenuInput($('#espresso-menu-form'), {
       $state,
+      category,
       onAddMenu : onAddMenu.bind(this),
     });
     this.menuList = new MenuList($('#espresso-menu-list'), {
       $state,
+      category,
       onSoldoutMenu : onSoldoutMenu.bind(this),
       onDeleteMenu : onDeleteMenu.bind(this),
-      onUpdataMenu : onUpdataMenu.bind(this),
+      onUpdateMenu : onUpdateMenu.bind(this),
     });
   }
-  onChangeCategory(category){
-    this.$state.category = category;
-    setLocaStorage('menu',this.$state);
-    this.menuTitle.setState(getLocalStorage('menu'));
-    this.menuList.setState(getLocalStorage('menu'));
+  onChangeCategory(category){ 
+    this.category = category;
+    this.setState(getLocalStorage('menu'));
   }
-  onAddMenu(category, content){
-    const id = Math.random().toString(36).substr(2,12)
-   
-    const List = getMenuList(category);
-    List.push({
+
+  onAddMenu(content){
+    const id = getRandomID();
+    const menuList = getMenuList(this.category);
+    menuList.push({
       id,
       isSoldout : true,
       name : content,
     })
-    setMenuList(category, List);  
-    this.menuTitle.setState(getLocalStorage('menu'));
-    this.menuList.setState(getLocalStorage('menu'));
+    setMenuList(this.category, menuList);  
+    this.setState(getLocalStorage('menu'));
   }
 
-
-  onSoldoutMenu(category, id){
-    const List = getMenuList(category);
-    List.map(menu =>{
-      if(menu.id === id) {
-        List.push({id:todo.id, content:todo.content, activate:!todo.activate})
-      } 
-    })
+  onSoldoutMenu(id){
+    const menuList = getMenuList(this.category);
+    const updateMenuList = menuList.map((element)=>
+      element.id == id? {id , isSoldout :!element.isSoldout, name : element.name } : element
+    )
+    setMenuList(this.category, updateMenuList);
+    this.setState(getLocalStorage('menu'))
   }
 
-  onDeleteMenu(category, id){
-    const List = getMenuList(category);
-    const newList = List.filter(menu => menu.id !== id);
-    setMenuList(category, newList);
-    this.menuList.setState(getLocalStorage('menu'));
+  onDeleteMenu(id){
+    const menuList = getMenuList(this.category);
+    const updateMenuList = menuList.filter(menu => menu.id !== id);
+    setMenuList(this.category, updateMenuList);
+    this.setState(getLocalStorage('menu'))
   }
 
-  onUpdataMenu(category, id){
-
+  onUpdateMenu(id, name){
+    const menuList =  getMenuList(this.category);
+    const updateMenuList = menuList.map((element) => 
+      element.id == id? {id , isSoldout : element.isSoldout, name } : element
+    )
+    setMenuList(this.category, updateMenuList);
+    this.setState(getLocalStorage('menu'))
   }
 }

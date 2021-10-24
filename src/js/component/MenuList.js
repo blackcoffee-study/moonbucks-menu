@@ -1,24 +1,19 @@
 import component from '../core/component.js';
 import { getMenuList } from '../store.js';
-import { $$} from '../utils.js';
+import { $,$$} from '../utils.js';
 
 export default class MenuList extends component {
   setup() {
     this.$state = this.$props;
   }
   template() {
-    let category;
-    if(this.$state.$state == undefined){
-      category =this.$state.category;
-    }else{
-      category = this.$state.$state.category
-    }
+    const category = this.$props.category;
    
     const menuList = getMenuList(category);
     return `
     ${menuList.map(item =>`
       <li data-id=${item.id} class="menu-list-item d-flex items-center py-2">
-        <span class="w-100 pl-2 menu-name ${!item.isSoldout?"sold-out" : ""}">${item.name}</span>
+        <span id="menu-value" class="w-100 pl-2 menu-name ${!item.isSoldout?"sold-out" : ""}">${item.name}</span>
           <button
            data-id=${item.id}
             type="button"
@@ -45,11 +40,30 @@ export default class MenuList extends component {
   }
 
   mounted(){
-    const soldoutBtn  = $$('.menu-remove-button');
-    soldoutBtn.forEach(element =>{
+    const $deleteBtn  = $$('.menu-remove-button');
+    $deleteBtn.forEach(element =>{
       element.addEventListener('click',(e)=>{
-      this.$state.onDeleteMenu(category, e.target.dataset.id);
+        this.$state.onDeleteMenu(e.target.dataset.id);
+      })
     })
-  })
+
+    const $soldoutBtn = $$('.menu-sold-out-button');
+    $soldoutBtn.forEach(element => {
+      element.addEventListener('click',(e)=>{
+        this.$state.onSoldoutMenu(e.target.dataset.id);
+      }) 
+    })
+
+    const $updateBtn = $$('.menu-edit-button');
+    $updateBtn.forEach(element => {
+      element.addEventListener('click',(e)=>{
+        const value = $('#menu-value').innerText;
+        const updateValue = prompt('수정할 내용을 입력해주세요', value);
+        if(updateValue){
+          this.$state.onUpdateMenu(e.target.dataset.id, updateValue);
+        }
+      }) 
+    })
+
   }
 }

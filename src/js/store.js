@@ -4,17 +4,17 @@ const setLocaStorage = (key, value) => {
 
 const getLocalStorage = (key) => {
   const menuList =  localStorage.getItem(key);
+  console.log(menuList);
   return JSON.parse(menuList);
 }
 
 const initLocalStorage = () =>{
   const data = {
-    'category' : 'espresso',
-    'espresso' : [],
-    'frappuccino' :[],
-    'blended' : [],
-    'teavana' :[],
-    'desert' :[]
+    espresso : [],
+    frappuccino :[],
+    blended : [],
+    teavana :[],
+    desert :[]
   }
   return  getLocalStorage('menu')?? setLocaStorage('menu', data);
 }

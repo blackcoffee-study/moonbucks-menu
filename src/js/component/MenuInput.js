@@ -32,19 +32,28 @@ export default class MenuInput extends component {
         `;
   }
   mounted(){
+    const isEmptyValue = (value) => {
+      if(!value){
+        alert("빈 값을 입력하셨습니다"); 
+        return true;
+      }
+      return false; 
+    }
     $("#espresso-menu-form").addEventListener('submit', (e)=>{
       e.preventDefault();
     })
     $('#espresso-menu-submit-button').addEventListener('click',(e)=>{
       const name = $('#espresso-menu-name').value;
-      this.$state.onAddMenu(this.$state.$state.category, name);
+      if(isEmptyValue(name)) return;
+      this.$state.onAddMenu(name);
     })
 
     $('#espresso-menu-name').addEventListener('keyup',(e)=>{
       if(e.key ==='Enter'){
-        this.$state.onAddMenu( this.$state.$state.category, e.target.value)
+        const name = e.target.value;
+        if(isEmptyValue(name)) return;
+        this.$state.onAddMenu(name);
       }
-      
     })
   }
 }

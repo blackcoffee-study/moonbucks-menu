@@ -10,7 +10,9 @@ export default class component {
     this.render();
   }
   setup() {}
-  mounted() {}
+  mounted() {
+    
+  }
   template() {
     return '';
   }

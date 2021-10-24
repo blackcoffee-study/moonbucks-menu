@@ -1,10 +1,16 @@
+import {
+  postMenu,
+  BASE_URL,
+  getMenu,
+  putMenu,
+  deleteMenu
+} from './api/index.js';
 import { $ } from './utility/DOMSelector.js';
 import {
   EDIT_MESSAGE,
   CONFIRM_MESSAGE,
   ALERT_MESSAGE,
   CLASS_SOLD_OUT,
-  STORAGE_KEY_MENU,
   EVENT_LISTENER_CLICK
 } from './constants/constants.js';
 
@@ -21,11 +27,20 @@ let categoryList = {
   frappuccino: [],
   blended: [],
   teavana: [],
-  dessert: []
+  desert: []
 };
 
 let categoryKey = 'espresso';
 let categoryName;
+
+const getMenuItem = async function () {
+  const data = await getMenu(`${BASE_URL}/api/category/${categoryKey}/menu`);
+  if (!data) return;
+
+  categoryList[categoryKey] = data;
+  renderMenu(categoryList[categoryKey]);
+};
+getMenuItem();
 
 const manageCategory = function (event) {
   if (event.target.localName === 'nav') return;
@@ -34,20 +49,16 @@ const manageCategory = function (event) {
   categoryName = event.target.innerText;
   $menuName.innerText = `${categoryName} 메뉴 관리`;
 
-  renderMenu(categoryList[categoryKey]);
+  getMenuItem();
 };
 
 const menuCounter = function () {
   $menuCount.innerText = `총 ${categoryList[categoryKey].length}개`;
 };
 
-const setMenu = function (menu) {
-  localStorage.setItem(STORAGE_KEY_MENU, JSON.stringify(menu));
-};
-
-const editMenu = function (event) {
+const editMenu = async function (event) {
   const $li = event.target.parentElement;
-  const menuId = parseInt($li.id);
+  const menuId = $li.id;
   const menuName = $li.children[0];
   const editMenuValue = prompt(EDIT_MESSAGE, menuName.innerText);
   if (!editMenuValue) return;
@@ -55,13 +66,16 @@ const editMenu = function (event) {
   categoryList[categoryKey].forEach(menu => {
     if (menu.id === menuId) menu.name = editMenuValue;
   });
-  setMenu(categoryList);
+
+  await putMenu(`${BASE_URL}/api/category/${categoryKey}/menu/${menuId}`, {
+    name: editMenuValue
+  });
   menuName.innerText = editMenuValue;
 };
 
-const removeMenu = function (event) {
+const removeMenu = async function (event) {
   const $li = event.target.parentElement;
-  const menuId = parseInt($li.id);
+  const menuId = $li.id;
   const removeConfirm = confirm(CONFIRM_MESSAGE);
   if (!removeConfirm) return;
 
@@ -70,31 +84,39 @@ const removeMenu = function (event) {
     menu => menu.id !== menuId
   );
   menuCounter();
-  setMenu(categoryList);
+  await deleteMenu(`${BASE_URL}/api/category/${categoryKey}/menu/${menuId}`);
 };
 
-const soldOutMenu = function (event) {
+const soldOutMenu = async function (event) {
   const $li = event.target.parentElement;
-  const menuId = parseInt($li.id);
+  const menuId = $li.id;
   const menuName = $li.children[0];
+  let soldOut;
 
   categoryList[categoryKey].forEach(menu => {
     if (menu.id === menuId) {
       menuName.classList.toggle(CLASS_SOLD_OUT);
       [...menuName.classList].includes(CLASS_SOLD_OUT)
-        ? (menu.soldOut = true)
-        : (menu.soldOut = false);
+        ? (menu.isSoldOut = true)
+        : (menu.isSoldOut = false);
     }
+    soldOut = menu.isSoldOut;
   });
-  setMenu(categoryList);
+
+  await putMenu(
+    `${BASE_URL}/api/category/${categoryKey}/menu/${menuId}/soldout`,
+    { isSoldOut: soldOut }
+  );
 };
 
 const renderMenu = function (menu) {
-  const templete = menu
+  const $templete = menu
     .map(
       item => `
       <li class="menu-list-item d-flex items-center py-2" id=${item.id}>
-          <span class="w-100 pl-2 menu-name">${item.name}</span>
+          <span class="w-100 pl-2 menu-name ${
+            item.isSoldOut ? CLASS_SOLD_OUT : ''
+          }">${item.name}</span>
           <button
             type="button"
             class="bg-gray-50 text-gray-500 text-sm mr-1 menu-sold-out-button"
@@ -117,7 +139,8 @@ const renderMenu = function (menu) {
     `
     )
     .join('');
-  $menuList.innerHTML = templete;
+
+  $menuList.innerHTML = $templete;
   menu.forEach(item => handleButtons(item.id));
   menuCounter();
 };
@@ -133,13 +156,15 @@ const handleButtons = function (id) {
   $btnSoldout.addEventListener(EVENT_LISTENER_CLICK, soldOutMenu);
 };
 
-const createMenu = function (menu) {
-  const id = Date.now();
-  categoryList[categoryKey].push({ name: menu, id, soldOut: false });
+const createMenu = async function (menu) {
+  const data = await postMenu(`${BASE_URL}/api/category/${categoryKey}/menu`, {
+    name: menu
+  });
+  categoryList[categoryKey].push({ id: data.id, name: menu, isSoldOut: false });
+
   renderMenu(categoryList[categoryKey]);
+  handleButtons(data.id);
   menuCounter();
-  handleButtons(id);
-  setMenu(categoryList);
 };
 
 const submitMenu = function (event) {
@@ -158,8 +183,3 @@ const submitMenu = function (event) {
 $menuForm.addEventListener('submit', submitMenu);
 $btnSubmitMenu.addEventListener(EVENT_LISTENER_CLICK, submitMenu);
 $btnMoonbucksMenu.addEventListener(EVENT_LISTENER_CLICK, manageCategory);
-
-const getMenu = JSON.parse(localStorage.getItem(STORAGE_KEY_MENU));
-if (getMenu !== null) categoryList = getMenu;
-
-renderMenu(categoryList[categoryKey]);

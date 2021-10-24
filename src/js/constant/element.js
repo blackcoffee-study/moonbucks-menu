@@ -7,7 +7,8 @@ export const SELECTORS = Object.freeze({
         MENU_EDIT_BUTTON: ".menu-edit-button",
         CAFE_CATEGORY_LIST: ".cafe-category-list",
         CAFE_CATEGORY_NAME: ".cafe-category-name",
-        MENU_TITLE: ".menu-title"
+        MENU_TITLE: ".menu-title",
+        MENU_LIST_ITEM: ".menu-list-item"
     },
     ID: {
         ESPRESS_MENU_FROM: "#espresso-menu-form",

@@ -4,10 +4,12 @@ const request = async (url = "", options) => {
     try {
         const res = await fetch(`${BASE_URL}/${url}`, options);
 
-        if(!res.ok) throw new Error(res.status);
+        if(!res.ok) throw res.json();
         return await((options && options.method) !== DELETE ? res.json() : {});     
     } catch(error) {
-        throw new Error(error);
+        error.then(e => {
+            alert(e.message);
+        });
     }
 };
 

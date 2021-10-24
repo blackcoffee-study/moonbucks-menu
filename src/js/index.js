@@ -4,6 +4,7 @@ const $nameInput = $('#espresso-menu-name');
 const $submitButton = $('#espresso-menu-submit-button');
 const $menuList = $('#espresso-menu-list');
 const $menuForm = $('#espresso-menu-form');
+let count = 0;
 
 function addMenu(e) {
     e.preventDefault();
@@ -11,6 +12,7 @@ function addMenu(e) {
         return
     }
     addTemplate();
+    count++, countItem();
 }
 
 function addTemplate() {
@@ -30,7 +32,6 @@ function addTemplate() {
 }
 
 function editItem(e) {
-    console.log(e.target.parentNode.childNodes[1].innerHTML);
     const newName = window.prompt('메뉴를 수정하세요');
 
     if (newName === null) {
@@ -46,6 +47,11 @@ function removeItem(e) {
     }
 }
 
+function countItem() {
+    const $menuCount = $('#menu-count');
+    $menuCount.innerText = `총 ${count}개`
+}
+
 function init() {
     $submitButton.addEventListener('click', addMenu);
     $menuForm.addEventListener('submit', addMenu);
@@ -56,6 +62,7 @@ function init() {
         } else if (e.target.classList.contains("menu-remove-button")) {
             e.preventDefault();
             removeItem(e);
+            count--, countItem();
         }
     })
 }

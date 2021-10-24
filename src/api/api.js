@@ -9,8 +9,10 @@ const options = {
   delete: () => ({
     method: 'DELETE',
   }),
-  put: () => ({
+  put: (content) => ({
     method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(content),
   }),
 };
 
@@ -23,30 +25,39 @@ const request = async (url, option = {}) => {
   }
 };
 
+const deleteRequest = async (url, option = {}) => {
+  const response = await fetch(url, option);
+  if (response.ok) {
+    return '';
+  } else {
+    throw new Error(response.status);
+  }
+};
+
 export const api = {
-  addMenu: (category) => {
+  addMenu: ({ category, content }) => {
     return request(
       `${API_ENDPOINT}/api/category/${category}/menu`,
       options.post(content)
     );
   },
-  getMenu: (category) => {
+  getMenu: ({ category }) => {
     return request(`${API_ENDPOINT}/api/category/${category}/menu`);
   },
-  editMenuName: (category, menuId) => {
+  editMenuName: ({ category, menuId, content }) => {
     return request(
       `${API_ENDPOINT}/api/category/${category}/menu/${menuId}`,
-      options.put()
+      options.put(content)
     );
   },
-  soldoutMenu: (category, menuId) => {
+  soldoutMenu: ({ category, menuId }) => {
     return request(
       `${API_ENDPOINT}/api/category/${category}/menu/${menuId}/soldout`,
       options.put()
     );
   },
-  deleteMenu: (category, menuId) => {
-    return request(
+  deleteMenu: ({ category, menuId }) => {
+    return deleteRequest(
       `${API_ENDPOINT}/api/category/${category}/menu/${menuId}`,
       options.delete()
     );

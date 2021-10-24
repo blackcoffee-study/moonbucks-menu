@@ -23,7 +23,7 @@ function App($target) {
     );
 
     const nextCurrentCategory = 'espresso';
-    const nextMenu = await this.getMenuList(nextCurrentCategory);
+    const nextMenu = await this.onMenuList(nextCurrentCategory);
 
     const nextState = {
       menu: nextMenu,
@@ -31,7 +31,6 @@ function App($target) {
     };
 
     this.setState(nextState);
-    console.log(this.state);
   };
 
   this.setState = async (nextState) => {
@@ -43,7 +42,7 @@ function App($target) {
   };
 
   this.onSelectCategory = async (nextCategory) => {
-    const nextMenu = await this.getMenuList(nextCategory);
+    const nextMenu = await this.onMenuList(nextCategory);
     const nextState = {
       menu: nextMenu,
       currentCategory: nextCategory,
@@ -51,86 +50,86 @@ function App($target) {
     this.setState(nextState);
   };
 
-  this.getMenuList = async (nextCurrentCategory) => {
+  this.onMenuList = async (nextCurrentCategory) => {
     try {
-      return await api.getMenu(nextCurrentCategory);
+      return await api.getMenu({ category: nextCurrentCategory });
     } catch (e) {
-      alert(`[${e.name}] : 메뉴 조회 시 에러가 발생하였습니다.`);
+      alert(`${e.message}`);
     }
   };
 
-  this.onAddMenu = (menu) => {
-    const newMenuItem = {
-      id: String(new Date()).replaceAll(' ', ''),
-      name: menu,
-      isSoldOut: false,
-    };
-    const nextState = {
-      ...this.state,
-      menu: {
-        ...this.state.menu,
-        [this.state.currentCategory]: [
-          ...this.state.menu[this.state.currentCategory],
-          newMenuItem,
-        ],
-      },
-    };
-    this.setState(nextState);
-  };
-
-  this.onEditMenu = (menuId) => {
-    const editName = prompt('변경할 메뉴를 입력하세요');
-    const nextState = {
-      ...this.state,
-      menu: {
-        ...this.state.menu,
-        [this.state.currentCategory]: this.state.menu[
-          this.state.currentCategory
-        ].map((menu) =>
-          menu.id === menuId
-            ? {
-                ...menu,
-                name: editName,
-              }
-            : menu
-        ),
-      },
-    };
-    this.setState(nextState);
-  };
-
-  this.onSoldoutMenu = (menuId) => {
-    const nextState = {
-      ...this.state,
-      menu: {
-        ...this.state.menu,
-        [this.state.currentCategory]: this.state.menu[
-          this.state.currentCategory
-        ].map((menu) =>
-          menu.id === menuId
-            ? {
-                ...menu,
-                isSoldOut: !menu.isSoldOut,
-              }
-            : menu
-        ),
-      },
-    };
-    this.setState(nextState);
-  };
-
-  this.onRemoveMenu = (menuId) => {
-    if (confirm('선택한 메뉴를 삭제하시겠습니까?')) {
+  this.onAddMenu = async (menu) => {
+    try {
+      const result = await api.addMenu({
+        category: this.state.currentCategory,
+        content: {
+          name: menu,
+        },
+      });
       const nextState = {
         ...this.state,
-        menu: {
-          ...this.state.menu,
-          [this.state.currentCategory]: this.state.menu[
-            this.state.currentCategory
-          ].filter((menu) => menu.id !== menuId),
-        },
+        menu: [...this.state.menu, result],
       };
       this.setState(nextState);
+    } catch (e) {
+      alert(`${e.message}`);
+    }
+  };
+
+  this.onEditMenu = async (menuId) => {
+    try {
+      const editName = prompt('변경할 메뉴를 입력하세요');
+      const resultMenu = await api.editMenuName({
+        menuId: menuId,
+        category: this.state.currentCategory,
+        content: {
+          name: editName,
+        },
+      });
+      const nextState = {
+        ...this.state,
+        menu: this.state.menu.map((menu) =>
+          menu.id === menuId ? resultMenu : menu
+        ),
+      };
+      this.setState(nextState);
+    } catch (e) {
+      alert(`${e.message}`);
+    }
+  };
+
+  this.onSoldoutMenu = async (menuId) => {
+    try {
+      const resultMenu = await api.soldoutMenu({
+        menuId: menuId,
+        category: this.state.currentCategory,
+      });
+      const nextState = {
+        ...this.state,
+        menu: this.state.menu.map((menu) =>
+          menu.id === menuId ? resultMenu : menu
+        ),
+      };
+      this.setState(nextState);
+    } catch (e) {
+      alert(`${e.message}`);
+    }
+  };
+
+  this.onRemoveMenu = async (menuId) => {
+    try {
+      if (!confirm('선택한 메뉴를 삭제하시겠습니까?')) return;
+      await api.deleteMenu({
+        menuId: menuId,
+        category: this.state.currentCategory,
+      });
+      const nextState = {
+        ...this.state,
+        menu: this.state.menu.filter((menu) => menu.id !== menuId),
+      };
+      this.setState(nextState);
+    } catch (e) {
+      alert(`${e.message}`);
     }
   };
 

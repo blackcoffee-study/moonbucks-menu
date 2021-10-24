@@ -160,6 +160,8 @@ const createMenu = async function (menu) {
   const data = await postMenu(`${BASE_URL}/api/category/${categoryKey}/menu`, {
     name: menu
   });
+  if (!data) return;
+
   categoryList[categoryKey].push({ id: data.id, name: menu, isSoldOut: false });
 
   renderMenu(categoryList[categoryKey]);

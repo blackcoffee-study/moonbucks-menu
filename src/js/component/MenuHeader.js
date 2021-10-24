@@ -1,5 +1,5 @@
 import { $ } from '../lib/utils.js';
-import { COFFEE_TITLE } from '../lib/constants.js';
+import { MENU_TITLE } from '../lib/constants.js';
 
 export default function MenuHeader($target) {
   const $menuCount = $($target)('.menu-count');
@@ -13,6 +13,6 @@ export default function MenuHeader($target) {
 
   const render = (categoryName, count) => {
     $menuCount.textContent = `총 ${count}개`;
-    $menuTitle.textContent = `${COFFEE_TITLE[categoryName]} 메뉴 관리`;
+    $menuTitle.textContent = `${MENU_TITLE[categoryName]} 메뉴 관리`;
   };
 }

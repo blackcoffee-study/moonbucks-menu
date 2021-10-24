@@ -1,4 +1,4 @@
-export const COFFEE_TITLE = {
+export const MENU_TITLE = {
   espresso: '☕ 에스프레소',
   frappuccino: '🥤 프라푸치노',
   blended: '🍹 블렌디드',

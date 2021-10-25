@@ -1,5 +1,6 @@
 @import "./shared/index.css";
 @import "./ui/index.css";
+@import "./app.css";
 
 html,
 body {

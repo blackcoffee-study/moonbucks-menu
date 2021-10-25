@@ -3,6 +3,7 @@ import Menu from './states/Menu.js'
 import { menuTemplate } from './template/menu.js'
 import { $ } from './utils/DOM.js'
 import MenuList from './states/MenuList.js'
+import { menuAPI } from './api/index.js'
 
 class Renderer {
   constructor (app) {
@@ -28,22 +29,38 @@ class DOMRenderer extends Renderer {
       this.app = App.load(JSON.parse(localStorage['menus']))
     }
     this.currentMenu = this.app.getCurrentMenuList()
-    this.#addMenuEvent().render()
+    this.init()
   }
 
-  #addMenuEvent () {
+  async init () {
+    const category = this.getCurrentCategory();
+    const menuList = await menuAPI.getCurrentMenu(category)
+    this.app = App.load([{title: category , menuList }])
+    this.currentMenu = this.app.getCurrentMenuList()
+
+    return this.addMenuEvent().render();
+  }
+
+  addMenuEvent () {
     this.$menuList = $('#espresso-menu-list')
     this.$menuCount = $('span.menu-count');
 
     const $inputMenu = $('#espresso-menu-form')
     const $navMenu = $('#category-name');
 
-    $inputMenu.addEventListener('submit', this.#handleAddMenu)
-    $navMenu.addEventListener('click', this.#handleChangeMenu) // 네이밍 컨벤션
-    return this;
+    $inputMenu.addEventListener('submit', this.handleAddMenu)
+    $navMenu.addEventListener('click', this.handleChangeMenu)
+    return this
   }
 
-  #handleChangeMenu = ({target: { dataset }}) => {
+  getCurrentCategory = () => {
+    const {title: category = 'espresso'} = this.currentMenu.getInfo()
+
+    return category;
+
+  }
+
+  handleChangeMenu = ({target: { dataset }}) => {
     const category = dataset['categoryName']
     if(category) {
       this.currentMenu = this.app.getCurrentMenuList(category)
@@ -51,39 +68,49 @@ class DOMRenderer extends Renderer {
     this.render()
   }
 
-  #handleAddMenu = (e) => {
+  handleAddMenu = async (e) => {
     e.preventDefault()
     const $input =  e.target.elements['espressoMenuName'];
     const name = $input.value.trim()
 
     if (!name.length) return
-    this.currentMenu.addMenu(Menu.get(this.currentMenu.size, name))
+    const memo = await menuAPI.addCafeMenu(this.getCurrentCategory(), name);
+    this.currentMenu.addMenu(Menu.load(memo))
 
     $input.value = '';
 
     this.render()
   }
 
-  #toggleSoldOut = (menu) => {
+  toggleSoldOut = async (menu) => {
     menu.toggleSoldOut();
+    const category = this.getCurrentCategory();
+    const {id : menuId } = menu.getInfo();
+    await menuAPI.soldOutMenu(category, menuId)
     this.render()
   }
 
-  #updateMenu = (menu) => {
+  updateMenu = async (menu) => {
     const newName = window.prompt('메뉴를 수정해주세요');
     if(!newName.trim()) return;
+    const category = this.getCurrentCategory();
+    const {id : menuId } = menu.getInfo();
+    await menuAPI.updateMenuName(category, menuId, newName)
     menu.updateName(newName);
     this.render()
   }
 
-  #deleteMenu = (menu) => {
+  deleteMenu = async (menu) => {
     const isDelete = window.confirm('메뉴를 삭제하시겠습니까?');
     if(!isDelete) return;
+    const category = this.getCurrentCategory();
+    const {id : menuId } = menu.getInfo();
+    await menuAPI.deleteMenu(category, menuId)
     this.currentMenu.removeMenu(menu);
     this.render()
   }
 
-  #createMenu = (menu) => {
+  createMenu = (menu) => {
     const { id, name, isSoldOut } = menu.getInfo()
     const li = document.createElement('li')
     const style = 'menu-list-item d-flex items-center py-2'.split(' ')
@@ -91,13 +118,13 @@ class DOMRenderer extends Renderer {
     li.classList.add(...(style))
     li.addEventListener('click', ({ target }) => {
         if (target.classList.contains('menu-sold-out-button')) {
-          this.#toggleSoldOut(menu)
+          this.toggleSoldOut(menu)
         }
         if (target.classList.contains('menu-edit-button')) {
-          this.#updateMenu(menu)
+          this.updateMenu(menu)
         }
         if (target.classList.contains('menu-remove-button')) {
-          this.#deleteMenu(menu)
+          this.deleteMenu(menu)
         }
 
       }
@@ -106,13 +133,14 @@ class DOMRenderer extends Renderer {
     this.$menuList.appendChild(li)
   }
 
-  render () {
-    const current = this.currentMenu.getInfo();
-    if(this.prev === JSON.stringify(current)) return;
+  async render () {
+    const category = this.currentMenu.title;
+    const menuList = await menuAPI.getCurrentMenu(category)
+    if(this.prev === JSON.stringify(menuList)) return;
     this.$menuList.innerHTML = '';
-    current.menuList.forEach(this.#createMenu)
-    this.$menuCount.innerHTML = `총 ${current.menuList.length}개`;
-    this.prev = JSON.stringify(current);
+    menuList.forEach(memo => this.createMenu(Menu.load(memo)))
+    this.$menuCount.innerHTML = `총 ${menuList.length}개`;
+    this.prev = JSON.stringify(menuList);
     localStorage['menus'] = JSON.stringify(this.app);
   }
 

@@ -16,10 +16,10 @@ const options = function (optionObj) {
   return { method };
 };
 
-export const requestApi = async function (optionObj, url) {
+export const requestApi = async function (optionObj, category, uri = '') {
   try {
     const response = await fetch(
-      `${CONSTANT.BASE_URL}${url}`,
+      `${CONSTANT.BASE_URL}/api/category/${category}/menu/${uri}`,
       options(optionObj)
     );
     if (!response.ok) {

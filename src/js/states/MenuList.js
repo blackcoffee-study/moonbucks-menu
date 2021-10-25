@@ -18,10 +18,6 @@ const MenuList = class extends Set {
     return menuList;
   }
 
-  toJSON () {
-    return this.getInfo();
-  }
-
   addMenu (menu) {
     if (!menu instanceof Menu) return console.log('invalid menu')
     super.add(menu)
@@ -35,7 +31,6 @@ const MenuList = class extends Set {
   getInfo () {
     return { title : this.title, menuList: Array.from(super.values())}
   }
-
 }
 
 export default MenuList

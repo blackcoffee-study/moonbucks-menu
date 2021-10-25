@@ -2,7 +2,6 @@ import App from './states/App.js'
 import Menu from './states/Menu.js'
 import { menuTemplate } from './template/menu.js'
 import { $ } from './utils/DOM.js'
-import MenuList from './states/MenuList.js'
 import { menuAPI } from './api/index.js'
 
 class Renderer {
@@ -22,31 +21,25 @@ class Renderer {
 class DOMRenderer extends Renderer {
   constructor (app) {
     super(app)
-    if(!localStorage['menus']){
-      localStorage['menus'] = JSON.stringify([]);
-      this.app.addMenuList(MenuList.get())
-    } else {
-      this.app = App.load(JSON.parse(localStorage['menus']))
-    }
-    this.currentMenu = this.app.getCurrentMenuList()
     this.init()
   }
 
   async init () {
-    const category = this.getCurrentCategory();
+    const category = this.getCurrentCategory()
     const menuList = await menuAPI.getCurrentMenu(category)
-    this.app = App.load([{title: category , menuList }])
+
+    this.app = App.load([{ title: category, menuList }])
     this.currentMenu = this.app.getCurrentMenuList()
 
-    return this.addMenuEvent().render();
+    return this.addMenuEvent().render()
   }
 
   addMenuEvent () {
     this.$menuList = $('#espresso-menu-list')
-    this.$menuCount = $('span.menu-count');
+    this.$menuCount = $('span.menu-count')
 
     const $inputMenu = $('#espresso-menu-form')
-    const $navMenu = $('#category-name');
+    const $navMenu = $('#category-name')
 
     $inputMenu.addEventListener('submit', this.handleAddMenu)
     $navMenu.addEventListener('click', this.handleChangeMenu)
@@ -54,59 +47,65 @@ class DOMRenderer extends Renderer {
   }
 
   getCurrentCategory = () => {
-    const {title: category = 'espresso'} = this.currentMenu.getInfo()
+    const { title: category } = this.currentMenu?.getInfo() || { title: 'espresso' }
 
-    return category;
-
+    return category
   }
 
-  handleChangeMenu = ({target: { dataset }}) => {
+  handleChangeMenu = ({ target: { dataset } }) => {
     const category = dataset['categoryName']
-    if(category) {
+
+    if (category) {
       this.currentMenu = this.app.getCurrentMenuList(category)
     }
+
     this.render()
   }
 
   handleAddMenu = async (e) => {
     e.preventDefault()
-    const $input =  e.target.elements['espressoMenuName'];
+    const $input = e.target.elements['espressoMenuName']
     const name = $input.value.trim()
 
     if (!name.length) return
-    const memo = await menuAPI.addCafeMenu(this.getCurrentCategory(), name);
+    const category = this.getCurrentCategory()
+    const memo = await menuAPI.addCafeMenu(category, name)
+
     this.currentMenu.addMenu(Menu.load(memo))
-
-    $input.value = '';
-
+    $input.value = ''
     this.render()
   }
 
   toggleSoldOut = async (menu) => {
-    menu.toggleSoldOut();
-    const category = this.getCurrentCategory();
-    const {id : menuId } = menu.getInfo();
+    const category = this.getCurrentCategory()
+    const { id: menuId } = menu.getInfo()
     await menuAPI.soldOutMenu(category, menuId)
+
+    menu.toggleSoldOut()
     this.render()
   }
 
   updateMenu = async (menu) => {
-    const newName = window.prompt('메뉴를 수정해주세요');
-    if(!newName.trim()) return;
-    const category = this.getCurrentCategory();
-    const {id : menuId } = menu.getInfo();
+    const newName = window.prompt('메뉴를 수정해주세요')
+
+    if (!newName.trim()) return
+    const category = this.getCurrentCategory()
+    const { id: menuId } = menu.getInfo()
     await menuAPI.updateMenuName(category, menuId, newName)
-    menu.updateName(newName);
+
+    menu.updateName(newName)
     this.render()
   }
 
   deleteMenu = async (menu) => {
-    const isDelete = window.confirm('메뉴를 삭제하시겠습니까?');
-    if(!isDelete) return;
-    const category = this.getCurrentCategory();
-    const {id : menuId } = menu.getInfo();
+    const isDelete = window.confirm('메뉴를 삭제하시겠습니까?')
+
+    if (!isDelete) return
+    const category = this.getCurrentCategory()
+    const { id: menuId } = menu.getInfo()
     await menuAPI.deleteMenu(category, menuId)
-    this.currentMenu.removeMenu(menu);
+
+    this.currentMenu.removeMenu(menu)
     this.render()
   }
 
@@ -126,7 +125,6 @@ class DOMRenderer extends Renderer {
         if (target.classList.contains('menu-remove-button')) {
           this.deleteMenu(menu)
         }
-
       }
     )
     li.innerHTML = menuTemplate(name, isSoldOut)
@@ -134,16 +132,17 @@ class DOMRenderer extends Renderer {
   }
 
   async render () {
-    const category = this.currentMenu.title;
+    const category = this.getCurrentCategory()
     const menuList = await menuAPI.getCurrentMenu(category)
-    if(this.prev === JSON.stringify(menuList)) return;
-    this.$menuList.innerHTML = '';
-    menuList.forEach(memo => this.createMenu(Menu.load(memo)))
-    this.$menuCount.innerHTML = `총 ${menuList.length}개`;
-    this.prev = JSON.stringify(menuList);
-    localStorage['menus'] = JSON.stringify(this.app);
-  }
 
+    if (this.prev === JSON.stringify(menuList)) return
+    this.$menuList.innerHTML = ''
+    menuList.forEach(memo => this.createMenu(Menu.load(memo)))
+
+    this.$menuCount.innerHTML = `총 ${menuList.length}개`
+
+    this.prev = JSON.stringify(menuList)
+  }
 }
 
 new DOMRenderer(new App())

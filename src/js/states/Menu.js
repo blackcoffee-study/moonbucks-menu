@@ -13,10 +13,6 @@ const Menu = class {
     return new Menu(id, name, isSoldOut)
   }
 
-  toJSON(){
-    return this.getInfo();
-  }
-
   updateName (newName) {
     this.name = newName
   }

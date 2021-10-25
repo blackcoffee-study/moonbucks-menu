@@ -24,7 +24,6 @@ const instance = async (method, url = '/', payload = '') => {
   } catch (err) {
     console.error(err)
   }
-
 }
 
 const HTTP_METHOD = {
@@ -42,7 +41,7 @@ const requests = {
 }
 
 export const menuAPI = {
-  getCurrentMenu: (category) => requests.get(`/category/${category}/menu`),
+  getCurrentMenu: (category = 'espresso') => requests.get(`/category/${category}/menu`),
   addCafeMenu: (category, name) => requests.post(`/category/${category}/menu`, { name }),
   updateMenuName: (category, menuId, name) => requests.put(`/category/${category}/menu/${menuId}`, { name }),
   soldOutMenu: (category, menuId) => requests.put(`/category/${category}/menu/${menuId}/soldout`),

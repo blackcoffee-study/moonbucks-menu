@@ -61,12 +61,12 @@ export default function MenuList($target, { onEdit, onRemove, onSoldOut }) {
     $menuList.append($menuItem);
   };
 
-  const createMenuItemTemplate = ({ name, soldOut }) => {
+  const createMenuItemTemplate = ({ name, isSoldOut }) => {
     const $template = document.createElement('template');
     $template.innerHTML = `
         <li class="menu-list-item d-flex items-center py-2">
         <span class="w-100 pl-2 menu-name ${
-          soldOut ? 'sold-out' : ''
+          isSoldOut ? 'sold-out' : ''
         } ">${name}</span>
         <button
           type="button"

@@ -4,6 +4,7 @@ import MenuList from './component/MenuList.js';
 import Navigator from './component/Navigator.js';
 import { $ } from './lib/utils.js';
 import store from './store/store.js';
+import api from './lib/api.js';
 
 export default function App($target) {
   this.$ = $($target);
@@ -23,10 +24,14 @@ export default function App($target) {
       onRemove: removeMenu,
       onSoldOut: soldOutMenu,
     });
+    getMenuItems('espresso');
+  };
 
+  const getMenuItems = async categoryName => {
+    const menuItems = await store.fetchMenuItems(categoryName);
     this.setState({
-      ...this.state,
-      menuItems: store.getLocalStorage()[this.state.categoryName],
+      categoryName,
+      menuItems,
     });
   };
 
@@ -34,43 +39,32 @@ export default function App($target) {
     this.state = state;
     this.menuHeader.setState(state);
     this.menuList.setState(state);
-    store.setLocalStorage(state.categoryName, state.menuItems);
   };
 
-  const setCategoryName = name => {
-    const state = {
-      categoryName: name,
-      menuItems: store.menuItems[name],
-    };
-    this.setState(state);
+  const setCategoryName = categoryName => {
+    getMenuItems(categoryName);
   };
 
-  const addMenu = menuName => {
-    const menuItems = [...this.state.menuItems, new MenuItem(menuName)];
-    this.setState({ ...this.state, menuItems });
+  const addMenu = async menuName => {
+    await api.CREATE_MENU(this.state.categoryName, menuName);
+    getMenuItems(this.state.categoryName);
   };
 
-  const editMenu = (menuName, newName) => {
-    const menuItems = this.state.menuItems.map(el =>
-      el.name === menuName ? new MenuItem(newName) : el,
-    );
-    this.setState({ ...this.state, menuItems });
+  const editMenu = async (menuName, newName) => {
+    const id = this.state.menuItems.find(el => el.name === menuName).id;
+    await api.EDIT_MENU(this.state.categoryName, id, newName);
+    getMenuItems(this.state.categoryName);
   };
 
-  const removeMenu = menuName => {
-    const menuItems = this.state.menuItems.filter(el => el.name !== menuName);
-    this.setState({ ...this.state, menuItems });
+  const removeMenu = async menuName => {
+    const id = this.state.menuItems.find(el => el.name === menuName).id;
+    await api.DELETE_MENU(this.state.categoryName, id);
+    getMenuItems(this.state.categoryName);
   };
 
-  const soldOutMenu = menuName => {
-    const menuItems = this.state.menuItems.map(el =>
-      el.name === menuName ? new MenuItem(menuName, !el.soldOut) : el,
-    );
-    this.setState({ ...this.state, menuItems });
+  const soldOutMenu = async menuName => {
+    const id = this.state.menuItems.find(el => el.name === menuName).id;
+    await api.SOLD_OUT_MENU(this.state.categoryName, id);
+    getMenuItems(this.state.categoryName);
   };
 }
-
-const MenuItem = function (name, soldOut = false) {
-  this.name = name;
-  this.soldOut = soldOut;
-};

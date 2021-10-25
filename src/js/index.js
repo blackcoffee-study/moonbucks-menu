@@ -1,5 +1,5 @@
 import { $ } from './utility/DOMSelector.js';
-import { requestApi } from './api/index.js';
+import { httpMethod } from './api/index.js';
 import * as CONSTANT from './constants/index.js';
 
 const $btnMoonbucksMenu = $('#app nav');
@@ -22,7 +22,7 @@ let categoryMenu = 'espresso';
 let category;
 
 const getMenuItem = async function () {
-  const data = await requestApi({ method: CONSTANT.METHOD_GET }, categoryMenu);
+  const data = await httpMethod.getMenu(categoryMenu);
   if (!data) return;
 
   categoryList[categoryMenu] = data;
@@ -55,15 +55,11 @@ const editMenu = async function (event) {
     if (menu.id === menuId) menu.name = editMenuValue;
   });
 
-  await requestApi(
-    { method: CONSTANT.METHOD_PUT, name: editMenuValue },
-    categoryMenu,
-    `${menuId}`
-  );
+  await httpMethod.editMenu(editMenuValue, categoryMenu, menuId);
   menuName.innerText = editMenuValue;
 };
 
-const removeMenu = function (event) {
+const removeMenu = async function (event) {
   const $li = event.target.parentElement;
   const menuId = $li.id;
   const removeConfirm = confirm(CONSTANT.CONFIRM_MESSAGE);
@@ -74,7 +70,7 @@ const removeMenu = function (event) {
     menu => menu.id !== menuId
   );
   menuCounter();
-  requestApi({ method: CONSTANT.METHOD_DELETE }, categoryMenu, `${menuId}`);
+  await httpMethod.removeMenu(categoryMenu, menuId);
 };
 
 const soldOutMenu = async function (event) {
@@ -93,11 +89,7 @@ const soldOutMenu = async function (event) {
     soldOut = menu.isSoldOut;
   });
 
-  await requestApi(
-    { method: CONSTANT.METHOD_PUT, isSoldOut: soldOut },
-    categoryMenu,
-    `${menuId}/soldout`
-  );
+  await httpMethod.soldOutMenu(categoryMenu, soldOut, menuId);
 };
 
 const renderMenu = function (menu) {
@@ -148,10 +140,7 @@ const handleButtons = function (id) {
 };
 
 const createMenu = async function (menu) {
-  const data = await requestApi(
-    { method: CONSTANT.METHOD_POST, name: menu },
-    categoryMenu
-  );
+  const data = await httpMethod.createMenu(menu, categoryMenu);
   if (!data) return;
 
   categoryList[categoryMenu].push({

@@ -36,26 +36,25 @@ const requestApi = async function (optionObj, category, uri = '') {
 };
 
 export const httpMethod = {
-  createMenu: async (menu, category) =>
-    await requestApi({ method: CONSTANT.METHOD_POST, name: menu }, category),
+  createMenu: (menu, category) =>
+    requestApi({ method: CONSTANT.METHOD_POST, name: menu }, category),
 
-  getMenu: async category =>
-    await requestApi({ method: CONSTANT.METHOD_GET }, category),
+  getMenu: category => requestApi({ method: CONSTANT.METHOD_GET }, category),
 
-  editMenu: async (menu, category, menuId) =>
-    await requestApi(
+  editMenu: (menu, category, menuId) =>
+    requestApi(
       { method: CONSTANT.METHOD_PUT, name: menu },
       category,
       `${menuId}`
     ),
 
-  soldOutMenu: async (category, soldOut, menuId) =>
-    await requestApi(
+  soldOutMenu: (category, soldOut, menuId) =>
+    requestApi(
       { method: CONSTANT.METHOD_PUT, isSoldOut: soldOut },
       category,
       `${menuId}/soldout`
     ),
 
-  removeMenu: async (category, menuId) =>
-    await requestApi({ method: CONSTANT.METHOD_DELETE }, category, `${menuId}`)
+  removeMenu: (category, menuId) =>
+    requestApi({ method: CONSTANT.METHOD_DELETE }, category, `${menuId}`)
 };

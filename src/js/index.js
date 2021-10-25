@@ -20,6 +20,9 @@ function addTemplate() {
     $menuItem.setAttribute("class", "espresso-menu-item d-flex items-center py-2"); // ... .classList.add()
     $menuItem.innerHTML = `
         <span class="w-100 pl-2 menu-name">${$nameInput.value}</span>
+        <button type="button"class="bg-gray-50 text-gray-500 text-sm mr-1 menu-sold-out-button">
+            품절
+        </button>
         <button type="button" class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button">
             수정
         </button>
@@ -29,6 +32,22 @@ function addTemplate() {
         
         $menuList.appendChild($menuItem);
         $nameInput.value = "";
+}
+
+function countItem() {
+    const $menuCount = $('#menu-count');
+    $menuCount.innerText = `총 ${count}개`
+}
+
+function soldoutItem(e) {
+    const targetItem = e.target.parentNode.childNodes[1];
+    if (targetItem.style.getPropertyValue("text-decoration") == "line-through") {
+        targetItem.style.setProperty("text-decoration", "none");
+        e.target.innerText = "품절";
+    } else {
+        targetItem.style.setProperty("text-decoration", "line-through");
+        e.target.innerText = "개시";
+    }
 }
 
 function editItem(e) {
@@ -47,16 +66,14 @@ function removeItem(e) {
     }
 }
 
-function countItem() {
-    const $menuCount = $('#menu-count');
-    $menuCount.innerText = `총 ${count}개`
-}
-
 function init() {
     $submitButton.addEventListener('click', addMenu);
     $menuForm.addEventListener('submit', addMenu);
     $menuList.addEventListener('click', function(e) {
-        if (e.target.classList.contains("menu-edit-button")) {
+        if (e.target.classList.contains("menu-sold-out-button")) {
+            e.preventDefault();
+            soldoutItem(e);
+        } else if (e.target.classList.contains("menu-edit-button")) {
             e.preventDefault();
             editItem(e);
         } else if (e.target.classList.contains("menu-remove-button")) {

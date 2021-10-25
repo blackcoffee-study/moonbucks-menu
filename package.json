@@ -6,7 +6,7 @@
   "author": "Will <kode15333@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "client": "live-server . --port=4000",
+    "client": "live-server .",
     "server": "cd server && yarn start",
     "start": "yarn server & yarn client"
   },

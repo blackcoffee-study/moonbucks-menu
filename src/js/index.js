@@ -40,7 +40,7 @@ const manageCategory = function (event) {
   getMenuItem();
 };
 
-const menuCounter = function () {
+const countMenu = function () {
   $menuCount.innerText = `총 ${categoryList[categoryMenu].length}개`;
 };
 
@@ -69,7 +69,7 @@ const removeMenu = async function (event) {
   categoryList[categoryMenu] = categoryList[categoryMenu].filter(
     menu => menu.id !== menuId
   );
-  menuCounter();
+  countMenu();
   await httpMethod.removeMenu(categoryMenu, menuId);
 };
 
@@ -125,7 +125,7 @@ const renderMenu = function (menu) {
 
   $menuList.innerHTML = $templete;
   menu.forEach(item => handleButtons(item.id));
-  menuCounter();
+  countMenu();
 };
 
 const handleButtons = function (id) {
@@ -151,7 +151,7 @@ const createMenu = async function (menu) {
 
   renderMenu(categoryList[categoryMenu]);
   handleButtons(data.id);
-  menuCounter();
+  countMenu();
 };
 
 const submitMenu = function (event) {

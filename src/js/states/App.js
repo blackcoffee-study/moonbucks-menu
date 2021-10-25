@@ -22,17 +22,17 @@ const App = class extends Set {
     super.add(menuList)
   }
 
-  _getTargetMenu(category){
+  #getTargetMenu(category){
     return this.getInfo().find(({ title }) => title === category)
   }
 
   getCurrentMenuList (category = 'espresso') {
-    const currentMenuList = this._getTargetMenu(category)
+    const currentMenuList = this.#getTargetMenu(category)
     if (currentMenuList) {
       return currentMenuList
     }
     super.add(MenuList.get(category))
-    return this._getTargetMenu(category)
+    return this.#getTargetMenu(category)
 
   }
 

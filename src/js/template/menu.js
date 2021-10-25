@@ -15,4 +15,4 @@ export const menuTemplate = (name, isSoldOut) => {
             class="bg-gray-50 text-gray-500 text-sm menu-remove-button">
             삭제
           </button>`
-}
+} // default

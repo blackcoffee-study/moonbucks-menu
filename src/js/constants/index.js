@@ -6,7 +6,7 @@ export const CLASS_SOLD_OUT = 'sold-out';
 
 export const EVENT_CLICK = 'click';
 
-export const BASE_URL = 'http://localhost:3000';
+export const BASE_URL = 'http://localhost:3000/';
 export const METHOD_POST = 'POST';
 export const METHOD_GET = 'GET';
 export const METHOD_PUT = 'PUT';

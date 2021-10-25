@@ -24,7 +24,7 @@ let category;
 const getMenuItem = async function () {
   const data = await requestApi(
     { method: CONSTANT.METHOD_GET },
-    `/api/category/${categoryMenu}/menu`
+    `api/category/${categoryMenu}/menu`
   );
   if (!data) return;
 
@@ -60,7 +60,7 @@ const editMenu = async function (event) {
 
   await requestApi(
     { method: CONSTANT.METHOD_PUT, name: editMenuValue },
-    `/api/category/${categoryMenu}/menu/${menuId}`
+    `api/category/${categoryMenu}/menu/${menuId}`
   );
   menuName.innerText = editMenuValue;
 };
@@ -78,7 +78,7 @@ const removeMenu = async function (event) {
   menuCounter();
   requestApi(
     { method: CONSTANT.METHOD_DELETE },
-    `/api/category/${categoryMenu}/menu/${menuId}`
+    `api/category/${categoryMenu}/menu/${menuId}`
   );
 };
 
@@ -100,7 +100,7 @@ const soldOutMenu = async function (event) {
 
   await requestApi(
     { method: CONSTANT.METHOD_PUT, isSoldOut: soldOut },
-    `/api/category/${categoryMenu}/menu/${menuId}/soldout`
+    `api/category/${categoryMenu}/menu/${menuId}/soldout`
   );
 };
 
@@ -154,7 +154,7 @@ const handleButtons = function (id) {
 const createMenu = async function (menu) {
   const data = await requestApi(
     { method: CONSTANT.METHOD_POST, name: menu },
-    `/api/category/${categoryMenu}/menu`
+    `api/category/${categoryMenu}/menu`
   );
   if (!data) return;
 

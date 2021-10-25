@@ -1,18 +1,6 @@
-import {
-  postMenu,
-  BASE_URL,
-  getMenu,
-  putMenu,
-  deleteMenu
-} from './api/index.js';
 import { $ } from './utility/DOMSelector.js';
-import {
-  EDIT_MESSAGE,
-  CONFIRM_MESSAGE,
-  ALERT_MESSAGE,
-  CLASS_SOLD_OUT,
-  EVENT_LISTENER_CLICK
-} from './constants/constants.js';
+import { requestApi } from './api/index.js';
+import * as CONSTANT from './constants/index.js';
 
 const $btnMoonbucksMenu = $('#app nav');
 const $menuName = $('main h2');
@@ -30,61 +18,68 @@ let categoryList = {
   desert: []
 };
 
-let categoryKey = 'espresso';
-let categoryName;
+let categoryMenu = 'espresso';
+let category;
 
 const getMenuItem = async function () {
-  const data = await getMenu(`${BASE_URL}/api/category/${categoryKey}/menu`);
+  const data = await requestApi(
+    { method: CONSTANT.METHOD_GET },
+    `/api/category/${categoryMenu}/menu`
+  );
   if (!data) return;
 
-  categoryList[categoryKey] = data;
-  renderMenu(categoryList[categoryKey]);
+  categoryList[categoryMenu] = data;
+  renderMenu(categoryList[categoryMenu]);
 };
 getMenuItem();
 
 const manageCategory = function (event) {
   if (event.target.localName === 'nav') return;
 
-  categoryKey = event.target.dataset.categoryName;
-  categoryName = event.target.innerText;
-  $menuName.innerText = `${categoryName} 메뉴 관리`;
+  categoryMenu = event.target.dataset.category;
+  category = event.target.innerText;
+  $menuName.innerText = `${category} 메뉴 관리`;
 
   getMenuItem();
 };
 
 const menuCounter = function () {
-  $menuCount.innerText = `총 ${categoryList[categoryKey].length}개`;
+  $menuCount.innerText = `총 ${categoryList[categoryMenu].length}개`;
 };
 
 const editMenu = async function (event) {
   const $li = event.target.parentElement;
   const menuId = $li.id;
   const menuName = $li.children[0];
-  const editMenuValue = prompt(EDIT_MESSAGE, menuName.innerText);
+  const editMenuValue = prompt(CONSTANT.EDIT_MESSAGE, menuName.innerText);
   if (!editMenuValue) return;
 
-  categoryList[categoryKey].forEach(menu => {
+  categoryList[categoryMenu].forEach(menu => {
     if (menu.id === menuId) menu.name = editMenuValue;
   });
 
-  await putMenu(`${BASE_URL}/api/category/${categoryKey}/menu/${menuId}`, {
-    name: editMenuValue
-  });
+  await requestApi(
+    { method: CONSTANT.METHOD_PUT, name: editMenuValue },
+    `/api/category/${categoryMenu}/menu/${menuId}`
+  );
   menuName.innerText = editMenuValue;
 };
 
 const removeMenu = async function (event) {
   const $li = event.target.parentElement;
   const menuId = $li.id;
-  const removeConfirm = confirm(CONFIRM_MESSAGE);
+  const removeConfirm = confirm(CONSTANT.CONFIRM_MESSAGE);
   if (!removeConfirm) return;
 
   $li.remove();
-  categoryList[categoryKey] = categoryList[categoryKey].filter(
+  categoryList[categoryMenu] = categoryList[categoryMenu].filter(
     menu => menu.id !== menuId
   );
   menuCounter();
-  await deleteMenu(`${BASE_URL}/api/category/${categoryKey}/menu/${menuId}`);
+  requestApi(
+    { method: CONSTANT.METHOD_DELETE },
+    `/api/category/${categoryMenu}/menu/${menuId}`
+  );
 };
 
 const soldOutMenu = async function (event) {
@@ -93,19 +88,19 @@ const soldOutMenu = async function (event) {
   const menuName = $li.children[0];
   let soldOut;
 
-  categoryList[categoryKey].forEach(menu => {
+  categoryList[categoryMenu].forEach(menu => {
     if (menu.id === menuId) {
-      menuName.classList.toggle(CLASS_SOLD_OUT);
-      [...menuName.classList].includes(CLASS_SOLD_OUT)
+      menuName.classList.toggle(CONSTANT.CLASS_SOLD_OUT);
+      [...menuName.classList].includes(CONSTANT.CLASS_SOLD_OUT)
         ? (menu.isSoldOut = true)
         : (menu.isSoldOut = false);
     }
     soldOut = menu.isSoldOut;
   });
 
-  await putMenu(
-    `${BASE_URL}/api/category/${categoryKey}/menu/${menuId}/soldout`,
-    { isSoldOut: soldOut }
+  await requestApi(
+    { method: CONSTANT.METHOD_PUT, isSoldOut: soldOut },
+    `/api/category/${categoryMenu}/menu/${menuId}/soldout`
   );
 };
 
@@ -115,7 +110,7 @@ const renderMenu = function (menu) {
       item => `
       <li class="menu-list-item d-flex items-center py-2" id=${item.id}>
           <span class="w-100 pl-2 menu-name ${
-            item.isSoldOut ? CLASS_SOLD_OUT : ''
+            item.isSoldOut ? CONSTANT.CLASS_SOLD_OUT : ''
           }">${item.name}</span>
           <button
             type="button"
@@ -151,20 +146,25 @@ const handleButtons = function (id) {
   const $btnRemove = $('.menu-remove-button', $menuItem);
   const $btnSoldout = $('.menu-sold-out-button', $menuItem);
 
-  $btnEdit.addEventListener(EVENT_LISTENER_CLICK, editMenu);
-  $btnRemove.addEventListener(EVENT_LISTENER_CLICK, removeMenu);
-  $btnSoldout.addEventListener(EVENT_LISTENER_CLICK, soldOutMenu);
+  $btnEdit.addEventListener(CONSTANT.EVENT_CLICK, editMenu);
+  $btnRemove.addEventListener(CONSTANT.EVENT_CLICK, removeMenu);
+  $btnSoldout.addEventListener(CONSTANT.EVENT_CLICK, soldOutMenu);
 };
 
 const createMenu = async function (menu) {
-  const data = await postMenu(`${BASE_URL}/api/category/${categoryKey}/menu`, {
-    name: menu
-  });
+  const data = await requestApi(
+    { method: CONSTANT.METHOD_POST, name: menu },
+    `/api/category/${categoryMenu}/menu`
+  );
   if (!data) return;
 
-  categoryList[categoryKey].push({ id: data.id, name: menu, isSoldOut: false });
+  categoryList[categoryMenu].push({
+    id: data.id,
+    name: menu,
+    isSoldOut: false
+  });
 
-  renderMenu(categoryList[categoryKey]);
+  renderMenu(categoryList[categoryMenu]);
   handleButtons(data.id);
   menuCounter();
 };
@@ -174,7 +174,7 @@ const submitMenu = function (event) {
 
   const menuValue = $menuInput.value;
   if (!menuValue) {
-    alert(ALERT_MESSAGE);
+    alert(CONSTANT.ALERT_MESSAGE);
     return;
   }
 
@@ -183,5 +183,5 @@ const submitMenu = function (event) {
 };
 
 $menuForm.addEventListener('submit', submitMenu);
-$btnSubmitMenu.addEventListener(EVENT_LISTENER_CLICK, submitMenu);
-$btnMoonbucksMenu.addEventListener(EVENT_LISTENER_CLICK, manageCategory);
+$btnSubmitMenu.addEventListener(CONSTANT.EVENT_CLICK, submitMenu);
+$btnMoonbucksMenu.addEventListener(CONSTANT.EVENT_CLICK, manageCategory);

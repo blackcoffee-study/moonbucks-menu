@@ -21,6 +21,7 @@ const requestApi = async function (optionObj, category, uri = '') {
       `${CONSTANT.BASE_URL}/api/category/${category}/menu${uri}`,
       options(optionObj)
     );
+
     if (!response.ok) {
       const { message: errorMessage } = await response.json();
       throw new Error(errorMessage);

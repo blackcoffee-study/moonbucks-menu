@@ -1,29 +1,41 @@
 import Menu from './Menu.js'
 
-const App = class extends Set {
-  constructor () {
-    super()
-  }
+const MenuList = class extends Set {
+    constructor(title = 'espresso') {
+        super()
+        this.title = title
+    }
 
-  static get () {
-    return new App()
-  }
+    static get(title) {
+        return new MenuList(title)
+    }
 
-  addMenu (menu) {
-    if (!menu instanceof Menu) return console.log('invalid menu')
-    super.add(menu)
-  }
+    static load(json) {
+        const menuList = new MenuList(json.title);
+        json.menuList.forEach(t => {
+            menuList.addMenu(Menu.load(t))
+        })
+        return menuList;
+    }
 
-  removeMenu (menu) {
-    if (!menu instanceof Menu) return console.log('invalid menu')
-    super.delete(menu)
-  }
+    toJSON() {
+        return this.getInfo();
+    }
 
-  getInfo () {
-    return Array.from(super.values())
-  }
+    addMenu(menu) {
+        if (!menu instanceof Menu) return console.log('invalid menu')
+        super.add(menu)
+    }
+
+    removeMenu(menu) {
+        if (!menu instanceof Menu) return console.log('invalid menu')
+        super.delete(menu)
+    }
+
+    getInfo() {
+        return {title: this.title, menuList: Array.from(super.values())}
+    }
 
 }
 
-export default App
-
+export default MenuList

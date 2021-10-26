@@ -25,6 +25,4 @@ export const coffeeAPI = {
   async deleteMenu(category, id){
     return await fetch(`${baseURL}/${category}/menu/${id}`, HTTP_REQUEST.DELETE());
   }
-
- 
 } 

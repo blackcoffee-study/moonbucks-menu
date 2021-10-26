@@ -1,80 +1,105 @@
-const $btnMenu = document.querySelector('#app nav');
-const $menuName = document.querySelector('main h2');
-const $menuCount = document.querySelector('.menu-count');
-const $menuForm = document.querySelector('#menu-form');
-const $menuInput = $menuForm.querySelector('input');
-const $btnSubmitMenu = $menuForm.querySelector('button');
-const $menuList = document.querySelector('#menu-list');
+import { $ } from './utility/DOMSelector.js';
+import { httpMethod } from './api/index.js';
+import * as CONSTANT from './constants/index.js';
 
-let menuList = {
+const $btnMoonbucksMenu = $('#app nav');
+const $menuName = $('main h2');
+const $menuCount = $('.menu-count');
+const $menuForm = $('#menu-form');
+const $menuInput = $('#menu-form input');
+const $btnSubmitMenu = $('#menu-form button');
+const $menuList = $('#menu-list');
+
+let categoryList = {
   espresso: [],
   frappuccino: [],
   blended: [],
   teavana: [],
-  dessert: []
+  desert: []
 };
 
-let menuCategoryName = 'espresso';
-let menuName;
+let categoryMenu = 'espresso';
+let category;
 
-const menuCounter = function () {
-  $menuCount.innerText = `총 ${menuList[menuCategoryName].length}개`;
+const getMenuItem = async function () {
+  const data = await httpMethod.getMenu(categoryMenu);
+  if (!data) return;
+
+  categoryList[categoryMenu] = data;
+  renderMenu(categoryList[categoryMenu]);
+};
+getMenuItem();
+
+const manageCategory = function (event) {
+  if (event.target.localName === 'nav') return;
+
+  categoryMenu = event.target.dataset.category;
+  category = event.target.innerText;
+  $menuName.innerText = `${category} 메뉴 관리`;
+
+  getMenuItem();
 };
 
-const setMenu = function (menu) {
-  localStorage.setItem('menu', JSON.stringify(menu));
+const countMenu = function () {
+  $menuCount.innerText = `총 ${categoryList[categoryMenu].length}개`;
 };
 
-const editMenu = function (event) {
-  const li = event.target.parentElement;
-  const menuId = parseInt(li.id);
-  const menuName = li.children[0];
-  const editMenuValue = prompt('메뉴명을 수정하세요.', menuName.innerText);
+const editMenu = async function (event) {
+  const $li = event.target.parentElement;
+  const menuId = $li.id;
+  const menuName = $li.children[0];
+  const editMenuValue = prompt(CONSTANT.EDIT_MESSAGE, menuName.innerText);
   if (!editMenuValue) return;
 
-  menuList[menuCategoryName].forEach(menu => {
+  categoryList[categoryMenu].forEach(menu => {
     if (menu.id === menuId) menu.name = editMenuValue;
   });
-  setMenu(menuList);
+
+  await httpMethod.editMenu(editMenuValue, categoryMenu, menuId);
   menuName.innerText = editMenuValue;
 };
 
-const removeMenu = function (event) {
-  const li = event.target.parentElement;
-  const menuId = parseInt(li.id);
-  const removeConfirm = confirm('정말 삭제하시겠습니까?');
+const removeMenu = async function (event) {
+  const $li = event.target.parentElement;
+  const menuId = $li.id;
+  const removeConfirm = confirm(CONSTANT.CONFIRM_MESSAGE);
   if (!removeConfirm) return;
 
-  li.remove();
-  menuList[menuCategoryName] = menuList[menuCategoryName].filter(
+  $li.remove();
+  categoryList[categoryMenu] = categoryList[categoryMenu].filter(
     menu => menu.id !== menuId
   );
-  menuCounter();
-  setMenu(menuList);
+  countMenu();
+  await httpMethod.removeMenu(categoryMenu, menuId);
 };
 
-const soldOutMenu = function (event) {
-  const li = event.target.parentElement;
-  const menuId = parseInt(li.id);
-  const menuName = li.children[0];
+const soldOutMenu = async function (event) {
+  const $li = event.target.parentElement;
+  const menuId = $li.id;
+  const menuName = $li.children[0];
+  let soldOut;
 
-  menuList[menuCategoryName].forEach(menu => {
+  categoryList[categoryMenu].forEach(menu => {
     if (menu.id === menuId) {
-      menuName.classList.toggle('sold-out');
-      [...menuName.classList].includes('sold-out')
-        ? (menu.soldOut = true)
-        : (menu.soldOut = false);
+      menuName.classList.toggle(CONSTANT.CLASS_SOLD_OUT);
+      [...menuName.classList].includes(CONSTANT.CLASS_SOLD_OUT)
+        ? (menu.isSoldOut = true)
+        : (menu.isSoldOut = false);
     }
+    soldOut = menu.isSoldOut;
   });
-  setMenu(menuList);
+
+  await httpMethod.soldOutMenu(categoryMenu, soldOut, menuId);
 };
 
 const renderMenu = function (menu) {
-  const templete = menu
+  const $templete = menu
     .map(
       item => `
       <li class="menu-list-item d-flex items-center py-2" id=${item.id}>
-          <span class="w-100 pl-2 menu-name">${item.name}</span>
+          <span class="w-100 pl-2 menu-name ${
+            item.isSoldOut ? CONSTANT.CLASS_SOLD_OUT : ''
+          }">${item.name}</span>
           <button
             type="button"
             class="bg-gray-50 text-gray-500 text-sm mr-1 menu-sold-out-button"
@@ -97,28 +122,36 @@ const renderMenu = function (menu) {
     `
     )
     .join('');
-  $menuList.innerHTML = templete;
+
+  $menuList.innerHTML = $templete;
   menu.forEach(item => handleButtons(item.id));
+  countMenu();
 };
 
 const handleButtons = function (id) {
   const $menuItem = document.getElementById(`${id}`);
-  const $btnEdit = $menuItem.querySelector('.menu-edit-button');
-  const $btnRemove = $menuItem.querySelector('.menu-remove-button');
-  const $btnSoldout = $menuItem.querySelector('.menu-sold-out-button');
+  const $btnEdit = $('.menu-edit-button', $menuItem);
+  const $btnRemove = $('.menu-remove-button', $menuItem);
+  const $btnSoldout = $('.menu-sold-out-button', $menuItem);
 
-  $btnEdit.addEventListener('click', editMenu);
-  $btnRemove.addEventListener('click', removeMenu);
-  $btnSoldout.addEventListener('click', soldOutMenu);
+  $btnEdit.addEventListener(CONSTANT.EVENT_CLICK, editMenu);
+  $btnRemove.addEventListener(CONSTANT.EVENT_CLICK, removeMenu);
+  $btnSoldout.addEventListener(CONSTANT.EVENT_CLICK, soldOutMenu);
 };
 
-const createMenu = function (menu) {
-  const id = Date.now();
-  menuList[menuCategoryName].push({ name: menu, id, soldOut: false });
-  renderMenu(menuList[menuCategoryName]);
-  menuCounter();
-  handleButtons(id);
-  setMenu(menuList);
+const createMenu = async function (menu) {
+  const data = await httpMethod.createMenu(menu, categoryMenu);
+  if (!data) return;
+
+  categoryList[categoryMenu].push({
+    id: data.id,
+    name: menu,
+    isSoldOut: false
+  });
+
+  renderMenu(categoryList[categoryMenu]);
+  handleButtons(data.id);
+  countMenu();
 };
 
 const submitMenu = function (event) {
@@ -126,7 +159,7 @@ const submitMenu = function (event) {
 
   const menuValue = $menuInput.value;
   if (!menuValue) {
-    alert('원하는 메뉴를 입력해주세요.');
+    alert(CONSTANT.ALERT_MESSAGE);
     return;
   }
 
@@ -135,20 +168,5 @@ const submitMenu = function (event) {
 };
 
 $menuForm.addEventListener('submit', submitMenu);
-$btnSubmitMenu.addEventListener('click', submitMenu);
-
-const getMenu = JSON.parse(localStorage.getItem('menu'));
-if (getMenu !== null) menuList = getMenu;
-
-$btnMenu.addEventListener('click', event => {
-  if (event.target.localName === 'nav') return;
-
-  menuCategoryName = event.target.dataset.categoryName;
-  menuName = event.target.innerText;
-  $menuName.innerText = `${menuName} 메뉴 관리`;
-
-  renderMenu(menuList[menuCategoryName]);
-  menuCounter();
-});
-
-renderMenu(menuList[menuCategoryName]);
+$btnSubmitMenu.addEventListener(CONSTANT.EVENT_CLICK, submitMenu);
+$btnMoonbucksMenu.addEventListener(CONSTANT.EVENT_CLICK, manageCategory);

@@ -1,8 +1,8 @@
 import { XApp } from "./xapp/index.js";
-import { LocalStorageMenuAPI } from "./api.js";
+import { ServerMenuAPI } from "./api.js";
 
 function createApp() {
-    const api = new LocalStorageMenuAPI();
+    const api = new ServerMenuAPI();
 
     const app = new XApp({
         el: document.getElementById("app"),
@@ -23,10 +23,16 @@ function createApp() {
         async createMenu(e) {
             e.preventDefault();
             if (this.data.menuInput !== "") {
-                this.data.menuList.push({ content: this.data.menuInput });
-                this.data.menuCount++;
-                this.data.menuInput = "";
-                await api.saveMenu(this.data.categorySelected.key, this.data.menuList);
+                try {
+                    const newMenu = await api.createMenu(this.data.categorySelected.key, this.data.menuInput);
+                    this.data.menuList.push(newMenu);
+                    this.data.menuCount++;
+                    this.data.menuInput = "";
+                } catch (e) {
+                    alert(e.data.message);
+                    return;
+                }
+
                 this.render();
                 this.elements.menuInput.focus();
             }
@@ -37,11 +43,15 @@ function createApp() {
         async editMenu(e, item) {
             const changed = prompt("새로운 메뉴 이름을 입력해주세요.", item.content);
             if (changed) {
+                try {
+                    await api.editMenu(this.data.categorySelected.key, { ...item, content: changed });
+                } catch (e) {
+                    alert(e.data.message);
+                    return;
+                }
                 item.content = changed;
 
                 this.render();
-
-                await api.saveMenu(this.data.categorySelected.key, this.data.menuList);
             }
         },
         async deleteMenu(e, item) {
@@ -49,18 +59,17 @@ function createApp() {
             if (shouldDelete) {
                 const idx = this.data.menuList.indexOf(item);
                 this.data.menuList.splice(idx, 1);
+                this.data.menuCount = this.data.menuList.length;
 
                 this.render();
-                await api.saveMenu(this.data.categorySelected.key, this.data.menuList);
+                await api.deleteMenu(this.data.categorySelected.key, item);
             }
         },
         async soldoutMenu(e, item) {
-            if (item.soldout) {
-                item.soldout = false;
-            } else {
-                item.soldout = true;
-            }
-            await api.saveMenu(this.data.categorySelected.key, this.data.menuList);
+            const newItem = await api.soldOutMenu(this.data.categorySelected.key, item);
+
+            item.soldout = newItem.soldout;
+
             this.render();
         },
         async changeMenuType(e, item) {

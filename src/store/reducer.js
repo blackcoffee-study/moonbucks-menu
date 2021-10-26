@@ -22,16 +22,6 @@ const initialState = {
   currentCategoryText: '☕ 에스프레소',
   menuCount: 0,
   isLoading: true,
-  isLoadSuccess: false,
-  isLoadFailure: false,
-  isCreateSuccess: false,
-  isCreateFailure: false,
-  isUpdateSuccess: false,
-  isUpdateFailure: false,
-  isDeleteSuccess: false,
-  isDeleteFailure: false,
-  isSoldOutSuccess: false,
-  isSoldOutFailure: false,
 };
 
 const reducer = (state = initialState, action) => {

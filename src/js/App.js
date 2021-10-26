@@ -1,21 +1,14 @@
 import { $ } from './utils/dom.js';
 import MenuInput from './ui/MenuInput.js';
 import MenuList from './ui/MenuList.js';
-import MenuItem from './ui/MenuItem.js';
 import MenuCount from './ui/MenuCount.js';
 import MenuCategory from './ui/MenuCategory.js';
+import Api from './utils/api.js';
 
 function App() {
-    this.menuItems = {
-        espresso: [],
-        frappuccino: [],
-        blended: [],
-        teavana: [],
-        desert: [],
-    };
     this.currentCategoryName = 'espresso';
 
-    this.init = () => {
+    this.init = async () => {
         this.menuInput = new MenuInput({
             onAdd: this.onAdd,
             $menuSubmitButton: $('#menu-submit-button'),
@@ -33,54 +26,50 @@ function App() {
             onCategoryChange: this.onCategoryChange,
             $nav: $('nav'),
         });
+        this.setState(await Api.getMenuList(this.currentCategoryName));
     };
 
     this.setState = updatedItems => {
-        this.menuItems = updatedItems;
-        this.menuList.setState(this.menuItems[this.currentCategoryName]);
-        this.menuCount.setState(
-            this.menuItems[this.currentCategoryName].length,
-        );
+        this.menuList.setState(updatedItems);
+        this.menuCount.setState(updatedItems.length);
     };
 
-    this.onAdd = menuName => {
-        const newMenuItem = new MenuItem(menuName);
-        this.menuItems[this.currentCategoryName].push(newMenuItem);
-        this.setState(this.menuItems);
+    this.onAdd = async menuName => {
+        await Api.postMenu(this.currentCategoryName, menuName);
+        this.setState(await Api.getMenuList(this.currentCategoryName));
     };
 
     this.onAction = (actionType, target, newMenuName) => {
-        const idx = target.closest('.menu-list-item').dataset.menuIdx;
-        this.action(actionType, idx, newMenuName);
-        this.setState(this.menuItems);
+        const id = target.closest('.menu-list-item').dataset.menuId;
+        this.action(actionType, id, newMenuName);
     };
 
-    this.onCategoryChange = target => {
+    this.onCategoryChange = async target => {
         if (target.classList.contains('cafe-category-name')) {
             $('#category-title').innerText = `${target.innerText} 메뉴 관리`;
             this.currentCategoryName = target.dataset.categoryName;
-            this.setState(this.menuItems);
+            this.setState(await Api.getMenuList(this.currentCategoryName));
         }
     };
 
-    this.action = (actionType, idx, newMenuName) => {
+    this.action = async (actionType, id, newMenuName) => {
         switch (actionType) {
             case 'update': {
-                this.menuItems[this.currentCategoryName][idx].name =
-                    newMenuName;
+                await Api.updateMenu(this.currentCategoryName, id, newMenuName);
                 break;
             }
             case 'delete': {
-                this.menuItems[this.currentCategoryName].splice(idx, 1);
+                await Api.deleteMenu(this.currentCategoryName, id);
                 break;
             }
             case 'soldout': {
-                this.menuItems[this.currentCategoryName][idx].isSoldOut =
-                    !this.menuItems[this.currentCategoryName][idx].isSoldOut;
+                await Api.updateSoldout(this.currentCategoryName, id);
                 break;
             }
         }
+        this.setState(await Api.getMenuList(this.currentCategoryName));
     };
+
 }
 
 const app = new App();

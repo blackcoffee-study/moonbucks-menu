@@ -2,9 +2,8 @@ import MenuInput from './component/MenuInput.js';
 import MenuList from './component/MenuList.js';
 import MenuNav from './component/MenuNav.js';
 import MenuTitle from './component/MenuTitle.js';
-import { $, $$, getRandomID } from './utils.js';
-import {setLocaStorage, getLocalStorage, getMenuList, setMenuList, initLocalStorage} from './store.js';
-
+import { $, getRandomID } from './utils.js';
+import { coffeeAPI } from './API/api.js';
 
 
 export default class App {
@@ -13,13 +12,13 @@ export default class App {
     this.$target = $target;
     this.setup();
   }
-  setup() {
+  async setup() {
     this.category ='espresso';
-    this.$state = initLocalStorage();
+    this.$state = await coffeeAPI.getMenuList(this.category);
     this.mounted();
   }
-  setState(newState){
-    this.$state = newState;
+  async setState(category){
+    this.$state =  await coffeeAPI.getMenuList(category);
     this.mounted();
   }
   mounted() {
@@ -49,43 +48,34 @@ export default class App {
   }
   onChangeCategory(category){ 
     this.category = category;
-    this.setState(getLocalStorage('menu'));
+    this.setState(this.category);
   }
 
-  onAddMenu(content){
-    const id = getRandomID();
-    const menuList = getMenuList(this.category);
-    menuList.push({
-      id,
-      isSoldout : true,
-      name : content,
-    })
-    setMenuList(this.category, menuList);  
-    this.setState(getLocalStorage('menu'));
+  async onAddMenu(content){
+    const result = await coffeeAPI.postMenu(this.category, {name:content})
+    console.log(result);
+    if(result) this.setState(this.category);
   }
 
-  onSoldoutMenu(id){
-    const menuList = getMenuList(this.category);
-    const updateMenuList = menuList.map((element)=>
-      element.id == id? {id , isSoldout :!element.isSoldout, name : element.name } : element
-    )
-    setMenuList(this.category, updateMenuList);
-    this.setState(getLocalStorage('menu'))
+  async onSoldoutMenu(id){
+    const result = await coffeeAPI.soldoutMenu(this.category, id)
+    if(result) this.setState(this.category);
   }
 
-  onDeleteMenu(id){
-    const menuList = getMenuList(this.category);
-    const updateMenuList = menuList.filter(menu => menu.id !== id);
-    setMenuList(this.category, updateMenuList);
-    this.setState(getLocalStorage('menu'))
+  async onDeleteMenu(id){
+    const result = await coffeeAPI.deleteMenu(this.category, id);
+    if(result.ok) this.setState(this.category);
   }
 
-  onUpdateMenu(id, name){
-    const menuList =  getMenuList(this.category);
-    const updateMenuList = menuList.map((element) => 
-      element.id == id? {id , isSoldout : element.isSoldout, name } : element
-    )
-    setMenuList(this.category, updateMenuList);
-    this.setState(getLocalStorage('menu'))
+  async onUpdateMenu(id, data){
+    const result = await coffeeAPI.updateMenu(this.category, id, data);
+    if(result) this.setState(this.category);
   }
+
+  async init(){
+    const data = await coffeeAPI.getMenuList(this.category);
+    console.log(data);
+  }
+
+
 }

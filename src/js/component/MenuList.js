@@ -1,19 +1,22 @@
 import component from '../core/component.js';
-import { getMenuList } from '../store.js';
+//import { getMenuList } from '../store.js';
 import { $,$$} from '../utils.js';
 
 export default class MenuList extends component {
   setup() {
     this.$state = this.$props;
+    //this.
+    console.log(this.$state);
   }
   template() {
     const category = this.$props.category;
-   
-    const menuList = getMenuList(category);
+    const menuList = this.$state.$state;
+    //console.log(menuList);
+    //const menuList = getMenuList(category);
     return `
     ${menuList.map(item =>`
       <li data-id=${item.id} class="menu-list-item d-flex items-center py-2">
-        <span id="menu-value" class="w-100 pl-2 menu-name ${!item.isSoldout?"sold-out" : ""}">${item.name}</span>
+        <span id="menu-value" class="w-100 pl-2 menu-name ${item.isSoldOut?"sold-out" : ""}">${item.name}</span>
           <button
            data-id=${item.id}
             type="button"
@@ -60,7 +63,7 @@ export default class MenuList extends component {
         const value = $('#menu-value').innerText;
         const updateValue = prompt('수정할 내용을 입력해주세요', value);
         if(updateValue){
-          this.$state.onUpdateMenu(e.target.dataset.id, updateValue);
+          this.$state.onUpdateMenu(e.target.dataset.id, {name :updateValue});
         }
       }) 
     })

@@ -4,7 +4,6 @@ const setLocaStorage = (key, value) => {
 
 const getLocalStorage = (key) => {
   const menuList =  localStorage.getItem(key);
-  console.log(menuList);
   return JSON.parse(menuList);
 }
 

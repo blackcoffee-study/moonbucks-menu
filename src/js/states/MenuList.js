@@ -34,4 +34,3 @@ const MenuList = class extends Set {
 }
 
 export default MenuList
-

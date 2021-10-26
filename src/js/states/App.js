@@ -38,4 +38,3 @@ const App = class extends Set {
 }
 
 export default App
-

@@ -8,7 +8,8 @@ function MenuCount({ $target, state }) {
   };
 
   this.render = () => {
-    const count = this.state.menu.length;
+    const currentMenu = this.state.menu;
+    const count = currentMenu.length;
     const countHtml = `총 ${count}개`;
 
     this.$target.innerHTML = countHtml;

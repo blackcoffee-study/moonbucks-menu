@@ -1,10 +1,11 @@
-import { isNodeNameButton, isIncludesClass } from '../utils/checkCondition.js';
+import { isNodeNameButton, isIncludesClass } from '../lib/checkCondition.js';
 
-function MenuList({ $target, state, onEditMenu, onRemoveMenu }) {
+function MenuList({ $target, state, onEditMenu, onRemoveMenu, onSoldoutMenu }) {
   this.$target = $target;
   this.state = state;
   this.onEditMenu = onEditMenu;
   this.onRemoveMenu = onRemoveMenu;
+  this.onSoldoutMenu = onSoldoutMenu;
 
   this.setState = (nextState) => {
     this.state = nextState;
@@ -24,21 +25,35 @@ function MenuList({ $target, state, onEditMenu, onRemoveMenu }) {
     if (isIncludesClass(classList, 'menu-remove-button')) {
       this.onRemoveMenu(menuId);
     }
+
+    if (isIncludesClass(classList, 'menu-soldout-button')) {
+      this.onSoldoutMenu(menuId);
+    }
   };
 
   this.render = () => {
-    if (this.state.menu.length < 1) {
+    const currentMenu = this.state.menu;
+    if (currentMenu.length < 1) {
       this.$target.innerHTML = `
       <li class="menu-list-item d-flex items-center py-2">
         <span class="w-100 pl-2 menu-name">메뉴를 입력해 주세요</span> 
       </li>`;
       return;
     }
-    const menuListHtml = this.state.menu
+
+    const menuListHtml = currentMenu
       .map(
         (menuItem) => `
           <li class="menu-list-item d-flex items-center py-2" id=${menuItem.id}>
-            <span class="w-100 pl-2 menu-name">${menuItem.name}</span>
+            <span class="w-100 pl-2 menu-name ${
+              menuItem.isSoldOut ? 'sold-out' : ''
+            }">${menuItem.name}</span>
+            <button
+              type="button"
+              class="bg-gray-50 text-gray-500 text-sm mr-1 menu-soldout-button"
+            >
+              품절
+            </button>
             <button
               type="button"
               class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"

@@ -27,9 +27,7 @@ export default function Main({ $app, initialState, updateMenuItems, editMenuItem
   });
 
   this.setState = (nextState) => {
-    console.log(nextState)
     this.state = { ...this.state, ...nextState };
-    console.log(this.state)
     this.state.count = this.state.currentCategoryMenuItems.length;
     list.setState({
       currentCategory: this.state.currentCategory,
@@ -62,8 +60,6 @@ export default function Main({ $app, initialState, updateMenuItems, editMenuItem
     const $menuForm = document.querySelector('#espresso-menu-form');
     const $menuName = document.querySelector('#espresso-menu-name');
     const $menuSubmitButton = document.querySelector('#espresso-menu-submit-button');
-
-    // const categoryName = this.state.categoryName;
 
     list.setState({
       currentCategory: this.state.currentCategory,

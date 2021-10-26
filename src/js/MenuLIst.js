@@ -23,7 +23,6 @@ export default function MenuList({ initialState, updateMenuItems, editMenuItems,
 
   this.addMenuItem = (value) => {
     this.updateMenuItems(this.state.currentCategory, this.state.currentCategoryMenuItems, value);
-    // this.setState({ ...this.state, currentCategoryMenuItems: [, ...this.state.currentCategoryMenuItems, { name: value }] });
     this.render();
   }
 
@@ -35,12 +34,7 @@ export default function MenuList({ initialState, updateMenuItems, editMenuItems,
         const originMenu = child.innerText;
         const editedMenu = window.prompt('메뉴명을 수정하세요', child.innerText);
         if (editedMenu === originMenu) return;
-        this.editMenuItems(originMenu, editedMenu)
-        // child.innerText = editedMenu;
-        // this.state.menuItems[elementId] = editedMenu;
-        // this.setState(this.state);
-        // this.updateMenuItems(this.state.categoryName, this.state);
-        // this.render();
+        this.editMenuItems(originMenu, editedMenu);
         break;
       }
     }
@@ -57,20 +51,9 @@ export default function MenuList({ initialState, updateMenuItems, editMenuItems,
         const menuName = child.innerText;
 
         this.deleteMenuItems(menuName)
-        // child.innerText = editedMenu;
-        // this.state.menuItems[elementId] = editedMenu;
-        // this.setState(this.state);
-        // this.updateMenuItems(this.state.categoryName, this.state);
-        // this.render();
         break;
       }
     }
-    // this.state.currentCategoryMenuItems.splice(targetIndex, 1);
-
-    // this.setState(this.state);
-    // this.updateMenuItems(this.state.categoryName, this.state);
-    // this.updateMenuItems(this.state.currentCategory, this.state.currentCategoryMenuItems, value);
-    // this.render()
 
   };
 
@@ -90,9 +73,7 @@ export default function MenuList({ initialState, updateMenuItems, editMenuItems,
   }
 
   this.setState = (nextState) => {
-    console.log(nextState);
     this.state = nextState;
-    console.log(this.state)
     this.render();
   }
 
@@ -129,11 +110,4 @@ export default function MenuList({ initialState, updateMenuItems, editMenuItems,
     `;
     this.$menuList.addEventListener('click', this.listClickListener)
   }
-  // this.init = () => {
-  //   console.log(this.categoryName)
-
-  //   const getState = this.getLocalStorage(this.categoryName);
-  //   this.setState(getState);
-  // }
-  // this.init();
 }

@@ -1,13 +1,16 @@
 import Component from "./Core/Component";
 import { store } from "./MenuStore";
-import { action } from "./Core/Constants";
+import { action, getCategories } from "./Core/Constants";
 
 export class MenuForm extends Component {
   template() {
+    const category = getCategories().find(
+      (category) => category.key === store.state.selected
+    );
     return `
         <div class="d-flex w-100">
               <label for="espresso-menu-name" class="input-label" hidden>
-                에스프레소 메뉴 이름
+                ${category?.name} 메뉴 이름
               </label>
               <input
                       type="text"
@@ -29,8 +32,7 @@ export class MenuForm extends Component {
   }
 
   setEvent() {
-    this.addEvent("submit", "form#espresso-menu-form", (e) => {
-      e.preventDefault();
+    this.addEvent("click", "button#espresso-menu-submit-button", (e) => {
       const Input = this.$el.querySelector(
         "input#espresso-menu-name"
       ) as HTMLInputElement;

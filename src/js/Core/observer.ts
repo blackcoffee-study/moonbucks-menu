@@ -16,7 +16,7 @@ export function observable<T extends object>(state: T) {
     },
     set(target, name, value) {
       if (typeof value === "object") {
-        observable(value);
+        target[name as keyof T] = observable(value);
       }
       if (target[name as keyof T] === value) return true;
       if (JSON.stringify(target[name as keyof T]) === JSON.stringify(value))

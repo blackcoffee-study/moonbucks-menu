@@ -11,7 +11,12 @@ lerna-debug.log*
 
 /dist
 /.cache
-
+/.parcel-cache
+/node_modules
+/src/css
+/src/images
+tsconfig.json
+package-lock.json
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 

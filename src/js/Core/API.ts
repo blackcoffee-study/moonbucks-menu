@@ -1,5 +1,6 @@
-import axios, { AxiosResponse } from "axios";
-import { menuItem } from "./type";
+import { menuItem, RequestProps } from "./type";
+import axios, { AxiosError } from "axios";
+import { APIResult } from "./APIresult";
 
 const baseURL = `http://localhost:3000`;
 const instance = axios.create({
@@ -11,14 +12,17 @@ export const GetMenu = async (category: string) => {
     const response = await instance.get<menuItem[]>(
       `/api/category/${category}/menu`
     );
-    return response.data;
+    const data = response.data;
+    return new APIResult<menuItem[]>(true, data, undefined);
   } catch (error) {
-    console.error(error);
-    alert(error);
+    if (error instanceof Error) {
+      console.error(error);
+      return new APIResult(false, undefined, error.message);
+    }
   }
 };
 
-export async function AddMenu({ category, name }) {
+export async function AddMenu({ category, name }: RequestProps) {
   try {
     const response = await instance.post<menuItem>(
       `/api/category/${category}/menu`,
@@ -26,46 +30,60 @@ export async function AddMenu({ category, name }) {
         name,
       }
     );
-    return await response.data;
+
+    const data = response.data;
+    return new APIResult<menuItem>(true, data, undefined);
   } catch (error) {
-    console.error(error);
-    alert(error);
+    if (error instanceof Error) {
+      console.error(error);
+      return new APIResult(false, undefined, error.message);
+    }
   }
 }
 
-export async function EditMenu({ category, menuId, name }) {
+export async function EditMenu({ category, id, name }: RequestProps) {
   try {
     const response = await instance.put<menuItem>(
-      `/api/category/${category}/menu/${menuId}`,
+      `/api/category/${category}/menu/${id}`,
       { name }
     );
-    return await response.data;
+    const data = response.data;
+    return new APIResult<menuItem>(true, data, undefined);
   } catch (error) {
-    console.error(error);
-    alert(error);
+    if (error instanceof Error) {
+      console.error(error);
+      return new APIResult(false, undefined, error.message);
+    }
   }
 }
 
-export async function ToggleSoldOutMenu({ category, menuId }) {
+export async function ToggleSoldOutMenu({ category, id }: RequestProps) {
   try {
     const response = await instance.put<menuItem>(
-      `/api/category/${category}/menu/${menuId}/soldout`
+      `/api/category/${category}/menu/${id}/soldout`
     );
-    return await response.data;
+
+    const data = await response.data;
+    return new APIResult<menuItem>(true, data, undefined);
   } catch (error) {
-    console.error(error);
-    alert(error);
+    if (error instanceof Error) {
+      console.error(error);
+      return new APIResult(false, undefined, error.message);
+    }
   }
 }
 
-export async function DeleteMenu({ category, menuId }) {
+export async function DeleteMenu({ category, id }: RequestProps) {
   try {
     const response = await instance.delete<menuItem>(
-      `/api/category/${category}/menu/${menuId}`
+      `/api/category/${category}/menu/${id}`
     );
-    return await response.data;
+    console.log(response);
+    return new APIResult<menuItem>(true);
   } catch (error) {
-    console.error(error);
-    alert(error);
+    if (error instanceof Error) {
+      console.error(error);
+      return new APIResult(false, undefined, error.message);
+    }
   }
 }

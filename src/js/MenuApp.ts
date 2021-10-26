@@ -4,12 +4,14 @@ import MenuCount from "./MenuCount";
 import MenuNavigation from "./MenuNavigation";
 import { store } from "./MenuStore";
 import { MenuForm } from "./MenuForm";
+import { getCategories } from "./Core/Constants";
 
 export default class MenuApp extends Component {
   template() {
-    const {
-      state: { selected },
-    } = store;
+    const category = getCategories().find(
+      (category) => category.key === store.state.selected
+    );
+
     return `
 <div className="d-flex justify-center mt-5 w-100">
     <div className="w-100">
@@ -18,8 +20,8 @@ export default class MenuApp extends Component {
 <main className="mt-10 d-flex justify-center">
         <div className="wrapper bg-white p-10">
           <div className="heading d-flex justify-between">
-            <h2 className="mt-1">☕ 에스프레소 메뉴 관리</h2>
-            <span className="mr-2 mt-4 menu-count"></span>
+            <h2 className="mt-1">${category?.icon} ${category?.name} 메뉴 관리</h2>
+            <span className="mr-2 mt-4 menu-count" id="menu-count"></span>
           </div>
           <form id="espresso-menu-form">
           </form>
@@ -32,13 +34,14 @@ export default class MenuApp extends Component {
 
   mount() {
     new MenuForm(
-      document.querySelector("form#espresso-menu-form") as HTMLElement,
+      this.$el.querySelector("form#espresso-menu-form") as HTMLElement,
       {}
     );
-    new MenuNavigation(document.querySelector("header") as HTMLElement, {});
+    new MenuNavigation(this.$el.querySelector("header") as HTMLElement, {});
     new MenuList(
-      document.querySelector("ul#espresso-menu-list") as HTMLElement,
+      this.$el.querySelector("ul#espresso-menu-list") as HTMLElement,
       {}
     );
+    new MenuCount(this.$el.querySelector("span#menu-count") as HTMLElement, {});
   }
 }

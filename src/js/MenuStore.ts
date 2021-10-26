@@ -11,9 +11,9 @@ import { action, category } from "./Core/Constants";
 export const store = new Store({
   state: {
     selected: category.ESPRESSO,
-    menuList: (await GetMenu("espresso")) || [
+    menuList: [
       {
-        id: 1,
+        id: "",
         name: "",
         isSoldOut: false,
       },
@@ -26,6 +26,12 @@ export const store = new Store({
       state.menuList = payload;
     },
     AddMenu(state, { id, name, isSoldOut }) {
+      const checkExists = state.menuList.findIndex(
+        (menu) => menu.name === name
+      );
+      if (checkExists > 0) {
+        alert("메뉴가 이미 있습니다");
+      }
       return state.menuList.push({
         id,
         name,
@@ -35,18 +41,16 @@ export const store = new Store({
     DeleteMenu(state, menuId) {
       state.menuList.filter((menu) => menu.id !== menuId);
     },
-    EditMenu(state, { menuId, name }) {
-      const menu = state.menuList.find((menu) => menu.id === menuId);
+    EditMenu(state, { id, name }) {
+      const menu = state.menuList.find((menu) => menu.id === id);
       if (!menu) {
-        alert("failed to update");
         return false;
       }
       menu.name = name;
     },
-    ToggleMenuSoldOut(state, { menuId, isSoldOut }) {
-      const menu = state.menuList.find((menu) => menu.id === menuId);
+    ToggleMenuSoldOut(state, { id, isSoldOut }) {
+      const menu = state.menuList.find((menu) => menu.id === id);
       if (!menu) {
-        alert("failed to toggle");
         return false;
       }
       menu.isSoldOut = isSoldOut;
@@ -55,45 +59,50 @@ export const store = new Store({
   actions: {
     //actions are not function
     //actions는 결국 Mutations의 메서드를 호출(commit)하는 구조
-
+    Init: async function ({ commit, state }, { __, _ }) {
+      const result = await GetMenu(category.ESPRESSO);
+      if (result?.ok) {
+        commit(action.FETCH, {
+          category: category.ESPRESSO,
+          payload: result.data,
+        });
+      } else alert(result?.message);
+    },
     FetchCategory: async function ({ commit, state }, { category }) {
-      const payload = (await GetMenu(category)) || [];
-      commit(action.FETCH, { category, payload });
+      const result = await GetMenu(category);
+      if (result?.ok) {
+        commit(action.FETCH, { category, payload: result.data });
+      } else alert(result?.message);
     },
     AddMenu: async function ({ commit, state, dispatch }, { category, name }) {
-      const newMenu = await AddMenu({ category, name });
-      commit(action.ADD, {
-        id: newMenu.id,
-        name: newMenu.name,
-        isSoldOut: newMenu.isSoldOut,
-      });
+      const result = await AddMenu({ category, name });
+      if (result?.ok) {
+        commit(action.ADD, result.data);
+      } else alert(result?.message);
     },
-    DeleteMenu: async function (
-      { commit, state, dispatch },
-      { category, menuId }
-    ) {
-      await DeleteMenu({ category, menuId }).then(() =>
-        dispatch(action.FETCH, category)
-      );
+    DeleteMenu: async function ({ commit, state, dispatch }, { category, id }) {
+      const result = await DeleteMenu({ category, id });
+      if (result?.ok) {
+        dispatch(action.FETCH, category);
+      } else alert(result?.message);
     },
     EditMenu: async function (
       { commit, state, dispatch },
-      { category, menuId, name }
+      { category, id, name }
     ) {
-      const EditedMenu = await EditMenu({ category, menuId, name });
-
-      commit(action.EDIT, { menuId, name });
+      const result = await EditMenu({ category, id, name });
+      if (result?.ok) {
+        commit(action.EDIT, result.data);
+      } else alert(result?.message);
     },
     ToggleMenuSoldOut: async function (
       { commit, state, dispatch },
-      { category, menuId }
+      { category, id }
     ) {
-      const menu = await ToggleSoldOutMenu({ category, menuId });
-
-      commit(action.TOGGLE, {
-        menuId: menu.menuId,
-        isSoldOut: menu.isSoldOut,
-      });
+      const result = await ToggleSoldOutMenu({ category, id });
+      if (result?.ok) {
+        commit(action.TOGGLE, result.data);
+      } else alert(result?.message);
     },
   },
 });

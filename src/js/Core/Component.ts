@@ -1,10 +1,11 @@
 import { store } from "../MenuStore";
 import { observable, observe } from "./observer";
+import { State } from "./type";
+import { action } from "./Constants";
 
 export default class Component {
-  protected state;
-  protected props;
-  $el;
+  protected props: any;
+  $el: HTMLElement;
 
   constructor($el: HTMLElement, props: any) {
     this.props = props;
@@ -13,6 +14,7 @@ export default class Component {
   }
 
   setup() {
+    store.dispatch(action.INIT, {});
     observe(() => this.render());
     this.setEvent();
     this.mount();

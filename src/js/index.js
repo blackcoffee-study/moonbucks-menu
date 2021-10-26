@@ -32,8 +32,7 @@ getMenuItem();
 
 const manageCategory = function (event) {
   if (event.target.localName === 'nav') return;
-
-  categoryMenu = event.target.dataset.category;
+  categoryMenu = event.target.dataset.categoryName;
   category = event.target.innerText;
   $menuName.innerText = `${category} 메뉴 관리`;
 
@@ -139,8 +138,8 @@ const handleButtons = function (id) {
   $btnSoldout.addEventListener(CONSTANT.EVENT_CLICK, soldOutMenu);
 };
 
-const createMenu = async function (menu) {
-  const data = await httpMethod.createMenu(menu, categoryMenu);
+const createMenu = function (menu) {
+  const data = httpMethod.createMenu(menu, categoryMenu);
   if (!data) return;
 
   categoryList[categoryMenu].push({

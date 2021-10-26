@@ -1,4 +1,4 @@
-import { $ } from '../Utils.js';
+import { $ } from '../utils/index.js';
 
 export class MenuInput {
     constructor({ onMenuItemAdd }) {

@@ -1,6 +1,6 @@
-import { BUTTON, UPDATE_CATEGORY } from '../Constants.js';
-import { $ } from '../Utils.js';
-import { store } from '../Store.js';
+import { BUTTON, LOAD_MENUITEMS_SUCCESS } from '../constant/index.js';
+import { $ } from '../utils/index.js';
+import { store } from '../store/index.js';
 
 export class Category {
     constructor({ onCategoryClick }) {
@@ -15,7 +15,7 @@ export class Category {
             onCategoryClick(targetCategory);
         });
 
-        store.subscribe(UPDATE_CATEGORY, this.render);
+        store.subscribe(LOAD_MENUITEMS_SUCCESS, this.render);
     }
 
     render = (state) => {

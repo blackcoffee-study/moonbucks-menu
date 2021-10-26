@@ -1,14 +1,5 @@
-const initState = {
-    espresso: [],
-    frappuccino: [],
-    blended: [],
-    teavana: [],
-    desert: [],
-    currentCategory: 'espresso',
-};
-
 export const createStore = (reducer) => {
-    let state = initState;
+    let state = '';
     const eventHandlers = {};
 
     const subscribe = (actionType, eventHandler) => {

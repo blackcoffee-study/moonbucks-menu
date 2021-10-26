@@ -1,13 +1,13 @@
 import {
     BUTTON,
+    LOAD_MENUITEMS_SUCCESS,
     ADD_MENUITEM,
     DELETE_MENUITEM,
     EDIT_MENUITEM,
     SOLDOUT_MENUITEM,
-    UPDATE_CATEGORY,
-} from '../Constants.js';
-import { store } from '../Store.js';
-import { $ } from '../Utils.js';
+} from '../constant/index.js';
+import { store } from '../store/index.js';
+import { $ } from '../utils/index.js';
 
 export class MenuList {
     constructor({ onMenuItemNameEdit, onMenuItemDelete, onMenuItemSoldOut }) {
@@ -31,43 +31,42 @@ export class MenuList {
             }
         });
 
+        store.subscribe(LOAD_MENUITEMS_SUCCESS, this.render);
         store.subscribe(ADD_MENUITEM, this.render);
         store.subscribe(DELETE_MENUITEM, this.render);
         store.subscribe(EDIT_MENUITEM, this.render);
         store.subscribe(SOLDOUT_MENUITEM, this.render);
-        store.subscribe(UPDATE_CATEGORY, this.render);
     }
 
     render = (state) => {
-        const menuItemsKey = state.currentCategory;
-        const menuItems = state[menuItemsKey];
+        const menuItems = state.menuItems;
         this.$menuList.innerHTML = menuItems
             .map(
-                (menuItem, idx) => `
-            <li data-menu-id="${idx}" class="menu-list-item d-flex items-center py-2">
-                <span class="w-100 pl-2 menu-name${
-                    menuItem.soldOut === true ? ' sold-out' : ''
-                }">${menuItem.name}</span>
-                <button
-                type="button"
-                class="bg-gray-50 text-gray-500 text-sm mr-1 menu-sold-out-button"
-                >
-                품절
-                </button>
-                <button
-                type="button"
-                class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
-                >
-                수정
-                </button>
-                <button
-                type="button"
-                class="bg-gray-50 text-gray-500 text-sm menu-remove-button"
-                >
-                삭제
-                </button>
-            </li>
-        `
+                ({ id, name, isSoldOut }) => `
+                    <li data-menu-id="${id}" class="menu-list-item d-flex items-center py-2">
+                        <span class="w-100 pl-2 menu-name${
+                            isSoldOut === true ? ' sold-out' : ''
+                        }">${name}</span>
+                        <button
+                        type="button"
+                        class="bg-gray-50 text-gray-500 text-sm mr-1 menu-sold-out-button"
+                        >
+                        품절
+                        </button>
+                        <button
+                        type="button"
+                        class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
+                        >
+                        수정
+                        </button>
+                        <button
+                        type="button"
+                        class="bg-gray-50 text-gray-500 text-sm menu-remove-button"
+                        >
+                        삭제
+                        </button>
+                    </li>
+                `
             )
             .join('');
         this.$menuCount.innerText = `총 ${menuItems.length}개`;

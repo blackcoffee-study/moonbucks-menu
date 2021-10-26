@@ -1,3 +1,3 @@
-import { App } from './src/App.js';
+import { MenuApp } from './src/js/components/MenuApp.js';
 
-new App();
+new MenuApp();

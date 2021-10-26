@@ -11,9 +11,11 @@ export default class Component {
     this.$element = element;
     this._props = props;
     this._utils = utils;
-    this._store = store;
-    this.initialized();
-    this.render();
+    store.then(resolve => {
+      this._store = resolve;
+      this.initialized();
+      this.render();
+    });
   }
 
   initialized() {}

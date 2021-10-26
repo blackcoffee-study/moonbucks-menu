@@ -1,4 +1,4 @@
-export default function MenuList({ categoryName, getMenuCount, initialState, updateMenuItems }) {
+export default function MenuList({ initialState, updateMenuItems }) {
   this.state = initialState;
   this.updateMenuItems = updateMenuItems;
 

@@ -58,7 +58,10 @@ export default function App($app) {
   const init = async () => {
     header.render();
     const result = this.getLocalStorage('menuItems');
-    if (result) {
+    if (!result) {
+      this.setLocalStorage('menuItems', this.state)
+      this.setState({ ...this.state })
+    } else {
       this.setState({ ...result, currentCategory: this.state.currentCategory })
     }
   }

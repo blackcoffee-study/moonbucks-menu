@@ -41,7 +41,7 @@ export default function Main({ $app, initialState, updateMenuItems }) {
       <form id="espresso-menu-form">
         <div class="d-flex w-100">
           <label for="espresso-menu-name" class="input-label" hidden>
-           ${this.state.text.substring(2, this.state.text.length)}메뉴 이름
+            ${this.state.text.substring(2, this.state.text.length)}메뉴 이름
           </label>
           <input type="text" id="espresso-menu-name" name="espressoMenuName" class="input-field"
             placeholder="${this.state.text.substring(2, this.state.text.length)}메뉴 이름" autocomplete="off" />
@@ -56,7 +56,6 @@ export default function Main({ $app, initialState, updateMenuItems }) {
     const $menuForm = document.querySelector('#espresso-menu-form');
     const $menuName = document.querySelector('#espresso-menu-name');
     const $menuSubmitButton = document.querySelector('#espresso-menu-submit-button');
-    const $menuCount = document.querySelector('.menu-count');
 
     // const categoryName = this.state.categoryName;
 

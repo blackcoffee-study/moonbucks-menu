@@ -1,5 +1,6 @@
-export default function MenuList(categoryName) {
-  this.state = [];
+export default function MenuList({ categoryName, getMenuCount, initialState, updateMenuItems }) {
+  this.state = initialState;
+  this.updateMenuItems = updateMenuItems;
 
   this.$menuList = document.createElement('ul');
   this.$menuList.id = 'espresso-menu-list';
@@ -7,6 +8,7 @@ export default function MenuList(categoryName) {
 
   this.getLocalStorage = (category) => {
     const strMenu = localStorage.getItem(category);
+
     let menu = [];
     if (strMenu !== null) menu = JSON.parse(strMenu);
 
@@ -17,35 +19,42 @@ export default function MenuList(categoryName) {
     localStorage.setItem(category, JSON.stringify(state));
   }
 
-  this.addItem = (value) => {
-    this.setState([value, ...this.state]);
-    this.setLocalStorage(categoryName, this.state);
-  }
-  this.setState = (nextState) => {
-    this.state = nextState;
-    this.render()
-  }
-  this.removeMenu = (target) => {
-    if (!window.confirm('정말 삭제하시겠습니까?')) {
-      return;
-    }
-    this.state.splice(target, 1);
+  this.addMenuItem = (value) => {
+    this.setState({ ...this.state, menuItems: [value, ...this.state.menuItems] });
+    this.updateMenuItems(this.state.categoryName, this.state);
     this.render();
-    // menuCounter -= 1;
-    // updateMenuCount();
   }
+
+
   this.editMenuItem = (target) => {
+    const elementId = target.dataset.id;
     for (const child of target.childNodes) {
       if (child.classList && child.classList.contains('menu-name')) {
         const string = window.prompt('메뉴명을 수정하세요', child.innerText);
-
         if (string === '') return;
 
         child.innerText = string;
+        this.state.menuItems[elementId] = string;
+        this.setState(this.state);
+        this.updateMenuItems(this.state.categoryName, this.state);
+        this.render();
         break;
       }
     }
   };
+
+  this.removeMenuItem = (targetIndex) => {
+    if (!window.confirm('정말 삭제하시겠습니까?')) {
+      return;
+    }
+    this.state.menuItems.splice(targetIndex, 1);
+
+    this.setState(this.state);
+    this.updateMenuItems(this.state.categoryName, this.state);
+    this.render()
+
+  };
+
   this.listClickListener = (event) => {
     const target = event.target;
 
@@ -56,20 +65,32 @@ export default function MenuList(categoryName) {
     if (target.classList.contains('menu-edit-button')) {
       this.editMenuItem(targetListItem)
     } else if (target.classList.contains('menu-remove-button')) {
-      this.removeMenu(targetListItem.innerText)
+
+      this.removeMenuItem(targetListItem.dataset.id);
     }
 
   }
-  this.render = () => {
 
+  this.setState = (nextState) => {
+    this.state = nextState;
+
+    this.render();
+  }
+
+  this.render = () => {
     this.$parent = document.querySelector('.wrapper');
     this.$parent.appendChild(this.$menuList);
-
     this.$menuList.innerHTML = `
-    ${this.state.map(item => {
+    ${this.state.menuItems.map((item, index) => {
       return `
-      <li class="menu-list-item d-flex items-center py-2">
+      <li class="menu-list-item d-flex items-center py-2" data-id=${index}>
       <span class="w-100 pl-2 menu-name">${item}</span>
+      <button
+        type="button"
+        class="bg-gray-50 text-gray-500 text-sm mr-1 menu-sold-out-button sold-out"
+      >
+        품절
+      </button>
       <button
         type="button"
         class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
@@ -89,10 +110,11 @@ export default function MenuList(categoryName) {
     `;
     this.$menuList.addEventListener('click', this.listClickListener)
   }
-  this.init = () => {
-    const getState = this.getLocalStorage(categoryName);
-    this.setState(getState);
-  }
-  this.init();
-  this.render();
+  // this.init = () => {
+  //   console.log(this.categoryName)
+
+  //   const getState = this.getLocalStorage(this.categoryName);
+  //   this.setState(getState);
+  // }
+  // this.init();
 }

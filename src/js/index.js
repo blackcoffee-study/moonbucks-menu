@@ -34,13 +34,11 @@ const menuItemsTemplate = (menuItems) =>
     .join("");
 
 let categoryName = "espresso";
-const categoryNameTemplate = (categoryName) => `${categoryName} 메뉴 관리`;
-
 const menuNameInput = $("#espresso-menu-name");
 const menuList = $("#espresso-menu-list");
 
 const menuCount = (count) => `총 ${count}개`;
-
+const categoryNameTemplate = (categoryName) => `${categoryName} 메뉴 관리`;
 const render = () => {
   const menuItems = store.getStorage("menuItems")[categoryName] || [];
   if (menuItems) {
@@ -126,7 +124,7 @@ const toggleSoldOutEventHandler = (e) => {
   }
 };
 
-function initMenuItems() {
+const initMenuItems = () => {
   const menuItems = store.getStorage("menuItems");
   if (menuItems) {
     menuItems[categoryName] = menuItems[categoryName] || [];
@@ -140,7 +138,7 @@ function initMenuItems() {
     mocha: [],
     cappuccino: [],
   });
-}
+};
 
 const initEventListeners = () => {
   $("#espresso-menu-submit-button").addEventListener("click", function () {
@@ -159,10 +157,10 @@ const initEventListeners = () => {
   menuList.addEventListener("click", toggleSoldOutEventHandler);
 };
 
-function startApp() {
+const startApp = () => {
   initEventListeners();
   initMenuItems();
   render();
-}
+};
 
 startApp();

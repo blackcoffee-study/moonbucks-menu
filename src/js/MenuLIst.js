@@ -1,6 +1,8 @@
-export default function MenuList({ initialState, updateMenuItems }) {
+export default function MenuList({ initialState, updateMenuItems, editMenuItems, deleteMenuItems }) {
   this.state = initialState;
   this.updateMenuItems = updateMenuItems;
+  this.editMenuItems = editMenuItems;
+  this.deleteMenuItems = deleteMenuItems;
 
   this.$menuList = document.createElement('ul');
   this.$menuList.id = 'espresso-menu-list';
@@ -20,8 +22,8 @@ export default function MenuList({ initialState, updateMenuItems }) {
   }
 
   this.addMenuItem = (value) => {
-    this.setState({ ...this.state, menuItems: [value, ...this.state.menuItems] });
-    this.updateMenuItems(this.state.categoryName, this.state);
+    this.updateMenuItems(this.state.currentCategory, this.state.currentCategoryMenuItems, value);
+    // this.setState({ ...this.state, currentCategoryMenuItems: [, ...this.state.currentCategoryMenuItems, { name: value }] });
     this.render();
   }
 
@@ -30,28 +32,45 @@ export default function MenuList({ initialState, updateMenuItems }) {
     const elementId = target.dataset.id;
     for (const child of target.childNodes) {
       if (child.classList && child.classList.contains('menu-name')) {
-        const string = window.prompt('메뉴명을 수정하세요', child.innerText);
-        if (string === '') return;
-
-        child.innerText = string;
-        this.state.menuItems[elementId] = string;
-        this.setState(this.state);
-        this.updateMenuItems(this.state.categoryName, this.state);
-        this.render();
+        const originMenu = child.innerText;
+        const editedMenu = window.prompt('메뉴명을 수정하세요', child.innerText);
+        if (editedMenu === originMenu) return;
+        this.editMenuItems(originMenu, editedMenu)
+        // child.innerText = editedMenu;
+        // this.state.menuItems[elementId] = editedMenu;
+        // this.setState(this.state);
+        // this.updateMenuItems(this.state.categoryName, this.state);
+        // this.render();
         break;
       }
     }
   };
 
-  this.removeMenuItem = (targetIndex) => {
-    if (!window.confirm('정말 삭제하시겠습니까?')) {
-      return;
-    }
-    this.state.menuItems.splice(targetIndex, 1);
+  this.removeMenuItem = (target) => {
 
-    this.setState(this.state);
-    this.updateMenuItems(this.state.categoryName, this.state);
-    this.render()
+    const elementId = target.dataset.id;
+    for (const child of target.childNodes) {
+      if (child.classList && child.classList.contains('menu-name')) {
+        if (!window.confirm('정말 삭제하시겠습니까?')) {
+          return;
+        }
+        const menuName = child.innerText;
+
+        this.deleteMenuItems(menuName)
+        // child.innerText = editedMenu;
+        // this.state.menuItems[elementId] = editedMenu;
+        // this.setState(this.state);
+        // this.updateMenuItems(this.state.categoryName, this.state);
+        // this.render();
+        break;
+      }
+    }
+    // this.state.currentCategoryMenuItems.splice(targetIndex, 1);
+
+    // this.setState(this.state);
+    // this.updateMenuItems(this.state.categoryName, this.state);
+    // this.updateMenuItems(this.state.currentCategory, this.state.currentCategoryMenuItems, value);
+    // this.render()
 
   };
 
@@ -65,15 +84,15 @@ export default function MenuList({ initialState, updateMenuItems }) {
     if (target.classList.contains('menu-edit-button')) {
       this.editMenuItem(targetListItem)
     } else if (target.classList.contains('menu-remove-button')) {
-
-      this.removeMenuItem(targetListItem.dataset.id);
+      this.removeMenuItem(targetListItem);
     }
 
   }
 
   this.setState = (nextState) => {
+    console.log(nextState);
     this.state = nextState;
-
+    console.log(this.state)
     this.render();
   }
 
@@ -81,10 +100,10 @@ export default function MenuList({ initialState, updateMenuItems }) {
     this.$parent = document.querySelector('.wrapper');
     this.$parent.appendChild(this.$menuList);
     this.$menuList.innerHTML = `
-    ${this.state.menuItems.map((item, index) => {
+    ${this.state.currentCategoryMenuItems.map((item, index) => {
       return `
       <li class="menu-list-item d-flex items-center py-2" data-id=${index}>
-      <span class="w-100 pl-2 menu-name">${item}</span>
+      <span class="w-100 pl-2 menu-name">${item.name}</span>
       <button
         type="button"
         class="bg-gray-50 text-gray-500 text-sm mr-1 menu-sold-out-button sold-out"

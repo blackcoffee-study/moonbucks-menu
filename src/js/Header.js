@@ -29,7 +29,9 @@ export default function Header({ $app, onClick }) {
   this.header.addEventListener('click', event => {
     if (event.target.tagName === 'BUTTON') {
       const categotyName = event.target.dataset.categoryName;
-      this.onClick(categotyName)
+      const index = this.state.findIndex(e => e.categoryName === categotyName)
+      const text = this.state[index].text;
+      this.onClick(categotyName, text)
     }
 
   })

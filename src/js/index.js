@@ -4,22 +4,30 @@ const $nameInput = $('#espresso-menu-name');
 const $submitButton = $('#espresso-menu-submit-button');
 const $menuList = $('#espresso-menu-list');
 const $menuForm = $('#espresso-menu-form');
-let count = 0;
+const itemStorage = 'items';
+let items = [];
+let itemNum = 1;
 
 function addMenu(e) {
     e.preventDefault();
     if ($nameInput.value.trim() === "") {
         return
     }
-    addTemplate();
-    count++, countItem();
+
+    saveItem()
+    addTemplate($nameInput.value);
+    countItem();
 }
 
-function addTemplate() {
+function saveItem() {
+    localStorage.setItem(itemStorage, JSON.stringify(items));
+}
+
+function addTemplate(name) {
     const $menuItem = document.createElement('li');
     $menuItem.setAttribute("class", "espresso-menu-item d-flex items-center py-2"); // ... .classList.add()
     $menuItem.innerHTML = `
-        <span class="w-100 pl-2 menu-name">${$nameInput.value}</span>
+        <span class="w-100 pl-2 menu-name">${name}</span>
         <button type="button"class="bg-gray-50 text-gray-500 text-sm mr-1 menu-sold-out-button">
             품절
         </button>
@@ -29,13 +37,21 @@ function addTemplate() {
         <button type="button" class="bg-gray-50 text-gray-500 text-sm menu-remove-button">
             삭제
         </button>`
-        
-        $menuList.appendChild($menuItem);
-        $nameInput.value = "";
+    const itemsObj = {
+        menu: name,
+        id: itemNum
+    }
+    $menuItem.id = itemNum;
+    items.push(itemsObj);
+    saveItem(), itemNum++;
+
+    $menuList.appendChild($menuItem);
+    $nameInput.value = "";
 }
 
 function countItem() {
     const $menuCount = $('#menu-count');
+    const count = items.length
     $menuCount.innerText = `총 ${count}개`
 }
 
@@ -51,25 +67,42 @@ function soldoutItem(e) {
 }
 
 function editItem(e) {
+    const li = e.target.parentNode;
     const newName = window.prompt('메뉴를 수정하세요');
-
     if (newName === null) {
         return;
     }
+    li.childNodes[1].innerHTML = newName;
+    saveItem();
 
-    e.target.parentNode.childNodes[1].innerHTML = newName;
 }
 
 function removeItem(e) {
+    const li = e.target.parentNode;
     if (confirm("정말 삭제하시겠습니까?")) {
-        e.target.parentNode.remove();
+        li.remove();
+    }
+    const cleanStorage = items.filter(function (Obj) {
+        return Obj.id !== parseInt(li.id)
+    })
+    items = cleanStorage;
+    saveItem(), countItem();
+}
+
+function loadItem() {
+    const loadItems = localStorage.getItem(itemStorage);
+    if (loadItems !== null) {
+        const parsedItem = JSON.parse(loadItems);
+        parsedItem.forEach(load => addTemplate(load.menu));
     }
 }
 
 function init() {
+    loadItem();
+    countItem();
     $submitButton.addEventListener('click', addMenu);
     $menuForm.addEventListener('submit', addMenu);
-    $menuList.addEventListener('click', function(e) {
+    $menuList.addEventListener('click', function (e) {
         if (e.target.classList.contains("menu-sold-out-button")) {
             e.preventDefault();
             soldoutItem(e);
@@ -79,7 +112,6 @@ function init() {
         } else if (e.target.classList.contains("menu-remove-button")) {
             e.preventDefault();
             removeItem(e);
-            count--, countItem();
         }
     })
 }

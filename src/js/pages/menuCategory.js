@@ -1,15 +1,15 @@
 
 export default class MenuCategory {
     constructor(app) {
-        this._app = app;
-        this._state = {};
+        this.$app = app;
+        this.state = {};
     }
 
     setState(newState) {
-        this._state = newState;
+        this.state = newState;
     }
 
     render() {
-        this._app.innerText = `${this._state.text} 메뉴 관리`;
+        this.$app.innerText = `${this.state.text} 메뉴 관리`;
     }
 }

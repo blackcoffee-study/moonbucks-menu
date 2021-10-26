@@ -1,16 +1,16 @@
 
 export default class MenuItemCounter {
     constructor(app) {
-        this._app = app;
-        this._state = [];
+        this.$app = app;
+        this.state = [];
         this.setState();
     }
 
     setState(newState) {
-        this._state = newState;
+        this.state = newState;
     }
 
     render() {
-        this._app.innerText = `총 ${this._state.length} 개`;
+        this.$app.innerText = `총 ${this.state.length} 개`;
     }
 }

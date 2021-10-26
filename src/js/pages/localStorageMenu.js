@@ -1,11 +1,5 @@
 
 export default class LocalStorageMenu {
-    constructor() {
-    }
-
-    init(initKey) {
-        initKey.forEach(key => this.setMenu(key, []));
-    }
 
     getMenu(key) {
         return JSON.parse(localStorage.getItem(key));

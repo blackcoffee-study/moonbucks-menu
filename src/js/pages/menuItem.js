@@ -1,17 +1,17 @@
 export default class MenuItem {
     constructor(app, clickMenuItem) {
-        this._app = app;
-        this._clickMenuItem = clickMenuItem;
-        this._state = [];
+        this.$app = app;
+        this.clickMenuItem = clickMenuItem;
+        this.state = [];
         this.setEventListener();
     }
 
     setState(newState) {
-        this._state = newState;
+        this.state = newState;
     }
 
     render() {
-        const result = this._state.map((item, index) => {
+        const result = this.state.map((item, index) => {
             const isSoldOut = item.isSoldOut ? 'sold-out' : '';
             return `
             <li class="menu-list-item d-flex items-center py-2" data-menu-id="${index}">
@@ -38,15 +38,15 @@ export default class MenuItem {
             `
         }).join('');
 
-        this._app.innerHTML = result;
+        this.$app.innerHTML = result;
     }
 
     setEventListener() {
-        this._app.addEventListener('click', (e) => {
+        this.$app.addEventListener('click', (e) => {
             const menuItemClassList = e.target.classList;
             const menuId = e.target.closest('li').dataset.menuId;
             
-            this._clickMenuItem({menuItemClassList: menuItemClassList, menuId: menuId});
+            this.clickMenuItem({menuItemClassList: menuItemClassList, menuId: menuId});
         });
     }
 }

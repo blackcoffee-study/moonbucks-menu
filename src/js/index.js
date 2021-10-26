@@ -1,25 +1,72 @@
 const $input = document.getElementById("espresso-menu-name");
 const $submitBtn = document.getElementById("espresso-menu-submit-button");
-const $list = document.getElementById("espresso-menu-list");
+const $menuList = document.getElementById("espresso-menu-list");
 
-// 버튼 종류
-const BUTTON = Object.freeze({
-    EDIT: "menu-edit-button",
-    REMOVE: "menu-remove-button"
-})
+const $ = (selector) => document.querySelector(selector);
+const $all = (selectors) => document.querySelectorAll(selectors);
 
-// 엔터
+var menu = {
+    espresso: [],
+    frappuccino: [],
+    blended: [],
+    teavana: [],
+    desert: [],
+}
+
 $input.addEventListener("keydown", event => {
-    if(event.keyCode === 13 ) {
-        event.preventDefault(); //엔터치면 새로고침 되는거 방지
+    if(event.key === 'Enter') {
+        event.preventDefault(); 
         addMenu();
     }
 });
 
-// 확인 버튼
-$submitBtn.addEventListener("click", event => {
-    addMenu();
-});
+$submitBtn.addEventListener("click", addMenu);
+    
+$all(".cafe-category-name").forEach((btn) => btn.addEventListener("click", pickMenu));
+
+
+window.onload = function() {
+    initialize();
+}
+
+function initialize() {
+    getJsonLocalStorage();
+
+    render();
+}
+
+function render() {
+    let children = "";
+
+    menu[info.category].forEach((obj, index) => {
+        children += 
+            `<li class="menu-list-item d-flex items-center py-2" data-menu-idx="${index}">
+                <span class="w-100 pl-2 menu-name ${obj.soldoutClass}" >${obj.menuName}</span>
+                <button
+                    type="button"
+                    class="bg-gray-50 text-gray-500 text-sm mr-1 menu-sold-out-button"
+                >
+                    품절
+                </button>
+                <button
+                    type="button"
+                    class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
+                >
+                    수정
+                </button>
+                <button
+                    type="button"
+                    class="bg-gray-50 text-gray-500 text-sm menu-remove-button"
+                >
+                    삭제
+                </button>
+            </li>`;
+    });
+
+    $menuList.innerHTML = children;
+    
+    setMenuCount();
+}
 
 function addMenu() {
     const name = $input.value;
@@ -29,57 +76,71 @@ function addMenu() {
         return;
     }
 
-    const li = document.createElement("li");
-    li.setAttribute("class", "menu-list-item d-flex items-center py-2");
-    li.innerHTML = 
-    `<span class="w-100 pl-2 menu-name">${name}</span>
-    <button
-        type="button"
-        class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
-    >
-    수정
-    </button>
-    <button
-        type="button"
-        class="bg-gray-50 text-gray-500 text-sm menu-remove-button"
-    >
-    삭제
-    </button>`;
+    menu[info.category].push(new menuInfo(name));
+    setItemLocalStorage();
+    render();
 
-    $list.appendChild(li);
-    $input.value = ""; //리셋
+    $input.value = "";
+}
 
-    setMenuCount(); //갯수
+function setItemLocalStorage() {
+    localStorage.setItem("menu", JSON.stringify(menu));
+}
+
+function getJsonLocalStorage() {
+    menu = JSON.parse(localStorage.getItem("menu"));
+    return menu;
+}
+
+function pickMenu() {
+    const categoryName = this.dataset.categoryName;
+    $("h2").innerHTML = `${CATEGORYNAME[categoryName]} 메뉴 관리`;
+
+    info.category = categoryName;
+
+    render();
 }
 
 function setMenuCount() {
     const $menuCount = document.getElementsByClassName("menu-count")[0];
-    const count = $list.childElementCount;
+    const count = $menuList.childElementCount;
     $menuCount.innerHTML = `총 ${count}개`;
 }
 
-// 수정 / 삭제
-$list.addEventListener("click", event => {
-
+$menuList.addEventListener("click", event => {
     const $target = event.target;
     const $li = $target.parentNode;
-    const $span = $li.children[0]; //수정할 span
-    const classList = $target.classList;  //클래스 리스트
+    const $menuName = $li.children[0];
+    const menuIndex = $li.dataset.menuIdx;
+    const classList = $target.classList;
 
-    //수정버튼
     if(classList.contains(BUTTON.EDIT)) {
         const menuName = prompt("메뉴명을 수정하세요");
-        $span.innerHTML = menuName;
+        $menuName.innerHTML = menuName;
+        menu[info.category][menuIndex].menuName = menuName;
 
     } else if(classList.contains(BUTTON.REMOVE)) {
         if(confirm("정말 삭제하시겠습니까?")) {
-            $list.removeChild($li);
+            $menuList.removeChild($li);
+            menu[info.category].splice(menuIndex, 1);
         }
+
+    } else if(classList.contains(BUTTON.SOLDOUT)) {
+        const toggleState = $menuName.classList.toggle("sold-out");
+
+        menu[info.category][menuIndex].soldoutClass = (toggleState === true ? "sold-out" : "");
     }
 
-    setMenuCount(); //메뉴 갯수
+    setItemLocalStorage();
+
+    render();
 });
 
-
-
-
+function isJson(str) {
+    try {
+        let json = JSON.parse(str);
+        return (json && typeof json === "object");
+    } catch(e) {
+        return false;
+    }
+}

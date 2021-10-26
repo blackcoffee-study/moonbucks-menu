@@ -35,7 +35,7 @@ $list.addEventListener('click', event => {
     let targetItemIndex = $span.getAttribute('key');
     let targetItemText = $span.textContent;
 
-    menuList.editedItem(+targetItemIndex, targetItemText, setMenuCount);
+    menuList.updatedItem(+targetItemIndex, targetItemText, setMenuCount);
   } else if (target.matches('.menu-remove-button')) {
     let $span =
       target.previousSibling.previousSibling.previousSibling.previousSibling;

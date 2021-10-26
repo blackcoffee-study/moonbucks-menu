@@ -1,5 +1,4 @@
 import {
-  LOCALSTORAGE_KEY,
   CREATE_MENU_SUCCESS,
   LOAD_MENU_SUCCESS,
   UPDATE_MENU_SUCCESS,
@@ -12,15 +11,15 @@ import {
   SOLDOUT_MENU_FAILURE,
 } from '../constants/index.js';
 
+import http from '../client/index.js';
+
 export default reducer => {
   return state => {
-    return (action = {}) => {
-      return reducer(state, watchDispatch(action));
+    return async (action = { type: null }) => {
+      return await reducer(state, await watchDispatch(action));
     };
   };
 };
-
-const localState = {};
 
 /**
  * Store의 Action을 감시
@@ -29,13 +28,8 @@ const localState = {};
  * @returns next();
  */
 const watchDispatch = action => {
-  LOCALSTORAGE_KEY.forEach(key => {
-    localState[key] = JSON.parse(localStorage.getItem(key)) || [];
-  });
-  Object.keys(fork).forEach(_key => {
-    if (_key === action.type) return fork[_key](action);
-  });
-  return action;
+  const KEY = Object.keys(fork).filter(_key => _key === action.type)[0];
+  return KEY ? fork[KEY](action) : action;
 };
 
 /**
@@ -44,14 +38,17 @@ const watchDispatch = action => {
  *
  * @param {object} action
  */
-const watchLoadMenu = action => {
+const watchLoadMenu = async action => {
   try {
+    action.category = action.category || 'espresso';
+    const { data } = await http.load(action);
     action.type = LOAD_MENU_SUCCESS;
-    action.data = localState[action.category];
+    action.data = data;
+    return action;
   } catch (error) {
+    alert(error);
     action.type = LOAD_MENU_FAILURE;
-    action.message = error;
-    console.log(error);
+    return action;
   }
 };
 
@@ -61,14 +58,19 @@ const watchLoadMenu = action => {
  *
  * @param {object} action
  */
-const watchCreateMenu = action => {
+const watchCreateMenu = async action => {
   try {
+    const { data } = await http.create(
+      { category: action.category },
+      { name: action.data },
+    );
     action.type = CREATE_MENU_SUCCESS;
-    setStorage(action.category, action.data);
+    action.data = data;
+    return action;
   } catch (error) {
+    alert(error);
     action.type = CREATE_MENU_FAILURE;
-    action.message = error;
-    console.log(error);
+    return action;
   }
 };
 
@@ -78,48 +80,53 @@ const watchCreateMenu = action => {
  *
  * @param {object} action
  */
-const watchUpdateMenu = action => {
+const watchUpdateMenu = async action => {
   try {
+    const { data } = await http.update(action, { name: action.data });
     action.type = UPDATE_MENU_SUCCESS;
-    setStorage(action.category, action.data);
+    action.data = data;
+    return action;
   } catch (error) {
+    alert(error);
     action.type = UPDATE_MENU_FAILURE;
-    action.message = error;
-    console.log(error);
+    return action;
   }
 };
 
 /**
- * 4. 메뉴 삭제하기
+ * 4. 메뉴 품절 처리
  * - DB 연결 후 에러 처리 진행
  *
  * @param {object} action
  */
-const watchDeleteMenu = action => {
+const watchSoldOutMenu = async action => {
   try {
-    action.type = DELETE_MENU_SUCCESS;
-    setStorage(action.category, action.data);
-  } catch (error) {
-    action.type = DELETE_MENU_FAILURE;
-    action.message = error;
-    console.log(error);
-  }
-};
-
-/**
- * 5. 메뉴 품절 처리
- * - DB 연결 후 에러 처리 진행
- *
- * @param {object} action
- */
-const watchSoldoutMenu = action => {
-  try {
+    const { data } = await http.soldOut(action, { name: action.data });
     action.type = SOLDOUT_MENU_SUCCESS;
-    setStorage(action.category, action.data);
+    action.data = data;
+    return action;
   } catch (error) {
+    alert(error);
     action.type = SOLDOUT_MENU_FAILURE;
-    action.message = error;
-    console.log(error);
+    return action;
+  }
+};
+
+/**
+ * 5. 메뉴 삭제하기
+ * - DB 연결 후 에러 처리 진행
+ *
+ * @param {object} action
+ */
+const watchDeleteMenu = async action => {
+  try {
+    await http.delete(action);
+    action.type = DELETE_MENU_SUCCESS;
+    return action;
+  } catch (error) {
+    alert(error);
+    action.type = DELETE_MENU_FAILURE;
+    return action;
   }
 };
 
@@ -129,25 +136,18 @@ const watchSoldoutMenu = action => {
  */
 const fork = {
   CREATE_MENU_REQUEST: action => {
-    watchCreateMenu(action);
+    return watchCreateMenu(action);
   },
   LOAD_MENU_REQUEST: action => {
-    watchLoadMenu(action);
+    return watchLoadMenu(action);
   },
   UPDATE_MENU_REQUEST: action => {
-    watchUpdateMenu(action);
-  },
-  DELETE_MENU_REQUEST: action => {
-    watchDeleteMenu(action);
+    return watchUpdateMenu(action);
   },
   SOLDOUT_MENU_REQUEST: action => {
-    watchSoldoutMenu(action);
+    return watchSoldOutMenu(action);
   },
-};
-
-const setStorage = (key, value) => {
-  if (typeof value === 'object') {
-    value = JSON.stringify(value);
-  }
-  localStorage.setItem(key, value);
+  DELETE_MENU_REQUEST: action => {
+    return watchDeleteMenu(action);
+  },
 };

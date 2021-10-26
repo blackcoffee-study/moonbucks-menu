@@ -1,30 +1,53 @@
 import HTTPClient from './HTTPClient.js';
 
-const httpClient = new HTTPClient(
-  {
-    baseURL: 'http://localhost:3000',
-  },
-  {
+const httpClient = new HTTPClient({
+  mode: 'no-cors',
+  cache: 'no-cache',
+  credentials: 'include',
+  headers: {
     'Content-Type': 'application/json',
     'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Credentials': 'true',
   },
-);
+  referrer: 'no-referrer',
+});
 
 const http = {
-  list({ category }) {
-    httpClient.get(`/api/category/${category}/menu`);
+  async load({ category }) {
+    return await httpClient.get(`/api/category/${category}/menu`, null, {
+      from: `Load "${category}" menu`,
+    });
   },
-  create({ category }, params) {
-    httpClient.post(`/api/category/${category}/menu`, params);
+  async create({ category }, params) {
+    return await httpClient.post(
+      `/api/category/${category}/menu`,
+      params,
+      null,
+      { from: `Create "${category}" "${params.data}"` },
+    );
   },
-  edit({ category, menuId }, params) {
-    httpClient.put(`/api/category/${category}/menu/${menuId}`, params);
+  async update({ category, menuId }, params) {
+    return await httpClient.put(
+      `/api/category/${category}/menu/${menuId}`,
+      params,
+      null,
+      { from: `Update "${category}" "${params.data}"` },
+    );
   },
-  soldOut({ category, menuId }, params) {
-    httpClient.put(`/api/category/${category}/menu/${menuId}/soldout`, params);
+  async soldOut({ category, menuId }, params) {
+    return await httpClient.put(
+      `/api/category/${category}/menu/${menuId}/soldout`,
+      params,
+      null,
+      { from: `Sold-Out "${category}" "${params.data}"` },
+    );
   },
-  delete({ category, menuId }) {
-    httpClient.delete(`/api/category/${category}/menu/${menuId}`);
+  async delete({ category, menuId }) {
+    return await httpClient.delete(
+      `/api/category/${category}/menu/${menuId}`,
+      null,
+      { from: `Delete "${category}" menu` },
+    );
   },
 };
 

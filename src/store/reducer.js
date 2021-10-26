@@ -5,6 +5,11 @@ import {
   UPDATE_MENU_SUCCESS,
   DELETE_MENU_SUCCESS,
   SOLDOUT_MENU_SUCCESS,
+  LOAD_MENU_FAILURE,
+  CREATE_MENU_FAILURE,
+  UPDATE_MENU_FAILURE,
+  DELETE_MENU_FAILURE,
+  SOLDOUT_MENU_FAILURE,
 } from '../constants/index.js';
 
 const initialState = {
@@ -16,6 +21,17 @@ const initialState = {
   currentCategory: 'espresso',
   currentCategoryText: '☕ 에스프레소',
   menuCount: 0,
+  isLoading: true,
+  isLoadSuccess: false,
+  isLoadFailure: false,
+  isCreateSuccess: false,
+  isCreateFailure: false,
+  isUpdateSuccess: false,
+  isUpdateFailure: false,
+  isDeleteSuccess: false,
+  isDeleteFailure: false,
+  isSoldOutSuccess: false,
+  isSoldOutFailure: false,
 };
 
 const reducer = (state = initialState, action) => {
@@ -25,23 +41,31 @@ const reducer = (state = initialState, action) => {
         ...state,
         currentCategory: action.currentCategory,
         currentCategoryText: action.currentCategoryText,
+        isLoading: true,
       };
     case LOAD_MENU_SUCCESS:
       return {
         ...state,
         [action.category]: action.data,
         menuCount: action.data.length,
+        isLoading: false,
       };
     case CREATE_MENU_SUCCESS:
       return {
         ...state,
-        [action.category]: action.data,
+        [action.category]: [...state[action.category], action.data],
         menuCount: ++state.menuCount,
       };
     case UPDATE_MENU_SUCCESS:
+    case SOLDOUT_MENU_SUCCESS:
       return {
         ...state,
-        [action.category]: action.data,
+        [action.category]: state[action.category].map(item => {
+          if (item.id === action.data.id) {
+            return action.data;
+          }
+          return item;
+        }),
       };
     case DELETE_MENU_SUCCESS:
       return {
@@ -49,11 +73,11 @@ const reducer = (state = initialState, action) => {
         [action.category]: action.data,
         menuCount: --state.menuCount,
       };
-    case SOLDOUT_MENU_SUCCESS:
-      return {
-        ...state,
-        [action.category]: action.data,
-      };
+    case LOAD_MENU_FAILURE:
+    case CREATE_MENU_FAILURE:
+    case UPDATE_MENU_FAILURE:
+    case SOLDOUT_MENU_FAILURE:
+    case DELETE_MENU_FAILURE:
     default:
       return state;
   }

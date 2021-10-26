@@ -1,19 +1,25 @@
-import { GET, POST, PUT, PATCH, DELETE } from '../constants/index.js';
+import {
+  BACK_SERVER_URL,
+  LIMIT_DELAY_TWO_SECOND,
+  GET,
+  POST,
+  PUT,
+  PATCH,
+  DELETE,
+} from '../constants/index.js';
 import HTTPError from './HTTPError.js';
 
 export default class HTTPClient {
-  constructor(options, headers) {
-    this.options = {
-      baseURL: options.baseURL,
-      mode: options.mode || 'no-cors',
-      cache: options.cache || 'no-cache',
-      credentials: options.credentials || 'same-origin',
-      redirect: options.redirect || 'follow',
-      referrer: options.referrer || 'no-referrer',
-    };
-    this.headers = {
-      'Content-Type': headers.type || 'application/json',
-      'Access-Control-Allow-Origin': headers.cors || '*',
+  constructor(defaults) {
+    this.baseURL = BACK_SERVER_URL;
+    this.config = {
+      mode: 'same-origin', // no-cors, cors, *same-origin
+      cache: 'default', // *default, no-cache, reload, force-cache, only-if-cached
+      credentials: 'same-origin', // include, *same-origin, omit
+      headers: {},
+      redirect: 'follow', // manual, *follow, error
+      referrer: 'client', // no-referrer, *client
+      ...defaults,
     };
   }
 
@@ -23,20 +29,39 @@ export default class HTTPClient {
    * @param {Object} params
    * @returns
    */
-  async request(params) {
-    const { method = GET, url, headers = this.headers, body } = params;
-    console.log(headers);
+  async request(params, options) {
+    const { url, body, headers, method } = params;
+    const REQUEST_FROM = `${options.from || GET}`;
+    const REQUEST_URL = `${options.replaceURL || this.baseURL}${url}`;
+
+    /**
+     * 참조 https://developer.mozilla.org/ko/docs/Web/API/AbortController
+     */
+    const controller = new AbortController();
+    const timeoutId = setTimeout(
+      () => controller.abort(),
+      LIMIT_DELAY_TWO_SECOND,
+    );
     const config = {
       method,
       headers: new Headers(headers),
-      body: JSON.stringify(body) || null,
+      signal: controller.signal,
     };
 
+    if (body) config.body = JSON.stringify(body);
+
     try {
-      const response = await fetch(`${this.options.baseURL}${url}`, config);
+      const response = await fetch(REQUEST_URL, config);
       return await this.parse(response);
     } catch (error) {
-      throw new HTTPError(error.message, url, error.status, config);
+      throw new HTTPError(
+        error.message,
+        `[ REJECTION ] HTTPError\n> ${REQUEST_FROM}`,
+        error.status,
+        config,
+      );
+    } finally {
+      clearTimeout(timeoutId);
     }
   }
 
@@ -50,8 +75,12 @@ export default class HTTPClient {
    */
   async parse(response) {
     const { status } = response;
-    let data = status !== 204 ? await response.json() : null;
-    return { status, data };
+    try {
+      let data = status !== 204 ? await response.json() : null;
+      return { data, status };
+    } catch (error) {
+      return { status };
+    }
   }
 
   /**
@@ -62,12 +91,15 @@ export default class HTTPClient {
    * @param {Header} headers
    * @returns
    */
-  async get(url, headers = this.headers) {
-    return await this.request({
-      url,
-      headers,
-      method: GET,
-    }).data;
+  get(url, headers, options) {
+    return this.request(
+      {
+        url,
+        headers: this.updateHeaders(headers),
+        method: GET,
+      },
+      options,
+    );
   }
 
   /**
@@ -79,13 +111,16 @@ export default class HTTPClient {
    * @param {Header} headers
    * @returns
    */
-  async post(url, body, headers = this.headers) {
-    return await this.request({
-      url,
-      body,
-      headers,
-      method: POST,
-    }).data;
+  async post(url, body, headers, options) {
+    return await this.request(
+      {
+        url,
+        body,
+        headers: this.updateHeaders(headers),
+        method: POST,
+      },
+      options,
+    );
   }
 
   /**
@@ -97,13 +132,16 @@ export default class HTTPClient {
    * @param {Header} headers
    * @returns
    */
-  async put(url, body, headers = this.headers) {
-    return await this.request({
-      url,
-      body,
-      headers,
-      method: PUT,
-    }).data;
+  async put(url, body, headers, options) {
+    return await this.request(
+      {
+        url,
+        body,
+        headers: this.updateHeaders(headers),
+        method: PUT,
+      },
+      options,
+    );
   }
 
   /**
@@ -115,13 +153,16 @@ export default class HTTPClient {
    * @param {Header} headers
    * @returns
    */
-  async patch(url, body, headers = this.Headers) {
-    return await this.request({
-      url,
-      body,
-      headers,
-      method: PATCH,
-    }).data;
+  async patch(url, body, headers, options) {
+    return await this.request(
+      {
+        url,
+        body,
+        headers: this.updateHeaders(headers),
+        method: PATCH,
+      },
+      options,
+    );
   }
 
   /**
@@ -132,11 +173,18 @@ export default class HTTPClient {
    * @param {Header} headers
    * @returns
    */
-  async delete(url, headers = this.headers) {
-    return await this.request({
-      url,
-      headers,
-      method: DELETE,
-    }).data;
+  async delete(url, headers, options) {
+    return await this.request(
+      {
+        url,
+        headers: this.updateHeaders(headers),
+        method: DELETE,
+      },
+      options,
+    );
+  }
+
+  updateHeaders(headers) {
+    return { ...this.config.headers, ...headers };
   }
 }

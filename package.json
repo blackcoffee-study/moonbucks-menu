@@ -1,15 +1,18 @@
 {
   "dependencies": {
+    "axios": "^0.23.0",
     "modules": "^0.4.0",
     "parcel": "^2.0.0",
+    "prettier": "^2.4.1",
+    "typescript": "^4.4.4",
     "webpack": "^5.58.2"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack"
+    "build": "webpack",
+    "start": "parcel index.html"
   },
   "devDependencies": {
     "webpack-cli": "^4.9.1"
   }
-
 }

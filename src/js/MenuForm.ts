@@ -1,0 +1,43 @@
+import Component from "./Core/Component";
+import { store } from "./MenuStore";
+import { action } from "./Core/Constants";
+
+export class MenuForm extends Component {
+  template() {
+    return `
+        <div class="d-flex w-100">
+              <label for="espresso-menu-name" class="input-label" hidden>
+                에스프레소 메뉴 이름
+              </label>
+              <input
+                      type="text"
+                      id="espresso-menu-name"
+                      name="espressoMenuName"
+                      class="input-field"
+                      placeholder="에스프레소 메뉴 이름"
+                      autocomplete="off"
+              />
+              <button
+                      type="button"
+                      name="submit"
+                      id="espresso-menu-submit-button"
+                      class="input-submit bg-green-600 ml-2"
+              >
+                확인
+              </button>
+            </div>`;
+  }
+
+  setEvent() {
+    this.addEvent("submit", "form#espresso-menu-form", (e) => {
+      e.preventDefault();
+      const Input = this.$el.querySelector(
+        "input#espresso-menu-name"
+      ) as HTMLInputElement;
+      const { selected } = store.state;
+      if (!Input.value.trim() || Input.value.trim() === "") return false;
+      store.dispatch(action.ADD, { category: selected, name: Input.value });
+      Input.value = "";
+    });
+  }
+}

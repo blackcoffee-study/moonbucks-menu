@@ -12,7 +12,7 @@ export default class MenuItem {
 
     render() {
         const result = this._state.map((item, index) => {
-            const isSoldOut = item.soldOut ? 'sold-out' : '';
+            const isSoldOut = item.isSoldOut ? 'sold-out' : '';
             return `
             <li class="menu-list-item d-flex items-center py-2" data-menu-id="${index}">
                 <span class="w-100 pl-2 menu-name ${isSoldOut}">${item.name}</span>

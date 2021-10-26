@@ -53,7 +53,13 @@ export default class App {
 
   async onAddMenu(content){
     const result = await coffeeAPI.postMenu(this.category, {name:content})
-    console.log(result);
+    if(result.status===400){
+      alert("중복되는 메뉴입니다.");
+      return;
+    }
+    if(!result.ok){
+      alert(result.statusText)
+    }
     if(result) this.setState(this.category);
   }
 
@@ -64,6 +70,9 @@ export default class App {
 
   async onDeleteMenu(id){
     const result = await coffeeAPI.deleteMenu(this.category, id);
+    if(!result.ok){
+      alert(result.statusText);
+    }
     if(result.ok) this.setState(this.category);
   }
 
@@ -71,11 +80,4 @@ export default class App {
     const result = await coffeeAPI.updateMenu(this.category, id, data);
     if(result) this.setState(this.category);
   }
-
-  async init(){
-    const data = await coffeeAPI.getMenuList(this.category);
-    console.log(data);
-  }
-
-
 }

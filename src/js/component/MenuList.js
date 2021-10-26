@@ -5,14 +5,10 @@ import { $,$$} from '../utils.js';
 export default class MenuList extends component {
   setup() {
     this.$state = this.$props;
-    //this.
-    console.log(this.$state);
   }
   template() {
     const category = this.$props.category;
     const menuList = this.$state.$state;
-    //console.log(menuList);
-    //const menuList = getMenuList(category);
     return `
     ${menuList.map(item =>`
       <li data-id=${item.id} class="menu-list-item d-flex items-center py-2">
@@ -62,6 +58,10 @@ export default class MenuList extends component {
       element.addEventListener('click',(e)=>{
         const value = $('#menu-value').innerText;
         const updateValue = prompt('수정할 내용을 입력해주세요', value);
+        if(!updateValue){
+          alert("빈 값입니다.")
+          return;
+        }
         if(updateValue){
           this.$state.onUpdateMenu(e.target.dataset.id, {name :updateValue});
         }

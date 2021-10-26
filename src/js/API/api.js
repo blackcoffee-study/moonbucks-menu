@@ -9,7 +9,7 @@ export const coffeeAPI = {
   },
   //메뉴 생성하기
   async postMenu(category, data){
-    return await fetch(`${baseURL}/${category}/menu`, HTTP_REQUEST.POST(data));
+    return await fetch(`${baseURL}/${category}/menu`, HTTP_REQUEST.POST(data))
   },
   //메뉴 수정하기
   async updateMenu(catrgory, id, data){
@@ -25,4 +25,6 @@ export const coffeeAPI = {
   async deleteMenu(category, id){
     return await fetch(`${baseURL}/${category}/menu/${id}`, HTTP_REQUEST.DELETE());
   }
+
+ 
 } 

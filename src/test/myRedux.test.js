@@ -62,7 +62,7 @@ describe('store test', () => {
 				};
 
 				beforeEach(() => {
-					unSubscribe = store.subscribe(() => {
+					unSubscribe = store.subscribe('pushHistory', () => {
 						pushHisory();
 					});
 				});
@@ -82,7 +82,7 @@ describe('store test', () => {
 						history2.push(store.getState());
 					};
 					beforeEach(() => {
-						unSubscribe2 = store.subscribe(() => {
+						unSubscribe2 = store.subscribe('pushHistory2', () => {
 							pushHisory2();
 						});
 					});

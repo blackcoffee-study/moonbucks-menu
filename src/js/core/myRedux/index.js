@@ -26,15 +26,16 @@ export const createStore = (reducer, initState) => {
 		},
 		dispatch: (action) => {
 			currentState = reducer(currentState, action);
-			listeners.forEach((fn) => fn());
+			listeners.forEach((fn) => {
+				fn();
+			});
 			return action;
 		},
 
-		subscribe: (listener) => {
-			const id = getUUID();
-			listeners.set(id, listener);
+		subscribe: (key, listener) => {
+			listeners.set(key, listener);
 			return () => {
-				listeners.delete(id);
+				listeners.delete(key);
 			};
 		},
 	};

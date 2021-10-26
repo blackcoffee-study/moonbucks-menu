@@ -1,13 +1,11 @@
 import { $ } from "./utils/dom.js";
-import store from "./store/index.js";
 
 const menuItemsTemplate = (menuItems) =>
   menuItems
     .map(
-      (
-        menuItem,
-        index
-      ) => `<li data-index=${index} class="menu-list-item d-flex items-center py-2">
+      (menuItem) => `<li data-id=${
+        menuItem.id
+      } class="menu-list-item d-flex items-center py-2">
   <span class="w-100 pl-2 menu-name ${menuItem.isSoldOut ? "sold-out" : ""} ">${
         menuItem.name
       }</span>
@@ -36,108 +34,118 @@ const menuItemsTemplate = (menuItems) =>
 let categoryName = "espresso";
 const menuNameInput = $("#espresso-menu-name");
 const menuList = $("#espresso-menu-list");
+const BASE_URL = "http://localhost:3000";
+
+const ApiMethod = {
+  async getAllMenuItemsFromServer() {
+    const res = await fetch(`${BASE_URL}/api/category/${categoryName}/menu`);
+    return res.json();
+  },
+  async postMenuItemToServer() {
+    const res = await fetch(`${BASE_URL}/api/category/${categoryName}/menu`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name: menuNameInput.value,
+      }),
+    });
+    renderIfSuccessOrAlert(!res.ok, "추가 실패하였습니다.");
+  },
+  async putMenuItemNameToServer(id, inputMenuItemName) {
+    const res = await fetch(
+      `${BASE_URL}/api/category/${categoryName}/menu/${id}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name: inputMenuItemName }),
+      }
+    );
+    renderIfSuccessOrAlert(!res.ok, "수정 실패하였습니다.");
+  },
+  async putMenuItemSoldoutToServer(id) {
+    const res = await fetch(
+      `${BASE_URL}/api/category/${categoryName}/menu/${id}/soldout`,
+      {
+        method: "PUT",
+      }
+    );
+    renderIfSuccessOrAlert(!res.ok, "품절 실패하였습니다.");
+  },
+  async deleteMenuItemToServer(id) {
+    const res = await fetch(
+      `${BASE_URL}/api/category/${categoryName}/menu/${id}`,
+      {
+        method: "DELETE",
+      }
+    );
+    renderIfSuccessOrAlert(!res.ok, "삭제 실패하였습니다.");
+  },
+};
 
 const menuCount = (count) => `총 ${count}개`;
 const categoryNameTemplate = (categoryName) => `${categoryName} 메뉴 관리`;
-const render = () => {
-  const menuItems = store.getStorage("menuItems")[categoryName] || [];
+const renderIfSuccessOrAlert = async (isFailed, message) => {
+  menuNameInput.value = "";
+  if (isFailed) {
+    alert(message);
+    return;
+  }
+
+  const menuItems = await ApiMethod.getAllMenuItemsFromServer();
   if (menuItems) {
     menuList.innerHTML = menuItemsTemplate(menuItems);
     $(".menu-count").innerText = menuCount(menuItems.length);
   }
 };
 
-const addMenuName = () => {
+const addMenuName = async () => {
   if (menuNameInput.value === "") {
     return;
   }
-
-  let menuItems = store.getStorage("menuItems");
-  menuItems[categoryName] = menuItems[categoryName] || [];
-
-  menuItems[categoryName].push({
-    name: menuNameInput.value,
-    isSoldOut: false,
-  });
-  menuNameInput.value = "";
-
-  store.setStorage("menuItems", menuItems);
-  render();
+  await ApiMethod.postMenuItemToServer();
 };
 
-const editEventHandler = (e) => {
+const editEventHandler = async (e) => {
   if (e.target.classList.contains("menu-edit-button")) {
     const menuItem = e.target.closest("li");
-    const index = menuItem.dataset.index;
     const menuName = menuItem.querySelector(".menu-name");
-
-    const menuItems = store.getStorage("menuItems");
-    menuItems[categoryName] = menuItems[categoryName] || [];
-
-    menuName.innerText = prompt("메뉴명을 입력하세요", menuName.innerText);
-    menuItems[categoryName][index].name = menuName.innerText;
-
-    store.setStorage("menuItems", menuItems);
+    const inputMenuItemName = prompt("메뉴명을 입력하세요", menuName.innerText);
+    await ApiMethod.putMenuItemNameToServer(
+      menuItem.dataset.id,
+      inputMenuItemName
+    );
   }
 };
 
-const removeEventHandler = (e) => {
+const removeEventHandler = async (e) => {
   if (
     e.target.classList.contains("menu-remove-button") &&
     confirm("정말로 삭제하시겠습니까?")
   ) {
     const menuItem = e.target.closest("li");
-    const index = menuItem.dataset.index;
-
-    const menuItems = store.getStorage("menuItems");
-    menuItems[categoryName] = menuItems[categoryName] || [];
-    menuItems[categoryName].splice(index, 1);
-
-    store.setStorage("menuItems", menuItems);
-    render();
+    await ApiMethod.deleteMenuItemToServer(menuItem.dataset.id);
   }
 };
 
-const changeMenuName = (e) => {
+const changeMenuName = async (e) => {
   if (e.target.classList.contains("cafe-category-name")) {
     categoryName = e.target.dataset.categoryName;
     $("#category-name-display").innerText = categoryNameTemplate(
       e.target.innerText
     );
-    render();
+    renderIfSuccessOrAlert(false);
   }
 };
 
-const toggleSoldOutEventHandler = (e) => {
+const toggleSoldOutEventHandler = async (e) => {
   if (e.target.classList.contains("menu-sold-out-button")) {
-    const menuItems = store.getStorage("menuItems");
     const menuItem = e.target.closest("li");
-    const index = menuItem.dataset.index;
-
-    menuItems[categoryName] = menuItems[categoryName] || [];
-    menuItems[categoryName][index].isSoldOut =
-      !menuItems[categoryName][index].isSoldOut;
-
-    store.setStorage("menuItems", menuItems);
-
-    render();
+    await ApiMethod.putMenuItemSoldoutToServer(menuItem.dataset.id);
   }
-};
-
-const initMenuItems = () => {
-  const menuItems = store.getStorage("menuItems");
-  if (menuItems) {
-    menuItems[categoryName] = menuItems[categoryName] || [];
-    return;
-  }
-
-  store.setStorage("menuItems", {
-    espresso: [],
-    latte: [],
-    americano: [],
-    mocha: [],
-    cappuccino: [],
-  });
 };
 
 const initEventListeners = () => {
@@ -159,8 +167,7 @@ const initEventListeners = () => {
 
 const startApp = () => {
   initEventListeners();
-  initMenuItems();
-  render();
+  renderIfSuccessOrAlert(false);
 };
 
 startApp();

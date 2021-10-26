@@ -1,18 +1,12 @@
 export default class Store {
-    menuList = [];
-    selectedCategory = "";
-    
-    constructor(category) {
-        this.setSelecedCategory(category);
-        this.menuList = localStorage.getItem("menus") ? JSON.parse(localStorage.getItem("menus")) : [];
+    constructor() {
+        this.menuList = [];
+        this.selectedCategory = "";
+        this.setSelecedCategory("espresso");
     }
 
     getMenuList() {
         return this.menuList;
-    }
-
-    getShowMenuList() {
-        return this.menuList.filter(menu => {return menu.category === this.selectedCategory});   
     }
 
     getMenu(event) {
@@ -25,28 +19,24 @@ export default class Store {
 
     addMenu(event) {
         this.menuList.push(event);
-        localStorage.setItem("menus", JSON.stringify(this.menuList));
     }
 
     removeMenu(event) {
-        var menuList = this.menuList.filter(menu => {return menu.code !== event.getAttribute("id")});
+        var menuList = this.menuList.filter(menu => {return menu.id !== event.getAttribute("id")});
 
         this.menuList = menuList;
-        localStorage.setItem("menus", JSON.stringify(this.menuList));
     }
 
     onEditMenuName(code, name) {
-        var menuIdx = this.menuList.findIndex(menuItem => {return menuItem.code === code});
+        var menuIdx = this.menuList.findIndex(menuItem => {return menuItem.id === code});
 
         this.menuList[menuIdx].name = name;
-        localStorage.setItem("menus", JSON.stringify(this.menuList));
     }
 
     setMenuSoldOutState(menu) {
-        var menuIdx = this.menuList.findIndex(menuItem => {return menuItem.code === menu.getAttribute("id")});
+        var menuIdx = this.menuList.findIndex(menuItem => {return menuItem.id === menu.getAttribute("id")});
 
         menuIdx > -1 ? this.menuList[menuIdx].isSoldOut = !this.menuList[menuIdx].isSoldOut : alert("Not found menu!!!");
-        localStorage.setItem("menus", JSON.stringify(this.menuList));
     }
 
     getSelectedCategory() {

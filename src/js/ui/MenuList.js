@@ -44,8 +44,10 @@ export default function MenuList({ onAction, $menuList }) {
         onAction('soldout', e.target);
     };
 
-    const menuItemTemplate = (menu) => {
-        return `<li data-menu-id=${menu.id} class="menu-list-item d-flex items-center py-2">
+    const menuItemTemplate = menu => {
+        return `<li data-menu-id=${
+            menu.id
+        } class="menu-list-item d-flex items-center py-2">
             <span class="w-100 pl-2 menu-name ${
                 menu.isSoldOut ? 'sold-out' : ''
             }">${menu.name}</span>

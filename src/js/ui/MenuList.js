@@ -1,18 +1,16 @@
 export default function MenuList({ onAction, $menuList }) {
-    this.setState = updatedItems => {
-        this.menuItems = updatedItems;
-        this.render(this.menuItems);
+    this.setState = menuList => {
+        this.render(menuList);
     };
 
     this.render = items => {
-        const template = items.map(menuItemTemplate);
-        $menuList.innerHTML = template.join('');
+        const templates = items.map(menuItemTemplate);
+        $menuList.innerHTML = templates.join('');
     };
 
     $menuList.addEventListener('click', e => this.handleButtonEvent(e));
 
     this.handleButtonEvent = e => {
-        console.log('e는 어떻게 될까?', e);
         if (e.target.classList.contains('menu-edit-button')) {
             this.updateMenu(e);
         } else if (e.target.classList.contains('menu-remove-button')) {

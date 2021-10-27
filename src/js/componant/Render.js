@@ -22,6 +22,7 @@ export default function Render($target, initialState) {
   for (let i = 0; i < $target.childNodes.length; i++) {
     if (soldOut[i]) {
       $All(".menu-name")[i].style.textDecoration = "line-through";
+      $All(".espresso-menu-soldout-btn")[i].style.color = "red";
     }
   }
   $(".menu-count").textContent = `총 ${this.state.menu.length}개`;

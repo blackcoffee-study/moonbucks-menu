@@ -27,18 +27,3 @@ export const getCategories = () => {
     },
   ];
 };
-export const action = Object.freeze({
-  INIT: "Init",
-  FETCH: "FetchCategory",
-  ADD: "AddMenu",
-  DELETE: "DeleteMenu",
-  EDIT: "EditMenu",
-  TOGGLE: "ToggleMenuSoldOut",
-});
-export const category = Object.freeze({
-  ESPRESSO: "espresso",
-  FRAPPUCINO: "frappuccino",
-  BLENDED: "blended",
-  TEAVANA: "teavana",
-  DESERT: "desert",
-});

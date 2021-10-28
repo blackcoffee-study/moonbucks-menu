@@ -1,7 +1,6 @@
 import { store } from "../MenuStore";
 import { observable, observe } from "./observer";
-import { State } from "./type";
-import { action } from "./Constants";
+import { Action, State } from "./types";
 
 export default class Component {
   protected props: any;
@@ -14,7 +13,7 @@ export default class Component {
   }
 
   setup() {
-    store.dispatch(action.INIT, {});
+    store.dispatch(Action.INIT, {});
     observe(() => this.render());
     this.setEvent();
     this.mount();

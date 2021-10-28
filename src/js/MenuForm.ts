@@ -1,6 +1,7 @@
 import Component from "./Core/Component";
 import { store } from "./MenuStore";
-import { action, getCategories } from "./Core/Constants";
+import { getCategories } from "./Core/Constants";
+import { Action } from "./Core/types";
 
 export class MenuForm extends Component {
   template() {
@@ -38,7 +39,7 @@ export class MenuForm extends Component {
       ) as HTMLInputElement;
       const { selected } = store.state;
       if (!Input.value.trim() || Input.value.trim() === "") return false;
-      store.dispatch(action.ADD, { category: selected, name: Input.value });
+      store.dispatch(Action.ADD, { category: selected, name: Input.value });
       Input.value = "";
     });
   }

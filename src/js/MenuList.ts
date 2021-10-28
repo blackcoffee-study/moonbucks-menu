@@ -1,6 +1,6 @@
 import Component from "./Core/Component";
 import { store } from "./MenuStore";
-import { action } from "./Core/Constants";
+import { Action } from "./Core/types";
 
 export default class MenuList extends Component {
   template() {
@@ -33,7 +33,7 @@ export default class MenuList extends Component {
       const li = (e.target as HTMLElement).closest("li") as HTMLElement;
       let newText = window.prompt("메뉴명을 입력하세요");
       if (!newText || newText.trim() === "") return false;
-      store.dispatch(action.EDIT, {
+      store.dispatch(Action.EDIT, {
         category: store.state.selected,
         id: li.dataset.id,
         name: newText,
@@ -42,7 +42,7 @@ export default class MenuList extends Component {
     this.addEvent("click", "button.menu-remove-button", (e) => {
       const li = (e.target as HTMLElement).closest("li") as HTMLElement;
       if (window.confirm("정말 삭제하시겠습니까?")) {
-        store.dispatch(action.DELETE, {
+        store.dispatch(Action.DELETE, {
           category: store.state.selected,
           id: li.dataset.id,
         });
@@ -50,7 +50,7 @@ export default class MenuList extends Component {
     });
     this.addEvent("click", "button.menu-sold-out-button", (e) => {
       const li = (e.target as HTMLElement).closest("li") as HTMLElement;
-      store.dispatch(action.TOGGLE, {
+      store.dispatch(Action.TOGGLE, {
         category: store.state.selected,
         id: li.dataset.id,
       });

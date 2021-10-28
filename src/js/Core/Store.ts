@@ -1,6 +1,6 @@
 import { observable } from "./observer";
 import { GetMenu } from "./API";
-import { State, StoreProp } from "./type";
+import { Action, Category, State, StoreProp } from "./types";
 
 export class Store {
   private $state;
@@ -19,11 +19,11 @@ export class Store {
     });
   }
 
-  commit(action: string, payload: any) {
+  commit(action: Action, payload: any) {
     this.$mutations[action](this.$state, payload);
   }
 
-  dispatch(action: string, payload: any): any {
+  dispatch(action: Action, payload: any): any {
     //dispatch는 비동기 처리 로직
     return this.$actions[action](
       {

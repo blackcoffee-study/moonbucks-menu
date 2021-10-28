@@ -1,28 +1,34 @@
-import { menuItem, RequestProps } from "./type";
+import { menuItem, APIdto, Category } from "./types";
 import axios, { AxiosError } from "axios";
 import { APIResult } from "./APIresult";
+import { AddDTO, DeleteDTO, EditDTO, ToggleDTO } from "./DTO";
 
 const baseURL = `http://localhost:3000`;
 const instance = axios.create({
   baseURL,
 });
 
-export const GetMenu = async (category: string) => {
+export const GetMenu = async (
+  category: string
+): Promise<APIResult<menuItem> | undefined> => {
   try {
-    const response = await instance.get<menuItem[]>(
+    const response = await instance.get<menuItem>(
       `/api/category/${category}/menu`
     );
     const data = response.data;
-    return new APIResult<menuItem[]>(true, data, undefined);
+    return new APIResult<menuItem>(true, data, undefined);
   } catch (error) {
     if (error instanceof Error) {
       console.error(error);
-      return new APIResult(false, undefined, error.message);
+      throw new APIResult<menuItem>(false, undefined, error.message);
     }
   }
 };
 
-export async function AddMenu({ category, name }: RequestProps) {
+export const AddMenu = async (
+  addDTO: AddDTO
+): Promise<APIResult<menuItem> | undefined> => {
+  const { category, name } = addDTO;
   try {
     const response = await instance.post<menuItem>(
       `/api/category/${category}/menu`,
@@ -30,18 +36,17 @@ export async function AddMenu({ category, name }: RequestProps) {
         name,
       }
     );
-
     const data = response.data;
     return new APIResult<menuItem>(true, data, undefined);
   } catch (error) {
     if (error instanceof Error) {
-      console.error(error);
-      return new APIResult(false, undefined, error.message);
+      throw new APIResult<menuItem>(false, undefined, error.message);
     }
   }
-}
+};
 
-export async function EditMenu({ category, id, name }: RequestProps) {
+export const EditMenu = async (editDTO: EditDTO) => {
+  const { category, id, name } = editDTO;
   try {
     const response = await instance.put<menuItem>(
       `/api/category/${category}/menu/${id}`,
@@ -55,9 +60,10 @@ export async function EditMenu({ category, id, name }: RequestProps) {
       return new APIResult(false, undefined, error.message);
     }
   }
-}
+};
 
-export async function ToggleSoldOutMenu({ category, id }: RequestProps) {
+export async function ToggleSoldOutMenu(toggleDTO: ToggleDTO) {
+  const { category, id } = toggleDTO;
   try {
     const response = await instance.put<menuItem>(
       `/api/category/${category}/menu/${id}/soldout`
@@ -73,7 +79,8 @@ export async function ToggleSoldOutMenu({ category, id }: RequestProps) {
   }
 }
 
-export async function DeleteMenu({ category, id }: RequestProps) {
+export const DeleteMenu = async (deleteDTO: DeleteDTO) => {
+  const { category, id } = deleteDTO;
   try {
     const response = await instance.delete<menuItem>(
       `/api/category/${category}/menu/${id}`
@@ -86,4 +93,4 @@ export async function DeleteMenu({ category, id }: RequestProps) {
       return new APIResult(false, undefined, error.message);
     }
   }
-}
+};

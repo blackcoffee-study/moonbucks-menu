@@ -27,3 +27,26 @@ export function observable<T extends object>(state: T) {
     },
   });
 }
+
+// export function observable<T extends object>(obj: T) {
+//   Object.keys(obj).forEach((key) => {
+//     let _value = obj[key as keyof T];
+//     const observers = new Set();
+//     Object.defineProperty(obj, key, {
+//       get() {
+//         if (currentObserver) observers.add(currentObserver);
+//         return _value;
+//       },
+//       set(value) {
+//         if (typeof value === "object") {
+//           _value = observable(value);
+//         }
+//         if (_value === value) return;
+//         if (JSON.stringify(_value) === JSON.stringify(value)) return;
+//         _value = value;
+//         observers.forEach((fn: any) => fn());
+//       },
+//     });
+//   });
+//   return obj;
+// }

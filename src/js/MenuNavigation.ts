@@ -1,7 +1,8 @@
 import Component from "./Core/Component";
 
 import { store } from "./MenuStore";
-import { action, getCategories } from "./Core/Constants";
+import { getCategories } from "./Core/Constants";
+import { Action } from "./Core/types";
 
 export default class MenuNavigation extends Component {
   template() {
@@ -23,7 +24,7 @@ class="cafe-category-name btn bg-white shadow mx-1"
   setEvent() {
     this.addEvent("click", "button.cafe-category-name", (e) => {
       const Name = (e.target as HTMLElement).dataset.categoryName;
-      store.dispatch(action.FETCH, { category: Name });
+      store.dispatch(Action.FETCH, Name);
     });
   }
 }

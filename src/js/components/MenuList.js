@@ -1,10 +1,10 @@
 import {
     BUTTON,
     LOAD_MENUITEMS_SUCCESS,
-    ADD_MENUITEM,
-    DELETE_MENUITEM,
-    EDIT_MENUITEM,
-    SOLDOUT_MENUITEM,
+    ADD_MENUITEM_SUCCESS,
+    EDIT_MENUITEM_SUCCESS,
+    DELETE_MENUITEM_SUCCESS,
+    SOLDOUT_MENUITEM_SUCCESS,
 } from '../constant/index.js';
 import { store } from '../store/index.js';
 import { $ } from '../utils/index.js';
@@ -32,10 +32,10 @@ export class MenuList {
         });
 
         store.subscribe(LOAD_MENUITEMS_SUCCESS, this.render);
-        store.subscribe(ADD_MENUITEM, this.render);
-        store.subscribe(DELETE_MENUITEM, this.render);
-        store.subscribe(EDIT_MENUITEM, this.render);
-        store.subscribe(SOLDOUT_MENUITEM, this.render);
+        store.subscribe(ADD_MENUITEM_SUCCESS, this.render);
+        store.subscribe(DELETE_MENUITEM_SUCCESS, this.render);
+        store.subscribe(EDIT_MENUITEM_SUCCESS, this.render);
+        store.subscribe(SOLDOUT_MENUITEM_SUCCESS, this.render);
     }
 
     render = (state) => {

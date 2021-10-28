@@ -1,15 +1,4 @@
-import {
-    BASE_URL,
-    POST,
-    PUT,
-    DELETE,
-    LOAD_MENUITEMS_SUCCESS,
-    ADD_MENUITEM,
-    EDIT_MENUITEM,
-    SOLDOUT_MENUITEM,
-    DELETE_MENUITEM,
-} from '../constant/index.js';
-import { store } from '../store/index.js';
+import { BASE_URL, POST, PUT, DELETE } from '../constant/index.js';
 
 const options = {
     post: (content) => ({
@@ -32,62 +21,56 @@ const options = {
 };
 
 const request = async (url, options) => {
-    const response = await fetch(url, options);
-    if (!response.ok) {
-        throw response.json();
+    try {
+        const response = await fetch(url, options);
+        if (!response.ok) {
+            throw await response.json().then((e) => new Error(e.message));
+        }
+        return await (!options || options.method !== DELETE
+            ? response.json()
+            : '');
+    } catch (e) {
+        alert(e.message);
     }
-    return await (!options || options.method !== DELETE ? response.json() : '');
 };
 
 export const api = {
-    loadMenuItems: (category = 'espresso') => {
+    getMenuItems: async (category) => {
         const requestUrl = `${BASE_URL}/api/category/${category}/menu`;
-        request(requestUrl).then((menuItems) => {
-            store.dispatch({
-                type: LOAD_MENUITEMS_SUCCESS,
-                payload: { menuItems, currentCategory: category },
-            });
-        });
-    },
-    addMenuItem: async (category, menuName) => {
         try {
-            const requestUrl = `${BASE_URL}/api/category/${category}/menu`;
-            const menuItem = await request(requestUrl, options.post(menuName));
-            store.dispatch({
-                type: ADD_MENUITEM,
-                payload: { menuItem },
-            });
-        } catch (error) {
-            error.then((e) => {
-                alert(e.message);
-            });
+            return await request(requestUrl);
+        } catch (e) {
+            alert(e.message);
         }
     },
-    editMenuItem: (category, menuId, newMenuName) => {
-        const requestUrl = `${BASE_URL}/api/category/${category}/menu/${menuId}`;
-        request(requestUrl, options.put(newMenuName)).then((menuItem) => {
-            store.dispatch({
-                type: EDIT_MENUITEM,
-                payload: { menuItem },
-            });
-        });
+    addMenuItem: async (category, menuName) => {
+        const requestUrl = `${BASE_URL}/api/category/${category}/menu`;
+        try {
+            return await request(requestUrl, options.post(menuName));
+        } catch (e) {
+            alert(e.message);
+        }
     },
-    soldOutMenuItem: (category, menuId) => {
+    editMenuItem: async (category, menuId, newMenuName) => {
+        const requestUrl = `${BASE_URL}/api/category/${category}/menu/${menuId}`;
+        try {
+            return await request(requestUrl, options.put(newMenuName));
+        } catch (e) {
+            alert(e.message);
+        }
+    },
+    soldOutMenuItem: async (category, menuId) => {
         const requestUrl = `${BASE_URL}/api/category/${category}/menu/${menuId}/soldOut`;
-        request(requestUrl, options.put()).then((menuItem) => {
-            store.dispatch({
-                type: SOLDOUT_MENUITEM,
-                payload: { menuItem },
-            });
-        });
+        try {
+            return await request(requestUrl, options.put());
+        } catch (e) {
+            alert(e.message);
+        }
     },
     deleteMenuItem: (category, menuId) => {
         const requestUrl = `${BASE_URL}/api/category/${category}/menu/${menuId}`;
-        request(requestUrl, options.delete()).then(() => {
-            store.dispatch({
-                type: DELETE_MENUITEM,
-                payload: { targetId: menuId },
-            });
+        request(requestUrl, options.delete()).catch((e) => {
+            alert(e.message);
         });
     },
 };

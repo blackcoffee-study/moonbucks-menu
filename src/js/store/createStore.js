@@ -1,5 +1,5 @@
 export const createStore = (reducer) => {
-    let state = '';
+    let state;
     const eventHandlers = {};
 
     const subscribe = (actionType, eventHandler) => {
@@ -16,12 +16,14 @@ export const createStore = (reducer) => {
         eventHandlers[actionType].map((fn) => fn(state));
     };
 
-    const dispatch = (action) => {
-        state = reducer(state, action);
-        publish(action.type);
+    const dispatch = async (action) => {
+        if (typeof action === 'function') {
+            action(dispatch, getState);
+        } else {
+            state = reducer(state, action);
+            publish(action.type);
+        }
     };
-
     const getState = () => state;
-
     return { subscribe, dispatch, getState };
 };

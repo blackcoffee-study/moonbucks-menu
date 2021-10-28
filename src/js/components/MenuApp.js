@@ -1,4 +1,10 @@
-import { api } from '../api/index.js';
+import {
+    addMenuItem,
+    deleteMenuItem,
+    editMenuItem,
+    fetchMenuItems,
+    soldOutMenuItem,
+} from '../store/actionCreator.js';
 import { store } from '../store/index.js';
 import { Category } from './Category.js';
 import { MenuInput } from './MenuInput.js';
@@ -6,7 +12,7 @@ import { MenuList } from './MenuList.js';
 
 export class MenuApp {
     constructor() {
-        api.loadMenuItems();
+        store.dispatch(fetchMenuItems());
 
         this.Category = new Category({
             onCategoryClick: this.handleCategoryClick,
@@ -24,11 +30,11 @@ export class MenuApp {
     }
 
     handleCategoryClick = (clickedCategory) => {
-        api.loadMenuItems(clickedCategory.dataset.categoryName);
+        store.dispatch(fetchMenuItems(clickedCategory.dataset.categoryName));
     };
 
     handleMenuItemAdd = (name) => {
-        api.addMenuItem(store.getState().currentCategory, name);
+        store.dispatch(addMenuItem(name));
     };
 
     handleMenuItemNameEdit = (menuItem) => {
@@ -36,20 +42,17 @@ export class MenuApp {
         if (!newName) {
             return;
         }
-        const targetId = menuItem.dataset.menuId;
-        api.editMenuItem(store.getState().currentCategory, targetId, newName);
+        store.dispatch(editMenuItem(menuItem.dataset.menuId, newName));
     };
 
     handleMenuItemDelete = (menuItem) => {
         if (!window.confirm('정말 삭제하시겠습니까?')) {
             return;
         }
-        const targetId = menuItem.dataset.menuId;
-        api.deleteMenuItem(store.getState().currentCategory, targetId);
+        store.dispatch(deleteMenuItem(menuItem.dataset.menuId));
     };
 
     handleMenuItemSoldOut = (menuItem) => {
-        const targetId = menuItem.dataset.menuId;
-        api.soldOutMenuItem(store.getState().currentCategory, targetId);
+        store.dispatch(soldOutMenuItem(menuItem.dataset.menuId));
     };
 }

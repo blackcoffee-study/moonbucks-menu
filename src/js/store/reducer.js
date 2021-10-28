@@ -1,38 +1,58 @@
 import {
     LOAD_MENUITEMS_SUCCESS,
-    ADD_MENUITEM,
-    DELETE_MENUITEM,
-    EDIT_MENUITEM,
-    SOLDOUT_MENUITEM,
+    LOAD_MENUITEMS_FAIL,
+    ADD_MENUITEM_SUCCESS,
+    ADD_MENUITEM_FAIL,
+    EDIT_MENUITEM_SUCCESS,
+    EDIT_MENUITEM_FAIL,
+    DELETE_MENUITEM_SUCCESS,
+    DELETE_MENUITEM_FAIL,
+    SOLDOUT_MENUITEM_SUCCESS,
+    SOLDOUT_MENUITEM_FAIL,
 } from '../constant/index.js';
 
-export const reducer = (state = '', action) => {
+const initState = {
+    menuItmes: [],
+    currentCategory: 'espresso',
+};
+
+export const reducer = (state = initState, action) => {
+    const currentCategory = state.currentCategory;
+    let newMenuItems;
     switch (action.type) {
         case LOAD_MENUITEMS_SUCCESS:
-            state = {
-                ...action.payload,
+            return {
+                menuItems: [...action.menuItems],
+                currentCategory: action.currentCategory,
             };
-            return state;
-        case ADD_MENUITEM:
-            state.menuItems.push(action.payload.menuItem);
-            return state;
-        case DELETE_MENUITEM:
-            state.menuItems = state.menuItems.filter((menuItem) => {
-                return menuItem.id !== action.payload.targetId;
+        case ADD_MENUITEM_SUCCESS:
+            return {
+                menuItems: [...state.menuItems, action.menuItem],
+                currentCategory,
+            };
+        case DELETE_MENUITEM_SUCCESS:
+            newMenuItems = state.menuItems.filter((menuItem) => {
+                return menuItem.id !== action.id;
             });
-            return state;
-        case EDIT_MENUITEM:
-        case SOLDOUT_MENUITEM:
-            const newMenuItem = action.payload.menuItem;
-            state.menuItems = state.menuItems.map((menuItem) => {
-                if (menuItem.id === newMenuItem.id) {
-                    return { ...newMenuItem };
+            return { menuItems: [...newMenuItems], currentCategory };
+        case EDIT_MENUITEM_SUCCESS:
+        case SOLDOUT_MENUITEM_SUCCESS:
+            newMenuItems = state.menuItems.map((menuItem) => {
+                if (menuItem.id === action.menuItem.id) {
+                    return { ...action.menuItem };
                 } else {
                     return { ...menuItem };
                 }
             });
-            return state;
-        default:
+            return {
+                menuItems: [...newMenuItems],
+                currentCategory,
+            };
+        case LOAD_MENUITEMS_FAIL:
+        case ADD_MENUITEM_FAIL:
+        case EDIT_MENUITEM_FAIL:
+        case DELETE_MENUITEM_FAIL:
+        case SOLDOUT_MENUITEM_FAIL:
             return state;
     }
 };

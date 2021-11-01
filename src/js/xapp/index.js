@@ -1,4 +1,4 @@
-import { TextTempltaeNode, ElementTemplateNode, ForTemplateNode } from "./nodes.js";
+import { XAppTemplateParser } from "./parser.js";
 import { getProp } from "./util.js";
 
 class Template {
@@ -12,100 +12,10 @@ class Template {
     }
 
     parse(rootDomNode) {
-        this.root = this._parse(rootDomNode);
-    }
-
-    /**
-     * @param {Node} currentDomNode
-     */
-    _parse(currentDomNode) {
-        if (currentDomNode instanceof Text) {
-            const textNode = new TextTempltaeNode();
-            const text = currentDomNode.data.trim();
-            const re = /\${(.+?)}/g;
-            const matches = [...text.matchAll(re)];
-
-            if (matches.length > 0) {
-                const format = [];
-                let last = 0;
-                matches.forEach(match => {
-                    format.push({ type: "str", data: text.slice(last, match.index) });
-                    format.push({ type: "var", data: match[1] });
-                    last = match.index + match[0].length;
-                });
-                format.push({ type: "str", data: text.slice(last) });
-
-                textNode.setFormatter(format);
-            } else {
-                textNode.setFormatter([{ type: "str", data: text }]);
-            }
-            return textNode;
-        } else if (currentDomNode instanceof Element) {
-            function getDirective(attr) {
-                const property = attr.name.split(":")[1];
-                const value = attr.textContent;
-                return [property, value];
-            }
-
-            const attrs = [...currentDomNode.attributes];
-            const events = [];
-            const elementNode = new ElementTemplateNode();
-
-            attrs.forEach(attr => {
-                if (attr.name?.startsWith("x-on")) {
-                    const property = attr.name.split(":")[1];
-                    const value = attr.textContent;
-
-                    events.push({ property, value });
-
-                    if (this.eventUsed.indexOf(property) === -1) {
-                        this.eventUsed.push(property);
-                    }
-                }
-            });
-
-            elementNode.events = events;
-            elementNode.el = currentDomNode;
-
-            attrs.forEach(attr => {
-                if (attr.name?.startsWith("x-name")) {
-                    const value = attr.textContent;
-
-                    elementNode.name = value;
-                }
-            });
-
-            attrs.forEach(attr => {
-                if (attr.name?.startsWith("x-bind")) {
-                    const property = attr.name.split(":")[1];
-                    const value = attr.textContent;
-
-                    elementNode.binds.push({ property, value });
-                }
-            });
-
-            for (const child of currentDomNode.childNodes) {
-                const ch = this._parse(child);
-                if (ch) {
-                    elementNode.children.push(ch);
-                }
-            }
-
-            for (const attr of attrs) {
-                if (attr.name?.startsWith("x-for")) {
-                    const [, value] = getDirective(attr);
-                    const forNode = new ForTemplateNode();
-                    forNode.target = elementNode;
-                    forNode.dataPath = value;
-
-                    return forNode;
-                }
-            }
-
-            return elementNode;
-        }
-
-        return null;
+        const parser = new XAppTemplateParser();
+        const result = parser.parse(rootDomNode);
+        this.eventUsed = result.eventUsed;
+        this.root = result.root;
     }
 }
 

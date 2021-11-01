@@ -10,7 +10,7 @@ export class TemplateNode {
     }
 }
 
-export class TextTempltaeNode extends TemplateNode {
+export class TextTemplateNode extends TemplateNode {
     constructor() {
         super();
         /** @type {{type: "str" | "var", data: string}[]} */

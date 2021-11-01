@@ -1,11 +1,12 @@
 import MenuList from './MenuLIst.js';
 
-export default function Main({ $app, initialState, updateMenuItems, editMenuItems, deleteMenuItems }) {
+export default function Main({ $app, initialState, updateMenuItems, editMenuItems, deleteMenuItems, checkSoldOut }) {
 
   this.state = { ...initialState, count: 0 };
   this.updateMenuItems = updateMenuItems;
   this.editMenuItems = editMenuItems;
   this.deleteMenuItems = deleteMenuItems;
+  this.checkSoldOut = checkSoldOut;
 
   this.main = document.createElement('main');
   this.main.className = 'mt-10 d-flex justify-center';
@@ -16,6 +17,7 @@ export default function Main({ $app, initialState, updateMenuItems, editMenuItem
   this.main.appendChild(this.wrap);
   $app.appendChild(this.main);
 
+
   const list = new MenuList({
     initialState: {
       currentCategory: this.state.currentCategory,
@@ -23,8 +25,10 @@ export default function Main({ $app, initialState, updateMenuItems, editMenuItem
     },
     updateMenuItems: this.updateMenuItems,
     editMenuItems: this.editMenuItems,
-    deleteMenuItems: this.deleteMenuItems
+    deleteMenuItems: this.deleteMenuItems,
+    checkSoldOut: this.checkSoldOut
   });
+
 
   this.setState = (nextState) => {
     this.state = { ...this.state, ...nextState };
@@ -35,6 +39,7 @@ export default function Main({ $app, initialState, updateMenuItems, editMenuItem
     })
     this.render();
   }
+
 
   this.render = () => {
     this.wrap.innerHTML = `

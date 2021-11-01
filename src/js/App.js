@@ -1,4 +1,4 @@
-import { deleteData, editData, getData, postData } from './api.js';
+import { deleteData, editData, getData, postData, soldOutData } from './api.js';
 import Header from './Header.js'
 import Main from './Main.js'
 
@@ -9,15 +9,17 @@ export default function App($app) {
     currentCategoryMenuItems: []
   }
 
-  this.getLocalStorage = (meunItems) => {
 
+  this.getLocalStorage = (meunItems) => {
     const strMenu = localStorage.getItem(meunItems);
     if (strMenu !== null) return JSON.parse(strMenu);
   }
 
+
   this.setLocalStorage = (state) => {
     localStorage.setItem('menuItems', JSON.stringify(state));
   }
+
 
   const getItems = currentCategory => {
     getData(currentCategory).then(res => {
@@ -27,6 +29,8 @@ export default function App($app) {
       })
     })
   }
+
+
   const header = new Header({
     $app,
     onClick: (categoryName, text) => {
@@ -39,31 +43,27 @@ export default function App($app) {
     }
   });
 
+
   const main = new Main({
     $app,
     initialState: { ...this.state },
-    updateMenuItems: async (categoryName, newMenuItems, name) => {
+    updateMenuItems: async (name) => {
+      await postData(this.state.currentCategory, name);
+      getItems(this.state.currentCategory);
 
-      this.setState({
-        ...this.state,
-        currentCategoryMenuItems: [...newMenuItems]
-      })
-      postData(this.state.currentCategory, name)
-        .then(res => {
-        })
-      getItems(this.state.currentCategory)
     },
-    editMenuItems: async (origin, edited) => {
-      const id = this.state.currentCategoryMenuItems.find(el => el['name'] === origin).id;
-
-      editData(this.state.currentCategory, id, edited)
-      getItems(this.state.currentCategory)
+    editMenuItems: async (menuId, edited) => {
+      await editData(this.state.currentCategory, menuId, edited);
+      getItems(this.state.currentCategory);
     },
-    deleteMenuItems: async (menuName) => {
+    deleteMenuItems: async (menuId) => {
+      await deleteData(this.state.currentCategory, menuId);
+      getItems(this.state.currentCategory);
 
-      const id = this.state.currentCategoryMenuItems.find(el => el.name === menuName).id;
-      deleteData(this.state.currentCategory, id);
-      getItems(this.state.currentCategory)
+    },
+    checkSoldOut: async (menuId) => {
+      await soldOutData(this.state.currentCategory, menuId);
+      getItems(this.state.currentCategory);
     }
   });
 
@@ -72,7 +72,7 @@ export default function App($app) {
     this.state = nextState;
     main.setState({
       ...this.state
-    })
+    });
   };
 
 
@@ -80,9 +80,7 @@ export default function App($app) {
     header.render();
     getData(this.state.currentCategory).then(res => {
       this.setState({ ...this.state, currentCategoryMenuItems: res })
-
-    })
-
+    });
   }
   init()
 }

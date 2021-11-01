@@ -1,20 +1,22 @@
 const BASE_URL = 'http://localhost:3000';
 
-const request = async (url, option = { method: 'GET' }) => {
+const request = async (url, option) => {
   try {
     const response = await fetch(url, option);
-    const result = await response.json().catch(() => []);
     if (!response.ok) {
-      throw new Error(result.message);
+      throw response.json();
     }
-    return result;
+    return await (option.method !== 'DELETE' ? response.json() : {});
   } catch (err) {
-    alert(err.message);
+    err.then(e => {
+      alert(e.message);
+    })
+
   }
 };
 
 export const getData = async (category) =>
-  request(`${BASE_URL}/api/category/${category}/menu`)
+  request(`${BASE_URL}/api/category/${category}/menu`, { method: 'GET' })
 
 export const postData = async (category, name) =>
   request(`${BASE_URL}/api/category/${category}/menu`, {
@@ -43,4 +45,7 @@ export const deleteData = async (category, menuId) =>
     method: 'DELETE'
   })
 
-
+export const soldOutData = async (category, menuId) =>
+  request(`${BASE_URL}/api/category/${category}/menu/${menuId}/soldout`, {
+    method: 'PUT',
+  })

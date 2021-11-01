@@ -1,6 +1,7 @@
 import { EVENTS, MESSAGES, SELECTORS } from '../../constants';
 import Component from '../../core/Component';
-import { actions, stateFunctions } from '../../store';
+import {actions, stateFunctions, tabType} from '../../store';
+import {FETCH_RESULT, putMenuByCategory, soldOutMenuByCategory} from "../../apis";
 
 class MenuItem extends Component {
 	template() {
@@ -62,21 +63,39 @@ export default class MenuList extends Component {
 				new MenuItem(`item-${item.id}`, this.store, this.$component, { item })
 		);
 	}
-	onToggleSoldOut(e) {
+
+    async onToggleSoldOut(e) {
 		const { target } = e;
 		if (target.closest('.menu-sold-out-button')) {
 			const id = target.dataset.id;
+            const currentCategory = tabType[stateFunctions.getCurrentTab()]
+
+            const response = await soldOutMenuByCategory(currentCategory,id)
+            if(response.result ===FETCH_RESULT.OK){
 			actions.toggleSoldOutByCurrentMenuIdAct(id);
+
+            }else{
+                alert(response.message)
+            }
 		}
 	}
-	onEdit(e) {
+	async onEdit(e) {
 		const { target } = e;
 		if (target.closest(SELECTORS.CLASS.MENU_EDIT_BUTTON)) {
 			const id = target.dataset.id;
 			const menu = stateFunctions.findCurrentMenuById(id);
+
 			const newName = prompt(MESSAGES.PROMPT_EDIT_MENU, menu.name);
-			if (newName) {
+
+            if (newName) {
+                const currentCategory = tabType[stateFunctions.getCurrentTab()]
+                const response = await putMenuByCategory(currentCategory,{...menu,name:newName})
+                if(response.result ===FETCH_RESULT.OK){
+
 				actions.editMenuAct(id, newName);
+                }else{
+                    alert(response.message)
+                }
 			}
 		}
 	}

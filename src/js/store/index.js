@@ -1,9 +1,8 @@
-import { addLocalStorage } from '../core/middlewares/addLocalStorage';
 import { logger } from '../core/middlewares/logger';
 import { applyMiddleware, createStore } from '../core/myRedux';
-import { getUUID } from '../utils';
 
-const tabType = Object.freeze({
+// category를 key와 value로, 영어와 한글로 관리하다보니 헷갈리게 관리하게 됨...
+export const tabType = Object.freeze({
 	에스프레소: 'espresso',
 	프라푸치노: 'frappuccino',
 	블렌디드: 'blended',
@@ -30,7 +29,8 @@ const defaultState = {
 	},
 };
 
-const getInitState = () => {
+
+const getInitState =  () => {
 	return JSON.parse(localStorage.getItem('storeState')) || defaultState;
 };
 
@@ -139,7 +139,6 @@ const reducer = (state, action) => {
 
 const store = applyMiddleware(createStore(reducer, getInitState()), [
 	logger,
-	addLocalStorage,
 ]);
 
 // select states
@@ -162,9 +161,9 @@ const toggleSoldOutByCurrentMenuIdAct = (id) => {
 	const menu = findCurrentMenuById(id);
 	store.dispatch(toggleSoldOut({ ...menu, isSoldOut: !menu.isSoldOut }));
 };
-const addMenuAct = (inputedName) => {
+const addMenuAct = (newMenu) => {
 	store.dispatch(
-		addMenu({ id: getUUID(), name: inputedName, isSoldOut: false })
+		addMenu(newMenu)
 	);
 };
 const editMenuAct = (id, newName) => {

@@ -1,3 +1,5 @@
+import 'regenerator-runtime/runtime'
+
 import App from './app';
 import store, { actions } from './store';
 

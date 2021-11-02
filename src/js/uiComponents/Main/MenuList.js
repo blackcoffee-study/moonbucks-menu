@@ -1,13 +1,13 @@
-import { EVENTS, MESSAGES, SELECTORS } from '../../constants';
+import {EVENTS, FETCH_RESULT, MESSAGES, SELECTORS} from '../../constants';
 import Component from '../../core/Component';
 import {actions, stateFunctions, tabType} from '../../store';
-import {FETCH_RESULT, putMenuByCategory, soldOutMenuByCategory} from "../../apis";
+import {deleteMenuByCategory, putMenuByCategory, soldOutMenuByCategory} from "../../apis";
 
 class MenuItem extends Component {
-	template() {
-		const { item } = this.props;
+    template() {
+        const {item} = this.props;
 
-		return `
+        return `
       <span class="w-100 pl-2 menu-name ${item.isSoldOut ? 'sold-out' : ''}">
       ${item.name}
       </span>
@@ -38,92 +38,103 @@ class MenuItem extends Component {
         삭제
       </button>
     `;
-	}
+    }
 }
 
 export default class MenuList extends Component {
-	template() {
-		const menuList = stateFunctions.getCurrentMenuList();
-		return `${menuList
-			.map(
-				(item) => `
+    template() {
+        const menuList = stateFunctions.getCurrentMenuList();
+        return `${menuList
+            .map(
+                (item) => `
     <li class="menu-list-item d-flex items-center py-2" data-component="item-${item.id}">
     {{${item.name}}}
     </li>
     `
-			)
-			.join('')}`;
-	}
+            )
+            .join('')}`;
+    }
 
-	mount() {
-		const menuList = stateFunctions.getCurrentMenuList();
+    mount() {
+        const menuList = stateFunctions.getCurrentMenuList();
 
-		menuList.forEach(
-			(item) =>
-				new MenuItem(`item-${item.id}`, this.store, this.$component, { item })
-		);
-	}
+        menuList.forEach(
+            (item) =>
+                new MenuItem(`item-${item.id}`, this.store, this.$component, {item})
+        );
+    }
 
     async onToggleSoldOut(e) {
-		const { target } = e;
-		if (target.closest('.menu-sold-out-button')) {
-			const id = target.dataset.id;
+        const {target} = e;
+        if (target.closest('.menu-sold-out-button')) {
+            const id = target.dataset.id;
             const currentCategory = tabType[stateFunctions.getCurrentTab()]
 
-            const response = await soldOutMenuByCategory(currentCategory,id)
-            if(response.result ===FETCH_RESULT.OK){
-			actions.toggleSoldOutByCurrentMenuIdAct(id);
+            const response = await soldOutMenuByCategory(currentCategory, id)
+            if (response.result === FETCH_RESULT.OK) {
+                actions.toggleSoldOutByCurrentMenuIdAct(id);
 
-            }else{
+            } else {
                 alert(response.message)
             }
-		}
-	}
-	async onEdit(e) {
-		const { target } = e;
-		if (target.closest(SELECTORS.CLASS.MENU_EDIT_BUTTON)) {
-			const id = target.dataset.id;
-			const menu = stateFunctions.findCurrentMenuById(id);
+        }
+    }
 
-			const newName = prompt(MESSAGES.PROMPT_EDIT_MENU, menu.name);
+    async onEdit(e) {
+        const {target} = e;
+        if (target.closest(SELECTORS.CLASS.MENU_EDIT_BUTTON)) {
+            const id = target.dataset.id;
+            const menu = stateFunctions.findCurrentMenuById(id);
+
+            const newName = prompt(MESSAGES.PROMPT_EDIT_MENU, menu.name);
 
             if (newName) {
                 const currentCategory = tabType[stateFunctions.getCurrentTab()]
-                const response = await putMenuByCategory(currentCategory,{...menu,name:newName})
-                if(response.result ===FETCH_RESULT.OK){
+                const response = await putMenuByCategory(currentCategory, {...menu, name: newName})
+                if (response.result === FETCH_RESULT.OK) {
 
-				actions.editMenuAct(id, newName);
-                }else{
+                    actions.editMenuAct(id, newName);
+                } else {
                     alert(response.message)
                 }
-			}
-		}
-	}
+            }
+        }
+    }
 
-	onDelete(e) {
-		const { target } = e;
-		if (target.closest(SELECTORS.CLASS.MENU_REMOVE_BUTTON)) {
-			const answer = confirm(MESSAGES.CONFIRM_REMOVE);
-			if (answer) {
-				const id = target.dataset.id;
-				actions.deleteMenuAct(id);
-			}
-		}
-	}
-	bindEvents() {
-		return [
-			{
-				eventType: EVENTS.click,
-				callback: this.onEdit.bind(this),
-			},
-			{
-				eventType: EVENTS.click,
-				callback: this.onToggleSoldOut.bind(this),
-			},
-			{
-				eventType: EVENTS.click,
-				callback: this.onDelete.bind(this),
-			},
-		];
-	}
+    async onDelete(e) {
+        const {target} = e;
+        if (target.closest(SELECTORS.CLASS.MENU_REMOVE_BUTTON)) {
+            const answer = confirm(MESSAGES.CONFIRM_REMOVE);
+            if (answer) {
+
+                const id = target.dataset.id;
+                const currentCategory = tabType[stateFunctions.getCurrentTab()]
+
+                const response = await deleteMenuByCategory(currentCategory, id)
+                if (response.result === FETCH_RESULT.OK) {
+
+                    actions.deleteMenuAct(id);
+                } else {
+                    alert(response.message)
+                }
+            }
+        }
+    }
+
+    bindEvents() {
+        return [
+            {
+                eventType: EVENTS.click,
+                callback: this.onEdit.bind(this),
+            },
+            {
+                eventType: EVENTS.click,
+                callback: this.onToggleSoldOut.bind(this),
+            },
+            {
+                eventType: EVENTS.click,
+                callback: this.onDelete.bind(this),
+            },
+        ];
+    }
 }

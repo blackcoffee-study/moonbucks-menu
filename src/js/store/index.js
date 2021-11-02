@@ -31,7 +31,7 @@ const defaultState = {
 
 
 const getInitState =  () => {
-	return JSON.parse(localStorage.getItem('storeState')) || defaultState;
+	return defaultState;
 };
 
 // actions
@@ -70,10 +70,10 @@ const removeMenu = (id) => {
 	};
 };
 
-const setInitState = () => {
+const setInitState = (initState) => {
 	return {
 		type: 'SET_INIT_STATE',
-		payload: { initState: getInitState() },
+		payload: { initState },
 	};
 };
 
@@ -81,7 +81,8 @@ const reducer = (state, action) => {
 	switch (action.type) {
 		case 'SET_INIT_STATE': {
 			return {
-				...action.payload.initState,
+                ...state,
+				menus:action.payload.initState,
 			};
 		}
 		case 'ADD_COUNT': {
@@ -154,7 +155,7 @@ const findCurrentMenuById = (id) =>
 	getCurrentMenuList().find((menu) => menu.id === id);
 
 // select actions
-const setInitStateAct = () => store.dispatch(setInitState());
+const setInitStateAct = (initState) => store.dispatch(setInitState(initState));
 const deleteMenuAct = (id) => store.dispatch(removeMenu(id));
 const changeTabAct = (selectedTab) => store.dispatch(changeTab(selectedTab));
 const toggleSoldOutByCurrentMenuIdAct = (id) => {

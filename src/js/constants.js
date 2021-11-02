@@ -21,3 +21,8 @@ export const MESSAGES = deepFreeze({
 	CONFIRM_REMOVE: '정말 삭제하시겠습니까?',
 	PROMPT_EDIT_MENU: '메뉴명을 수정하세요.',
 });
+export const FETCH_RESULT = {
+    OK: 'ok',
+    SERVER_ERROR: 'server_error',
+    CLIENT_ERROR: 'client_error'
+}

@@ -1,11 +1,7 @@
 import {tabType} from "./store";
+import {FETCH_RESULT} from "./constants";
 
 const BASE_URL = 'http://localhost:3000/api/'
-export const FETCH_RESULT = {
-    OK: 'ok',
-    SERVER_ERROR: 'server_error',
-    CLIENT_ERROR: 'client_error'
-}
 
 
 export const getMenuByCategory = async (category) => {
@@ -27,11 +23,15 @@ export const getMenuByCategory = async (category) => {
     }
 }
 
-export const fetchMenus = async ()=>{
+export const fetchMenus = async () => {
     const promiseAllList = await Promise.all(Object.values(tabType).map(getMenuByCategory))
-    const isAllFetched = promiseAllList.every(({result})=>result===FETCH_RESULT.OK)
-    if(isAllFetched){
-        return promiseAllList
+    const isAllFetched = promiseAllList.every(({result}) => result === FETCH_RESULT.OK)
+    if (isAllFetched) {
+        return Object.keys(tabType).reduce((acc, cate, index) => ({...acc, [cate]: promiseAllList[index]['data']}), {})
+    } else {
+        return Object.keys(tabType).reduce((acc, cate, index) => (
+            {...acc, [cate]: promiseAllList[index]['result'] !== FETCH_RESULT.OK ? [] : promiseAllList[index]['data']}
+        ), {})
     }
 }
 
@@ -89,6 +89,33 @@ export const putMenuByCategory = async (category, item) => {
         }
     }
 }
+
+export const deleteMenuByCategory = async (category, id) => {
+    const URL = `${BASE_URL}category/${category}/menu/${id}`
+    try {
+        const response = await fetch(URL, {
+            method: 'DELETE', headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        if (response.ok) {
+            return {
+                result: FETCH_RESULT.OK,
+                data: response.json()
+            }
+        }
+        return {
+            result: FETCH_RESULT.SERVER_ERROR,
+            ...await response.json()
+        }
+    } catch (e) {
+        return {
+            result: FETCH_RESULT.CLIENT_ERROR,
+            message: e
+        }
+    }
+}
+
 
 export const soldOutMenuByCategory = async (category, id) => {
     const URL = `${BASE_URL}category/${category}/menu/${id}/soldout`

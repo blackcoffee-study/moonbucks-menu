@@ -1,8 +1,8 @@
-import {EVENTS} from '../../constants';
+import {EVENTS, FETCH_RESULT} from '../../constants';
 import Component from '../../core/Component';
 import {actions, stateFunctions, tabType} from '../../store';
 import {$} from '../../utils';
-import {FETCH_RESULT, postMenuByCategory} from "../../apis";
+import { postMenuByCategory} from "../../apis";
 
 export default class MenuInput extends Component {
     template() {

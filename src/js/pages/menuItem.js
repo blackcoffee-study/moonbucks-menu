@@ -1,7 +1,7 @@
 export default class MenuItem {
-    constructor(app, clickMenuItem) {
+    constructor(app, onClickMenuItem) {
         this.$app = app;
-        this.clickMenuItem = clickMenuItem;
+        this.onClickMenuItem = onClickMenuItem;
         this.state = [];
         this.setEventListener();
     }
@@ -46,7 +46,7 @@ export default class MenuItem {
             const menuItemClassList = e.target.classList;
             const menuId = e.target.closest('li').dataset.menuId;
             
-            this.clickMenuItem({menuItemClassList: menuItemClassList, menuId: menuId});
+            this.onClickMenuItem({menuItemClassList: menuItemClassList, menuId: menuId});
         });
     }
 }

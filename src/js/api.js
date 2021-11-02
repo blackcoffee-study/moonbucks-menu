@@ -17,8 +17,8 @@ export default class Api {
         }
     }
 
-    async createMenu({category, data}) {
-        return this.request({
+    createMenu({category, data}) {
+        this.request({
             url: `${this.url}/${category}/menu`, 
             method: 'POST',
             body: {name: data},
@@ -34,7 +34,7 @@ export default class Api {
     }
 
     async editMenu({category, id, data}) {
-        return this.request({
+        this.request({
             url: `${this.url}/${category}/menu/${id}`, 
             method: 'PUT',
             body: {name: data},
@@ -42,15 +42,15 @@ export default class Api {
         });
     }
 
-    async soldOutMenu({category, id, data}) {
-        return this.request({
+    async soldOutMenu({category, id}) {
+        this.request({
             url: `${this.url}/${category}/menu/${id}/soldout`, 
             method: 'PUT'
         });
     }
 
     async deleteMenu({category, id}) {
-        return this.request({
+        this.request({
             url: `${this.url}/${category}/menu/${id}`, 
             method: 'DELETE'
         });

@@ -5,9 +5,9 @@ import Api from '../api.js';
 
 
 export default class App {
-    constructor({nav, main, category, count, menuList}) {
+    constructor({nav, input, category, count, menuList}) {
         this.$nav = nav;
-        this.$main = main;
+        this.$input = input;
         this.$categoryHeader = category;
         this.$count = count;
         this.$menuList = menuList;
@@ -67,19 +67,26 @@ export default class App {
     }
     
     setEventListener() {
-        this.$main.addEventListener('click', (e) => {
-            const newMenuInput = e.target.closest('main').querySelector('input');
-            if(newMenuInput?.value) {
-                this.setData(newMenuInput.value);
-            }
+        this.$input.addEventListener('click', (e) => {
+            const newMenuInput = input.value;
+            this.onCreateMenu(newMenuInput);
             newMenuInput.value = '';
-
         });
 
         this.$nav.addEventListener('click', (e) => {
-            this.state.nowCategory = {name: e.target.dataset.categoryName, text: e.target.innerText};
-            this.getData();
+            this.onClickChangeCategory(e.target.dataset.categoryName, e.target.categoryName.innerText);
         });
+    }
+
+    onCreateMenu = (menuName) => {
+        if(menuName) {
+            this.setData(menuName);
+        }
+    }
+
+    onClickChangeCategory = (categoryName, categoryText) => {
+        this.state.nowCategory = {name: categoryName, text: categoryText};
+            this.getData();
     }
 
     isExistClassName = (_className) => action.menuItemClassList.contains(_className);

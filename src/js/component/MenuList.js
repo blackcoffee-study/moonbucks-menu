@@ -7,7 +7,6 @@ export default class MenuList extends component {
     this.$state = this.$props;
   }
   template() {
-    const category = this.$props.category;
     const menuList = this.$state.$state;
     return `
     ${menuList.map(item =>`

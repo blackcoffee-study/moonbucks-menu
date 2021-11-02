@@ -5,8 +5,9 @@ import Api from '../api.js';
 
 
 export default class App {
-    constructor({nav, input, category, count, menuList}) {
+    constructor({nav, form, input, category, count, menuList}) {
         this.$nav = nav;
+        this.$form = form;
         this.$input = input;
         this.$categoryHeader = category;
         this.$count = count;
@@ -67,10 +68,10 @@ export default class App {
     }
     
     setEventListener() {
-        this.$input.addEventListener('click', (e) => {
-            const newMenuInput = input.value;
+        this.$form.addEventListener('click', (e) => {
+            const newMenuInput = this.$input.value;
             this.onCreateMenu(newMenuInput);
-            newMenuInput.value = '';
+            this.$input.value = '';
         });
 
         this.$nav.addEventListener('click', (e) => {
@@ -89,16 +90,16 @@ export default class App {
             this.getData();
     }
 
-    isExistClassName = (_className) => action.menuItemClassList.contains(_className);
+    isExistClassName = (classList, className) => classList.menuItemClassList.contains(className);
     
     onClickMenu = (action) => {
-        if (isExistClassName('menu-edit-button')) {
+        if (this.isExistClassName(action, 'menu-edit-button')) {
             this.onClickEditBtn(action.menuId);
         }
-        else if (isExistClassName('menu-remove-button')) {
+        else if (this.isExistClassName(action, 'menu-remove-button')) {
             this.onClickDeleteBtn(action.menuId);
         }
-        else if (isExistClassName('menu-sold-out-button')) {
+        else if (this.isExistClassName(action, 'menu-sold-out-button')) {
             this.onClickSoldOutBtn(action.menuId);
         }
     }

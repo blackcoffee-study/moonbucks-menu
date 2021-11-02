@@ -53,6 +53,7 @@ export default class App {
 
   async onAddMenu(content){
     const result = await coffeeAPI.postMenu(this.category, {name:content})
+    
     if(result.status===400){
       alert("중복되는 메뉴입니다.");
       return;

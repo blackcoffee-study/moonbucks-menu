@@ -12,7 +12,7 @@ export default class MenuList extends component {
     return `
     ${menuList.map(item =>`
       <li data-id=${item.id} class="menu-list-item d-flex items-center py-2">
-        <span id="menu-value" class="w-100 pl-2 menu-name ${item.isSoldOut?"sold-out" : ""}">${item.name}</span>
+        <span id="menu-value-${item.id}" class="w-100 pl-2 menu-name ${item.isSoldOut?"sold-out" : ""}">${item.name}</span>
           <button
            data-id=${item.id}
             type="button"
@@ -56,12 +56,14 @@ export default class MenuList extends component {
     const $updateBtn = $$('.menu-edit-button');
     $updateBtn.forEach(element => {
       element.addEventListener('click',(e)=>{
-        const value = $('#menu-value').innerText;
+        const id = element.dataset.id;
+        const value = $(`#menu-value-${id}`).innerText;
         const updateValue = prompt('수정할 내용을 입력해주세요', value);
-        if(!updateValue){
-          alert("빈 값입니다.")
+        
+        if(updateValue === null){
           return;
         }
+
         if(updateValue){
           this.$state.onUpdateMenu(e.target.dataset.id, {name :updateValue});
         }

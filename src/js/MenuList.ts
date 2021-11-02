@@ -1,13 +1,15 @@
 import Component from "./Core/Component";
 import { store } from "./MenuStore";
-import { Action } from "./Core/types";
+import { Action, menuItem } from "./Core/types";
+import { ToggleDTO } from "./Core/DTO";
 
 export default class MenuList extends Component {
   template() {
     const { selected, menuList } = store.state;
+    console.log(menuList);
     return menuList
       .map(
-        (menu) =>
+        (menu: menuItem) =>
           `<li class="menu-list-item d-flex items-center py-2" data-id=${
             menu.id
           }>

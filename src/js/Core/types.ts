@@ -18,10 +18,10 @@ export type StoreProp<T extends Object> = {
 export type StoreContext<T extends Object> = {
   state: T;
   commit: (action: Action, payload: any) => void;
-  dispatch: (action: Action, payload: any) => any;
+  dispatch: (action: Action, ...params: any[]) => void;
 };
 type Commit<T> = (state: T, payload: any) => void;
-type Dispatch<T> = (context: StoreContext<T>, payload: any) => any;
+type Dispatch<T> = (context: StoreContext<T>, ...params: any[]) => any;
 
 export enum Action {
   INIT = "Init",

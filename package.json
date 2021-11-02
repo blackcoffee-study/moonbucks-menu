@@ -10,7 +10,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack",
-    "start": "parcel index.html"
+    "start": "npm run --prefix ~/moonbucks-menu-server start & parcel index.html"
   },
   "devDependencies": {
     "webpack-cli": "^4.9.1"

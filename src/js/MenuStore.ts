@@ -10,45 +10,41 @@ import { Action, Category } from "./Core/types";
 
 import { AddDTO, DeleteDTO, EditDTO, ToggleDTO } from "./Core/DTO";
 
-export const store = new Store({
+export const store = await new Store({
   state: {
     selected: Category.ESPRESSO,
-    menuList: [
-      {
-        id: "123",
-        name: "my menu",
-        isSoldOut: false,
-      },
-    ],
+    menuList: [{ id: "1", name: "hi", isSoldOut: false }],
   },
   mutations: {
-    Init: (state, payload) => {
+    [Action.INIT]: (state, payload) => {
       state.selected = Category.ESPRESSO;
       state.menuList = payload;
     },
-    FetchCategory(state, { category, payload }) {
+    [Action.FETCH]: (state, { category, payload }) => {
       state.selected = category;
       state.menuList = payload;
     },
-    AddMenu(state, payload) {
+    [Action.ADD]: (state, payload) => {
       const { id, name, isSoldOut } = payload;
+
       const checkExists = state.menuList.findIndex(
         (menu) => menu.name === name
       );
       if (checkExists > 0) {
         alert("메뉴가 이미 있습니다");
       }
-      return state.menuList.push({
+      state.menuList.push({
         id,
         name,
         isSoldOut,
       });
     },
-    DeleteMenu(state, id) {
-      state.menuList.filter((menu) => menu.id !== id);
+    [Action.DELETE]: (state, id) => {
+      state.menuList = state.menuList.filter((menu) => menu.id !== id);
     },
-    EditMenu(state, payload) {
+    [Action.EDIT]: (state, payload) => {
       const { id, name, isSoldOut } = payload;
+
       const menu = state.menuList.find((menu) => menu.id === id);
       if (!menu) {
         alert("존재하지 않는 메뉴입니다");
@@ -56,57 +52,66 @@ export const store = new Store({
       }
       menu.name = name;
     },
-    ToggleMenuSoldOut(state, payload) {
+    [Action.TOGGLE]: (state, payload) => {
       const { id } = payload;
       const menu = state.menuList.find((menu) => menu.id === id);
       if (!menu) {
         alert("존재하지 않는 메뉴입니다");
         return false;
       }
+      console.log(menu);
       menu.isSoldOut = !menu.isSoldOut;
     },
   },
   actions: {
     //actions are not function
     //actions는 결국 Mutations의 메서드를 호출(commit)하는 구조
-    Init: async function ({ commit, state }, _) {
+    [Action.INIT]: async function ({ commit, state }, _) {
       const result = await GetMenu(Category.ESPRESSO);
       if (result?.ok) {
         commit(Action.INIT, result.data);
       } else alert(result?.message);
     },
-    FetchCategory: async function ({ commit, state }, category) {
+    [Action.FETCH]: async function ({ commit, state }, category) {
       const result = await GetMenu(category);
+      console.log(result);
       if (result?.ok) {
         commit(Action.FETCH, { category, payload: result.data });
       } else alert(result?.message);
     },
-    AddMenu: async function ({ commit, state, dispatch }, addDTO: AddDTO) {
+    [Action.ADD]: async function ({ commit, state, dispatch }, addDTO: AddDTO) {
       const result = await AddMenu(addDTO);
+      console.log(result);
       if (result?.ok) {
         commit(Action.ADD, result.data);
       } else alert(result?.message);
     },
-    DeleteMenu: async function (
+    [Action.DELETE]: async function (
       { commit, state, dispatch },
       deleteDTO: DeleteDTO
     ) {
       const result = await DeleteMenu(deleteDTO);
+      console.log(result);
       if (result?.ok) {
         commit(Action.DELETE, deleteDTO.id);
       } else alert(result?.message);
     },
-    EditMenu: async function ({ commit, state, dispatch }, editDTO: EditDTO) {
+    [Action.EDIT]: async function (
+      { commit, state, dispatch },
+      editDTO: EditDTO
+    ) {
       const result = await EditMenu(editDTO);
+      console.log(result);
       if (result?.ok) {
         commit(Action.EDIT, result.data);
       } else alert(result?.message);
     },
-    ToggleMenuSoldOut: async function (
+    [Action.TOGGLE]: async function (
       { commit, state, dispatch },
       toggleDTO: ToggleDTO
     ) {
       const result = await ToggleSoldOutMenu(toggleDTO);
+      console.log(result);
       if (result?.ok) {
         commit(Action.TOGGLE, result.data);
       } else alert(result?.message);

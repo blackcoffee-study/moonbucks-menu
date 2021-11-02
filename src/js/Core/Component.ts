@@ -13,8 +13,9 @@ export default class Component {
   }
 
   setup() {
-    store.dispatch(Action.INIT, {});
-    observe(() => this.render());
+    observe(() => {
+      this.render();
+    });
     this.setEvent();
     this.mount();
   }

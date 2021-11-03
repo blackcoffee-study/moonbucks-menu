@@ -10,7 +10,7 @@ import { Action, Category } from "./Core/types";
 
 import { AddDTO, DeleteDTO, EditDTO, ToggleDTO } from "./Core/DTO";
 
-export const store = await new Store({
+export const store = new Store({
   state: {
     selected: Category.ESPRESSO,
     menuList: [{ id: "1", name: "hi", isSoldOut: false }],
@@ -26,14 +26,14 @@ export const store = await new Store({
     },
     [Action.ADD]: (state, payload) => {
       const { id, name, isSoldOut } = payload;
-
+      console.log(payload);
       const checkExists = state.menuList.findIndex(
         (menu) => menu.name === name
       );
       if (checkExists > 0) {
         alert("메뉴가 이미 있습니다");
       }
-      state.menuList.push({
+      state.menuList = state.menuList.concat({
         id,
         name,
         isSoldOut,
@@ -44,23 +44,26 @@ export const store = await new Store({
     },
     [Action.EDIT]: (state, payload) => {
       const { id, name, isSoldOut } = payload;
-
-      const menu = state.menuList.find((menu) => menu.id === id);
+      const newList = [...state.menuList];
+      const menu = newList.find((menu) => menu.id === id);
       if (!menu) {
         alert("존재하지 않는 메뉴입니다");
         return false;
       }
       menu.name = name;
+      state.menuList = newList;
     },
     [Action.TOGGLE]: (state, payload) => {
       const { id } = payload;
-      const menu = state.menuList.find((menu) => menu.id === id);
+      const newList = [...state.menuList];
+      const menu = newList.find((menu) => menu.id === id);
       if (!menu) {
         alert("존재하지 않는 메뉴입니다");
         return false;
       }
       console.log(menu);
       menu.isSoldOut = !menu.isSoldOut;
+      state.menuList = newList;
     },
   },
   actions: {

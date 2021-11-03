@@ -18,7 +18,19 @@ export class Store {
     // state를 직접적으로 수정하지 못하도록 다음과 같이 정의한다.
   }
 
-  async Init() {}
+  async Init() {
+    const result = await GetMenu(Category.ESPRESSO);
+    this.$state = deepObservable({
+      selected: Category.ESPRESSO,
+      menuList: result?.data || [
+        {
+          id: "1",
+          name: "hi",
+          isSoldOut: false,
+        },
+      ],
+    });
+  }
 
   commit(action: Action, payload: any) {
     this.$mutations[action](this.$state, payload);

@@ -3,7 +3,7 @@ import { observable, observe } from "./observer";
 import { Action, State } from "./types";
 
 export default class Component {
-  protected props: any;
+  props: any;
   $el: HTMLElement;
 
   constructor($el: HTMLElement, props: any) {
@@ -15,9 +15,9 @@ export default class Component {
   setup() {
     observe(() => {
       this.render();
+      this.mount();
+      this.setEvent();
     });
-    this.setEvent();
-    this.mount();
   }
 
   mount() {}
@@ -31,7 +31,11 @@ export default class Component {
   setEvent() {}
 
   render() {
-    this.$el.innerHTML = this.template();
+    try {
+      this.$el.innerHTML = this.template();
+    } catch (e) {
+      console.error(e);
+    }
   }
 
   addEvent<T extends keyof HTMLElementEventMap>(
@@ -42,9 +46,16 @@ export default class Component {
     const children = [...this.$el.querySelectorAll(selector)];
     const isTarget = (target: any) =>
       target.closest(selector) || children.includes(target);
-    this.$el.addEventListener(eventType, (e) => {
-      if (!isTarget(e.target)) return false;
-      callback(e);
-    });
+    this.$el.addEventListener(
+      eventType,
+
+      (e) => {
+        if (!isTarget(e.target)) {
+          return false;
+        }
+
+        callback(e);
+      }
+    );
   }
 }

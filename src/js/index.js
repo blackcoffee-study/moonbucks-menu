@@ -1,8 +1,11 @@
 import MenuList from './model/MenuList.js';
 import View from './view/View.js';
 import Controller from './controller/Controller.js';
+import Store from './store/store.js';
+import { DB_NAME } from './config/config.js';
 
-const menuList = new MenuList();
+const store = new Store(DB_NAME);
+const menuList = new MenuList(store);
 const view = new View(document);
 const controller = new Controller(menuList, view);
 

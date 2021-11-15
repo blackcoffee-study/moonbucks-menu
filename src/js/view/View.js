@@ -56,6 +56,19 @@ export default class View {
     alert(message);
   }
 
+  renderMenuItemList(menuList) {
+    let result = '';
+
+    if (menuList) {
+      const template = menuList.map((menuItem) => {
+        return this._menuItemTemplate(menuItem.name);
+      });
+      result = template.join('');
+    }
+
+    this.$('#espresso-menu-list').innerHTML = result;
+  }
+
   $(id) {
     return this.document.querySelector(id);
   }

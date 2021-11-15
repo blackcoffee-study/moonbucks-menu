@@ -3,34 +3,44 @@ import {
   MENU_NAME_NOT_EXISTS,
   EMPTY_VALUE,
   NOT_CHANGED,
-} from '../config.js';
+} from '../config/config.js';
 
 export default class MenuList {
-  constructor() {
-    this.menuItemList = [];
+  constructor(store) {
+    this.store = store;
+    const storage = this.store.getLocalStorage();
+
+    if (storage === '' || storage === null) {
+      this.menuItemList = [];
+    } else {
+      this.menuItemList = JSON.parse(this.store.getLocalStorage());
+    }
   }
 
   addMenuItem(menuName) {
-    if (this._checkMenuNameExist(menuName)) {
+    if (this._findIndexByMenuName(menuName) > -1) {
       throw MENU_NAME_EXISTS;
     }
 
-    this.menuItemList.push(menuName);
+    this.menuItemList.push({ name: menuName, outOfStock: false });
+    this.store.setLocalStorage(this.menuItemList);
   }
 
   editMenuItem(oldMenuName, newMenuName) {
     const targetIndex = this._findIndexByMenuName(oldMenuName);
 
-    // TODO: 메뉴 리스트에서 이름 중복 체크
+    // 메뉴 리스트에서 이름 중복 체크
     let index = 0;
-    this.menuItemList.some((menuName) => {
-      if (targetIndex !== index && menuName === newMenuName) {
+
+    for (const menuItem of this.menuItemList) {
+      if (targetIndex !== index && menuItem.name === newMenuName) {
         throw MENU_NAME_EXISTS;
       }
       index++;
-    });
+    }
 
-    this.menuItemList[targetIndex] = newMenuName;
+    this.menuItemList[targetIndex].name = newMenuName;
+    this.store.setLocalStorage(this.menuItemList);
   }
 
   removeMenuItem(menuName) {
@@ -39,17 +49,23 @@ export default class MenuList {
       throw MENU_NAME_NOT_EXISTS;
     }
     this.menuItemList.splice(targetIndex, 1);
+    this.store.setLocalStorage(this.menuItemList);
   }
 
   getMenuCount() {
     return this.menuItemList.length;
   }
 
-  _checkMenuNameExist(menuName) {
-    return new Set(this.menuItemList).has(menuName);
-  }
-
   _findIndexByMenuName(menuName) {
-    return this.menuItemList.indexOf(menuName);
+    let index = 0;
+
+    for (const menuItem of this.menuItemList) {
+      if (menuItem.name === menuName) {
+        return index;
+      }
+      index++;
+    }
+
+    return -1;
   }
 }

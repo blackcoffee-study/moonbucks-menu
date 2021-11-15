@@ -43,8 +43,8 @@
 - [x] 메뉴 길이를 반환하는 메소드.
 
 ### TODO: localStorage에 메뉴 데이터 저장
-- [ ] localStorage에 메뉴 리스트를 저장한다.
-- [ ] 새로고침을 했을 때 localStorage에서 데이터를 읽어온다.
+- [x] localStorage에 메뉴 리스트를 저장한다.
+- [x] 새로고침을 했을 때 localStorage에서 데이터를 읽어온다.
 
 ### TODO: 종류별로 메뉴판 관리
 - [ ] 에스프레소, 프라푸치노, 블렌디드, 티바나, 디저트 각각의 종류 별로 메뉴 리스트를 만든다.
@@ -100,3 +100,4 @@
 ### 💭 step2 인사이트
 - 메뉴 리스트를 클래스로 분리하여 MVC를 적용해보았다.
 - 이벤트 리스너에서 this를 호출할 때 this가 이벤트 타겟을 가리키는 문제때문에 헤맸다. [bind](https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Global_Objects/Function/bind)로 this를 지정할 수 있음을 알게 되었다.
+- 로컬스토리지를 이용해 Model을 저장하는 기능을 Store 클래스에 구현했다. 로컬스토리지가 DBMS와 같은 다른 형태의 데이터 저장소로 바뀌어도 Store 클래스를 수정하여 쉽게 변경할 수 있을 것 같다.

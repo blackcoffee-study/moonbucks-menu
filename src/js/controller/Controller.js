@@ -3,13 +3,15 @@ import {
   MENU_NAME_NOT_EXISTS,
   EMPTY_VALUE,
   NOT_CHANGED,
-} from '../config.js';
+} from '../config/config.js';
 
 export default class Controller {
-  constructor(model, view) {
-    this.menuList = model;
+  constructor(menuList, view) {
+    this.menuList = menuList;
     this.view = view;
     this.tester = 'test this';
+    view.renderMenuItemList(menuList.menuItemList);
+    view.updateMenuCount(menuList.getMenuCount());
   }
 
   addMenuName() {
@@ -19,7 +21,7 @@ export default class Controller {
       let menuCount = 0;
 
       this.menuList.addMenuItem(trimmedMenuName);
-      menuCount = this.menuList.getMenuCount()
+      menuCount = this.menuList.getMenuCount();
 
       this.view.addMenuItem(trimmedMenuName);
       this.view.clearMenuInput();
@@ -38,7 +40,6 @@ export default class Controller {
       return;
     }
 
-    // 사용자 입력 검증
     const trimmedMenuName = this._validateMenuName(newMenuName);
 
     if (trimmedMenuName === currentMenuName) {

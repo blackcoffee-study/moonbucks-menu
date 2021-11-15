@@ -10,7 +10,6 @@
 - [x] 메뉴가 추가되고 나면 input은 빈 값으로 초기화한다.
 - [x] 사용자 입력값이 빈 값 혹은 공백이라면 추가하지 않고 경고 메시지를 띄운다.
 - [x] **[추가 구현]** 추가한 메뉴 이름이 기존 메뉴 이름 중에 존재하면 추가하지 않고 경고 메시지를 띄운 후 input을 빈 값으로 초기화한다.
-- [ ] **[추가 구현]** 추가한 메뉴 이름이 기존 메뉴 이름 중에 존재하면 수정하지 않고 경고 메시지를 띄운다.
 
 ### TODO: 메뉴 수정 기능
 - [x] `espresso-menu-list`에 onClick 이벤트를 위임한다.
@@ -19,7 +18,7 @@
 - [x] `prompt`의 default 값은 기존 메뉴 이름으로 초기화한다.
 - [x] 모달 창에 새로운 메뉴 이름을 입력하고 확인 버튼을 누르면 메뉴 이름이 수정된다.
 - [x] 사용자 입력값이 빈 값 혹은 공백이라면 수정하지 않고 경고 메시지를 띄운다.
-- [ ] **[추가 구현]** 추가한 메뉴 이름이 기존 메뉴 이름 중에 존재하면 수정하지 않고 경고 메시지를 띄운다.
+- [x] **[추가 구현]** 추가한 메뉴 이름이 기존 메뉴 이름 중에 존재하면 수정하지 않고 경고 메시지를 띄운다.
 
 ### TODO: 메뉴 삭제 기능
 - [x] `espresso-menu-list`에 onClick 이벤트를 위임한다.
@@ -69,6 +68,11 @@
 - [ ] 품절 상태에 따라 `menu-list-item`에 `sold-out` class를 추가한다.
 - [ ] 읽어온 메뉴 리스트의 길이로 총 메뉴 개수를 업데이트한다.
 
+### TODO: **[추가구현]** MVC 적용
+- [x] MenuList class 분리
+- [x] View class 분리
+- [x] Controller class 분리
+
 ```js
 <li class="menu-list-item d-flex items-center py-2">
   <span class="w-100 pl-2 menu-name sold-out">${name}</span>
@@ -92,3 +96,7 @@
   </button>
 </li>
 ```
+
+### 💭 step2 인사이트
+- 메뉴 리스트를 클래스로 분리하여 MVC를 적용해보았다.
+- 이벤트 리스너에서 this를 호출할 때 this가 이벤트 타겟을 가리키는 문제때문에 헤맸다. [bind](https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Global_Objects/Function/bind)로 this를 지정할 수 있음을 알게 되었다.

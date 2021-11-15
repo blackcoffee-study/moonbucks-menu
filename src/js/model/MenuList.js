@@ -2,7 +2,8 @@ import {
   MENU_NAME_EXISTS,
   MENU_NAME_NOT_EXISTS,
   EMPTY_VALUE,
-} from './config.js';
+  NOT_CHANGED,
+} from '../config.js';
 
 export default class MenuList {
   constructor() {

@@ -1,3 +1,11 @@
+import MenuList from './MenuList.js';
+import {
+  MENU_NAME_EXISTS,
+  MENU_NAME_NOT_EXISTS,
+  EMPTY_VALUE,
+  NOT_CHANGED,
+} from './config.js';
+
 const $ = (id) => {
   return document.querySelector(id);
 };
@@ -9,43 +17,48 @@ function App() {
   // const $menuList = $('#espresso-menu-list');
   // const $menuCountSpan = $('.menu-count');
 
+  const menuList = new MenuList();
+
   const updateMenuCount = () => {
-    const menuCount = $('#espresso-menu-list').querySelectorAll('li').length;
+    // const menuCount = $('#espresso-menu-list').querySelectorAll('li').length;
+    const menuCount = menuList.getMenuCount();
     $('.menu-count').innerText = `총 ${menuCount}개`;
   };
 
   const validateMenuName = (menuName) => {
     const trimmedMenuName = menuName.trim();
+
     if (trimmedMenuName === '') {
-      alert('값을 입력해주세요.');
-      return;
+      throw EMPTY_VALUE;
     }
 
     return trimmedMenuName;
+  };
+
+  const menuItemTemplate = (menuName) => {
+    return `
+      <li class="menu-list-item d-flex items-center py-2">
+        <span class="w-100 pl-2 menu-name">${menuName}</span>
+        <button
+          type="button"
+          class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
+        >
+          수정
+        </button>
+        <button
+          type="button"
+          class="bg-gray-50 text-gray-500 text-sm menu-remove-button"
+        >
+          삭제
+        </button>
+      </li>`;
   };
 
   const addMenuName = () => {
     // 사용자 입력 검증
     const trimmedMenuName = validateMenuName($('#espresso-menu-name').value);
 
-    const menuItemTemplate = (menuName) => {
-      return `
-        <li class="menu-list-item d-flex items-center py-2">
-          <span class="w-100 pl-2 menu-name">${menuName}</span>
-          <button
-            type="button"
-            class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
-          >
-            수정
-          </button>
-          <button
-            type="button"
-            class="bg-gray-50 text-gray-500 text-sm menu-remove-button"
-          >
-            삭제
-          </button>
-        </li>`;
-    };
+    menuList.addMenuItem(trimmedMenuName);
 
     // 메뉴 아이템 추가
     $('#espresso-menu-list').insertAdjacentHTML(
@@ -72,9 +85,10 @@ function App() {
     const trimmedMenuName = validateMenuName(updatedMenuName);
 
     if (trimmedMenuName === currentMenuName) {
-      alert('새로운 메뉴 이름을 입력해주세요.');
-      return;
+      throw NOT_CHANGED;
     }
+
+    menuList.editMenuItem(currentMenuName, trimmedMenuName);
 
     $menuNameSpan.innerText = trimmedMenuName;
   };
@@ -100,7 +114,12 @@ function App() {
 
   $('#espresso-menu-name').addEventListener('keypress', (e) => {
     if (e.key === 'Enter') {
-      addMenuName($('#espresso-menu-name').value);
+      try {
+        addMenuName($('#espresso-menu-name').value);
+      } catch (err) {
+        alert(err);
+        $('#espresso-menu-name').value = '';
+      }
     }
   });
 
@@ -111,12 +130,14 @@ function App() {
       return;
     }
 
-    if (e.target.classList.contains('menu-edit-button')) {
-      editMenuName(e);
-    }
-
-    if (e.target.classList.contains('menu-remove-button')) {
-      removeMenuName(e);
+    try {
+      if (e.target.classList.contains('menu-edit-button')) {
+        editMenuName(e);
+      } else if (e.target.classList.contains('menu-remove-button')) {
+        removeMenuName(e);
+      }
+    } catch (err) {
+      alert(err);
     }
   });
 }

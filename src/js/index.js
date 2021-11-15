@@ -3,15 +3,15 @@ const $ = (id) => {
 };
 
 function App() {
-  const $menuForm = $('#espresso-menu-form');
-  const $menuInput = $('#espresso-menu-name');
-  const $menuSubmitButton = $('#espresso-menu-submit-button');
-  const $menuList = $('#espresso-menu-list');
-  const $menuCountSpan = $('.menu-count');
+  // const $menuForm = $('#espresso-menu-form');
+  // const $menuInput = $('#espresso-menu-name');
+  // const $menuSubmitButton = $('#espresso-menu-submit-button');
+  // const $menuList = $('#espresso-menu-list');
+  // const $menuCountSpan = $('.menu-count');
 
   const updateMenuCount = () => {
-    const menuCount = $menuList.querySelectorAll('li').length;
-    $menuCountSpan.innerText = `총 ${menuCount}개`;
+    const menuCount = $('#espresso-menu-list').querySelectorAll('li').length;
+    $('.menu-count').innerText = `총 ${menuCount}개`;
   };
 
   const validateMenuName = (menuName) => {
@@ -26,7 +26,7 @@ function App() {
 
   const addMenuName = () => {
     // 사용자 입력 검증
-    const trimmedMenuName = validateMenuName($menuInput.value);
+    const trimmedMenuName = validateMenuName($('#espresso-menu-name').value);
 
     const menuItemTemplate = (menuName) => {
       return `
@@ -48,12 +48,12 @@ function App() {
     };
 
     // 메뉴 아이템 추가
-    $menuList.insertAdjacentHTML(
+    $('#espresso-menu-list').insertAdjacentHTML(
       'beforeend',
       menuItemTemplate(trimmedMenuName),
     );
 
-    $menuInput.value = '';
+    $('#espresso-menu-name').value = '';
     updateMenuCount();
   };
 
@@ -94,19 +94,19 @@ function App() {
   };
 
   // 이벤트 리스터 등록
-  $menuForm.addEventListener('submit', (e) => {
+  $('#espresso-menu-form').addEventListener('submit', (e) => {
     e.preventDefault();
   });
 
-  $menuInput.addEventListener('keypress', (e) => {
+  $('#espresso-menu-name').addEventListener('keypress', (e) => {
     if (e.key === 'Enter') {
-      addMenuName($menuInput.value);
+      addMenuName($('#espresso-menu-name').value);
     }
   });
 
-  $menuSubmitButton.addEventListener('click', addMenuName);
+  $('#espresso-menu-submit-button').addEventListener('click', addMenuName);
 
-  $menuList.addEventListener('click', (e) => {
+  $('#espresso-menu-list').addEventListener('click', (e) => {
     if (e.target.tagName !== 'BUTTON') {
       return;
     }

@@ -32,3 +32,61 @@
 - 리팩토링할 때마다 테스트를 해야 한다.
 - 이벤트 위임을 알게 되었다.
 - 이벤트 리스너 등록, 재사용 함수 등 같은 것끼리 모으는 것이 좋다.
+
+## step2 요구 사항 구현
+
+### TODO: 메뉴를 저장할 메뉴 리스트 생성
+- [ ] 메뉴들을 관리할 **메뉴 리스트**를 만든다.
+- [ ] 메뉴들을 추가할 때마다 메뉴 리스트에 저장한다.
+- [ ] 메뉴들을 수정할 때마다 메뉴 리스트에서 수정한다.
+- [ ] 메뉴들을 삭제할 때마다 메뉴 리스트에서 삭제한다.
+
+### TODO: localStorage에 메뉴 데이터 저장
+- [ ] localStorage에 메뉴 리스트를 저장한다.
+- [ ] 새로고침을 했을 때 localStorage에서 데이터를 읽어온다.
+
+### TODO: 종류별로 메뉴판 관리
+- [ ] 에스프레소, 프라푸치노, 블렌디드, 티바나, 디저트 각각의 종류 별로 메뉴 리스트를 만든다.
+- [ ] 페이지에 최초로 접근할 때는 에스프레소 메뉴 리스트를 읽어온다.
+- [ ] 에스프레소 메뉴를 화면에 렌더링한다.
+- [ ] 종류 버튼을 클릭하면 해당 종류로 화면을 렌더링한다.
+- [ ] 메뉴 아이템의 수정 버튼을 클릭하면 해당 메뉴 리스트에서 수정한다.
+- [ ] 메뉴 아이템의 삭제 버튼을 클릭하면 해당 메뉴 리스트에서 삭제한다.
+
+### TODO: 품절 상태 추가
+- [ ] 품절 버튼을 추가한다.
+- [ ] 품절 버튼을 클릭하면 localStorage의 해당 메뉴 리스트의 메뉴에 품절 상태를 저장한다.
+- [ ] 품절 버튼을 클릭하면 가장 가까운 li 태그에 `sold-out` class를 추가한다.
+- 품절 상태 메뉴의 마크업 아래 참고
+
+### TODO: 종류 이름을 받아 데이터를 읽고 화면을 렌더링하는 메소드
+- [ ] localStorage에서 해당 종류의 메뉴 리스트를 읽어온다.
+- [ ] 메뉴 관리의 이름을 종류 이름으로 업데이트한다.
+- [ ] `espresso-menu-list`의 `innerHTML`을 초기화한다. 
+- [ ] 읽어온 메뉴 리스트에서 아이템을 순회하며 `menu-list-item`를 생성한다.
+- [ ] 품절 상태에 따라 `menu-list-item`에 `sold-out` class를 추가한다.
+- [ ] 읽어온 메뉴 리스트의 길이로 총 메뉴 개수를 업데이트한다.
+
+```js
+<li class="menu-list-item d-flex items-center py-2">
+  <span class="w-100 pl-2 menu-name sold-out">${name}</span>
+  <button
+    type="button"
+    class="bg-gray-50 text-gray-500 text-sm mr-1 menu-sold-out-button"
+  >
+    품절
+  </button>
+  <button
+    type="button"
+    class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
+  >
+    수정
+  </button>
+  <button
+    type="button"
+    class="bg-gray-50 text-gray-500 text-sm menu-remove-button"
+  >
+    삭제
+  </button>
+</li>
+```

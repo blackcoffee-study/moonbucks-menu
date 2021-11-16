@@ -1,0 +1,16 @@
+{
+  "name": "moonbucks-menu",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:kode15333/moonbucks-menu.git",
+  "author": "Will <kode15333@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "client": "live-server .",
+    "server": "cd server && yarn start",
+    "start": "yarn server & yarn client"
+  },
+  "devDependencies": {
+    "live-server": "^1.2.1"
+  }
+}

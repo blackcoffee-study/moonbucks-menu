@@ -1,41 +1,40 @@
-import Menu from './Menu.js'
+import MenuList from './MenuList.js'
 
-const MenuList = class extends Set {
-    constructor(title = 'espresso') {
-        super()
-        this.title = title
+const App = class extends Set {
+  constructor () {
+    super()
+  }
+
+  static load (json) {
+    const app = new App()
+    json.forEach(f => {
+      app.addMenuList(MenuList.load(f))
+    })
+    return app
+  }
+
+  addMenuList (menuList) {
+    if (!menuList instanceof MenuList) return console.log('invalid menuList')
+    super.add(menuList)
+  }
+
+  #getTargetMenu(category){
+    return this.getInfo().find(({ title }) => title === category)
+  }
+
+  getCurrentMenuList (category = 'espresso') {
+    const currentMenuList = this.#getTargetMenu(category)
+    if (currentMenuList) {
+      return currentMenuList
     }
+    super.add(MenuList.get(category))
+    return this.#getTargetMenu(category)
 
-    static get(title) {
-        return new MenuList(title)
-    }
+  }
 
-    static load(json) {
-        const menuList = new MenuList(json.title);
-        json.menuList.forEach(t => {
-            menuList.addMenu(Menu.load(t))
-        })
-        return menuList;
-    }
-
-    toJSON() {
-        return this.getInfo();
-    }
-
-    addMenu(menu) {
-        if (!menu instanceof Menu) return console.log('invalid menu')
-        super.add(menu)
-    }
-
-    removeMenu(menu) {
-        if (!menu instanceof Menu) return console.log('invalid menu')
-        super.delete(menu)
-    }
-
-    getInfo() {
-        return {title: this.title, menuList: Array.from(super.values())}
-    }
-
+  getInfo () {
+    return Array.from(super.values())
+  }
 }
 
-export default MenuList
+export default App

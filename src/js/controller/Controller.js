@@ -1,74 +1,100 @@
+import MenuList from '../model/MenuList.js';
 import {
   MENU_NAME_EXISTS,
   MENU_NAME_NOT_EXISTS,
   EMPTY_VALUE,
   NOT_CHANGED,
+  NOT_NUMBER,
+  OUT_OF_PRICE_RANGE,
 } from '../config/config.js';
 
 export default class Controller {
-  constructor(menuList, view) {
-    this.menuList = menuList;
+  constructor(view) {
+    this.menuList;
     this.view = view;
-    this.tester = 'test this';
-    view.renderMenuItemList(menuList.menuItemList);
-    view.updateMenuCount(menuList.getMenuCount());
+
+    this.loadMenuList('espresso');
   }
 
-  addMenuName() {
-    try {
-      const menuName = this.view.getMenuInput();
-      const trimmedMenuName = this._validateMenuName(menuName);
-      let menuCount = 0;
+  loadMenuList(category) {
+    this.menuList = new MenuList(category);
 
-      this.menuList.addMenuItem(trimmedMenuName);
-      menuCount = this.menuList.getMenuCount();
-
-      this.view.addMenuItem(trimmedMenuName);
-      this.view.clearMenuInput();
-      this.view.updateMenuCount(menuCount);
-    } catch (err) {
-      this.view.showAlert(err);
-      this.view.clearMenuInput();
-    }
+    this.view.renderMenuItemList(this.menuList.getMenuItemList());
+    this.view.updateMenuCount(this.menuList.getMenuCount());
   }
 
-  editMenuName(e) {
-    const currentMenuName = this.view.getCurrentMenuName(e);
-    const newMenuName = this.view.getNewMenuName(e);
-
-    if (newMenuName === null) {
-      return;
-    }
-
-    const trimmedMenuName = this._validateMenuName(newMenuName);
-
-    if (trimmedMenuName === currentMenuName) {
-      throw NOT_CHANGED;
-    }
-
-    this.menuList.editMenuItem(currentMenuName, trimmedMenuName);
-
-    this.view.updateMenuName(e, trimmedMenuName);
+  loadCategory(e) {
+    const category = this.view.selectCategory(e);
+    this.loadMenuList(category);
   }
 
-  removeMenuName(e) {
-    const targetMenuName = this.view.getCurrentMenuName(e);
+  addMenuItem() {
+    const { name, price } = this.view.getMenuInput();
+    const trimmedName = this._validateMenuName(name);
+    const trimmedPrice = this._validateMenuPrice(price);
+
+    const id = this.menuList.addMenuItem(trimmedName, trimmedPrice);
+    const menuCount = this.menuList.getMenuCount();
+
+    this.view.addMenuItem(id, trimmedName, trimmedPrice);
+    this.view.updateMenuCount(menuCount);
+    this.view.clearMenuInput();
+  }
+
+  editMenuItem(e) {
+    const menuId = this.view.getMenuId(e);
+    const newName = this._validateMenuName(this.view.getNewMenuName(e));
+    const newPrice = this._validateMenuPrice(this.view.getNewMenuPrice(e));
+
+    this.menuList.editMenuItem(menuId, newName, newPrice);
+
+    this.view.updateMenuItem(e, newName, newPrice);
+  }
+
+  removeMenuItem(e) {
+    const menuId = this.view.getMenuId(e);
     let menuCount = 0;
 
-    this.menuList.removeMenuItem(targetMenuName);
+    this.menuList.removeMenuItem(menuId);
     menuCount = this.menuList.getMenuCount();
 
     this.view.removeMenuItem(e);
     this.view.updateMenuCount(menuCount);
   }
 
-  _validateMenuName(menuName) {
-    const trimmedMenuName = menuName.trim();
+  setMenuSoldOut(e) {
+    const menuId = this.view.getMenuId(e);
 
-    if (trimmedMenuName === '') {
+    this.menuList.setMenuSoldOut(menuId);
+
+    this.view.renderMenuItemList(this.menuList.menuItemList);
+  }
+
+  // private method
+
+  _validateMenuName(name) {
+    const trimmedName = name.trim();
+
+    if (trimmedName === '') {
       throw EMPTY_VALUE;
     }
 
-    return trimmedMenuName;
+    return trimmedName;
+  }
+
+  _validateMenuPrice(price) {
+    const trimmedPrice = price.trim();
+    const re = /^\d+$/;
+
+    if (!re.test(trimmedPrice)) {
+      throw NOT_NUMBER;
+    }
+
+    const intPrice = parseInt(trimmedPrice);
+    if (intPrice < 0 || intPrice > 999999) {
+      throw OUT_OF_PRICE_RANGE;
+    }
+
+    return trimmedPrice;
   }
 }

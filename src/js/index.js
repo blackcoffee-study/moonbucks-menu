@@ -1,23 +1,28 @@
-import MenuList from './model/MenuList.js';
 import View from './view/View.js';
 import Controller from './controller/Controller.js';
-import Store from './store/store.js';
-import { DB_NAME } from './config/config.js';
 
-const store = new Store(DB_NAME);
-const menuList = new MenuList(store);
 const view = new View(document);
-const controller = new Controller(menuList, view);
+const controller = new Controller(view);
 
 // 이벤트 리스너 등록
+const _doesContainClass = (e, className) => {
+  return e.target.classList.contains(className);
+};
+
+const handleNavClick = (e) => {
+  if (_doesContainClass(e, 'cafe-category-name')) {
+    controller.loadCategory(e);
+  }
+};
+
 const handleEnterPress = (e) => {
   if (e.key === 'Enter') {
-    controller.addMenuName();
+    controller.addMenuItem();
   }
 };
 
 const handleSubmitButtonClick = () => {
-  controller.addMenuName();
+  controller.addMenuItem();
 };
 
 const handleMenuListClick = (e) => {
@@ -25,31 +30,37 @@ const handleMenuListClick = (e) => {
     return;
   }
 
-  try {
-    if (e.target.classList.contains('menu-edit-button')) {
-      controller.editMenuName(e);
-    } else if (e.target.classList.contains('menu-remove-button')) {
-      controller.removeMenuName(e);
-    }
-  } catch (err) {
-    alert(err);
+  // try {
+  if (_doesContainClass(e, 'menu-edit-button')) {
+    controller.editMenuItem(e);
+  } else if (_doesContainClass(e, 'menu-remove-button')) {
+    controller.removeMenuItem(e);
+  } else if (_doesContainClass(e, 'menu-sold-out-button')) {
+    controller.setMenuSoldOut(e);
   }
+  // } catch (err) {
+  //   alert(err);
+  // }
 };
 
 document
-  .querySelector('#espresso-menu-form')
+  .querySelector('nav')
+  .addEventListener('click', handleNavClick.bind(controller));
+
+document
+  .querySelector('#menu-form')
   .addEventListener('submit', (e) => {
     e.preventDefault();
   });
 
 document
-  .querySelector('#espresso-menu-name')
+  .querySelector('#menu-name')
   .addEventListener('keypress', handleEnterPress.bind(controller));
 
 document
-  .querySelector('#espresso-menu-submit-button')
+  .querySelector('#menu-submit-button')
   .addEventListener('click', handleSubmitButtonClick.bind(controller));
 
 document
-  .querySelector('#espresso-menu-list')
+  .querySelector('#menu-list')
   .addEventListener('click', handleMenuListClick.bind(controller));

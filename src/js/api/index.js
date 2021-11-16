@@ -18,7 +18,7 @@ const options = function (optionObj) {
 const requestApi = async function (optionObj, category, uri = '') {
   try {
     const response = await fetch(
-      `${CONSTANT.BASE_URL}/api/category/${category}/menu/${uri}`,
+      `${CONSTANT.BASE_URL}/api/category/${category}/menu${uri}`,
       options(optionObj)
     );
 
@@ -45,16 +45,16 @@ export const httpMethod = {
     requestApi(
       { method: CONSTANT.METHOD_PUT, name: menu },
       category,
-      `${menuId}`
+      `/${menuId}`
     ),
 
   soldOutMenu: (category, soldOut, menuId) =>
     requestApi(
       { method: CONSTANT.METHOD_PUT, isSoldOut: soldOut },
       category,
-      `${menuId}/soldout`
+      `/${menuId}/soldout`
     ),
 
   removeMenu: (category, menuId) =>
-    requestApi({ method: CONSTANT.METHOD_DELETE }, category, `${menuId}`)
+    requestApi({ method: CONSTANT.METHOD_DELETE }, category, `/${menuId}`)
 };

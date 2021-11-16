@@ -32,8 +32,8 @@ getMenuItem();
 
 const manageCategory = function (event) {
   if (event.target.localName === 'nav') return;
-
-  categoryMenu = event.target.dataset.category;
+  
+  categoryMenu = event.target.dataset.categoryName;
   category = event.target.innerText;
   $menuName.innerText = `${category} 메뉴 관리`;
 

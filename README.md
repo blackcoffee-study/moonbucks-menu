@@ -1,6 +1,6 @@
 <br/>
 <p align="middle">
-  <img width="200px;" src="./src/images/moonbucks.png"/>
+  <img width="200px;" src="./images/moonbucks.png"/>
 </p>
 <h2 align="middle">JS 문벅스 카페메뉴 앱</h2>
 <p align="middle">Vanilla JS로 구현 하는 상태관리가 가능한 카페메뉴 앱</p>
@@ -32,7 +32,7 @@
 ## 🔥 Projects!
 
 <p align="middle">
-  <img width="400" src="./src/images/moonbucks-main.png">
+  <img width="400" src="./images/moonbucks-main.png">
 </p>
 
 <p align="middle">

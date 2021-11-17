@@ -102,6 +102,7 @@
 - [x] MenuList class 분리
 - [x] View class 분리
 - [x] Controller class 분리
+- [ ] Model class 생성
 
 </details>
 

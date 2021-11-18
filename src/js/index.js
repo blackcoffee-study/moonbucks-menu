@@ -18,6 +18,7 @@ function App() {
 
   $("#espresso-menu-list").addEventListener("click", (e) => {
     updateMenuItem(e);
+    removeMenuItem(e);
   });
 
   const addMenuItem = () => {
@@ -38,6 +39,14 @@ function App() {
         $menuName.innerText
       );
       $menuName.innerText = updatedMenuName;
+    }
+  };
+
+  const removeMenuItem = (e) => {
+    if (e.target.classList.contains("menu-remove-button")) {
+      if (confirm("정말 삭제하시겠습니까?")) {
+        e.target.closest("li").remove();
+      }
     }
   };
 

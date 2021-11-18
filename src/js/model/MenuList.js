@@ -36,8 +36,6 @@ export default class MenuList {
 
     this.menuItemList.push(newMenu);
     this._save();
-
-    return this.menuItemList.length - 1;
   }
 
   editMenuItem(id, name, price) {

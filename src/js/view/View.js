@@ -4,14 +4,24 @@ export default class View {
   }
 
   selectCategory(e) {
-    const category = e.target.dataset.categoryName;
-    const description = e.target.innerText;
-    const categoryKor = description.split(' ')[1];
+    const categoryName = e.target.dataset.categoryName;
+    const categoryDescription = e.target.innerText;
+    const categoryNameKor = categoryDescription.split(' ')[1];
 
-    this.$('.category-title').innerText = `${description} 메뉴 관리`;
-    this.$('#menu-name').placeholder = `${categoryKor} 메뉴 이름`;
-    this.$('#menu-price').placeholder = `${categoryKor} 메뉴 가격`;
-    return category;
+    this.renderCategory(categoryName, categoryNameKor, categoryDescription);
+    return categoryName;
+  }
+
+  getMenuInput() {
+    return {
+      name: this.$('#menu-name').value,
+      price: this.$('#menu-price').value,
+    };
+  }
+
+  clearMenuInput() {
+    this.$('#menu-name').value = '';
+    this.$('#menu-price').value = '';
   }
 
   getNewMenuName(e) {
@@ -36,58 +46,24 @@ export default class View {
     return currentMenuPrice;
   }
 
-  addMenuItem(index, name, price) {
-    this.$('#menu-list').insertAdjacentHTML(
-      'beforeend',
-      this._menuItemTemplate(index, name, price),
-    );
-  }
-
-  updateMenuItem(e, name, price) {
-    const $menuItem = e.target.closest('li');
-    const $menuNameSpan = $menuItem.querySelector('.menu-name');
-    const $menuPriceSpan = $menuItem.querySelector('.menu-price');
-    $menuNameSpan.innerText = name;
-    $menuPriceSpan.innerText = price;
-  }
-
   getMenuId(e) {
     const $menuItem = e.target.closest('li');
     const menuId = parseInt($menuItem.dataset.menuId);
     return menuId;
   }
 
-  removeMenuItem(e) {
+  getWillRemoveMenuItem(e) {
     const $menuItem = e.target.closest('li');
     const currentMenuName = $menuItem.querySelector('.menu-name').innerText;
 
-    const removeConfirmResult = confirm(
-      `"${currentMenuName}" 메뉴를 삭제하시겠습니까?`,
-    );
-    if (removeConfirmResult) {
-      $menuItem.remove();
-      alert('삭제되었습니다.');
-    }
+    return confirm(`"${currentMenuName}" 메뉴를 삭제하시겠습니까?`);
   }
 
-  updateMenuCount(menuCount) {
-    this.$('.menu-count').innerText = `총 ${menuCount}개`;
-  }
+  // render
 
-  getMenuInput() {
-    return {
-      name: this.$('#menu-name').value,
-      price: this.$('#menu-price').value,
-    };
-  }
-
-  clearMenuInput() {
-    this.$('#menu-name').value = '';
-    this.$('#menu-price').value = '';
-  }
-
-  showAlert(message) {
-    alert(message);
+  render(menuList) {
+    this.renderMenuItemList(menuList);
+    this.renderMenuCount(menuList.length);
   }
 
   renderMenuItemList(menuList) {
@@ -108,6 +84,16 @@ export default class View {
     }
 
     this.$('#menu-list').innerHTML = result;
+  }
+
+  renderMenuCount(count) {
+    this.$('.menu-count').innerText = `총 ${count}개`;
+  }
+
+  renderCategory(name, nameKor, description) {
+    this.$('.category-title').innerText = `${description} 메뉴 관리`;
+    this.$('#menu-name').placeholder = `${nameKor} 메뉴 이름`;
+    this.$('#menu-price').placeholder = `${nameKor} 메뉴 가격`;
   }
 
   // private method

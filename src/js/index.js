@@ -30,7 +30,6 @@ const handleMenuListClick = (e) => {
     return;
   }
 
-  // try {
   if (_doesContainClass(e, 'menu-edit-button')) {
     controller.editMenuItem(e);
   } else if (_doesContainClass(e, 'menu-remove-button')) {
@@ -38,20 +37,15 @@ const handleMenuListClick = (e) => {
   } else if (_doesContainClass(e, 'menu-sold-out-button')) {
     controller.setMenuSoldOut(e);
   }
-  // } catch (err) {
-  //   alert(err);
-  // }
 };
 
 document
   .querySelector('nav')
   .addEventListener('click', handleNavClick.bind(controller));
 
-document
-  .querySelector('#menu-form')
-  .addEventListener('submit', (e) => {
-    e.preventDefault();
-  });
+document.querySelector('#menu-form').addEventListener('submit', (e) => {
+  e.preventDefault();
+});
 
 document
   .querySelector('#menu-name')

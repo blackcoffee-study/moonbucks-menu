@@ -18,9 +18,8 @@ export default class Controller {
 
   loadMenuList(category) {
     this.menuList = new MenuList(category);
-
-    this.view.renderMenuItemList(this.menuList.getMenuItemList());
-    this.view.updateMenuCount(this.menuList.getMenuCount());
+    
+    this.view.render(this.menuList.getMenuItemList());
   }
 
   loadCategory(e) {
@@ -33,11 +32,9 @@ export default class Controller {
     const trimmedName = this._validateMenuName(name);
     const trimmedPrice = this._validateMenuPrice(price);
 
-    const id = this.menuList.addMenuItem(trimmedName, trimmedPrice);
-    const menuCount = this.menuList.getMenuCount();
+    this.menuList.addMenuItem(trimmedName, trimmedPrice);
 
-    this.view.addMenuItem(id, trimmedName, trimmedPrice);
-    this.view.updateMenuCount(menuCount);
+    this.view.render(this.menuList.getMenuItemList());
     this.view.clearMenuInput();
   }
 
@@ -48,18 +45,16 @@ export default class Controller {
 
     this.menuList.editMenuItem(menuId, newName, newPrice);
 
-    this.view.updateMenuItem(e, newName, newPrice);
+    this.view.render(this.menuList.getMenuItemList())
   }
 
   removeMenuItem(e) {
     const menuId = this.view.getMenuId(e);
-    let menuCount = 0;
 
-    this.menuList.removeMenuItem(menuId);
-    menuCount = this.menuList.getMenuCount();
-
-    this.view.removeMenuItem(e);
-    this.view.updateMenuCount(menuCount);
+    if (this.view.getWillRemoveMenuItem(e)) {
+      this.menuList.removeMenuItem(menuId);
+      this.view.render(this.menuList.getMenuItemList())
+    }
   }
 
   setMenuSoldOut(e) {
@@ -67,7 +62,7 @@ export default class Controller {
 
     this.menuList.setMenuSoldOut(menuId);
 
-    this.view.renderMenuItemList(this.menuList.menuItemList);
+    this.view.render(this.menuList.getMenuItemList());
   }
 
   // private method

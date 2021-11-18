@@ -37,13 +37,16 @@ export default function Form({ $app, onSubmit }) {
   this.setEvent = () => {
     this.$form.addEventListener("submit", (event) => {
       const inputValue = $("#espresso-menu-name").value;
+
       event.preventDefault();
 
       if (!Boolean(inputValue)) {
         return;
       }
 
-      onSubmit($("#espresso-menu-name").value);
+      onSubmit({ name: $("#espresso-menu-name").value });
+
+      $("#espresso-menu-name").value = "";
     });
   };
 

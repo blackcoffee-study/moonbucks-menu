@@ -3,9 +3,15 @@ export default function List({ $app, initialState }) {
 
   this.$list = document.createElement("ul");
   this.$list.id = "espresso-menu-list";
-  this.$list.className = "espresso-menu-list";
+  this.$list.className = "mt-3 pl-0";
 
   $app.appendChild(this.$list);
+
+  this.setState = (nextState) => {
+    this.state = nextState;
+
+    this.render();
+  };
 
   this.template = () => `
     ${this.state

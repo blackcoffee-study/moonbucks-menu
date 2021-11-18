@@ -4,6 +4,6 @@ import App from "./App.js";
 new App({
   $root: document.querySelector("body"),
   initialState: {
-    menuList,
+    menuList: [],
   },
 });

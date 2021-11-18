@@ -1,4 +1,5 @@
 import Form from "./Form.js";
+import List from "./List.js";
 
 export default function App({ $root, initialState }) {
   this.state = initialState;
@@ -56,29 +57,6 @@ export default function App({ $root, initialState }) {
                 <h2 class="mt-1">☕ 에스프레소 메뉴 관리</h2>
                 <span class="mr-2 mt-4 menu-count">총 0개</span>
               </div>
-              <ul id="espresso-menu-list" class="mt-3 pl-0">
-                ${this.state.menuList
-                  .map(
-                    ({ name }) => `
-                    <li class="menu-list-item d-flex items-center py-2">
-                      <span class="w-100 pl-2 menu-name">${name}</span>
-                      <button
-                        type="button"
-                        class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
-                      >
-                        수정
-                      </button>
-                      <button
-                        type="button"
-                        class="bg-gray-50 text-gray-500 text-sm menu-remove-button"
-                      >
-                        삭제
-                      </button>
-                    </li>
-                  `
-                  )
-                  .join("")}
-              </ul>
             </div>
           </main>
         </div>
@@ -91,5 +69,10 @@ export default function App({ $root, initialState }) {
   new Form({
     $app: document.querySelector("#container"),
     onSubmit: () => console.log("submit"),
+  });
+
+  new List({
+    $app: document.querySelector("#container"),
+    initialState: this.state.menuList,
   });
 }

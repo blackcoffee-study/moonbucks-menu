@@ -1,10 +1,13 @@
 class Model {
   constructor() {
-    this.espressos = [];
-    this.frappuccinos = [];
-    this.blendeds = [];
-    this.teavanas = [];
-    this.desserts = [];
+    this.state = {
+      espresso : [],
+      frappuchino: [],
+      blended: [],
+      teavana: [],
+      dessert: [],
+      selectedTab: 'espresso',
+    }
   }
 
   bindMenuListChanged(handler) {
@@ -12,12 +15,23 @@ class Model {
   }
 
   addMenu(menuName) {
-    this.espressos.push({
-      id: this.espressos.length + 1,
+    const { selectedTab } = this.state;
+
+    this.state[selectedTab].push({
+      id: this.state[selectedTab].length + 1,
       name: menuName,
     })
 
-    this.onMenuChanged(this.espressos);
+    this.onMenuChanged(this.state[selectedTab]);
+  }
+
+  deleteMenu(id) {
+    const { selectedTab } = this.state;
+
+    this.state[selectedTab] = this.state[selectedTab].filter((menu) => 
+      menu.id !== id
+    )
+    this.onMenuChanged(this.state[selectedTab]);
   }
 }
 
@@ -27,7 +41,7 @@ class View {
     this.form = document.querySelector('#espresso-menu-form');
 
     this.menuList = document.querySelector('#espresso-menu-list');
-
+    this.deleteButtons = document.querySelector('.menu-remove-button')
   }
 
   get menuName() {
@@ -52,7 +66,7 @@ class View {
 
   getMenuElement(menuList) {
     return menuList.map((menu) =>
-      `<li class="menu-list-item d-flex items-center py-2">
+      `<li class="menu-list-item d-flex items-center py-2" data-id=${menu.id}>
         <span class="w-100 pl-2 menu-name">${menu.name}</span>
         <button
           type="button"
@@ -75,6 +89,13 @@ class View {
     const menuListElement = this.getMenuElement(menus)
     this.menuList.innerHTML = menuListElement;
   }
+
+  bindDeleteMenu(handler) {
+    this.deleteButtons?.forEach(button => button.addEventListener('click', event => {
+      const id = event.target.parentNode.dataset.id;
+      handler(id);
+    }));
+  }
 }
 
 class Controller {
@@ -82,9 +103,11 @@ class Controller {
     this.model = model;
     this.view = view;
 
-    this.render(this.model.espressos);
+    this.render(this.model.state.espresso);
 
     this.view.addMenu(this.handleAddMenu);
+    this.view.bindDeleteMenu(this.handleDeleteMenu);
+
     this.model.bindMenuListChanged(this.render);
   }
 
@@ -94,6 +117,10 @@ class Controller {
 
   handleAddMenu = (menuName) => {
     this.model.addMenu(menuName);
+  }
+
+  handleDeleteMenu = (id) => {
+    this.model.deleteMenu(id);
   }
 }
 

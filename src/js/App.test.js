@@ -7,12 +7,14 @@ import menuList from "../fixture/menuList.js";
 import App from "./App.js";
 
 describe("App", () => {
-  const app = new App({
+  const AppComponent = new App({
     $root: document.querySelector("body"),
     initialState: {
       menuList,
     },
-  }).$app;
+  });
+
+  const app = AppComponent.$app;
 
   it("문벅스 메뉴 카테고리를 렌더링 합니다", () => {
     expect(getByText(app, "🌝 문벅스 메뉴 관리")).toBeInTheDocument();
@@ -38,5 +40,23 @@ describe("App", () => {
     menuList.forEach(({ name }) => {
       expect(getByText(app, name)).toBeInTheDocument();
     });
+  });
+
+  it("setState를 실행하면 App Component의 상태값이 변경됩니다.", () => {
+    AppComponent.setState({ key: "menuList", value: [] });
+
+    expect(AppComponent.state.menuList.length).toBe(0);
+
+    AppComponent.setState({ key: "currentCategory", value: "변경된 카테고리" });
+
+    expect(AppComponent.state.currentCategory).toBe("변경된 카테고리");
+  });
+
+  it("메뉴를 추가하면 메뉴 리스트에 추가됩니다", () => {
+    AppComponent.handleSubmit({ name: "추가된 메뉴" });
+
+    expect(
+      AppComponent.state.menuList.find(({ name }) => name === "추가된 메뉴")
+    ).toBeTruthy();
   });
 });

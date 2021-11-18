@@ -1,6 +1,8 @@
 import Form from "./Form.js";
 import List from "./List.js";
 
+import getMaxNumber from "./utils/getMaxNumber.js";
+
 export default function App({ $root, initialState }) {
   this.state = initialState;
 
@@ -9,6 +11,15 @@ export default function App({ $root, initialState }) {
   this.$app.className = "px-4";
 
   $root.appendChild(this.$app);
+
+  this.setState = ({ key, value }) => {
+    this.state = {
+      ...this.state,
+      [key]: value,
+    };
+
+    list.setState(this.state.menuList);
+  };
 
   this.render = () => {
     this.$app.innerHTML = `
@@ -66,12 +77,29 @@ export default function App({ $root, initialState }) {
 
   this.render();
 
+  this.handleSubmit = ({ name }) => {
+    const ids = this.state.menuList.map(({ id }) => id);
+    const nextId = getMaxNumber({ numbers: ids }) + 1;
+
+    this.setState({
+      key: "menuList",
+      value: [
+        ...this.state.menuList,
+        {
+          id: nextId,
+          name,
+          category: this.state.currentCategory,
+        },
+      ],
+    });
+  };
+
   new Form({
     $app: document.querySelector("#container"),
-    onSubmit: () => console.log("submit"),
+    onSubmit: this.handleSubmit,
   });
 
-  new List({
+  const list = new List({
     $app: document.querySelector("#container"),
     initialState: this.state.menuList,
   });

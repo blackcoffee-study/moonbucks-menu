@@ -29,6 +29,7 @@ function App() {
     }
     $("#espresso-menu-list").innerHTML += getMenuItemTemplate(espressoMenuName);
     $("#espresso-menu-name").value = "";
+    updateMenuCount();
   };
 
   const updateMenuItem = (e) => {
@@ -46,8 +47,14 @@ function App() {
     if (e.target.classList.contains("menu-remove-button")) {
       if (confirm("정말 삭제하시겠습니까?")) {
         e.target.closest("li").remove();
+        updateMenuCount();
       }
     }
+  };
+
+  const updateMenuCount = () => {
+    const menuCount = $("#espresso-menu-list").querySelectorAll("li").length;
+    $("#menu-count").innerText = `총 ${menuCount}개`;
   };
 
   const getMenuItemTemplate = (menuItem) => {

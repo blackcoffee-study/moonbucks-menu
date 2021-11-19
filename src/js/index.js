@@ -1,26 +1,6 @@
 import { $ } from "./utils/index.js";
 
 function App() {
-  $("#espresso-menu-form").addEventListener("submit", (e) =>
-    e.preventDefault()
-  );
-
-  $("#espresso-menu-name").addEventListener("keypress", (e) => {
-    if (e.key !== "Enter") {
-      return;
-    }
-    addMenuItem();
-  });
-
-  $("#espresso-menu-submit-button").addEventListener("click", () => {
-    addMenuItem();
-  });
-
-  $("#espresso-menu-list").addEventListener("click", (e) => {
-    updateMenuItem(e);
-    removeMenuItem(e);
-  });
-
   const addMenuItem = () => {
     const espressoMenuName = $("#espresso-menu-name").value;
     if (espressoMenuName === "") {
@@ -33,22 +13,15 @@ function App() {
   };
 
   const updateMenuItem = (e) => {
-    if (e.target.classList.contains("menu-edit-button")) {
-      const $menuName = e.target.closest("li").querySelector(".menu-name");
-      const updatedMenuName = prompt(
-        "메뉴명을 수정하세요",
-        $menuName.innerText
-      );
-      $menuName.innerText = updatedMenuName;
-    }
+    const $menuName = e.target.closest("li").querySelector(".menu-name");
+    const updatedMenuName = prompt("메뉴명을 수정하세요", $menuName.innerText);
+    $menuName.innerText = updatedMenuName;
   };
 
   const removeMenuItem = (e) => {
-    if (e.target.classList.contains("menu-remove-button")) {
-      if (confirm("정말 삭제하시겠습니까?")) {
-        e.target.closest("li").remove();
-        updateMenuCount();
-      }
+    if (confirm("정말 삭제하시겠습니까?")) {
+      e.target.closest("li").remove();
+      updateMenuCount();
     }
   };
 
@@ -74,6 +47,28 @@ function App() {
       </button>
     </li>`;
   };
+
+  $("#espresso-menu-form").addEventListener("submit", (e) =>
+    e.preventDefault()
+  );
+
+  $("#espresso-menu-name").addEventListener("keypress", (e) => {
+    if (e.key !== "Enter") {
+      return;
+    }
+    addMenuItem();
+  });
+
+  $("#espresso-menu-submit-button").addEventListener("click", addMenuItem);
+
+  $("#espresso-menu-list").addEventListener("click", (e) => {
+    if (e.target.classList.contains("menu-edit-button")) {
+      updateMenuItem(e);
+    }
+    if (e.target.classList.contains("menu-remove-button")) {
+      removeMenuItem(e);
+    }
+  });
 }
 
 App();

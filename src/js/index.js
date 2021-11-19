@@ -10,7 +10,7 @@ class App {
 
     // input tag에 keypress 이벤트를 달아서 인풋값 추적
     const input = document.getElementById('espresso-menu-name');
-    input.addEventListener('keyup', (e) => {
+    input.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') {
         e.preventDefault();
         this.confirmMenuName();

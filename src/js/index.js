@@ -1,17 +1,22 @@
 class Model {
   constructor() {
     this.menu = {
-      espresso : [],
-      frappuchino: [],
-      blended: [],
-      teavana: [],
-      dessert: [],
+      espresso : JSON.parse(localStorage.getItem('espresso')) || [],
+      frappuchino: JSON.parse(localStorage.getItem('frappuchino')) || [],
+      blended: JSON.parse(localStorage.getItem('blended')) || [],
+      teavana: JSON.parse(localStorage.getItem('teavana')) || [],
+      dessert: JSON.parse(localStorage.getItem('dessert')) || [],
     };
     this.selectedTab = 'espresso';
   }
 
   bindMenuListChanged(handler) {
-    this.onMenuChanged = handler;
+    this.menuObserver = handler;
+  }
+
+  onMenuChanged() {
+    this.menuObserver(this.menu[this.selectedTab])
+    localStorage.setItem(this.selectedTab, JSON.stringify(this.menu[this.selectedTab]))
   }
 
   addMenu(menuName) {
@@ -20,7 +25,7 @@ class Model {
       name: menuName,
     })
 
-    this.onMenuChanged(this.menu[this.selectedTab]);
+    this.onMenuChanged();
   }
 
   editMenu(menuId, editedName) {
@@ -28,7 +33,7 @@ class Model {
       return menu.id === Number(menuId) ? { id: Number(menuId), name: editedName } : menu
     })
 
-    this.onMenuChanged(this.menu[this.selectedTab]);
+    this.onMenuChanged();
   }
 
   deleteMenu(menuId) {
@@ -36,7 +41,7 @@ class Model {
       menu.id !== Number(menuId)
     )
 
-    this.onMenuChanged(this.menu[this.selectedTab]);
+    this.onMenuChanged();
   }
 }
 
@@ -61,7 +66,7 @@ class View {
   
   getMenuElement(menuList) {
     return menuList.map((menu) =>
-    `<li class="menu-list-item d-flex items-center py-2" data-menuId=${menu.id}>
+    `<li class="menu-list-item d-flex items-center py-2" data-menu-id=${menu.id}>
     <span class="w-100 pl-2 menu-name">${menu.name}</span>
     <button
     type="button"

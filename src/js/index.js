@@ -1,8 +1,3 @@
-// li의 수정 버튼에 click 이벤트 리스너를 달고 클릭시 Prompt 열기
-
-// 삭제 버튼을 클릭 시 정말로 삭제할것인지 확인 후 li 를 삭제한다
-// 품절 버튼을 클릭 시
-
 class App {
   constructor() {
     this.menuName = '';

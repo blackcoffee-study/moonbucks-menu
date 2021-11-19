@@ -1,10 +1,3 @@
-// 메뉴 추가
-// 에스프레소 메뉴를 입력하고 확인 버튼을 누르면 메뉴가 추가된다.
-// 에스프레소 메뉴를 입력하고 확인 버튼을 누르면 메뉴가 추가된다.
-// 메뉴가 추가되고 나면, input은 빈 값으로 초기화된다.
-// 입력값이 빈 값이라면 추가되지 않는다.
-//  총 메뉴 갯수를 count하여 상단에 보여준다.
-
 // 메뉴 수정
 // 메뉴의 수정 버튼을 누르면 prompt창이 뜬다.
 // prompt 창을 통해 이름을 입력받고 수정한다.
@@ -62,6 +55,14 @@ function Apps(){
   // 메뉴 추가 확인버튼
   document.querySelector("#espresso-menu-submit-button").addEventListener("click", (e) => {
     addMenuName();
+  });
+  // 메뉴 수정과
+  // 메뉴 삭제
+  document.querySelector("#espresso-menu-list").addEventListener("click", (e) => {
+    if(e.target.classList.contains("menu-edit-button")) {
+      const newMenuName = prompt("새로운 이름을 입력하세요.");
+      e.target.closest("li").querySelector(".menu-name").innerText = newMenuName;
+    }
   });
 }
 

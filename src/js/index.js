@@ -1,13 +1,13 @@
 class Model {
   constructor() {
-    this.state = {
+    this.menu = {
       espresso : [],
       frappuchino: [],
       blended: [],
       teavana: [],
       dessert: [],
-      selectedTab: 'espresso',
-    }
+    };
+    this.selectedTab = 'espresso';
   }
 
   bindMenuListChanged(handler) {
@@ -15,33 +15,28 @@ class Model {
   }
 
   addMenu(menuName) {
-    const { selectedTab } = this.state;
-
-    this.state[selectedTab].push({
-      id: this.state[selectedTab].length + 1,
+    this.menu[this.selectedTab].push({
+      id: this.menu[this.selectedTab].length + 1,
       name: menuName,
     })
 
-    this.onMenuChanged(this.state[selectedTab]);
+    this.onMenuChanged(this.menu[this.selectedTab]);
   }
 
-  editMenu(id, editedName) {
-    const { selectedTab } = this.state;
-    this.state[selectedTab] = this.state[selectedTab].map((menu) => {
-      return menu.id === Number(id) ? { id: Number(id), name: editedName } : menu
+  editMenu(menuId, editedName) {
+    this.menu[this.selectedTab] = this.menu[this.selectedTab].map((menu) => {
+      return menu.id === Number(menuId) ? { id: Number(menuId), name: editedName } : menu
     })
 
-    this.onMenuChanged(this.state[selectedTab])
+    this.onMenuChanged(this.menu[this.selectedTab]);
   }
 
-  deleteMenu(id) {
-    const { selectedTab } = this.state;
-
-    this.state[selectedTab] = this.state[selectedTab].filter((menu) => 
-      menu.id !== Number(id)
+  deleteMenu(menuId) {
+    this.menu[this.selectedTab] = this.menu[this.selectedTab].filter((menu) => 
+      menu.id !== Number(menuId)
     )
 
-    this.onMenuChanged(this.state[selectedTab]);
+    this.onMenuChanged(this.menu[this.selectedTab]);
   }
 }
 
@@ -53,6 +48,7 @@ class View {
     this.input = document.querySelector('#espresso-menu-name');
     this.form = document.querySelector('#espresso-menu-form');
     this.menuList = document.querySelector('#espresso-menu-list');
+    this.menuCount = document.querySelector('.menu-count');
   }
 
   get menuName() {
@@ -62,8 +58,44 @@ class View {
   resetInput() {
     return this.input.value = '';
   }
+  
+  getMenuElement(menuList) {
+    return menuList.map((menu) =>
+    `<li class="menu-list-item d-flex items-center py-2" data-menuId=${menu.id}>
+    <span class="w-100 pl-2 menu-name">${menu.name}</span>
+    <button
+    type="button"
+    name="edit"
+    class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
+    >
+    수정
+    </button>
+    <button
+    type="button"
+    name="delete"
+    class="bg-gray-50 text-gray-500 text-sm menu-remove-button"
+    >
+    삭제
+    </button>
+    </li>`).join('')
+  }
+  
+  renderMenuList(menus) {
+    while (this.menuList.firstChild) {
+      this.menuList.removeChild(this.menuList.firstChild);
+    }
+    
+    if (menus.length === 0) { return; }
+    
+    const menuListElement = this.getMenuElement(menus)
+    this.menuList.innerHTML = menuListElement;
+  }
 
-  addMenu(handler) {
+  renderMenuCount(menus) {
+    this.menuCount.innerText = `총 ${menus.length}개`
+  }
+  
+  bindAddMenu(handler) {
     this.form.addEventListener('submit', event => {
       event.preventDefault();
 
@@ -75,46 +107,14 @@ class View {
     })
   }
 
-  getMenuElement(menuList) {
-    return menuList.map((menu) =>
-      `<li class="menu-list-item d-flex items-center py-2" data-id=${menu.id}>
-        <span class="w-100 pl-2 menu-name">${menu.name}</span>
-        <button
-          type="button"
-          name="edit"
-          class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
-        >
-          수정
-        </button>
-        <button
-          type="button"
-          name="delete"
-          class="bg-gray-50 text-gray-500 text-sm menu-remove-button"
-        >
-          삭제
-        </button>
-      </li>`).join('')
-  }
-
-  renderMenuList(menus) {
-    while (this.menuList.firstChild) {
-      this.menuList.removeChild(this.menuList.firstChild);
-    }
-
-    if (menus.length === 0) { return; }
-
-    const menuListElement = this.getMenuElement(menus)
-    this.menuList.innerHTML = menuListElement;
-  }
-
   bindEditMenu(handler) {
     this.menuList.addEventListener('click', event => {
       if (event.target.name === 'edit') {
-        const editedName = window.prompt('수정할 이름을 입력해주세요');
+        const editedName = window.prompt('수정할 메뉴 이름을 입력해주세요');
         
         if (editedName) {
-          const { id } = event.target.parentNode.dataset;
-          handler(id, editedName)
+          const { menuId } = event.target.parentNode.dataset;
+          handler(menuId, editedName)
         }
       }
     })
@@ -126,8 +126,8 @@ class View {
         const deleteConfirm =  window.confirm('메뉴를 삭제하시겠습니까?');
 
         if (deleteConfirm) {
-          const { id } = event.target.parentNode.dataset;
-          handler(id);
+          const { menuId } = event.target.parentNode.dataset;
+          handler(menuId);
         }
       }
     })
@@ -141,9 +141,9 @@ class Controller {
     this.model = model;
     this.view = view;
 
-    this.render(this.model.state.espresso);
+    this.render(this.model.menu.espresso);
 
-    this.view.addMenu(this.handleAddMenu);
+    this.view.bindAddMenu(this.handleAddMenu);
     this.view.bindEditMenu(this.handleEditMenu);
     this.view.bindDeleteMenu(this.handleDeleteMenu);
 
@@ -152,6 +152,7 @@ class Controller {
 
   render = (menuList) => {
     this.view.renderMenuList(menuList);
+    this.view.renderMenuCount(menuList);
   }
 
   handleAddMenu = (menuName) => {

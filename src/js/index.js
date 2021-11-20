@@ -27,6 +27,15 @@ const addNewMenu = menuName => {
   $espressoMenuList.appendChild($li);
 };
 
+// 총 메뉴갯수 count
+const getTotalMenuNum = () => {
+  const $espressoMenuList = document.getElementById('espresso-menu-list');
+  const $menuCount = document.querySelector('.menu-count');
+
+  const totalMenuNum = $espressoMenuList.children.length;
+  $menuCount.textContent = `총 ${totalMenuNum}개`;
+};
+
 // event
 // form의 submit default 이벤트 막기
 $espressoMenuForm.addEventListener('submit', e => {
@@ -43,6 +52,7 @@ $espressoMenuForm.addEventListener('click', e => {
   const menuName = $input.value;
   addNewMenu(menuName);
   $input.value = '';
+  getTotalMenuNum();
 });
 
 // Enter 키 입력 시, 메뉴 추가
@@ -56,5 +66,6 @@ $input.addEventListener('keypress', e => {
     const menuName = $input.value;
     addNewMenu(menuName);
     $input.value = '';
+    getTotalMenuNum();
   }
 });

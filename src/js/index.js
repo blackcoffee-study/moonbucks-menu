@@ -86,9 +86,8 @@ $espressoMenuForm.addEventListener('click', e => {
 
 // Enter 키 입력 시, 메뉴 추가
 $espressoMenuForm.addEventListener('keyup', e => {
-  if (e.key === 'Enter') {
-    addNewMenu();
-  }
+  if (e.key !== 'Enter') return;
+  addNewMenu();
 });
 
 // 수정 버튼 클릭 시, 메뉴 이름 수정

@@ -3,9 +3,10 @@ const $espressoMenuForm = document.getElementById('espresso-menu-form');
 const $espressoMenuList = document.getElementById('espresso-menu-list');
 const $input = document.getElementById('espresso-menu-name');
 
-// 메뉴 추가
-const addNewMenu = menuName => {
+// 메뉴 li 만들기
+const makeMenuTemplate = menuName => {
   const $li = document.createElement('li');
+
   $li.classList.add('menu-list-item', 'd-flex', 'items-center', 'py-2');
   $li.innerHTML = `
     <span class="w-100 pl-2 menu-name">${menuName}</span>
@@ -26,6 +27,19 @@ const addNewMenu = menuName => {
   $espressoMenuList.appendChild($li);
 };
 
+// 메뉴 추가
+const addNewMenu = () => {
+  if ($input.value.trim() === '') {
+    $input.value = '';
+    return;
+  }
+
+  const menuName = $input.value;
+  makeMenuTemplate(menuName);
+  $input.value = '';
+  updateTotalMenuNum();
+};
+
 // 총 메뉴갯수 count
 const updateTotalMenuNum = () => {
   const $menuCount = document.querySelector('.menu-count');
@@ -43,29 +57,13 @@ $espressoMenuForm.addEventListener('submit', e => {
 // 확인 버튼 클릭 시, 메뉴 추가
 $espressoMenuForm.addEventListener('click', e => {
   if (e.target.id !== 'espresso-menu-submit-button') return;
-  if ($input.value.trim() === '') {
-    $input.value = '';
-    return;
-  }
-
-  const menuName = $input.value;
-  addNewMenu(menuName);
-  $input.value = '';
-  updateTotalMenuNum();
+  addNewMenu();
 });
 
 // Enter 키 입력 시, 메뉴 추가
 $input.addEventListener('keypress', e => {
   if (e.key === 'Enter') {
-    if ($input.value.trim() === '') {
-      $input.value = '';
-      return;
-    }
-
-    const menuName = $input.value;
-    addNewMenu(menuName);
-    $input.value = '';
-    updateTotalMenuNum();
+    addNewMenu();
   }
 });
 

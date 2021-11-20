@@ -88,7 +88,6 @@ const handleSubmit = (event) => {
 
 // 메뉴 수정 함수
 const handleEdit = (event) => {
-  console.log(event);
   // 어떤 것을 활용하여 span 태그를 찾을 지 궁금하네요
   const currentInputNode = event.target.previousSibling;
   const newText = prompt("메뉴명을 수정해주세요", currentInputNode.innerText);

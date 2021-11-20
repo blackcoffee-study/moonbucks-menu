@@ -44,3 +44,17 @@ $espressoMenuForm.addEventListener('click', e => {
   addNewMenu(menuName);
   $input.value = '';
 });
+
+// Enter 키 입력 시, 메뉴 추가
+$input.addEventListener('keypress', e => {
+  if (e.key === 'Enter') {
+    if ($input.value.trim() === '') {
+      $input.value = '';
+      return;
+    }
+
+    const menuName = $input.value;
+    addNewMenu(menuName);
+    $input.value = '';
+  }
+});

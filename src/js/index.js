@@ -48,11 +48,10 @@ function App() {
   };
 
   const removeMenuName = (e) => {
-    const menuName = e.target
-      .closest('li')
-      .querySelector('.menu-name').innerText;
+    const menuList = e.target.closest('li');
+    const menuName = menuList.querySelector('.menu-name').innerText;
     if (confirm(`${menuName} 메뉴를 정말 삭제하시겠습니까?`)) {
-      e.target.closest('li').remove();
+      menuList.remove();
       updateMenuCount();
     }
   };
@@ -67,11 +66,13 @@ function App() {
   });
 
   $('#espresso-menu-list').addEventListener('click', (e) => {
-    if (e.target.classList.contains('menu-edit-button')) {
+    const isTargetHasClass = (className) =>
+      e.target.classList.contains(className);
+    if (isTargetHasClass('menu-edit-button')) {
       updatedMenuName(e);
     }
 
-    if (e.target.classList.contains('menu-remove-button')) {
+    if (isTargetHasClass('menu-remove-button')) {
       removeMenuName(e);
     }
   });

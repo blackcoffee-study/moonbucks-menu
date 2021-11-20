@@ -61,7 +61,7 @@ $espressoMenuForm.addEventListener('click', e => {
 });
 
 // Enter 키 입력 시, 메뉴 추가
-$input.addEventListener('keypress', e => {
+$input.addEventListener('keyup', e => {
   if (e.key === 'Enter') {
     addNewMenu();
   }

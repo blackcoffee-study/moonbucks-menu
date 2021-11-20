@@ -1,11 +1,10 @@
 // elem
 const $espressoMenuForm = document.getElementById('espresso-menu-form');
+const $espressoMenuList = document.getElementById('espresso-menu-list');
 const $input = document.getElementById('espresso-menu-name');
 
 // 메뉴 추가
 const addNewMenu = menuName => {
-  const $espressoMenuList = document.getElementById('espresso-menu-list');
-
   const $li = document.createElement('li');
   $li.classList.add('menu-list-item', 'd-flex', 'items-center', 'py-2');
   $li.innerHTML = `
@@ -29,7 +28,7 @@ const addNewMenu = menuName => {
 
 // 총 메뉴갯수 count
 const getTotalMenuNum = () => {
-  const $espressoMenuList = document.getElementById('espresso-menu-list');
+  // const $espressoMenuList = document.getElementById('espresso-menu-list');
   const $menuCount = document.querySelector('.menu-count');
 
   const totalMenuNum = $espressoMenuList.children.length;
@@ -69,3 +68,18 @@ $input.addEventListener('keypress', e => {
     getTotalMenuNum();
   }
 });
+
+// 수정 버튼 클릭 시, 메뉴 이름 수정
+$espressoMenuList.addEventListener('click', e => {
+  if (!e.target.matches('.menu-edit-button')) return;
+  const $menuName = e.target.previousElementSibling;
+  const editedName = window.prompt(
+    '메뉴명을 수정하세요',
+    $menuName.textContent,
+  );
+
+  if (editedName === null) return;
+  $menuName.textContent = editedName;
+});
+
+// 삭제 버튼 클릭 시, 메뉴 삭제

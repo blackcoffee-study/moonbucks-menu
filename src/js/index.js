@@ -11,16 +11,15 @@ const $menuCount = $("#espresso-menu-count");
 let menuCount = $ul.childNodes.length;
 $menuCount.innerText = `총 ${menuCount}개`;
 
-// 메뉴 숫자 변경해주는 함수
-const calcMenuCount = (type) => {
-  switch (type) {
-    case "plus":
-      menuCount += 1;
-      break;
-    default:
-      menuCount -= 1;
-      break;
-  }
+// 메뉴 숫자 증가해주는 함수
+const plusMenuCount = () => {
+  menuCount += 1;
+  $menuCount.innerText = `총 ${menuCount}개`;
+};
+
+// 메뉴 숫자 감소해주는 함수
+const minusMenuCount = () => {
+  menuCount -= 1;
   $menuCount.innerText = `총 ${menuCount}개`;
 };
 
@@ -69,7 +68,7 @@ const addMenu = (name) => {
   newMenuLi.appendChild(newMenuRemoveButton);
 
   $ul.appendChild(newMenuLi);
-  calcMenuCount("plus");
+  plusMenuCount();
 };
 
 // 메뉴 등록 함수
@@ -101,7 +100,7 @@ const handleRemove = (event) => {
     const targetNode = event.target.parentNode;
     targetNode.remove(targetNode);
   }
-  calcMenuCount("minus");
+  minusMenuCount();
 };
 
 // 이벤트 핸들러 등록

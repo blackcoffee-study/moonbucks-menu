@@ -6,7 +6,7 @@ function App() {
         const espressoMenuName = $("#espresso-menu-name").value;
 
         if (espressoMenuName === EMPTY_STRING) {
-            alert("값을 입력해주세요.");
+            alert("추가할 메뉴 이름을 입력해주세요.");
             return;
         }
 
@@ -24,7 +24,16 @@ function App() {
 
     const updateMenuName = (e) => {
         let $menuName = e.target.closest("li").querySelector(".menu-name");
-        $menuName.innerText = prompt("메뉴명을 수정하세요.", $menuName.innerText);
+        $menuName.innerText = prompt("메뉴 이름을 수정하세요.", $menuName.innerText);
+    }
+
+    const deleteMenu = (e) => {
+        let $li = e.target.closest("li");
+        let menuName = $li.querySelector(".menu-name").innerText;
+        if (confirm(`${menuName} 메뉴를 삭제 하시겠습니까?`)) {
+            $li.remove();
+            updateMenuCount();
+        }
     }
 
     $("#espresso-menu-form").addEventListener("submit", (e) => {
@@ -45,6 +54,9 @@ function App() {
     $("#espresso-menu-list").addEventListener("click", (e) => {
         if (e.target.classList.contains("menu-edit-button")) {
             updateMenuName(e);
+        }
+        if (e.target.classList.contains("menu-remove-button")) {
+            deleteMenu(e);
         }
     })
 

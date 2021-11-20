@@ -66,6 +66,7 @@ const handleSubmit = (event) => {
   resetValue($input);
 };
 
+// 메뉴 수정 함수
 const handleEdit = (event) => {
   // 어떤 것을 활용하여 span 태그를 찾을 지 궁금하네요
   const currentInputNode = event.target.previousSibling;
@@ -73,9 +74,13 @@ const handleEdit = (event) => {
   currentInputNode.innerText = newText;
 };
 
-const handleRemove = () => {
-  const a = confirm("정말 삭제하시겠습니까?");
-  alert(a);
+// 메뉴 삭제 함수
+const handleRemove = (event) => {
+  const res = confirm("정말 삭제하시겠습니까?");
+  if (res) {
+    const targetNode = event.target.parentNode;
+    targetNode.remove(targetNode);
+  }
 };
 
 $submitButton.addEventListener("click", handleSubmit);

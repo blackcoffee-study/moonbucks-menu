@@ -2,6 +2,14 @@
 const $espressoMenuForm = document.getElementById('espresso-menu-form');
 const $espressoMenuList = document.getElementById('espresso-menu-list');
 
+// 총 메뉴갯수 count
+const updateTotalMenuNum = () => {
+  const $menuCount = document.querySelector('.menu-count');
+
+  const totalMenuNum = $espressoMenuList.children.length;
+  $menuCount.textContent = `총 ${totalMenuNum}개`;
+};
+
 // 메뉴 li 만들기
 const makeMenuTemplate = menuName => {
   const $li = document.createElement('li');
@@ -39,14 +47,6 @@ const addNewMenu = () => {
   makeMenuTemplate(menuName);
   $input.value = '';
   updateTotalMenuNum();
-};
-
-// 총 메뉴갯수 count
-const updateTotalMenuNum = () => {
-  const $menuCount = document.querySelector('.menu-count');
-
-  const totalMenuNum = $espressoMenuList.children.length;
-  $menuCount.textContent = `총 ${totalMenuNum}개`;
 };
 
 // 메뉴 수정

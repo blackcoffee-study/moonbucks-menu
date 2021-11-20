@@ -22,6 +22,11 @@ function App() {
         $("#espresso-menu-name").value = EMPTY_STRING;
     }
 
+    const updateMenuName = (e) => {
+        let $menuName = e.target.closest("li").querySelector(".menu-name");
+        $menuName.innerText = prompt("메뉴명을 수정하세요.", $menuName.innerText);
+    }
+
     $("#espresso-menu-form").addEventListener("submit", (e) => {
         e.preventDefault();
     });
@@ -35,6 +40,12 @@ function App() {
 
     $("#espresso-menu-submit-button").addEventListener("click", () => {
         addMenu();
+    })
+
+    $("#espresso-menu-list").addEventListener("click", (e) => {
+        if (e.target.classList.contains("menu-edit-button")) {
+            updateMenuName(e);
+        }
     })
 
     const menuItemTemplate = (espressoMenuName) => {

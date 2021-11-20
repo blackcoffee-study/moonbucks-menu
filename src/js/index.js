@@ -48,6 +48,29 @@ const updateTotalMenuNum = () => {
   $menuCount.textContent = `총 ${totalMenuNum}개`;
 };
 
+// 메뉴 수정
+const editMenu = target => {
+  const $menuName = target.previousElementSibling;
+  const editedName = window.prompt(
+    '메뉴명을 수정하세요',
+    $menuName.textContent,
+  );
+
+  if (editedName === null) return;
+
+  $menuName.textContent = editedName;
+};
+
+// 메뉴 삭제
+const deleteMenu = target => {
+  const $selectedMenu = target.parentNode;
+  const result = window.confirm('정말 삭제하시겠습니까?');
+
+  if (!result) return;
+
+  $espressoMenuList.removeChild($selectedMenu);
+};
+
 // event
 // form의 submit default 이벤트 막기
 $espressoMenuForm.addEventListener('submit', e => {
@@ -71,26 +94,13 @@ $input.addEventListener('keyup', e => {
 $espressoMenuList.addEventListener('click', e => {
   if (!e.target.matches('.menu-edit-button')) return;
 
-  const $menuName = e.target.previousElementSibling;
-  const editedName = window.prompt(
-    '메뉴명을 수정하세요',
-    $menuName.textContent,
-  );
-
-  if (editedName === null) return;
-
-  $menuName.textContent = editedName;
+  editMenu(e.target);
 });
 
 // 삭제 버튼 클릭 시, 메뉴 삭제
 $espressoMenuList.addEventListener('click', e => {
   if (!e.target.matches('.menu-remove-button')) return;
 
-  const $selectedMenu = e.target.parentNode;
-  const result = window.confirm('정말 삭제하시겠습니까?');
-
-  if (!result) return;
-
-  $espressoMenuList.removeChild($selectedMenu);
+  deleteMenu(e.target);
   updateTotalMenuNum();
 });

@@ -5,6 +5,14 @@ const $submitButton = $("#espresso-menu-submit-button");
 const $input = $("#espresso-menu-name");
 const $form = $("#espresso-menu-form");
 const $ul = $("#espresso-menu-list");
+const $menuCount = $("#espresso-menu-count");
+
+// 메뉴 총 개수
+let menuCount = $ul.childNodes.length;
+$menuCount.innerText = `총 ${menuCount}개`;
+const calcMenuCount = () => {
+  $menuCount.innerText = `총 `;
+};
 
 // 매개 변수로 받은 선택자의 value를 리셋하는 함수
 const resetValue = (selector) => {
@@ -12,7 +20,7 @@ const resetValue = (selector) => {
 };
 
 // 메뉴 추가 함수
-const addMenu = (value) => {
+const addMenu = (name) => {
   // li, span, button 태그 생성
   const newMenuLi = document.createElement("li");
   const newMenuSpan = document.createElement("span");
@@ -40,7 +48,7 @@ const addMenu = (value) => {
   // 텍스트 추가
   newMenuEditButton.innerText = "수정";
   newMenuRemoveButton.innerText = "삭제";
-  newMenuSpan.innerText = value;
+  newMenuSpan.innerHTML = `${name}`;
 
   // 이벤트 리스너 할당
   newMenuEditButton.addEventListener("click", handleEdit);
@@ -53,6 +61,7 @@ const addMenu = (value) => {
   $ul.appendChild(newMenuLi);
 };
 
+// 메뉴 등록 함수
 const handleSubmit = (event) => {
   // submit event일 경우 기본 동작 제어 -> 하지 않을 경우 새로고침 일어나게 된다.
   if (event.type === "submit") event.preventDefault();
@@ -68,6 +77,7 @@ const handleSubmit = (event) => {
 
 // 메뉴 수정 함수
 const handleEdit = (event) => {
+  console.log(event);
   // 어떤 것을 활용하여 span 태그를 찾을 지 궁금하네요
   const currentInputNode = event.target.previousSibling;
   const newText = prompt("메뉴명을 수정해주세요", currentInputNode.innerText);
@@ -83,5 +93,6 @@ const handleRemove = (event) => {
   }
 };
 
+// 이벤트 핸들러 등록
 $submitButton.addEventListener("click", handleSubmit);
 $form.addEventListener("submit", handleSubmit);

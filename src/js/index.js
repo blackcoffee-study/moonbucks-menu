@@ -13,9 +13,14 @@ const resetValue = (selector) => {
 
 // 메뉴 추가 함수
 const addMenu = (value) => {
-  const newMenu = document.createElement("li");
-  newMenu.innerText = value;
-  $ul.appendChild(newMenu);
+  // li, span 태그 생성 및 스타일, innerText 추가
+  const newMenuLi = document.createElement("li");
+  const newMenuSpan = document.createElement("span");
+  newMenuLi.classList.add("menu-list-item", "d-flex", "items-center", "py-2");
+  newMenuSpan.classList.add("w-100", "pl-2", "menu-name");
+  newMenuSpan.innerText = value;
+  newMenuLi.appendChild(newMenuSpan);
+  $ul.appendChild(newMenuLi);
 };
 
 const handleSubmit = (event) => {

@@ -1,7 +1,7 @@
 // 선택자를 선택하는 로직을 간소화해주기 위한 함수
 const $ = (selector) => document.querySelector(selector);
 
-const $button = $("#espresso-menu-submit-button");
+const $submitButton = $("#espresso-menu-submit-button");
 const $input = $("#espresso-menu-name");
 const $form = $("#espresso-menu-form");
 const $ul = $("#espresso-menu-list");
@@ -18,6 +18,9 @@ const addMenu = (value) => {
   const newMenuSpan = document.createElement("span");
   const newMenuEditButton = document.createElement("button");
   const newMenuRemoveButton = document.createElement("button");
+  // id 추가
+  newMenuEditButton.id = "espresso-menu-edit-button";
+  newMenuRemoveButton.id = "espresso-menu-remove-button";
   // 스타일 추가
   newMenuLi.classList.add("menu-list-item", "d-flex", "items-center", "py-2");
   newMenuSpan.classList.add("w-100", "pl-2", "menu-name");
@@ -39,6 +42,10 @@ const addMenu = (value) => {
   newMenuRemoveButton.innerText = "삭제";
   newMenuSpan.innerText = value;
 
+  // 이벤트 리스너 할당
+  newMenuEditButton.addEventListener("click", handleEdit);
+  newMenuRemoveButton.addEventListener("click", handleRemove);
+
   newMenuLi.appendChild(newMenuSpan);
   newMenuLi.appendChild(newMenuEditButton);
   newMenuLi.appendChild(newMenuRemoveButton);
@@ -59,5 +66,17 @@ const handleSubmit = (event) => {
   resetValue($input);
 };
 
-$button.addEventListener("click", handleSubmit);
+const handleEdit = (event) => {
+  // 어떤 것을 활용하여 span 태그를 찾을 지 궁금하네요
+  const currentInputNode = event.target.previousSibling;
+  const newText = prompt("메뉴명을 수정해주세요", currentInputNode.innerText);
+  currentInputNode.innerText = newText;
+};
+
+const handleRemove = () => {
+  const a = confirm("정말 삭제하시겠습니까?");
+  alert(a);
+};
+
+$submitButton.addEventListener("click", handleSubmit);
 $form.addEventListener("submit", handleSubmit);

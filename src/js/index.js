@@ -94,4 +94,5 @@ $espressoMenuList.addEventListener('click', e => {
   if (!result) return;
 
   $espressoMenuList.removeChild($selectedMenu);
+  updateTotalMenuNum();
 });

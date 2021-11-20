@@ -47,6 +47,7 @@ $espressoMenuForm.addEventListener('click', e => {
     $input.value = '';
     return;
   }
+
   const menuName = $input.value;
   addNewMenu(menuName);
   $input.value = '';
@@ -71,6 +72,7 @@ $input.addEventListener('keypress', e => {
 // 수정 버튼 클릭 시, 메뉴 이름 수정
 $espressoMenuList.addEventListener('click', e => {
   if (!e.target.matches('.menu-edit-button')) return;
+
   const $menuName = e.target.previousElementSibling;
   const editedName = window.prompt(
     '메뉴명을 수정하세요',
@@ -78,7 +80,18 @@ $espressoMenuList.addEventListener('click', e => {
   );
 
   if (editedName === null) return;
+
   $menuName.textContent = editedName;
 });
 
 // 삭제 버튼 클릭 시, 메뉴 삭제
+$espressoMenuList.addEventListener('click', e => {
+  if (!e.target.matches('.menu-remove-button')) return;
+
+  const $selectedMenu = e.target.parentNode;
+  const result = window.confirm('정말 삭제하시겠습니까?');
+
+  if (!result) return;
+
+  $espressoMenuList.removeChild($selectedMenu);
+});

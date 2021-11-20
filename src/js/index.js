@@ -81,12 +81,14 @@ $espressoMenuForm.addEventListener('submit', e => {
 // 확인 버튼 클릭 시, 메뉴 추가
 $espressoMenuForm.addEventListener('click', e => {
   if (e.target.id !== 'espresso-menu-submit-button') return;
+
   addNewMenu();
 });
 
 // Enter 키 입력 시, 메뉴 추가
 $espressoMenuForm.addEventListener('keyup', e => {
   if (e.key !== 'Enter') return;
+
   addNewMenu();
 });
 

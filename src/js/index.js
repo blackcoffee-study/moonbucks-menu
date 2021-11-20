@@ -13,13 +13,36 @@ const resetValue = (selector) => {
 
 // 메뉴 추가 함수
 const addMenu = (value) => {
-  // li, span 태그 생성 및 스타일, innerText 추가
+  // li, span, button 태그 생성
   const newMenuLi = document.createElement("li");
   const newMenuSpan = document.createElement("span");
+  const newMenuEditButton = document.createElement("button");
+  const newMenuRemoveButton = document.createElement("button");
+  // 스타일 추가
   newMenuLi.classList.add("menu-list-item", "d-flex", "items-center", "py-2");
   newMenuSpan.classList.add("w-100", "pl-2", "menu-name");
+  newMenuEditButton.classList.add(
+    "bg-gray-50",
+    "text-gray-500",
+    "text-sm",
+    "mr-1",
+    "menu-edit-button"
+  );
+  newMenuRemoveButton.classList.add(
+    "bg-gray-50",
+    "text-gray-500",
+    "text-sm",
+    "menu-remove-button"
+  );
+  // 텍스트 추가
+  newMenuEditButton.innerText = "수정";
+  newMenuRemoveButton.innerText = "삭제";
   newMenuSpan.innerText = value;
+
   newMenuLi.appendChild(newMenuSpan);
+  newMenuLi.appendChild(newMenuEditButton);
+  newMenuLi.appendChild(newMenuRemoveButton);
+
   $ul.appendChild(newMenuLi);
 };
 
@@ -28,7 +51,7 @@ const handleSubmit = (event) => {
   if (event.type === "submit") event.preventDefault();
   // 입력 값 변수에 할당 -> 자주 쓸 것 같아서 따로 변수로 선언해놓음
   const inputValue = $input.value;
-  // 입력값 (공백제거 후) 빈값이면 함수 종료
+  // 입력값 (공백제거 후) 빈값이면 함수 종
   if (inputValue.trim() === "") return;
   // 메뉴 추가
   addMenu(inputValue);

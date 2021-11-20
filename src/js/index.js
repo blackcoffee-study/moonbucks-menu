@@ -1,7 +1,6 @@
 // elem
 const $espressoMenuForm = document.getElementById('espresso-menu-form');
 const $espressoMenuList = document.getElementById('espresso-menu-list');
-const $input = document.getElementById('espresso-menu-name');
 
 // 메뉴 li 만들기
 const makeMenuTemplate = menuName => {
@@ -29,12 +28,14 @@ const makeMenuTemplate = menuName => {
 
 // 메뉴 추가
 const addNewMenu = () => {
+  const $input = document.getElementById('espresso-menu-name');
+  const menuName = $input.value;
+
   if ($input.value.trim() === '') {
     $input.value = '';
     return;
   }
 
-  const menuName = $input.value;
   makeMenuTemplate(menuName);
   $input.value = '';
   updateTotalMenuNum();
@@ -84,7 +85,7 @@ $espressoMenuForm.addEventListener('click', e => {
 });
 
 // Enter 키 입력 시, 메뉴 추가
-$input.addEventListener('keyup', e => {
+$espressoMenuForm.addEventListener('keyup', e => {
   if (e.key === 'Enter') {
     addNewMenu();
   }

@@ -26,9 +26,18 @@ const $menuInputForm = domSelector('#espresso-menu-form');
 const $menuInput = domSelector('#espresso-menu-name');
 const $menuList = domSelector('#espresso-menu-list');
 const $menuCount = domSelector('.menu-count');
+const $submitBtn = domSelector('.input-submit');
+
+$submitBtn.addEventListener('click', () => {
+  submit()
+})
 
 $menuInputForm.addEventListener('submit', (e) => {
   e.preventDefault();
+  submit()
+})
+
+const submit = () => {
   const value = $menuInput.value
   if (value) {
     menuList.push(value)
@@ -36,7 +45,7 @@ $menuInputForm.addEventListener('submit', (e) => {
     renderList()
     menuCount()
   }
-})
+}
 
 const renderList = () => {
   const menuLists = menuList.map(menu => $menuListItem(menu)).join(' ');

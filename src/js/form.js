@@ -13,10 +13,9 @@ class Form {
 
     input() {
         $('#espresso-menu-name').addEventListener('keydown', e => {
-            this.menu = e.target.value;
-            console.log(this.menu);
+            this.menu = $('#espresso-menu-name').value;
+
             if (e.key === 'Enter' && this.menu !== '') {
-                console.log(this.menu);
                 addMenuList(this.menu);
                 // this.initMenu(e);
             }

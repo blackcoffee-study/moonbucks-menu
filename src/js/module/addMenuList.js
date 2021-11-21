@@ -19,6 +19,5 @@ const menuListTemplate = name => `
 `;
 
 export default function addMenuList(name) {
-    console.log(name);
-    $('#espresso-menu-list').innerHTML = menuListTemplate(name);
+    $('#espresso-menu-list').insertAdjacentHTML('beforeend', menuListTemplate(name));
 }

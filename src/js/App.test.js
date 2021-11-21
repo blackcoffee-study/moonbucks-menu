@@ -14,6 +14,10 @@ describe("App", () => {
     },
   });
 
+  beforeEach(() => {
+    AppComponent.setState({ key: "menuList", value: menuList });
+  });
+
   const app = AppComponent.$app;
 
   it("문벅스 메뉴 카테고리를 렌더링 합니다", () => {
@@ -52,11 +56,23 @@ describe("App", () => {
     expect(AppComponent.state.currentCategory).toBe("변경된 카테고리");
   });
 
-  it("메뉴를 추가하면 메뉴 리스트에 추가됩니다", () => {
+  it("handleSubmit 함수를 실행하면 menuList에 새로운 메뉴가 추가됩니다", () => {
     AppComponent.handleSubmit({ name: "추가된 메뉴" });
 
     expect(
       AppComponent.state.menuList.find(({ name }) => name === "추가된 메뉴")
     ).toBeTruthy();
+  });
+
+  it("handleTodoEdit 함수를 실행하면 id 값이 일치하는 메뉴의 name이 변경됩니다", () => {
+    expect(AppComponent.state.menuList.find(({ id }) => id === 1).name).toBe(
+      "민트초코 프라푸치노"
+    );
+
+    AppComponent.handleTodoEdit({ id: "1", name: "변경된 메뉴" });
+
+    expect(AppComponent.state.menuList.find(({ id }) => id === 1).name).toBe(
+      "변경된 메뉴"
+    );
   });
 });

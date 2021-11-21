@@ -94,6 +94,20 @@ export default function App({ $root, initialState }) {
     });
   };
 
+  this.handleTodoEdit = ({ name, id }) => {
+    this.setState({
+      key: "menuList",
+      value: this.state.menuList.map((todo) =>
+        Number(id) === todo.id
+          ? {
+              ...todo,
+              name,
+            }
+          : todo
+      ),
+    });
+  };
+
   new Form({
     $app: document.querySelector("#container"),
     onSubmit: this.handleSubmit,
@@ -102,5 +116,6 @@ export default function App({ $root, initialState }) {
   const list = new List({
     $app: document.querySelector("#container"),
     initialState: this.state.menuList,
+    onEdit: this.handleTodoEdit,
   });
 }

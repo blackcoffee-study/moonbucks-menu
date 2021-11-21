@@ -19,6 +19,7 @@ import CafeMenuAdmin from "./cafeMenuAdmin.js";
         e.preventDefault();
         cafeMenuAdmin.addMenuItem();
         initMenuEditButton();
+        initMenuRemoveButton();
     });
 
     menuNameInputArea.addEventListener('keypress', e => {
@@ -26,6 +27,7 @@ import CafeMenuAdmin from "./cafeMenuAdmin.js";
             e.preventDefault();
             cafeMenuAdmin.addMenuItem();
             initMenuEditButton();
+            initMenuRemoveButton();
         };
     });
     
@@ -38,6 +40,18 @@ import CafeMenuAdmin from "./cafeMenuAdmin.js";
             $target.innerText = modifiedMenuName;
         });
     };
+
+    const initMenuRemoveButton = () => {
+        const menuRemoveButton = $('.menu-remove-button');
+        menuRemoveButton.addEventListener('click', e => {
+            e.stopPropagation();
+            const $target = e.target.closest('li');
+            const isRemove = confirm('정말 삭제하시겠습니까?');
+            if (isRemove) {
+                $target.remove();
+            }
+        });
+    }
 
 
 })();

@@ -1,5 +1,5 @@
-import getDom from './getDom';
+import $ from './getDom';
 
-const blockRefresh = () => getDom('#espresso-menu-form').addEventListener('submit', e => e.preventDefault());
+const blockRefresh = () => $('#espresso-menu-form').addEventListener('submit', e => e.preventDefault());
 
 export default blockRefresh;

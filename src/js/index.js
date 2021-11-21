@@ -5,7 +5,7 @@ import blockRefresh from './module/blockRefresh';
 function App() {
     blockRefresh();
 
-    const temp = new Form();
-    temp.submit();
+    const form = new Form();
+    form.submit();
 }
 App();

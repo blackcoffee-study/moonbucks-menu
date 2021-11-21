@@ -1,6 +1,6 @@
-import getDom from './getDom';
+import $ from './getDom';
 
-const menuList = name => `
+const menuListTemplate = name => `
     <li class="menu-list-item d-flex items-center py-2">
         <span class="w-100 pl-2 menu-name">${name}</span>
         <button
@@ -19,5 +19,6 @@ const menuList = name => `
 `;
 
 export default function addMenuList(name) {
-    getDom('#espresso-menu-list').innerHTML = menuList(name);
+    console.log(name);
+    $('#espresso-menu-list').innerHTML = menuListTemplate(name);
 }

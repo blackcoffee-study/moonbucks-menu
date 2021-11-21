@@ -1,4 +1,4 @@
-import getDom from './module/getDom';
+import $ from './module/getDom';
 import addMenuList from './module/addMenuList';
 
 class Form {
@@ -6,26 +6,29 @@ class Form {
         this.menu = '';
     }
 
-    initMenu() {
-        getDom('#espresso-menu-name').value = '';
+    initMenu(e) {
+        e.target.value = '';
         this.menu = '';
     }
 
     input() {
-        getDom('#espresso-menu-name').addEventListener('keydown', e => {
+        $('#espresso-menu-name').addEventListener('keydown', e => {
             this.menu = e.target.value;
-
-            if (e.key === 'Enter') {
+            console.log(this.menu);
+            if (e.key === 'Enter' && this.menu !== '') {
+                console.log(this.menu);
                 addMenuList(this.menu);
-                this.initMenu();
+                // this.initMenu(e);
             }
         });
     }
 
     button() {
-        getDom('#espresso-menu-submit-button').addEventListener('click', () => {
-            addMenuList(this.menu);
-            this.initMenu();
+        $('#espresso-menu-submit-button').addEventListener('click', () => {
+            if (this.menu !== '') {
+                addMenuList(this.menu);
+                // this.initMenu();
+            }
         });
     }
 

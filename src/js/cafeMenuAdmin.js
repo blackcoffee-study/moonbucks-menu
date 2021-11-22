@@ -1,14 +1,27 @@
 export default class CafeMenuAdmin {
-    constructor($, menuNameInputArea, menuListWrapperArea) {
+    constructor($, menuNameInputArea, menuListWrapperArea, menuSubmitButton) {
         this.$ = $;
         this.menuNameInputArea = menuNameInputArea;
         this.menuListWrapperArea = menuListWrapperArea;
+        this.menuSubmitButton = menuSubmitButton;
+        this._initEventListener();
     }
     addMenuItem() {
         if (!this.menuNameInputArea.value) return;
         const menuNameInput = this.menuNameInputArea.value;
         this.menuListWrapperArea.insertAdjacentHTML('beforeend', this._menuItemTemplate(menuNameInput));
         this.initMenuNameInput();
+        this._addMenuEditButton();
+        this._addMenuRemoveButton();
+        this.initCount();
+    }
+
+    initMenuNameInput() {
+        this.menuNameInputArea.value = "";
+    }
+
+    initCount() {
+        console.log('initCout 호출');
     }
 
     _menuItemTemplate(menuNameInput) {
@@ -26,7 +39,37 @@ export default class CafeMenuAdmin {
       </li>`
     }
 
-    initMenuNameInput() {
-        this.menuNameInputArea.value = "";
+    _initEventListener() {
+        this.menuSubmitButton.addEventListener('click', e => {
+            e.preventDefault();
+            this.addMenuItem();
+        });
+        this.menuNameInputArea.addEventListener('keypress', e => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                this.addMenuItem();
+            };
+        });
+    } 
+    _addMenuEditButton() {
+        const menuEditButton = menuListWrapperArea.lastChild.querySelector('.menu-edit-button');
+        menuEditButton.addEventListener('click', e => {
+            const $target = e.target.closest('li').querySelector('.menu-name');
+            const currentMenuName = $target.innerText;
+            const modifiedMenuName = prompt('메뉴명을 수정하세요', currentMenuName);
+            $target.innerText = modifiedMenuName;
+        });
+    };
+
+    _addMenuRemoveButton() {
+        const menuRemoveButton = menuListWrapperArea.lastChild.querySelector('.menu-remove-button');
+        menuRemoveButton.addEventListener('click', e => {
+            e.stopPropagation();
+            const $target = e.target.closest('li');
+            const isRemove = confirm('정말 삭제하시겠습니까?');
+            if (isRemove) {
+                $target.remove();
+            }
+        });
     }
 }

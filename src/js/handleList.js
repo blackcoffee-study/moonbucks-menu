@@ -8,6 +8,11 @@ const edit = (menuList, key) => {
     addMenuList(menuList);
 };
 
+const del = (menuList, key) => {
+    menuList.splice(key, 1);
+    addMenuList(menuList);
+};
+
 export default function HandleList(menuList) {
     // 이벤트 위임으로 ul에 이벤트를 달아줌
     $('#espresso-menu-list').addEventListener('click', e => {

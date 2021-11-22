@@ -1,10 +1,6 @@
 import $ from './utils/selector.js';
 
 function App() {
-  $('#espresso-menu-form').addEventListener('submit', (e) => {
-    e.preventDefault();
-  });
-
   const updateMenuCount = () => {
     const menuCount = $('#espresso-menu-list').querySelectorAll('li').length;
     $('.menu-count').innerText = `총 ${menuCount}개`;
@@ -56,12 +52,8 @@ function App() {
     }
   };
 
-  $('#espresso-menu-submit-button').addEventListener('click', addMenuName);
-
-  $('#espresso-menu-name').addEventListener('keypress', (e) => {
-    if (e.key !== 'Enter') {
-      return;
-    }
+  $('#espresso-menu-form').addEventListener('submit', (e) => {
+    e.preventDefault();
     addMenuName();
   });
 

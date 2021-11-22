@@ -7,7 +7,7 @@ import CafeMenuAdmin from "./cafeMenuAdmin.js";
     // 타겟과 관련된 영역들 정의
     const menuNameInputArea = $('#menu-name');
     const menuListWrapperArea = $('#menu-list');
-    
+    const menuCountArea = $('.menu-count');
     
     // 메뉴 관리 기능 담당 클래스
     const cafeMenuAdmin = new CafeMenuAdmin($, menuNameInputArea, menuListWrapperArea);
@@ -31,8 +31,8 @@ import CafeMenuAdmin from "./cafeMenuAdmin.js";
         };
     });
     
-    const initMenuEditButton = () => { 
-        const menuEditButton = $('.menu-edit-button');
+    const initMenuEditButton = () => {
+        const menuEditButton = menuListWrapperArea.lastChild.querySelector('.menu-edit-button');
         menuEditButton.addEventListener('click', e => {
             const $target = e.target.closest('li').querySelector('.menu-name');
             const currentMenuName = $target.innerText;
@@ -42,7 +42,7 @@ import CafeMenuAdmin from "./cafeMenuAdmin.js";
     };
 
     const initMenuRemoveButton = () => {
-        const menuRemoveButton = $('.menu-remove-button');
+        const menuRemoveButton = menuListWrapperArea.lastChild.querySelector('.menu-remove-button');
         menuRemoveButton.addEventListener('click', e => {
             e.stopPropagation();
             const $target = e.target.closest('li');

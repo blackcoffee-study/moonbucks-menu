@@ -10,8 +10,10 @@ const edit = (menuList, key) => {
 
 const del = (menuList, key) => {
     // 반환된 키 값에 해당하는 것 삭제
-    menuList.splice(key, 1);
-    addMenuList(menuList);
+    if (confirm('정말 삭제하시겠습니까?')) {
+        menuList.splice(key, 1);
+        addMenuList(menuList);
+    }
 };
 
 export default function HandleList(menuList) {

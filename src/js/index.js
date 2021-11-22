@@ -1,20 +1,4 @@
-//TODO 메뉴 추가
-//[X] 에스프레스 메뉴에 새로운 메뉴를 엔터키 입력으로 추가한다.
-//[X] 에스프레스 메뉴에 새로운 메뉴를 확인버튼 클릭으로 추가한다.
-//[X] 사용자 입력값이 빈 값이라면 추가되지 않는다.
-//[X] input를 추가하고 난 뒤 비워준다.
-//[X] 총 메뉴 갯수를 count하여 상단에 보여준다.
-//[X] 추가되는 메뉴의 아래 마크업은  `<ul id="espresso-menu-list" class="mt-3 pl-0"></ul>` 안에 삽입해야 한다.
 
-//TODO 메뉴 수정
-//[X] 메뉴 수정 버튼을 눌러 메뉴 이름을 수정할 수 있다.
-//[X] 메뉴 수정시 브라우저에서 제공하는 'prompt' 인터페이스를 활용한다
-//[X] 메뉴 수정시 prompt 창에는 defaultvalue로 원래 메뉴명이 들어있다.
-
-//TODO 메뉴 삭제
-//[X] 메뉴 삭제 버튼을 이용하여 메뉴 삭제할 수 있다.
-//[X] 메뉴 삭제시 브라우저에서 제공하는 `confirm` 인터페이스를 활용한다.
-//[] 총 메뉴 갯수를 count하여 상단에 보여준다.
 
 const $ = (selector) => document.querySelector(selector);
 
@@ -58,7 +42,7 @@ function updateEspressoMenu(e) {
     if (updatedMenuName === null) {
         return;
     }
-    $(".menu-name").innerHTML = updatedMenuName;
+    $menuName.innerHTML = updatedMenuName;
 }
 function removeEspressoMenu(e) {
     const removedMenu = window.confirm("메뉴를 삭제하시겠습니까?")

@@ -1,9 +1,10 @@
 export default class CafeMenuAdmin {
-    constructor($, menuNameInputArea, menuListWrapperArea, menuSubmitButton) {
+    constructor($, menuNameInputArea, menuListWrapperArea, menuSubmitButton, menuCountArea) {
         this.$ = $;
         this.menuNameInputArea = menuNameInputArea;
         this.menuListWrapperArea = menuListWrapperArea;
         this.menuSubmitButton = menuSubmitButton;
+        this.menuCountArea = menuCountArea;
         this._initEventListener();
     }
     addMenuItem() {
@@ -22,6 +23,8 @@ export default class CafeMenuAdmin {
 
     initCount() {
         console.log('initCout 호출');
+        const totalCount = this.menuListWrapperArea.children.length;
+        this.menuCountArea.innerText = `총 ${totalCount}개`;
     }
 
     _menuItemTemplate(menuNameInput) {
@@ -52,7 +55,7 @@ export default class CafeMenuAdmin {
         });
     } 
     _addMenuEditButton() {
-        const menuEditButton = menuListWrapperArea.lastChild.querySelector('.menu-edit-button');
+        const menuEditButton = this.menuListWrapperArea.lastChild.querySelector('.menu-edit-button');
         menuEditButton.addEventListener('click', e => {
             const $target = e.target.closest('li').querySelector('.menu-name');
             const currentMenuName = $target.innerText;
@@ -62,13 +65,14 @@ export default class CafeMenuAdmin {
     };
 
     _addMenuRemoveButton() {
-        const menuRemoveButton = menuListWrapperArea.lastChild.querySelector('.menu-remove-button');
+        const menuRemoveButton = this.menuListWrapperArea.lastChild.querySelector('.menu-remove-button');
         menuRemoveButton.addEventListener('click', e => {
             e.stopPropagation();
             const $target = e.target.closest('li');
             const isRemove = confirm('정말 삭제하시겠습니까?');
             if (isRemove) {
                 $target.remove();
+                this.initCount();
             }
         });
     }

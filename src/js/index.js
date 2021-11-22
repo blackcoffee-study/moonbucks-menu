@@ -9,11 +9,15 @@ const store = {
 };
 
 function App() {
+    // form에 대한 e.preventDefault 적용
     blockRefresh();
 
+    // form에 대한 로직 -> <input> || <button>
     const form = new Form();
     form.submit(store.menuList);
 
+    // 리스트의 수정 및 변경에 관련된 로직
     HandleList(store.menuList);
 }
+
 App();

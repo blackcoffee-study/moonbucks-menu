@@ -1,51 +1,38 @@
-const menuFormElement = document.querySelector("#espresso-menu-form");
-const nameInputElement = menuFormElement.querySelector("#espresso-menu-name");
-const menuListElement = document.querySelector("#espresso-menu-list");
-const menuCountElement = document.querySelector(".menu-count");
+const elMenuForm = document.querySelector("#espresso-menu-form");
+const elNameInput = document.querySelector("#espresso-menu-name");
+const elMenuList = document.querySelector("#espresso-menu-list");
+const elMenuCount = document.querySelector(".menu-count");
 
-menuFormElement.addEventListener("submit", (event) => {
-  event.preventDefault();
+const moonBucks = () => {
+  elMenuForm.addEventListener("submit", (e) => {
+    e.preventDefault();
 
-  // 1. 메뉴 이름 유효성 검사
-  const newMenuName = nameInputElement.value;
-  if (!isValidMenuName(newMenuName)) return;
-  
-  // 2. 메뉴 엘리먼트 생성 및 이벤트 등록
-  const menuElement = createMenuElement(newMenuName);
-  const editButton = menuElement.querySelector(".menu-edit-button");
-  const deleteButton = menuElement.querySelector(".menu-remove-button");
-  
-  editButton.addEventListener("click", (event) => {
-    const menuName = menuElement.querySelector(".menu-name");
+    // 1. 유효성 검사
+    const newMenuName = elNameInput.value;
+    if (!isValidMenuName(newMenuName)) return;
 
-    const name = prompt("메뉴명을 수정하세요.", menuName.textContent);
-    if (isValidMenuName(name)) {
-      menuName.textContent = name;
-    }
-  })
+    // 2. 메뉴 생성 및 이벤트 등록
+    const elMenuItem = createMenuItemElement(newMenuName);
+    addEditButtonEvent(elMenuItem);
+    addRemoveButtonEvent(elMenuItem);
 
-  deleteButton.addEventListener("click", (event) => {
-    if (confirm("정말 삭제하시겠습니까?")) {
-      menuElement.remove();
-      refreshMenuCount();
-    }
-  })
-
-  // 3. 메뉴 추가 및 초기화
-  menuListElement.appendChild(menuElement);
-  nameInputElement.value = "";
-  refreshMenuCount();
-});
+    // 3. 메뉴 추가 및 인풋 초기화
+    addMenu(elMenuItem);
+    resetNameInput();
+  });
+};
+moonBucks();
 
 /**
- * 메뉴 이름 유효성을 검사한다.
- * @param {string} menuName 
+ * 전달받은 메뉴 이름의 유효성을 검사한다.
+ * @param {string} menuName 메뉴 이름
  */
 const isValidMenuName = (menuName) => {
+  if (!menuName) return;
   const name = menuName.trim();
 
   if (name.length === 0) {
-    alert("값을 입력해주세요.")
+    alert("값을 입력해주세요.");
     return false;
   }
 
@@ -53,11 +40,11 @@ const isValidMenuName = (menuName) => {
 };
 
 /**
- * 메뉴 엘리먼트를 생성한다.
- * @param {string} menuName
- * @returns {HTMLLIElement} 메뉴 엘리먼트(`li`)
+ * 전달받은 메뉴 이름으로 메뉴 아이템 엘리먼트를 생성한다.
+ * @param {string} menuName 메뉴 이름
+ * @returns {HTMLLIElement} 메뉴 아이템 엘리먼트(`li`)
  */
-const createMenuElement = (menuName) => {
+const createMenuItemElement = (menuName) => {
   const template = `<li class="menu-list-item d-flex items-center py-2">
     <span class="w-100 pl-2 menu-name">${menuName}</span>
     <button
@@ -73,15 +60,66 @@ const createMenuElement = (menuName) => {
       삭제
     </button>
     </li>`;
-  const placeholder = document.createElement("div");
-  placeholder.innerHTML = template;
-  return placeholder.firstElementChild;
+  const wrapper = document.createElement("div");
+  wrapper.innerHTML = template;
+  return wrapper.firstElementChild;
 };
 
 /**
- * 메뉴 개수(`총 _개`)를 현재 아이템 개수로 갱신한다.
+ * 전달 받은 메뉴 아이템 엘리먼트에 "삭제" 버튼 이벤트를 추가한다.
+ * @param {HTMLLIElement} elMenuItem 메뉴 아이템 엘리먼트(`li`)
  */
-const refreshMenuCount = () => {
-  const menuItems = document.querySelectorAll(".menu-list-item");
-  menuCountElement.textContent = `총 ${menuItems.length}개`;
+const addRemoveButtonEvent = (elMenuItem) => {
+  const elRemoveButton = elMenuItem.querySelector(".menu-remove-button");
+
+  elRemoveButton.addEventListener("click", (e) => {
+    if (confirm("정말 삭제하시겠습니까?")) {
+      elMenuItem.remove();
+      updateMenuCount();
+    }
+  });
+};
+
+/**
+ * 전달 받은 메뉴 아이템 엘리먼트에 "수정" 버튼 이벤트를 추가한다.
+ * @param {HTMLLIElement} elMenuItem 메뉴 아이템 엘리먼트(`li`)
+ */
+const addEditButtonEvent = (elMenuItem) => {
+  const elEditButton = elMenuItem.querySelector(".menu-edit-button");
+
+  elEditButton.addEventListener("click", (e) => {
+    const elCurrentName = elMenuItem.querySelector(".menu-name");
+    const editedName = prompt(
+      "메뉴명을 수정하세요.",
+      elCurrentName.textContent
+    );
+
+    if (!isValidMenuName(editedName)) return;
+    elCurrentName.textContent = editedName;
+  });
 }
+
+/**
+ * 전달받은 메뉴 아이템 엘리먼트를 메뉴 리스트에 추가한다.
+ * @param {HTMLLIElement} elMenuItem 메뉴 아이템 엘리먼트(`li`)
+ */
+const addMenu = (elMenuItem) => {
+  elMenuList.appendChild(elMenuItem);
+  updateMenuCount();
+};
+
+/**
+ * 메뉴 이름 인풋값을 초기화한다.
+ */
+const resetNameInput = () => {
+  if (!elNameInput) return;
+  elNameInput.value = "";
+};
+
+/**
+ * 메뉴 카운트를 현재 메뉴 아이템 개수로 갱신한다.
+ */
+const updateMenuCount = () => {
+  const elMenuItems = elMenuList.querySelectorAll(".menu-list-item");
+  elMenuCount.textContent = `총 ${elMenuItems.length}개`;
+};

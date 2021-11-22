@@ -40,21 +40,26 @@ function Apps(){
     </li>
     ` 
     );
+    
     // input 값 초기화
     document.querySelector("#espresso-menu-name").value = "";
+  };
+  function countMenuNum (){
     // 총 갯수 세기
     document.querySelector(".menu-count").innerText = `총 ${document.querySelector("#espresso-menu-list").querySelectorAll("li").length}개`
-  };
+  }
   // 메뉴 추가 엔터
   document.querySelector("#espresso-menu-name").addEventListener("keypress", (e) => {
     if (e.key === 'Enter') {
       addMenuName();
+      countMenuNum();
     }
     
   });
   // 메뉴 추가 확인버튼
   document.querySelector("#espresso-menu-submit-button").addEventListener("click", (e) => {
     addMenuName();
+    countMenuNum();
   });
   // 메뉴 수정과
   // 메뉴 삭제
@@ -63,6 +68,12 @@ function Apps(){
       const newMenuName = prompt("새로운 이름을 입력하세요.");
       e.target.closest("li").querySelector(".menu-name").innerText = newMenuName;
     }
+    if(e.target.classList.contains("menu-remove-button")){
+      if(confirm("삭제하시겠습니까?")) {
+        e.target.closest("li").remove();
+      }
+    }
+    countMenuNum();
   });
 }
 

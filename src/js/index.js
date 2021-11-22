@@ -21,8 +21,8 @@ function AppMenu(){
             );
             $menuName.focus();
             $menuName.value = null;
+            sumMenu();
         }
-        sumMenu();
     }
 
     const sumMenu = () => {
@@ -43,7 +43,7 @@ function AppMenu(){
     const removeMenu = (e) => {
 		if (confirm("선택하신 메뉴를 삭제하시겠습니까?")) {
 			e.target.closest("li").remove();
-			updateMenuCount();
+            sumMenu();
 		}
 	};
 

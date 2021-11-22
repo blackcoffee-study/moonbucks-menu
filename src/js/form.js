@@ -6,8 +6,8 @@ class Form {
         this.menu = '';
     }
 
-    initMenu(e) {
-        e.target.value = '';
+    initMenu() {
+        $('#espresso-menu-name').value = '';
         this.menu = '';
     }
 
@@ -18,6 +18,7 @@ class Form {
             if (e.key === 'Enter') {
                 menuList.push(this.menu);
                 addMenuList(menuList);
+                this.initMenu();
             }
         });
     }
@@ -25,8 +26,10 @@ class Form {
     button(menuList) {
         $('#espresso-menu-submit-button').addEventListener('click', () => {
             if (this.menu !== '') {
+                console.log('hoho');
                 menuList.push(this.menu);
                 addMenuList(menuList);
+                this.initMenu();
             }
         });
     }

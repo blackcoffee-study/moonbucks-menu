@@ -1,8 +1,5 @@
 const $ = (selector) => document.querySelector(selector);
 
-// DOM 요소를 가져올때는 $표시를 써서 변수처럼 사용할 수 있음
-// e.target, closest, insertAdjacentHtml
-
 function App() {
 
     const updateMenuCount = () => {
@@ -31,9 +28,8 @@ function App() {
                 >
                 삭제
                 </button>
-            </li>
-      `}
-        console.log(menuItemTemplate(espressoMenuName));
+            </li>`
+            }
 
         $("#espresso-menu-list").insertAdjacentHTML('beforeend',menuItemTemplate(espressoMenuName));
         updateMenuCount();
@@ -53,14 +49,6 @@ function App() {
         }
     }
 
-    $("#espresso-menu-list").addEventListener("click", (e) => {
-        if (e.target.classList.contains("menu-edit-button")) {
-            updateMenuName(e);
-        } else if( e.target.classList.contains("menu-remove-button")) {
-            removeMenuName(e);
-        }
-    });
-
     $("#espresso-menu-form").addEventListener("submit", (e) => {
         e.preventDefault();
     });
@@ -73,6 +61,13 @@ function App() {
 
     $("#espresso-menu-submit-button").addEventListener("click", addMenuName);
 
+    $("#espresso-menu-list").addEventListener("click", (e) => {
+        if (e.target.classList.contains("menu-edit-button")) {
+            updateMenuName(e);
+        } else if( e.target.classList.contains("menu-remove-button")) {
+            removeMenuName(e);
+        }
+    });
 }
 
 App();

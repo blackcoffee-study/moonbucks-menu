@@ -1,15 +1,15 @@
 'use strict';
 
 const submitMenu = document.querySelector('#espresso-menu-submit-button');
-submitMenu.addEventListener("click", addMemuList);
+submitMenu.addEventListener("click", addItem);
 
-function addMemuList (){
-    let inputMemuName = document.querySelector('#espresso-menu-name').value;
+function addItem (){
+    let item = document.querySelector('#espresso-menu-name').value;
     const p = document.createElement("p");
 
-    if (inputMemuName){
-        p.setAttribute('id',inputMemuName);
-        const textNode = document.createTextNode(inputMemuName);
+    if (item){
+        p.setAttribute('id',item);
+        const textNode = document.createTextNode(item);
         p.appendChild(textNode);
 
         document.querySelector('#espresso-menu-list').appendChild(p);
@@ -17,6 +17,5 @@ function addMemuList (){
 
         document.querySelector('#espresso-menu-name').value = null;
     }
-    
 };
 

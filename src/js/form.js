@@ -11,29 +11,29 @@ class Form {
         this.menu = '';
     }
 
-    input() {
-        $('#espresso-menu-name').addEventListener('keydown', e => {
-            this.menu = $('#espresso-menu-name').value;
+    input(menuList) {
+        $('#espresso-menu-name').addEventListener('keypress', e => {
+            this.menu = e.target.value;
 
-            if (e.key === 'Enter' && this.menu !== '') {
-                addMenuList(this.menu);
-                // this.initMenu(e);
+            if (e.key === 'Enter') {
+                menuList.push(this.menu);
+                addMenuList(menuList);
             }
         });
     }
 
-    button() {
+    button(menuList) {
         $('#espresso-menu-submit-button').addEventListener('click', () => {
             if (this.menu !== '') {
-                addMenuList(this.menu);
-                // this.initMenu();
+                menuList.push(this.menu);
+                addMenuList(menuList);
             }
         });
     }
 
-    submit() {
-        this.input();
-        this.button();
+    submit(menuList) {
+        this.input(menuList);
+        this.button(menuList);
     }
 }
 

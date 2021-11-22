@@ -1,7 +1,7 @@
 import $ from './getDom';
 
-const menuListTemplate = name => `
-    <li class="menu-list-item d-flex items-center py-2">
+const menuListTemplate = (name, idx) => `
+    <li class="menu-list-item d-flex items-center py-2" key=${idx}>
         <span class="w-100 pl-2 menu-name">${name}</span>
         <button
             type="button"
@@ -18,6 +18,6 @@ const menuListTemplate = name => `
     </li>
 `;
 
-export default function addMenuList(name) {
-    $('#espresso-menu-list').insertAdjacentHTML('beforeend', menuListTemplate(name));
+export default function addMenuList(menuList) {
+    $('#espresso-menu-list').innerHTML = menuList.map((e, i) => menuListTemplate(e, i)).join('');
 }

@@ -12,5 +12,5 @@ import CafeMenuAdmin from "./cafeMenuAdmin.js";
     const menuSubmitButton = $('#menu-submit-button');
 
     // 메뉴 관리 기능 담당 클래스
-    const cafeMenuAdmin = new CafeMenuAdmin($, menuNameInputArea, menuListWrapperArea, menuSubmitButton, menuCountArea);
+    const cafeMenuAdmin = new CafeMenuAdmin(menuNameInputArea, menuListWrapperArea, menuSubmitButton, menuCountArea);
 })();

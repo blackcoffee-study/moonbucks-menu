@@ -1,6 +1,5 @@
 export default class CafeMenuAdmin {
-    constructor($, menuNameInputArea, menuListWrapperArea, menuSubmitButton, menuCountArea) {
-        this.$ = $;
+    constructor(menuNameInputArea, menuListWrapperArea, menuSubmitButton, menuCountArea) {
         this.menuNameInputArea = menuNameInputArea;
         this.menuListWrapperArea = menuListWrapperArea;
         this.menuSubmitButton = menuSubmitButton;

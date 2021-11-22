@@ -5,7 +5,7 @@ const $ = (selector) => document.querySelector(selector);
 
 function AppMenu(){
 
-    const $submitMenu = $('#espresso-menu-submit-button');
+    const $menuSubmit = $('#espresso-menu-submit-button');
     const $menuForm = $("#espresso-menu-form");
     const $menuName = $('#espresso-menu-name');
     const $menuList = $("#espresso-menu-list");
@@ -50,7 +50,7 @@ function AppMenu(){
     $menuForm.addEventListener("submit", (e) => {
 		e.preventDefault();
 	});
-    $submitMenu.addEventListener("click", () => {addMenu()});
+    $menuSubmit.addEventListener("click", () => {addMenu()});
     $menuName.addEventListener("keydown", (e) => {
 		if (e.key !== "Enter") return;
 		addMenu();

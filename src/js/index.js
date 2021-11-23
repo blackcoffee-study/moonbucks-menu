@@ -18,31 +18,28 @@ const addNewMenu = () => {
   updateMenuCount();
 }
 
+const editMenu = (e) => { 
+  const clickedMenuItem = e.target.closest("li").querySelector(".menu-name");
+  const updateMenuName = prompt("메뉴명을 수정하세요", clickedMenuItem.innerText);
+  clickedMenuItem.innerText = updateMenuName;
 }
 
-const updateMenu = () => { 
-  espressoMenuList.addEventListener("click", (e) => {
-    if(e.target.classList.contains("menu-edit-button")) {
-      const clickedMenuItem = e.target.closest("li").querySelector(".menu-name");
-      const updateMenuName = prompt("메뉴명을 수정하세요", clickedMenuItem.innerText);
-      clickedMenuItem.innerText = updateMenuName;
-    }
-  });
+const removeMenu = (e) => { 
+  const clickedMenuItem = e.target.closest("li");
+  const remove = confirm("정말 삭제하시겠습니까?");
+  if(remove) {
+    clickedMenuItem.remove();
+    updateMenuCount();
+  }
 }
-const removeMenu = () => { 
-  espressoMenuList.addEventListener("click", (e) => {
-    if(e.target.classList.contains("menu-remove-button")) {
-      const clickedMenuItem = e.target.closest("li");
-      const remove = confirm("정말 삭제하시겠습니까?");
-      if(remove) {
-        clickedMenuItem.remove();
-        updateMenuCount();
-      };
-    }
-  });
-};
 
+espressoMenuList.addEventListener("click", (e) => {
+  if(e.target.classList.contains("menu-edit-button")) {
+    editMenu(e);
+  }
+  if(e.target.classList.contains("menu-remove-button")) {
+    removeMenu(e);
+  }
+});
 
 menuNameSubmit();
-updateMenu();
-removeMenu();

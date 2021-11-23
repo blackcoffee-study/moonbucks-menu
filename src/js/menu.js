@@ -1,24 +1,23 @@
 import { $ } from "./utils.js";
 
-const titles = {
-  espresso: "☕ 에스프레소 메뉴 관리",
-  frappuccino: "🥤 프라푸치노 메뉴 관리",
-  blended: "🍹 블렌디드 메뉴 관리",
-  teavana: "🫖 티바나 메뉴 관리",
-  desert: "🍰 디저트 메뉴 관리",
-};
-
 export default class Menu {
-  constructor(storageKey) {
+  titles = {
+    espresso: "☕ 에스프레소 메뉴 관리",
+    frappuccino: "🥤 프라푸치노 메뉴 관리",
+    blended: "🍹 블렌디드 메뉴 관리",
+    teavana: "🫖 티바나 메뉴 관리",
+    desert: "🍰 디저트 메뉴 관리",
+  };
+
+  constructor(storage) {
     this.$submitButton = $("#espresso-menu-submit-button");
     this.$espressoMenuList = $("#espresso-menu-list");
     this.$espressMenuInput = $("#espresso-menu-name");
     this.$headingTitle = $(".heading").querySelector("h2");
     this.$menuCount = $(".menu-count");
-
-    // 키값이 무엇인지에 따라서, localStorage에서 키에 해당하는 값을 가져와 배열 초기화
-    this.storage = window.localStorage;
-    this.setupWithStorageKey(storageKey);
+    this.storage = storage;
+    this.$headingTitle.innerText = this.titles[storage.key];
+    this.loadMenus(storage.datas);
 
     this.$submitButton.addEventListener("click", () => {
       this.addMenu();
@@ -43,26 +42,19 @@ export default class Menu {
       if (e.target.classList.contains("menu-remove-button")) {
         const elem = e.target.closest("li");
         this.removeMenu(elem);
-        this.removeMenuStorage(elem.getAttribute("data-index"));
+        this.storage.removeById(elem.getAttribute("data-index"));
       }
     });
   }
 
-  setupWithStorageKey = (key) => {
-    if (this.storageKey === key) {
+  setupWithStorage = (storage) => {
+    if (this.storage.key === storage.key) {
       return;
     }
+    this.storage = storage;
     this.clearMenus();
-    this.$headingTitle.innerText = titles[key];
-    this.storageKey = key;
-    const fetchDatas = JSON.parse(this.storage.getItem(key));
-    if (fetchDatas) {
-      this.datas = fetchDatas;
-    } else {
-      this.datas = [];
-    }
-    console.log(this.datas);
-    this.loadMenus(this.datas);
+    this.$headingTitle.innerText = this.titles[storage.key];
+    this.loadMenus(storage.datas);
   };
 
   clearMenus = () => {
@@ -71,6 +63,7 @@ export default class Menu {
   };
 
   loadMenus = (datas) => {
+    console.log(datas.length);
     datas.forEach((menu) => {
       this.$espressoMenuList.insertAdjacentHTML(
         "beforeend",
@@ -85,13 +78,6 @@ export default class Menu {
       elem.remove();
       this.updateMenuCount();
     }
-  };
-
-  removeMenuStorage = (id) => {
-    const arr = JSON.parse(this.storage.getItem(this.storageKey));
-    const updatedArr = arr.filter((menu) => menu.id != id);
-    this.storage.setItem(this.storageKey, JSON.stringify(updatedArr));
-    console.log(JSON.parse(this.storage.getItem(this.storageKey)));
   };
 
   updateMenuCount = () => {
@@ -125,21 +111,10 @@ export default class Menu {
       this.menuItemTemplate(espressMenuName)
     );
     this.updateMenuCount();
-    this.addLocalStorage(espressMenuName);
+    // this.addLocalStorage(espressMenuName);
+    this.storage.add(espressMenuName);
     this.$espressMenuInput.value = "";
   };
-
-  addLocalStorage(menuName) {
-    const arr = JSON.parse(this.storage.getItem(this.storageKey)) || [];
-    const menuData = {
-      id: arr.length == 0 ? 0 : arr[arr.length - 1].id + 1,
-      menuName: menuName,
-      soldOut: false,
-    };
-    const updatedArr = [...arr, menuData];
-    this.storage.setItem(this.storageKey, JSON.stringify(updatedArr));
-    console.log(JSON.parse(this.storage.getItem(this.storageKey)));
-  }
 
   menuItemTemplate = (menuName, id) => {
     return `<li data-index=${id} class="menu-list-item d-flex items-center py-2">

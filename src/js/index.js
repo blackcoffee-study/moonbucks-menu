@@ -12,6 +12,7 @@ const menuNameSubmit = () => {
 
 const addNewMenu = () => {
   const menuName = espressoMenuName.value;
+  if(menuName === "") return alert("값을 입력해주세요");
 }
 
 menuNameSubmit()

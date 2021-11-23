@@ -1,11 +1,24 @@
 import { $ } from "./utils.js";
 
 export default class Menu {
-  constructor() {
+  constructor(storageKey) {
+    // 키값이 무엇인지에 따라서, localStorage에서 키에 해당하는 값을 가져와 배열 초기화
+    this.storage = window.localStorage;
+    this.storageKey = storageKey;
+
     this.$submitButton = $("#espresso-menu-submit-button");
     this.$espressoMenuList = $("#espresso-menu-list");
     this.$espressMenuInput = $("#espresso-menu-name");
     this.$menuCount = $(".menu-count");
+
+    const fetchDatas = JSON.parse(localStorage.getItem(storageKey));
+    if (fetchDatas) {
+      this.datas = fetchDatas;
+    } else {
+      this.datas = [];
+    }
+    console.log(this.datas);
+    this.loadMenus(this.datas);
 
     this.$submitButton.addEventListener("click", () => {
       this.addMenu();
@@ -32,6 +45,16 @@ export default class Menu {
       }
     });
   }
+
+  loadMenus = (datas) => {
+    datas.forEach((menu) => {
+      this.$espressoMenuList.insertAdjacentHTML(
+        "beforeend",
+        this.menuItemTemplate(menu.menuName)
+      );
+      this.updateMenuCount();
+    });
+  };
 
   removeMenu = (e) => {
     if (confirm("정말 삭제 하시겠어요?")) {
@@ -61,18 +84,27 @@ export default class Menu {
   };
 
   addMenu = () => {
-    if (this.$espressMenuInput.value === "") {
+    const espressMenuName = this.$espressMenuInput.value;
+    if (espressMenuName === "") {
       alert("값을 입력해 주세요.");
       return;
     }
-    const espressMenuName = this.$espressMenuInput.value;
     this.$espressoMenuList.insertAdjacentHTML(
       "beforeend",
       this.menuItemTemplate(espressMenuName)
     );
     this.updateMenuCount();
+    this.addLocalStorage(espressMenuName);
     this.$espressMenuInput.value = "";
   };
+
+  addLocalStorage(menuName) {
+    const menuData = { menuName: menuName, soldOut: false };
+    const arr = JSON.parse(localStorage.getItem(this.storageKey));
+    const updatedArr = [...arr, menuData];
+    this.storage.setItem(this.storageKey, JSON.stringify(updatedArr));
+    console.log(JSON.parse(localStorage.getItem(this.storageKey)));
+  }
 
   menuItemTemplate = (menuName) => {
     return `<li class="menu-list-item d-flex items-center py-2">

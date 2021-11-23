@@ -1,7 +1,7 @@
 import Menu from "./menu.js";
 
 function App() {
-  const expressoMenu = new Menu();
+  const expressoMenu = new Menu("espresso");
 }
 
 App();

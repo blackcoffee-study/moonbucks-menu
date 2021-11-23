@@ -1,18 +1,20 @@
-// 일반적 util함수 (선택자를)
 const $ = selector => document.querySelector(selector);
 
 const App = () => {
-  // html에서 enter를 눌렀을 때 form 태그 안에서 누르게 되면 화면이 새로고침 된다(무엇을 전송하는 동작을 하기 때문)
-  $('#espresso-menu-form').addEventListener('submit', e => {
-    e.preventDefault();
-  });
+  const updateMenuCount = () => {
+    const menuCount = $('#espresso-menu-list').querySelectorAll('li').length;
+    $('.menu-count').innerText = `총 ${menuCount}개`;
+  };
 
-  // 메뉴 이름 입력받는 부분
-  $('#espresso-menu-name').addEventListener('keypress', e => {
-    if (e.key === 'Enter') {
-      const espressoMenuName = $('#espresso-menu-name').value;
-      const menuItemTemplate = espressoMenuName => {
-        return `
+  const addMenuName = () => {
+    if (!$('#espresso-menu-name').value) {
+      alert('값을 입력해주세요.');
+      return;
+    }
+
+    const espressoMenuName = $('#espresso-menu-name').value;
+    const menuItemTemplate = espressoMenuName => {
+      return `
         <li class="menu-list-item d-flex items-center py-2">
           <span class="w-100 pl-2 menu-name">${espressoMenuName}</span>
           <button
@@ -28,15 +30,49 @@ const App = () => {
             삭제
           </button>
         </li>`;
-      };
-      $('#espresso-menu-list').insertAdjacentHTML(
-        'beforeend',
-        menuItemTemplate(espressoMenuName),
-      );
+    };
+    $('#espresso-menu-list').insertAdjacentHTML(
+      'beforeend',
+      menuItemTemplate(espressoMenuName),
+    );
 
-      const menuCount = $('#espresso-menu-list').querySelectorAll('li').length;
-      $('.menu-count').innerText = `총 ${menuCount}개`;
+    updateMenuCount();
+    $('#espresso-menu-name').value = '';
+  };
+
+  const updateMenuName = e => {
+    const $menuName = e.target.closest('li').querySelector('.menu-name');
+    const updatedMenuName = prompt('메뉴명을 수정하세요', $menuName.innerText);
+    $menuName.innerText = updatedMenuName;
+  };
+
+  const removeMenuName = e => {
+    if (confirm('정말 삭제하시겠습니까?')) {
+      const menu = e.target.closest('li');
+      menu.remove();
+      updateMenuCount();
     }
+  };
+
+  $('#espresso-menu-list').addEventListener('click', e => {
+    if (e.target.classList.contains('menu-edit-button')) {
+      updateMenuName(e);
+    }
+
+    if (e.target.classList.contains('menu-remove-button')) {
+      removeMenuName(e);
+    }
+  });
+
+  $('#espresso-menu-form').addEventListener('submit', e => {
+    e.preventDefault();
+  });
+
+  $('#espresso-menu-submit-button').addEventListener('click', addMenuName);
+
+  $('#espresso-menu-name').addEventListener('keypress', e => {
+    if (e.key === 'Enter') addMenuName();
+    else return;
   });
 };
 

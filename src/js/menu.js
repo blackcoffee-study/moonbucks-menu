@@ -13,8 +13,8 @@ export default class Menu {
     this.$submitButton = $("#espresso-menu-submit-button");
     this.$espressoMenuList = $("#espresso-menu-list");
     this.$espressMenuInput = $("#espresso-menu-name");
+    this.$headingTitle = $(".heading").querySelector("h2");
     this.$menuCount = $(".menu-count");
-    $(".heading").querySelector("h2").innerText = titles[storageKey];
 
     // 키값이 무엇인지에 따라서, localStorage에서 키에 해당하는 값을 가져와 배열 초기화
     this.storage = window.localStorage;
@@ -49,6 +49,11 @@ export default class Menu {
   }
 
   setupWithStorageKey = (key) => {
+    if (this.storageKey === key) {
+      return;
+    }
+    this.clearMenus();
+    this.$headingTitle.innerText = titles[key];
     this.storageKey = key;
     const fetchDatas = JSON.parse(this.storage.getItem(key));
     if (fetchDatas) {
@@ -60,14 +65,19 @@ export default class Menu {
     this.loadMenus(this.datas);
   };
 
+  clearMenus = () => {
+    const node = this.$espressoMenuList;
+    node.querySelectorAll("*").forEach((n) => n.remove());
+  };
+
   loadMenus = (datas) => {
     datas.forEach((menu) => {
       this.$espressoMenuList.insertAdjacentHTML(
         "beforeend",
         this.menuItemTemplate(menu.menuName, menu.id)
       );
-      this.updateMenuCount();
     });
+    this.updateMenuCount();
   };
 
   removeMenu = (elem) => {

@@ -18,22 +18,15 @@
             localStorage.setItem(this.selectedTab, JSON.stringify(this.menu[this.selectedTab]));
         };
         Model.prototype.addMenu = function (menuName) {
-            this.menu[this.selectedTab].push({
-                id: this.menu[this.selectedTab].length + 1,
-                name: menuName,
-            });
+            this.menu[this.selectedTab].push(menuName);
             this.onMenuChanged();
         };
         Model.prototype.editMenu = function (menuId, editedName) {
-            this.menu[this.selectedTab] = this.menu[this.selectedTab].map(function (menu) {
-                return menu.id === Number(menuId)
-                    ? { id: Number(menuId), name: editedName }
-                    : menu;
-            });
+            this.menu[this.selectedTab][menuId] = editedName;
             this.onMenuChanged();
         };
         Model.prototype.deleteMenu = function (menuId) {
-            this.menu[this.selectedTab] = this.menu[this.selectedTab].filter(function (menu) { return menu.id !== Number(menuId); });
+            this.menu[this.selectedTab].splice(menuId, 1);
             this.onMenuChanged();
         };
         return Model;
@@ -56,9 +49,8 @@
             return (this.input.value = "");
         };
         View.prototype.getMenuElement = function (menuList) {
-            return menuList
-                .map(function (menu) {
-                return "<li class=\"menu-list-item d-flex items-center py-2\" data-menu-id=" + menu.id + ">\n    <span class=\"w-100 pl-2 menu-name\">" + menu.name + "</span>\n    <button\n    type=\"button\"\n    name=\"edit\"\n    class=\"bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button\"\n    >\n    \uC218\uC815\n    </button>\n    <button\n    type=\"button\"\n    name=\"delete\"\n    class=\"bg-gray-50 text-gray-500 text-sm menu-remove-button\"\n    >\n    \uC0AD\uC81C\n    </button>\n    </li>";
+            return menuList.map(function (menu, index) {
+                return "<li class=\"menu-list-item d-flex items-center py-2\" data-menu-id=" + index + ">\n    <span class=\"w-100 pl-2 menu-name\">" + menu + "</span>\n    <button\n    type=\"button\"\n    name=\"edit\"\n    class=\"bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button\"\n    >\n    \uC218\uC815\n    </button>\n    <button\n    type=\"button\"\n    name=\"delete\"\n    class=\"bg-gray-50 text-gray-500 text-sm menu-remove-button\"\n    >\n    \uC0AD\uC81C\n    </button>\n    </li>";
             })
                 .join("");
         };
@@ -76,38 +68,13 @@
             this.menuCount.innerText = "\uCD1D " + menus.length + "\uAC1C";
         };
         View.prototype.bindAddMenu = function (handler) {
-            var _this = this;
-            this.form.addEventListener("submit", function (event) {
-                event.preventDefault();
-                var name = _this.menuName;
-                if (!name) {
-                    return window.alert("메뉴 이름을 입력해주세요.");
-                }
-                handler(name);
-                _this.resetInput();
-            });
+            this.form.addEventListener("submit", function (event) { return handler(event); });
         };
         View.prototype.bindEditMenu = function (handler) {
-            this.menuList.addEventListener("click", function (event) {
-                if (event.target.name === "edit") {
-                    var editedName = window.prompt("수정할 메뉴 이름을 입력해주세요");
-                    if (editedName) {
-                        var menuId = event.target.parentNode.dataset.menuId;
-                        handler(menuId, editedName);
-                    }
-                }
-            });
+            this.menuList.addEventListener("click", function (event) { return handler(event); });
         };
         View.prototype.bindDeleteMenu = function (handler) {
-            this.menuList.addEventListener("click", function (event) {
-                if (event.target.name === "delete") {
-                    var deleteConfirm = window.confirm("메뉴를 삭제하시겠습니까?");
-                    if (deleteConfirm) {
-                        var menuId = event.target.parentNode.dataset.menuId;
-                        handler(menuId);
-                    }
-                }
-            });
+            this.menuList.addEventListener("click", function (event) { return handler(event); });
         };
         return View;
     }());
@@ -118,14 +85,32 @@
                 _this.view.renderMenuList(menuList);
                 _this.view.renderMenuCount(menuList);
             };
-            this.handleAddMenu = function (menuName) {
-                _this.model.addMenu(menuName);
+            this.handleAddMenu = function (event) {
+                event.preventDefault();
+                var name = _this.view.menuName;
+                if (!name) {
+                    return window.alert("메뉴 이름을 입력해주세요.");
+                }
+                _this.model.addMenu(name);
+                _this.view.resetInput();
             };
-            this.handleEditMenu = function (id, editedName) {
-                _this.model.editMenu(id, editedName);
+            this.handleEditMenu = function (event) {
+                if (event.target.name === "edit") {
+                    var editedName = window.prompt("수정할 메뉴 이름을 입력해주세요");
+                    if (editedName) {
+                        var menuId = event.target.parentNode.dataset.menuId;
+                        _this.model.editMenu(menuId, editedName);
+                    }
+                }
             };
-            this.handleDeleteMenu = function (id) {
-                _this.model.deleteMenu(id);
+            this.handleDeleteMenu = function (event) {
+                if (event.target.name === "delete") {
+                    var deleteConfirm = window.confirm("메뉴를 삭제하시겠습니까?");
+                    if (deleteConfirm) {
+                        var menuId = event.target.parentNode.dataset.menuId;
+                        _this.model.deleteMenu(menuId);
+                    }
+                }
             };
             this.model = model;
             this.view = view;

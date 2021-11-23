@@ -1,15 +1,15 @@
-import { $ } from "./index.js";
+const $ = (selector) => document.querySelector(selector);
 
-const espressoMenuName = $("#espresso-menu-name");
 const espressoMenuForm = $("#espresso-menu-form");
-const espressoMenuSubmitButton= $("#espresso-menu-submit-button");
+const menuNameInput = $("#espresso-menu-name");
+const submitButton= $("#espresso-menu-submit-button");
 const espressoMenuList = $("#espresso-menu-list");
 const menuCount = $(".menu-count");
 
 export {
-    espressoMenuName, 
     espressoMenuForm, 
-    espressoMenuSubmitButton, 
+    menuNameInput, 
+    submitButton, 
     espressoMenuList, 
     menuCount
 }

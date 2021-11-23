@@ -1,31 +1,23 @@
-import {
-  espressoMenuName,
-  espressoMenuForm, 
-  espressoMenuSubmitButton, 
-  espressoMenuList, 
-  menuCount
-} from "./utils/elements.js";
-
+import { espressoMenuForm, menuNameInput, submitButton, espressoMenuList } from "./utils/elements.js";
+import { menuListItemTemplate } from "./utils/menuListItemTemplate.js";
+import { updateMenuCount } from "./utils/updateMenuCount.js";
 
 const menuNameSubmit = () => {
   espressoMenuForm.addEventListener("submit", (e) => { e.preventDefault() });
-  espressoMenuName.addEventListener("keydown",(e) => { 
+  menuNameInput.addEventListener("keydown",(e) => { 
     if(e.key === "Enter") { addNewMenu() } 
   });
-  espressoMenuSubmitButton.addEventListener("click", addNewMenu)
+  submitButton.addEventListener("click", addNewMenu)
 }
 
 const addNewMenu = () => {
-  const menuName = espressoMenuName.value;
+  const menuName = menuNameInput.value;
   if(menuName === "") return alert("값을 입력해주세요");
   espressoMenuList.insertAdjacentHTML("beforeend", menuListItemTemplate(menuName));
-  espressoMenuName.value = "";
+  menuNameInput.value = "";
   updateMenuCount();
 }
 
-const updateMenuCount = () => { 
-  const count = espressoMenuList.querySelectorAll("li").length;
-  menuCount.innerText = `총 ${count}개`;
 }
 
 const updateMenu = () => { 
@@ -50,25 +42,6 @@ const removeMenu = () => {
   });
 };
 
-const menuListItemTemplate = (menuName) => {
-  return `
-  <li class="menu-list-item d-flex items-center py-2">
-    <span class="w-100 pl-2 menu-name">${menuName}</span>
-    <button
-      type="button"
-      class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
-    >
-      수정
-    </button>
-    <button
-      type="button"
-      class="bg-gray-50 text-gray-500 text-sm menu-remove-button"
-    >
-      삭제
-    </button>
-  </li>
-  `
-}
 
 menuNameSubmit();
 updateMenu();

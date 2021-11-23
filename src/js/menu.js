@@ -35,39 +35,54 @@ export default class Menu {
     });
 
     this.$espressoMenuList.addEventListener("click", (e) => {
+      const menuElem = e.target.closest("li");
+      const selectedId = menuElem.getAttribute("data-id");
+
       if (e.target.classList.contains("menu-edit-button")) {
-        this.editMenuName(e);
+        const elem = e.target.closest("li").querySelector(".menu-name");
+        const editedMenuName = prompt(
+          "수정할 메뉴명을 입력해 주세요.",
+          elem.innerText
+        );
+        this.editMenuName(elem, editedMenuName);
+        this.storage.editMenuName(selectedId, editedMenuName);
       }
 
       if (e.target.classList.contains("menu-remove-button")) {
-        const elem = e.target.closest("li");
-        this.removeMenu(elem);
-        this.storage.removeById(elem.getAttribute("data-index"));
+        this.removeMenu(menuElem);
+        this.storage.removeById(selectedId);
+      }
+      if (e.target.classList.contains("menu-sold-out-button")) {
+        this.toggleSoldOut(menuElem);
+        this.storage.soldOutById(selectedId);
       }
     });
   }
+
+  toggleSoldOut = (elem) => {
+    elem.querySelector(".menu-name").classList.toggle("sold-out");
+  };
 
   setupWithStorage = (storage) => {
     if (this.storage.key === storage.key) {
       return;
     }
     this.storage = storage;
-    this.clearMenus();
+    this.removeAllMenuNodes();
     this.$headingTitle.innerText = this.titles[storage.key];
     this.loadMenus(storage.datas);
   };
 
-  clearMenus = () => {
+  removeAllMenuNodes = () => {
     const node = this.$espressoMenuList;
     node.querySelectorAll("*").forEach((n) => n.remove());
   };
 
   loadMenus = (datas) => {
-    console.log(datas.length);
     datas.forEach((menu) => {
       this.$espressoMenuList.insertAdjacentHTML(
         "beforeend",
-        this.menuItemTemplate(menu.menuName, menu.id)
+        this.menuItemTemplate(menu)
       );
     });
     this.updateMenuCount();
@@ -85,19 +100,8 @@ export default class Menu {
     this.$menuCount.innerText = `총 ${menuCount}개`;
   };
 
-  setClickListener(onClick) {
-    this.onClick = onClick;
-    console.log("onClick");
-    this.addMenu();
-  }
-
-  editMenuName = (e) => {
-    const $menuName = e.target.closest("li").querySelector(".menu-name");
-    const editedMenuName = prompt(
-      "수정할 메뉴명을 입력해 주세요.",
-      $menuName.innerText
-    );
-    $menuName.innerText = editedMenuName;
+  editMenuName = (elem, editedMenuName) => {
+    elem.innerText = editedMenuName;
   };
 
   addMenu = () => {
@@ -106,19 +110,26 @@ export default class Menu {
       alert("값을 입력해 주세요.");
       return;
     }
+    const addedMenu = this.storage.add(espressMenuName);
     this.$espressoMenuList.insertAdjacentHTML(
       "beforeend",
-      this.menuItemTemplate(espressMenuName)
+      this.menuItemTemplate(addedMenu)
     );
     this.updateMenuCount();
-    // this.addLocalStorage(espressMenuName);
-    this.storage.add(espressMenuName);
     this.$espressMenuInput.value = "";
   };
 
-  menuItemTemplate = (menuName, id) => {
-    return `<li data-index=${id} class="menu-list-item d-flex items-center py-2">
-      <span class="w-100 pl-2 menu-name">${menuName}</span>
+  menuItemTemplate = ({ menuName, id, soldOut }) => {
+    return `<li data-id=${id} class="menu-list-item d-flex items-center py-2">
+      <span class="w-100 pl-2 menu-name ${
+        soldOut ? "sold-out" : ""
+      }">${menuName}</span>
+      <button
+      type="button"
+      class="bg-gray-50 text-gray-500 text-sm mr-1 menu-sold-out-button"
+    >
+      품절
+    </button>
       <button
         type="button"
         class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"

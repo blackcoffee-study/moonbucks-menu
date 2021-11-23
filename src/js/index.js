@@ -13,7 +13,7 @@ function App() {
     }
     const espressoMenuName = $("#espresso-menu-name").value;
     const menuItemTemplate = (
-      espressoMenuName,
+      espressoMenuName
     ) => `<li class="menu-list-item d-flex items-center py-2">
                 <span class="w-100 pl-2 menu-name">${espressoMenuName}</span>
                 <button
@@ -32,7 +32,7 @@ function App() {
 
     $("#espresso-menu-list").insertAdjacentHTML(
       "beforeend",
-      menuItemTemplate(espressoMenuName),
+      menuItemTemplate(espressoMenuName)
     );
     updateMenuCount();
     $("#espresso-menu-name").value = "";
@@ -41,7 +41,7 @@ function App() {
   const updateMenuName = (e) => {
     const $menuName = e.target.closest("li").querySelector(".menu-name");
     const updatedMenuName = prompt(
-      '수정할 이름을 입력해주세요',
+      "수정할 이름을 입력해주세요",
       $menuName.innerText
     );
     $menuName.innerText = updatedMenuName;

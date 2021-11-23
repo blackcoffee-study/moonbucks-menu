@@ -70,7 +70,7 @@ function App() {
     if (e.target.classList.contains("menu-edit-button")) {
       updateMenuName(e);
     } else if (e.target.classList.contains("menu-remove-button")) {
-      removeMenuNae(e);
+      removeMenuName(e);
     }
   });
 }

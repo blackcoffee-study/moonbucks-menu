@@ -1,3 +1,3 @@
-const getDom = selector => document.querySelector(selector);
+const $ = selector => document.querySelector(selector);
 
-export default getDom;
+export default $;

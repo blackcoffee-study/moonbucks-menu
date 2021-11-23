@@ -16,7 +16,7 @@ const del = (menuList, key) => {
     }
 };
 
-export default function HandleList(menuList) {
+export default function handleList(menuList) {
     // 이벤트 위임으로 ul에 이벤트를 달아줌
     $('#espresso-menu-list').addEventListener('click', e => {
         // 클릭된 li 태그의 key 값을 가져옵니다.

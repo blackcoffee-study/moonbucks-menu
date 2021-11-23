@@ -43,6 +43,12 @@
 
       this.onMenuChanged();
     }
+
+    selectMenuTab(selectedTab) {
+      this.selectedTab = selectedTab;
+
+      this.onMenuChanged();
+    }
   }
 
   class View {
@@ -50,11 +56,13 @@
     form;
     menuList;
     menuCount;
+    categoryButtons;
     constructor() {
       this.input = document.querySelector("#espresso-menu-name");
       this.form = document.querySelector("#espresso-menu-form");
       this.menuList = document.querySelector("#espresso-menu-list");
       this.menuCount = document.querySelector(".menu-count");
+      this.categoryButtons = document.querySelectorAll('button[data-category-name]');
     }
 
     get menuName() {
@@ -93,7 +101,7 @@
         this.menuList.removeChild(this.menuList.firstChild);
       }
 
-      if (menus.length === 0) {
+      if (!menus) {
         return;
       }
 
@@ -102,6 +110,7 @@
     }
 
     renderMenuCount(menus) {
+      if (!menus) { return this.menuCount.innerText = '총 0개'}
       this.menuCount.innerText = `총 ${menus.length}개`;
     }
 
@@ -115,6 +124,12 @@
 
     bindDeleteMenu(handler) {
       this.menuList.addEventListener("click", (event) => handler(event))
+    }
+
+    bindClickMenuTab(handler) {
+      this.categoryButtons.forEach((button) => 
+        button.addEventListener("click", event => handler(event))
+      )
     }
   }
 
@@ -130,6 +145,7 @@
       this.view.bindAddMenu(this.handleAddMenu);
       this.view.bindEditMenu(this.handleEditMenu);
       this.view.bindDeleteMenu(this.handleDeleteMenu);
+      this.view.bindClickMenuTab(this.handleClickMenuTab)
 
       this.model.bindMenuListChanged(this.render);
     }
@@ -171,6 +187,12 @@
           this.model.deleteMenu(menuId);
         }
       }
+    }
+
+    handleClickMenuTab = (event) => {
+      const { categoryName } = event.target.dataset;
+      
+      this.model.selectMenuTab(categoryName);
     }
   }
 

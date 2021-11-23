@@ -29,6 +29,10 @@
             this.menu[this.selectedTab].splice(menuId, 1);
             this.onMenuChanged();
         };
+        Model.prototype.selectMenuTab = function (selectedTab) {
+            this.selectedTab = selectedTab;
+            this.onMenuChanged();
+        };
         return Model;
     }());
     var View = /** @class */ (function () {
@@ -37,6 +41,7 @@
             this.form = document.querySelector("#espresso-menu-form");
             this.menuList = document.querySelector("#espresso-menu-list");
             this.menuCount = document.querySelector(".menu-count");
+            this.categoryButtons = document.querySelectorAll('button[data-category-name]');
         }
         Object.defineProperty(View.prototype, "menuName", {
             get: function () {
@@ -58,13 +63,16 @@
             while (this.menuList.firstChild) {
                 this.menuList.removeChild(this.menuList.firstChild);
             }
-            if (menus.length === 0) {
+            if (!menus) {
                 return;
             }
             var menuListElement = this.getMenuElement(menus);
             this.menuList.innerHTML = menuListElement;
         };
         View.prototype.renderMenuCount = function (menus) {
+            if (!menus) {
+                return this.menuCount.innerText = '총 0개';
+            }
             this.menuCount.innerText = "\uCD1D " + menus.length + "\uAC1C";
         };
         View.prototype.bindAddMenu = function (handler) {
@@ -75,6 +83,11 @@
         };
         View.prototype.bindDeleteMenu = function (handler) {
             this.menuList.addEventListener("click", function (event) { return handler(event); });
+        };
+        View.prototype.bindClickMenuTab = function (handler) {
+            this.categoryButtons.forEach(function (button) {
+                return button.addEventListener("click", function (event) { return handler(event); });
+            });
         };
         return View;
     }());
@@ -112,12 +125,17 @@
                     }
                 }
             };
+            this.handleClickMenuTab = function (event) {
+                var categoryName = event.target.dataset.categoryName;
+                _this.model.selectMenuTab(categoryName);
+            };
             this.model = model;
             this.view = view;
             this.render(this.model.menu.espresso);
             this.view.bindAddMenu(this.handleAddMenu);
             this.view.bindEditMenu(this.handleEditMenu);
             this.view.bindDeleteMenu(this.handleDeleteMenu);
+            this.view.bindClickMenuTab(this.handleClickMenuTab);
             this.model.bindMenuListChanged(this.render);
         }
         return Controller;

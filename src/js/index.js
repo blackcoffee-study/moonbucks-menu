@@ -36,6 +36,19 @@ const updateMenu = () => {
     }
   });
 }
+const removeMenu = () => { 
+  espressoMenuList.addEventListener("click", (e) => {
+    if(e.target.classList.contains("menu-remove-button")) {
+      const clickedMenuItem = e.target.closest("li");
+      const remove = confirm("정말 삭제하시겠습니까?");
+      if(remove) {
+        clickedMenuItem.remove();
+        updateMenuCount();
+      };
+    }
+  });
+};
+
 const menuListItemTemplate = (menuName) => {
   return `
   <li class="menu-list-item d-flex items-center py-2">
@@ -58,3 +71,4 @@ const menuListItemTemplate = (menuName) => {
 
 menuNameSubmit();
 updateMenu();
+removeMenu();

@@ -8,14 +8,16 @@ const menuCount = $(".menu-count");
 
 const menuNameSubmit = () => {
   espressoMenuForm.addEventListener("submit", (e) => { e.preventDefault() });
-  espressoMenuName.addEventListener("keydown",(e)=>{if(e.key === "Enter") { addNewMenu() } });
+  espressoMenuName.addEventListener("keydown",(e) => { 
+    if(e.key === "Enter") { addNewMenu() } 
+  });
   espressoMenuSubmitButton.addEventListener("click", addNewMenu)
 }
 
 const addNewMenu = () => {
   const menuName = espressoMenuName.value;
   if(menuName === "") return alert("값을 입력해주세요");
-  espressoMenuList.insertAdjacentHTML("beforeend",menuListItemTemplate(menuName));
+  espressoMenuList.insertAdjacentHTML("beforeend", menuListItemTemplate(menuName));
   espressoMenuName.value = "";
   updateMenuCount();
 }
@@ -23,6 +25,16 @@ const addNewMenu = () => {
 const updateMenuCount = () => { 
   const count = espressoMenuList.querySelectorAll("li").length;
   menuCount.innerText = `총 ${count}개`;
+}
+
+const updateMenu = () => { 
+  espressoMenuList.addEventListener("click", (e) => {
+    if(e.target.classList.contains("menu-edit-button")) {
+      const clickedMenuItem = e.target.closest("li").querySelector(".menu-name");
+      const updateMenuName = prompt("메뉴명을 수정하세요", clickedMenuItem.innerText);
+      clickedMenuItem.innerText = updateMenuName;
+    }
+  });
 }
 const menuListItemTemplate = (menuName) => {
   return `
@@ -44,4 +56,5 @@ const menuListItemTemplate = (menuName) => {
   `
 }
 
-menuNameSubmit()
+menuNameSubmit();
+updateMenu();

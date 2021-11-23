@@ -1,10 +1,11 @@
-import { $ } from "./utils/index.js";
+import {
+  espressoMenuName,
+  espressoMenuForm, 
+  espressoMenuSubmitButton, 
+  espressoMenuList, 
+  menuCount
+} from "./utils/elements.js";
 
-const espressoMenuName = $("#espresso-menu-name");
-const espressoMenuForm = $("#espresso-menu-form");
-const espressoMenuSubmitButton= $("#espresso-menu-submit-button");
-const espressoMenuList = $("#espresso-menu-list");
-const menuCount = $(".menu-count");
 
 const menuNameSubmit = () => {
   espressoMenuForm.addEventListener("submit", (e) => { e.preventDefault() });

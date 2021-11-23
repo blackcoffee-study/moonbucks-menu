@@ -8,6 +8,9 @@ export default class Component {
     this.setup();
     this.render();
   }
+  get $state() {
+    return this.$state;
+  }
   setup() {}
   mounted() {}
   template() {

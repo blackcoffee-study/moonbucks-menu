@@ -1,6 +1,6 @@
 import Component from '../core/Component.js';
 
-export default class AddMenu extends Component {
+export default class Menu extends Component {
   template() {
     return `
         <li class="menu-list-item d-flex items-center py-2">

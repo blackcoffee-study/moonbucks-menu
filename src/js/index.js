@@ -4,6 +4,7 @@ const espressoMenuName = $("#espresso-menu-name");
 const espressoMenuForm = $("#espresso-menu-form");
 const espressoMenuSubmitButton= $("#espresso-menu-submit-button");
 const espressoMenuList = $("#espresso-menu-list");
+const menuCount = $(".menu-count");
 
 const menuNameSubmit = () => {
   espressoMenuForm.addEventListener("submit", (e) => { e.preventDefault() });
@@ -16,6 +17,13 @@ const addNewMenu = () => {
   if(menuName === "") return alert("값을 입력해주세요");
   espressoMenuList.insertAdjacentHTML("beforeend",menuListItemTemplate(menuName));
   espressoMenuName.value = "";
+  updateMenuCount();
+}
+
+const updateMenuCount = () => { 
+  const count = espressoMenuList.querySelectorAll("li").length;
+  menuCount.innerText = `총 ${count}개`;
+}
 const menuListItemTemplate = (menuName) => {
   return `
   <li class="menu-list-item d-flex items-center py-2">

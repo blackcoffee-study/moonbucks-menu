@@ -55,7 +55,7 @@
         };
         View.prototype.getMenuElement = function (menuList) {
             return menuList.map(function (menu, index) {
-                return "<li class=\"menu-list-item d-flex items-center py-2\" data-menu-id=" + index + ">\n    <span class=\"w-100 pl-2 menu-name\">" + menu + "</span>\n    <button\n    type=\"button\"\n    name=\"edit\"\n    class=\"bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button\"\n    >\n    \uC218\uC815\n    </button>\n    <button\n    type=\"button\"\n    name=\"delete\"\n    class=\"bg-gray-50 text-gray-500 text-sm menu-remove-button\"\n    >\n    \uC0AD\uC81C\n    </button>\n    </li>";
+                return "<li class=\"menu-list-item d-flex items-center py-2\" data-menu-id=" + index + ">\n    <span class=\"w-100 pl-2 menu-name\">" + menu + "</span>\n    <button\n    type=\"button\"\n    name=\"soldOut\"\n    class=\"bg-gray-50 text-gray-500 text-sm mr-1 menu-sold-out-button\"\n  >\n    \uD488\uC808\n  </button>\n    <button\n    type=\"button\"\n    name=\"edit\"\n    class=\"bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button\"\n    >\n    \uC218\uC815\n    </button>\n    <button\n    type=\"button\"\n    name=\"delete\"\n    class=\"bg-gray-50 text-gray-500 text-sm menu-remove-button\"\n    >\n    \uC0AD\uC81C\n    </button>\n    </li>";
             })
                 .join("");
         };
@@ -88,6 +88,9 @@
             this.categoryButtons.forEach(function (button) {
                 return button.addEventListener("click", function (event) { return handler(event); });
             });
+        };
+        View.prototype.bindSoldOutMenu = function (handler) {
+            this.menuList.addEventListener("click", function (event) { return handler(event); });
         };
         return View;
     }());
@@ -129,6 +132,12 @@
                 var categoryName = event.target.dataset.categoryName;
                 _this.model.selectMenuTab(categoryName);
             };
+            this.handleSoldOutMenu = function (event) {
+                if (event.target.name === 'soldOut') {
+                    var menuText = event.target.parentNode.childNodes[1];
+                    menuText.classList.add('sold-out');
+                }
+            };
             this.model = model;
             this.view = view;
             this.render(this.model.menu.espresso);
@@ -136,6 +145,7 @@
             this.view.bindEditMenu(this.handleEditMenu);
             this.view.bindDeleteMenu(this.handleDeleteMenu);
             this.view.bindClickMenuTab(this.handleClickMenuTab);
+            this.view.bindSoldOutMenu(this.handleSoldOutMenu);
             this.model.bindMenuListChanged(this.render);
         }
         return Controller;

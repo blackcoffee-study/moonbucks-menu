@@ -79,6 +79,13 @@
     <span class="w-100 pl-2 menu-name">${menu}</span>
     <button
     type="button"
+    name="soldOut"
+    class="bg-gray-50 text-gray-500 text-sm mr-1 menu-sold-out-button"
+  >
+    품절
+  </button>
+    <button
+    type="button"
     name="edit"
     class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
     >
@@ -110,7 +117,7 @@
     }
 
     renderMenuCount(menus) {
-      if (!menus) { return this.menuCount.innerText = '총 0개'}
+      if (!menus) { return this.menuCount.innerText = '총 0개' }
       this.menuCount.innerText = `총 ${menus.length}개`;
     }
 
@@ -127,9 +134,13 @@
     }
 
     bindClickMenuTab(handler) {
-      this.categoryButtons.forEach((button) => 
+      this.categoryButtons.forEach((button) =>
         button.addEventListener("click", event => handler(event))
       )
+    }
+
+    bindSoldOutMenu(handler) {
+      this.menuList.addEventListener("click", event => handler(event))
     }
   }
 
@@ -145,7 +156,8 @@
       this.view.bindAddMenu(this.handleAddMenu);
       this.view.bindEditMenu(this.handleEditMenu);
       this.view.bindDeleteMenu(this.handleDeleteMenu);
-      this.view.bindClickMenuTab(this.handleClickMenuTab)
+      this.view.bindClickMenuTab(this.handleClickMenuTab);
+      this.view.bindSoldOutMenu(this.handleSoldOutMenu);
 
       this.model.bindMenuListChanged(this.render);
     }
@@ -191,8 +203,15 @@
 
     handleClickMenuTab = (event) => {
       const { categoryName } = event.target.dataset;
-      
+
       this.model.selectMenuTab(categoryName);
+    }
+
+    handleSoldOutMenu = (event) => {
+      if (event.target.name === 'soldOut') {
+        const menuText = event.target.parentNode.childNodes[1];
+        menuText.classList.add('sold-out')
+      }
     }
   }
 

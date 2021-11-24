@@ -1,5 +1,6 @@
 import { espressoMenuForm, menuNameInput, submitButton, espressoMenuList } from "./utils/elements.js";
 import { menuListItemTemplate } from "./utils/menuListItemTemplate.js";
+import menuListItemTemplate from "./utils/menuListItemTemplate.js";
 import { updateMenuCount } from "./utils/updateMenuCount.js";
 
 const menuNameSubmit = () => {

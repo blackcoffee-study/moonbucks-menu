@@ -19,11 +19,11 @@ const addNewMenu = () => {
   updateMenuCount();
 }
 
-const editMenu = (e) => { 
-  const clickedMenuItem = e.target.closest("li").querySelector(".menu-name");
-  const updateMenuName = prompt("메뉴명을 수정하세요", clickedMenuItem.innerText);
-  clickedMenuItem.innerText = updateMenuName;
-}
+const editMenu = (e) => {
+  const $menuName = e.target.closest("li").querySelector(".menu-name");
+  const updateMenuName = prompt("메뉴명을 수정하세요", $menuName.innerText);
+  $menuName.innerText = updateMenuName;
+};
 
 const removeMenu = (e) => { 
   const clickedMenuItem = e.target.closest("li");

@@ -60,14 +60,14 @@ class App {
     }
   }
 
-  editList = ($li) => {
+  editList($li) {
     const content = window.prompt("수정하시겠습니까?");
     $li.querySelector(".menu-name").textContent = content;
-  };
-  deleteList = ($li) => {
+  }
+  deleteList($li) {
     if (window.confirm("삭제하시겠습니까?")) {
       this.$menuList.removeChild($li);
       this.minusCount();
     }
-  };
+  }
 }

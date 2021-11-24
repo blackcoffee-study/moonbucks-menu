@@ -7,6 +7,7 @@ export default class Store {
       new TeavanaMenuGroup(),
       new DessertMenuGroup(),
     ];
+    this.menuGroups.forEach((group) => group.loadMenuGroupFromLocalStorage());
   }
 
   selectMenuGroup(_groupTitle) {
@@ -28,20 +29,21 @@ export default class Store {
         title: _menuTitle,
         isSoldOut: false,
       });
-      return;
+    } else {
+      menus.push({
+        id: menus[menus.length - 1].id + 1,
+        title: _menuTitle,
+        isSoldOut: false,
+      });
     }
-
-    menus.push({
-      id: menus[menus.length - 1].id + 1,
-      title: _menuTitle,
-      isSoldOut: false,
-    });
+    group.saveMenuGroupInLocalStorage();
   }
 
   deleteMenu(_groupTitle, _menuId) {
     const group = this.selectMenuGroup(_groupTitle);
 
     group.menus = group.menus.filter((menu) => menu.id !== _menuId);
+    group.saveMenuGroupInLocalStorage();
   }
 
   editMenu(_groupTitle, _menu) {
@@ -53,6 +55,7 @@ export default class Store {
       }
       return menu;
     });
+    group.saveMenuGroupInLocalStorage();
   }
 
   soldOutMenuCheck(_groupTitle, _menu) {
@@ -64,11 +67,13 @@ export default class Store {
       }
       return menu;
     });
+    group.saveMenuGroupInLocalStorage();
   }
 }
 
 class MenuGroupBase {
   constructor() {
+    this.title = "";
     this.menus = [];
   }
 
@@ -111,6 +116,20 @@ class MenuGroupBase {
 
     return $menuItems;
   }
+
+  saveMenuGroupInLocalStorage = () => {
+    const { title, menus } = this;
+
+    window.localStorage.setItem(this.title, JSON.stringify({ title, menus }));
+  };
+
+  loadMenuGroupFromLocalStorage = () => {
+    const loadedData = JSON.parse(window.localStorage.getItem(this.title));
+    if (!loadedData) return;
+
+    this.title = loadedData.title;
+    this.menus = loadedData.menus;
+  };
 }
 
 class EspressoMenuGroup extends MenuGroupBase {

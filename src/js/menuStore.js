@@ -128,7 +128,6 @@ class FrappuccinoMenuGroup extends MenuGroupBase {
   constructor() {
     super();
     this.title = "frappuccino";
-    this.menus = [];
   }
 
   getTitle() {

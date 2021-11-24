@@ -2,13 +2,11 @@ class App {
   constructor() {
     this.menuName = '';
     this.menuCount = 0;
-    // 확인 버튼에 click 이벤트리스너, enter 이벤트 리스너를 달아서 반응하게 한다.
     const confirmBtn = document.getElementById('espresso-menu-submit-button');
     confirmBtn.addEventListener('click', () => {
       this.confirmMenuName();
     });
 
-    // input tag에 keypress 이벤트를 달아서 인풋값 추적
     const input = document.getElementById('espresso-menu-name');
     input.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') {
@@ -30,7 +28,6 @@ class App {
     this.menuName = val;
   }
 
-  // 확인(추가), 삭제가 일어날 때마다 메뉴 menu-count의 숫자 업데이트
   updateMenuCount(type) {
     this.menuCount = type ? this.menuCount + 1 : this.menuCount - 1;
     document.getElementsByClassName(
@@ -38,7 +35,6 @@ class App {
     )[0].textContent = `총 ${this.menuCount}개`;
   }
 
-  // ul에 li 엘러먼트를 추가한다. => input 창을 초기화한다.
   createLi() {
     const li = document.createElement('li');
     li.classList.add('menu-list-item', 'd-flex', 'items-center', 'py-2');

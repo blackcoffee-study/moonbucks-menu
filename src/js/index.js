@@ -13,10 +13,12 @@ window.addEventListener("DOMContentLoaded", () => {
 
 class App {
   constructor() {
+    this.count = 0;
     this.$menuInput = $("#espresso-menu-name");
     this.$submitBtn = $(".input-submit");
     this.$menuForm = $("#espresso-menu-form");
     this.$menuList = $("#espresso-menu-list");
+    this.$menuCount = $(".menu-count");
     this.eventBind();
   }
 
@@ -30,7 +32,18 @@ class App {
     e.preventDefault();
     if (isInputEmpty(this.$menuInput)) return;
     this.addList(this.$menuInput.value);
+    this.plusCount();
     setInputEmpty(this.$menuInput);
+  }
+
+  plusCount() {
+    this.count += 1;
+    this.$menuCount.textContent = `총 ${this.count}개`;
+  }
+
+  minusCount() {
+    this.count -= 1;
+    this.$menuCount.textContent = `총 ${this.count}개`;
   }
 
   addList(menuName) {
@@ -54,6 +67,7 @@ class App {
   deleteList = ($li) => {
     if (window.confirm("삭제하시겠습니까?")) {
       this.$menuList.removeChild($li);
+      this.minusCount();
     }
   };
 }

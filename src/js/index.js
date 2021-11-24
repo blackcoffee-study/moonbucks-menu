@@ -71,11 +71,10 @@ function App(){
 
     $("#espresso-menu-submit-button").addEventListener("click", addMenuName);
 
-    $("#espresso-menu-name").addEventListener("keypress", (e) => {
-        if(e.key !== "Enter"){
-            return;
+    $("#espresso-menu-name").addEventListener("keydown", (e) => {
+        if(e.key === "Enter"){
+            addMenuName();
         }
-        addMenuName();
     });
 }
 

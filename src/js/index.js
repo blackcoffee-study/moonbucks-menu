@@ -34,7 +34,7 @@ class App {
   }
 
   resetInputVal() {
-    const input = document.getElementById('espresso-mexwnu-name');
+    const input = document.getElementById('espresso-menu-name');
     input.value = '';
   }
 

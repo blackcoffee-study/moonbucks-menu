@@ -8,13 +8,10 @@ class App {
     });
 
     const input = document.getElementById('espresso-menu-name');
-    input.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        this.confirmMenuName();
-      } else {
+    const form = document.getElementById('espresso-menu-form');
+
+    input.addEventListener('input', (e) => {
         setTimeout(() => this.updateMenuName(e.target.value), 0);
-      }
     });
   }
 

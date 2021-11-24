@@ -17,7 +17,7 @@ class App {
   }
 
   confirmMenuName() {
-    if (this.menuName !== '') {
+    if (!!this.menuName.trim()) {
       window.confirm('입력하시겠습니까?') && this.createLi();
     }
   }

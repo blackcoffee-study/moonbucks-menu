@@ -33,6 +33,11 @@ class App {
     )[0].textContent = `총 ${this.menuCount}개`;
   }
 
+  resetInputVal() {
+    const input = document.getElementById('espresso-menu-name');
+    input.value = '';
+  }
+
   createLi() {
     const li = document.createElement('li');
     li.classList.add('menu-list-item', 'd-flex', 'items-center', 'py-2');
@@ -72,8 +77,7 @@ class App {
     const ul = document.getElementById('espresso-menu-list');
     ul.appendChild(li);
     this.updateMenuCount(1);
-    const input = document.getElementById('espresso-menu-name');
-    input.value = '';
+    this.resetInputVal()
   }
 
   deleteLi(id) {

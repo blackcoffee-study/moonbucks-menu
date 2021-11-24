@@ -2,10 +2,6 @@ class App {
   constructor() {
     this.menuName = '';
     this.menuCount = 0;
-    const confirmBtn = document.getElementById('espresso-menu-submit-button');
-    confirmBtn.addEventListener('click', () => {
-      this.confirmMenuName();
-    });
 
     const input = document.getElementById('espresso-menu-name');
     const form = document.getElementById('espresso-menu-form');
@@ -13,6 +9,11 @@ class App {
     input.addEventListener('input', (e) => {
         setTimeout(() => this.updateMenuName(e.target.value), 0);
     });
+    
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      this.confirmMenuName();
+    })
   }
 
   confirmMenuName() {

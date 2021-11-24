@@ -43,15 +43,14 @@ const submit = () => {
     menuList.push(value)
     $menuInput.value = ''
     renderList()
-    menuCount()
   }
 }
 
 const renderList = () => {
   const menuLists = menuList.map(menu => $menuListItem(menu)).join(' ');
   $menuList.innerHTML = menuLists;
-  menuModify()
-  menuDelete()
+  menuBtnEvent()
+  menuCount()
 }
 
 const menuCount = () => {
@@ -59,25 +58,27 @@ const menuCount = () => {
   $menuCount.innerText = `총 ${count}개`
 }
 
-
-const menuModify = () => {
-  const $modifyBtn = domSelectorAll('.menu-edit-button');
-  $modifyBtn.forEach((btn, i) => btn.addEventListener('click', () => {
-    const modifyValue = prompt('메뉴명을 수정하세요', menuList[i]);
-    if (modifyValue) {
-      menuList[i] = modifyValue
-      renderList()
-    }
-  }))
+const modifyMenu = (i) => {
+  const modifyValue = prompt('메뉴명을 수정하세요', menuList[i]);
+  if (modifyValue) {
+    menuList[i] = modifyValue
+    renderList()
+  }
 }
 
-const menuDelete = () => {
-  const $deleteBtn = domSelectorAll('.menu-remove-button');
-  $deleteBtn.forEach((btn, i) => btn.addEventListener('click', () => {
-    const userAnswer = confirm('정말 삭제하시겠습니까?');
-    if (userAnswer) {
-      menuList.splice(i, 1);
-      renderList()
-    }
+const deleteMenu = (i) => {
+  const userAnswer = confirm('정말 삭제하시겠습니까?');
+  if (userAnswer) {
+    menuList.splice(i, 1);
+    renderList()
+  }
+}
+
+const menuBtnEvent = () => {
+  const menuList = domSelectorAll('.menu-list-item')
+  menuList.forEach((list, i) => list.addEventListener('click', (e) => {
+    const btnText = e.target.innerText;
+    if (btnText === "수정") modifyMenu(i)
+    if (btnText === "삭제") deleteMenu(i)
   }))
 }

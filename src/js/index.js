@@ -1,9 +1,7 @@
 const $ = (selector) => document.querySelector(selector);
 
 function App() {
-    $("#espresso-menu-form").addEventListener("submit", (e) => {
-        e.preventDefault();
-    });
+    const menuList = $("#espresso-menu-list");
 
     const addMenuName = () => {
         const espressoMenuName = $("#espresso-menu-name").value;
@@ -25,7 +23,6 @@ function App() {
                     </button>
                 </li>`;
         };
-        const menuList = $("#espresso-menu-list");
 
         if (espressoMenuName === "" || espressoMenuName.trim() === "") {
             alert("메뉴명을 입력해주세요.");
@@ -42,13 +39,12 @@ function App() {
     };
 
     const updateMenuCount = () => {
-        const menuList = $("#espresso-menu-list");
         const menuTotal = menuList.childElementCount;
         $(".menu-count").innerText = `총 ${menuTotal} 개`;
     };
 
-    const updateMenuName = (e) => {
-        const menuName = e.target.closest("li").querySelector(".menu-name");
+    const updateMenuName = (e, targetMenu) => {
+        const menuName = targetMenu.querySelector(".menu-name");
         const updatedMenuName = prompt(
             "메뉴명을 수정해주세요",
             menuName.innerText
@@ -56,13 +52,17 @@ function App() {
         menuName.innerText = updatedMenuName;
     };
 
-    const removeMenuName = (e) => {
+    const removeMenuName = (e, targetMenu) => {
         if (confirm("해당 메뉴를 삭제하시겠습니까?")) {
-            e.target.closest("li").remove();
+            targetMenu.remove();
 
             updateMenuCount();
         }
     };
+
+    $("#espresso-menu-form").addEventListener("submit", (e) => {
+        e.preventDefault();
+    });
 
     $("#espresso-menu-name").addEventListener("keypress", (e) => {
         if (e.key === "Enter") {
@@ -73,14 +73,13 @@ function App() {
     $("#espresso-menu-submit-button").addEventListener("click", addMenuName);
 
     $("#espresso-menu-list").addEventListener("click", (e) => {
-        if (e.target.classList.contains("menu-edit-button")) {
-            updateMenuName(e);
-        }
-    });
+        const targetMenu = e.target.closest("li");
 
-    $("#espresso-menu-list").addEventListener("click", (e) => {
+        if (e.target.classList.contains("menu-edit-button")) {
+            updateMenuName(e, targetMenu);
+        }
         if (e.target.classList.contains("menu-remove-button")) {
-            removeMenuName(e);
+            removeMenuName(e, targetMenu);
         }
     });
 }

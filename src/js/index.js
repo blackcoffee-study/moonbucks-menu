@@ -30,6 +30,9 @@ function App() {
       return alert("메뉴를 입력해주세요.");
     }
 
+    menuList = [...menuList, $menuName.value]
+    console.log(menuList)
+
     $menuList.insertAdjacentHTML("beforeend", menuItemTemplate(espressoMenuName));
     updateMenuCount();
   };
@@ -48,13 +51,28 @@ function App() {
   //메뉴 수정
   const updateMenuName = (e) => {
     const $menuName = e.target.closest("li").querySelector(".menu-name");
-    $menuName.innerText = prompt("메뉴 이름을 수정하세요.", $menuName.innerText);
+    
+    const targetMenuName = $menuName.innerText;
+
+    const newMenuName = prompt("메뉴 이름을 수정하세요.", $menuName.innerText);
+
+    $menuName.innerText = newMenuName;
+    
+    menuList = menuList.map(oldMenuName => (oldMenuName === targetMenuName ? newMenuName : oldMenuName));
+    console.log(menuList)
   };
 
   //메뉴 삭제
   const removeMenu = (e) => {
     if (confirm("메뉴를 삭제할까요?")) {
       e.target.closest("li").remove();
+
+      const $menuName = e.target.closest("li").querySelector(".menu-name");
+      const targetMenu = $menuName.innerText;
+      
+      menuList = menuList.filter(menu => menu !== targetMenu);
+      console.log(menuList)
+
       updateMenuCount();
     }
   };

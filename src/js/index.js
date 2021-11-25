@@ -1,47 +1,86 @@
+const $ = (selector) => document.querySelector(selector);
+
 function App() {
-    // 입력된 메뉴를 메뉴리스트에 추가하는 함수
-    const addMenuList = () => {
-        const espressoMenuName = document.getElementById("espresso-menu-name").value;
-        const espressoMenuList = document.getElementById("espresso-menu-list");
-        if(espressoMenuName.trim() == "") return
-        else {
-            espressoMenuList.innerHTML +=  `<li class="menu-list-item d-flex items-center py-2">
-                <span class="w-100 pl-2 menu-name">${espressoMenuName}</span>
-                <button
-                    type="button"
-                    class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
-                >
-                    수정
-                </button>
-                <button
-                    type="button"
-                    class="bg-gray-50 text-gray-500 text-sm menu-remove-button"
-                >
-                    삭제
-                </button>
-                </li>
-            `;
-            document.getElementById("espresso-menu-name").value = "";
-        }
-    }
+    const menuList = $("#espresso-menu-list");
 
-    // 새로운 메뉴를 입력하고 확인 버튼을 누르면 메뉴를 추가한다.
-    document.getElementById("espresso-menu-submit-button").addEventListener("click", () => {
-        addMenuList();
-        document.getElementById("espresso-menu-name").focus();
-    })
+    const addMenuName = () => {
+        const espressoMenuName = $("#espresso-menu-name").value;
+        const menuItemTemplate = (espressoMenuName) => {
+            return `
+                <li class="menu-list-item d-flex items-center py-2">
+                    <span class="w-100 pl-2 menu-name">${espressoMenuName}</span>
+                    <button
+                        type="button"
+                        class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
+                    >
+                        수정
+                    </button>
+                    <button
+                        type="button"
+                        class="bg-gray-50 text-gray-500 text-sm menu-remove-button"
+                    >
+                        삭제
+                    </button>
+                </li>`;
+        };
 
-    // 새로운 메뉴를 입력하고 엔터키를 누르면 메뉴를 추가한다.
-    document.getElementById("espresso-menu-name").addEventListener("keypress", (e) => {
-        if (e.key != "Enter") {
-            return;
+        if (espressoMenuName === "" || espressoMenuName.trim() === "") {
+            alert("메뉴명을 입력해주세요.");
+        } else {
+            menuList.insertAdjacentHTML(
+                "beforeend",
+                menuItemTemplate(espressoMenuName)
+            );
         }
 
-        document.getElementById("espresso-menu-form").addEventListener("submit", (e) => {
-            e.preventDefault();
-        });
+        updateMenuCount();
 
-        addMenuList();
+        $("#espresso-menu-name").value = "";
+    };
+
+    const updateMenuCount = () => {
+        const menuTotal = menuList.childElementCount;
+        $(".menu-count").innerText = `총 ${menuTotal} 개`;
+    };
+
+    const updateMenuName = (e, targetMenu) => {
+        const menuName = targetMenu.querySelector(".menu-name");
+        const updatedMenuName = prompt(
+            "메뉴명을 수정해주세요",
+            menuName.innerText
+        );
+        menuName.innerText = updatedMenuName;
+    };
+
+    const removeMenuName = (e, targetMenu) => {
+        if (confirm("해당 메뉴를 삭제하시겠습니까?")) {
+            targetMenu.remove();
+
+            updateMenuCount();
+        }
+    };
+
+    $("#espresso-menu-form").addEventListener("submit", (e) => {
+        e.preventDefault();
+    });
+
+    $("#espresso-menu-name").addEventListener("keypress", (e) => {
+        if (e.key === "Enter") {
+            addMenuName();
+        }
+    });
+
+    $("#espresso-menu-submit-button").addEventListener("click", addMenuName);
+
+    $("#espresso-menu-list").addEventListener("click", (e) => {
+        const targetMenu = e.target.closest("li");
+
+        if (e.target.classList.contains("menu-edit-button")) {
+            updateMenuName(e, targetMenu);
+        }
+        if (e.target.classList.contains("menu-remove-button")) {
+            removeMenuName(e, targetMenu);
+        }
     });
 }
 

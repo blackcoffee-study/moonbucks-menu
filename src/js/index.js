@@ -7,6 +7,7 @@ function App() {
   const $menuCount = $(".menu-count");
   const $menuName = $("#espresso-menu-name");
   const $menuSubmitButton = $("#espresso-menu-submit-button");
+  //const $menuSubmitButton = document.getElementById("espresso-menu-submit-button");
 
   //함수 선언부
   //메뉴 추가
@@ -21,6 +22,16 @@ function App() {
     $menuList.insertAdjacentHTML("beforeend", menuItemTemplate(espressoMenuName));
     updateMenuCount();
   };
+
+  //클릭하여 메뉴 등록
+  $menuSubmitButton.addEventListener("click", addMenu);
+
+  //엔터키로 메뉴 등록
+  $menuName.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      addMenu();
+    }
+  });
 
   //메뉴 개수 count
   const updateMenuCount = () => {
@@ -49,16 +60,6 @@ function App() {
     e.preventDefault();
   });
 
-  //클릭하여 메뉴 등록
-  $menuSubmitButton.addEventListener("click", addMenu);
-
-  //엔터키로 메뉴 등록
-  $menuName.addEventListener("keydown", (e) => {
-    if (e.key !== "Enter") {
-      return;
-    }
-    addMenu();
-  });
 
   //메뉴 수정,삭제
   $menuList.addEventListener("click", (e) => {

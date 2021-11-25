@@ -13,6 +13,12 @@ function App() {
 
   let menuList = [];
 
+  function setMenuList(func){
+    menuList = func(menuList);
+
+    console.log("menuList : ", menuList)
+  }
+
 
   //메뉴 개수 count
   const updateMenuCount = () => {
@@ -30,8 +36,7 @@ function App() {
       return alert("메뉴를 입력해주세요.");
     }
 
-    menuList = [...menuList, $menuName.value]
-    console.log(menuList)
+    setMenuList(old => [...old, $menuName.value]);
 
     $menuList.insertAdjacentHTML("beforeend", menuItemTemplate(espressoMenuName));
     updateMenuCount();
@@ -52,14 +57,13 @@ function App() {
   const updateMenuName = (e) => {
     const $menuName = e.target.closest("li").querySelector(".menu-name");
     
-    const targetMenuName = $menuName.innerText;
+    const targetName = $menuName.innerText;
 
     const newMenuName = prompt("메뉴 이름을 수정하세요.", $menuName.innerText);
 
     $menuName.innerText = newMenuName;
     
-    menuList = menuList.map(oldMenuName => (oldMenuName === targetMenuName ? newMenuName : oldMenuName));
-    console.log(menuList)
+    setMenuList(old => old.map(name => (name === targetName ? newMenuName : name)));
   };
 
   //메뉴 삭제
@@ -70,9 +74,7 @@ function App() {
       const $menuName = e.target.closest("li").querySelector(".menu-name");
       const targetMenu = $menuName.innerText;
       
-      menuList = menuList.filter(menu => menu !== targetMenu);
-      console.log(menuList)
-
+      setMenuList(old => old.filter(menu => menu !== targetMenu));
       updateMenuCount();
     }
   };

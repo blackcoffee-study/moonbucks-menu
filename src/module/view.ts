@@ -1,8 +1,8 @@
 class View {
-  input;
-  form;
-  menuList;
-  menuCount;
+  input: HTMLInputElement;
+  form: HTMLFormElement;
+  menuList: HTMLUListElement;
+  menuCount: HTMLSpanElement;
   categoryButtons;
   constructor() {
     this.input = document.querySelector("#espresso-menu-name");

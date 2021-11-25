@@ -2,7 +2,7 @@
 <p align="middle">
   <img width="200px;" src="./src/images/moonbucks.png"/>
 </p>
-<h2 align="middle">JS 문벅스 카페메뉴 앱</h2>
+<h2 align="middle">JS 문벅스 카페메뉴 앱 </h2>
 <p align="middle">Vanilla JS로 구현 하는 상태관리가 가능한 카페메뉴 앱</p>
 <p align="middle">
   <img src="https://img.shields.io/badge/version-1.0.0-blue?style=flat-square" alt="template version"/>
@@ -56,16 +56,10 @@
 ```js
 <li class="menu-list-item d-flex items-center py-2">
   <span class="w-100 pl-2 menu-name">${name}</span>
-  <button
-    type="button"
-    class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
-  >
+  <button type="button" class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button">
     수정
   </button>
-  <button
-    type="button"
-    class="bg-gray-50 text-gray-500 text-sm menu-remove-button"
-  >
+  <button type="button" class="bg-gray-50 text-gray-500 text-sm menu-remove-button">
     삭제
   </button>
 </li>
@@ -82,22 +76,13 @@
 ```js
 <li class="menu-list-item d-flex items-center py-2">
   <span class="w-100 pl-2 menu-name sold-out">${name}</span>
-  <button
-    type="button"
-    class="bg-gray-50 text-gray-500 text-sm mr-1 menu-sold-out-button"
-  >
+  <button type="button" class="bg-gray-50 text-gray-500 text-sm mr-1 menu-sold-out-button">
     품절
   </button>
-  <button
-    type="button"
-    class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
-  >
+  <button type="button" class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button">
     수정
   </button>
-  <button
-    type="button"
-    class="bg-gray-50 text-gray-500 text-sm menu-remove-button"
-  >
+  <button type="button" class="bg-gray-50 text-gray-500 text-sm menu-remove-button">
     삭제
   </button>
 </li>
@@ -237,6 +222,30 @@ live-server 폴더명
 버그를 발견한다면, [Issues](https://github.com/blackcoffee-study/moonbucks-menu/issues)에 등록해주세요.
 
 <br/>
+
+## 👀 Ritajeong 브랜치의 커밋 컨벤션
+
+- 기능  
+  feat: 새로운 기능을 추가할 경우  
+  fix: 버그를 고친 경우  
+  design: CSS 등 사용자 UI 디자인 변경  
+  !BREAKING CHANGE: 커다란 API 변경의 경우 (ex API의 arguments, return 값의 변경, DB 테이블 변경, 급하게 치명적인 버그를 고쳐야 하는 경우)
+
+- 개선  
+  style: 코드 포맷 변경, 세미 콜론 누락, 코드 수정이 없는 경우  
+  refactor: 프로덕션 코드 리팩토링, 새로운 기능이나 버그 수정없이 현재 구현을 개선한 경우  
+  comment: 필요한 주석 추가 및 변경
+
+- 그 외  
+  docs: 문서를 수정한 경우  
+  test: 테스트 추가, 테스트 리팩토링 (프로덕션 코드 변경 없음)  
+  chore: 빌드 태스크 업데이트, 패키지 매니저 설정할 경우 (프로덕션 코드 변경 없음)  
+  rename: 파일 혹은 폴더명을 수정하는 경우  
+  remove: 사용하지 않는 파일 혹은 폴더를 삭제하는 경우
+
+이슈번호는 본문에 적는다.
+
+출처: [협업을 위한 커밋 컨벤션](https://overcome-the-limits.tistory.com/entry/협업-협업을-위한-기본적인-git-커밋컨벤션-설정하기)
 
 ## 📝 License
 

@@ -1,3 +1,5 @@
+import menuItemTemplate from './menuItemTemplate.js';
+
 const $ = (selector) => document.querySelector(selector);
 
 function App() {
@@ -9,7 +11,16 @@ function App() {
   const $menuSubmitButton = $("#espresso-menu-submit-button");
   //const $menuSubmitButton = document.getElementById("espresso-menu-submit-button");
 
-  //함수 선언부
+  let menuList = [];
+
+
+  //메뉴 개수 count
+  const updateMenuCount = () => {
+    const menuCount = $menuList.querySelectorAll("li").length;
+    $menuCount.innerText = `총 ${menuCount}개`;
+    $menuName.value = ""; //빈값 초기화
+  };
+  
   //메뉴 추가
   const addMenu = () => {
     const espressoMenuName = $menuName.value;
@@ -33,12 +44,6 @@ function App() {
     }
   });
 
-  //메뉴 개수 count
-  const updateMenuCount = () => {
-    const menuCount = $menuList.querySelectorAll("li").length;
-    $menuCount.innerText = `총 ${menuCount}개`;
-    $menuName.value = ""; //빈값 초기화
-  };
 
   //메뉴 수정
   const updateMenuName = (e) => {
@@ -70,25 +75,6 @@ function App() {
       removeMenu(e);
     }
   });
-
-  //노드 추가를 위한 템플릿
-  const menuItemTemplate = (espressoMenuName) => {
-    return `<li class="menu-list-item d-flex items-center py-2">
-                <span class="w-100 pl-2 menu-name">${espressoMenuName}</span>
-                <button
-                  type="button"
-                  class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
-                >
-                  수정
-                </button>
-                <button
-                  type="button"
-                  class="bg-gray-50 text-gray-500 text-sm menu-remove-button"
-                >
-                  삭제
-                </button>
-              </li>`;
-  };
 }
 
 App();

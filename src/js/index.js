@@ -9,7 +9,7 @@ const $form = $('#espresso-menu-form');
 const $ul = $('#espresso-menu-list');
 
 // 상태값
-const menuList = [];
+let menuList = [];
 let menuCount = menuList.length;
 
 renderMenuCount(0);
@@ -59,14 +59,12 @@ const handleEdit = (targetIdx) => {
 
 // 메뉴 삭제 함수
 const handleRemove = (targetIdx) => {
-  console.log(targetIdx);
-  // const res = confirm('정말 삭제하시겠습니까?');
-  // if (res) {
-  //   const targetNode = event.target.parentNode;
-  //   targetNode.remove(targetNode);
-  // }
-  // minusMenuCount();
-  // renderMenuList(menuList);
+  const res = confirm('정말 삭제하시겠습니까?');
+  if (res) {
+    menuList = menuList.filter((_, idx) => targetIdx !== idx);
+  }
+  minusMenuCount();
+  renderMenuList(menuList);
 };
 
 const handleClick = (event) => {

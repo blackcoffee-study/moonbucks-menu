@@ -1,26 +1,26 @@
-// 선택자를 선택하는 로직을 간소화해주기 위한 함수
-const $ = (selector) => document.querySelector(selector);
+import { renderMenuCount } from "./renderMenuCount.js"
+import { $ } from './selector.js'
 
 const $submitButton = $("#espresso-menu-submit-button");
 const $input = $("#espresso-menu-name");
 const $form = $("#espresso-menu-form");
 const $ul = $("#espresso-menu-list");
-const $menuCount = $("#espresso-menu-count");
+
 
 // 메뉴 총 개수
 let menuCount = $ul.childNodes.length;
-$menuCount.innerText = `총 ${menuCount}개`;
+renderMenuCount(0)
 
 // 메뉴 숫자 증가해주는 함수
 const plusMenuCount = () => {
   menuCount += 1;
-  $menuCount.innerText = `총 ${menuCount}개`;
+  renderMenuCount(menuCount)
 };
 
 // 메뉴 숫자 감소해주는 함수
 const minusMenuCount = () => {
   menuCount -= 1;
-  $menuCount.innerText = `총 ${menuCount}개`;
+  renderMenuCount(menuCount)
 };
 
 // 매개 변수로 받은 선택자의 value를 리셋하는 함수

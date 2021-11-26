@@ -1,6 +1,8 @@
-import { $ } from '/src/js/util/selector.js'
+import { $ } from '/src/js/util/selector.js';
 
-const newMenuLi = (name) => `<li class="menu-list-item d-flex items-center py-2">
+const newMenuLi = (
+  name
+) => `<li class="menu-list-item d-flex items-center py-2">
     <span class="w-100 pl-2 menu-name">${name}</span>
     <button
       type="button"
@@ -14,12 +16,12 @@ const newMenuLi = (name) => `<li class="menu-list-item d-flex items-center py-2"
     >
       삭제
     </button>
-  </li>`
+  </li>`;
 
-const $ul = $("#espresso-menu-list");
+const $ul = $('#espresso-menu-list');
 
 export const renderMenuList = (menuList) => {
   $ul.innerHTML = menuList.reduce((acc, cur) => {
-    return acc + newMenuLi(cur)
+    return acc + newMenuLi(cur);
   }, '');
-}
+};

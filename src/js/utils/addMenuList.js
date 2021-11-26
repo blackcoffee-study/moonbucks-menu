@@ -1,5 +1,4 @@
-import $ from './getDom';
-import setMenuCount from './setMenuCount';
+import $ from './getDomElement';
 
 const menuListTemplate = (name, idx) => `
     <li class="menu-list-item d-flex items-center py-2" key=${idx}>
@@ -20,6 +19,5 @@ const menuListTemplate = (name, idx) => `
 `;
 
 export default function addMenuList(menuList) {
-    // menuList에 있는 배열의 요소들을 innerHTML에 넣습니다.
     $('#espresso-menu-list').innerHTML = menuList.map((e, i) => menuListTemplate(e, i)).join('');
 }

@@ -1,15 +1,14 @@
-import addMenuList from './module/addMenuList';
-import $ from './module/getDom';
+import $ from '../utils/getDomElement';
+import addMenuList from '../utils/addMenuList';
+import setMenuCount from '../utils/setMenuCount';
 
 const edit = (menuList, key) => {
-    // 상태값의 배열 리스트를 바꿔주고 반영
     const curMenu = menuList[key];
     menuList[key] = prompt('메뉴명을 수정하세요', curMenu);
     addMenuList(menuList);
 };
 
 const del = (menuList, key) => {
-    // 반환된 키 값에 해당하는 것을 confirm 확인 후, 삭제
     if (confirm('정말 삭제하시겠습니까?')) {
         menuList.splice(key, 1);
         addMenuList(menuList);
@@ -17,12 +16,14 @@ const del = (menuList, key) => {
 };
 
 export default function handleList(menuList) {
-    // 이벤트 위임으로 ul에 이벤트를 달아줌
-    $('#espresso-menu-list').addEventListener('click', e => {
-        // 클릭된 li 태그의 key 값을 가져옵니다.
+    const coffeeMenuList = $('#espresso-menu-list');
+
+    coffeeMenuList.addEventListener('click', e => {
         const key = e.target.closest('li').getAttribute('key');
 
         if (e.target.classList.contains('menu-edit-button')) edit(menuList, key);
         else del(menuList, key);
+
+        setMenuCount(menuList);
     });
 }

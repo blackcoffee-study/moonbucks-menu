@@ -1,4 +1,5 @@
 import { renderMenuCount } from "./renderMenuCount.js"
+import { renderMenuList } from "./render/renderMenuList.js";
 import { $ } from './util/selector.js'
 
 const $submitButton = $("#espresso-menu-submit-button");
@@ -6,9 +7,10 @@ const $input = $("#espresso-menu-name");
 const $form = $("#espresso-menu-form");
 const $ul = $("#espresso-menu-list");
 
-
-// 메뉴 총 개수
+// 상태값
+const menuList = []
 let menuCount = $ul.childNodes.length;
+
 renderMenuCount(0)
 
 // 메뉴 숫자 증가해주는 함수
@@ -30,44 +32,11 @@ const resetValue = (selector) => {
 
 // 메뉴 추가 함수
 const addMenu = (name) => {
-  // li, span, button 태그 생성
-  const newMenuLi = document.createElement("li");
-  const newMenuSpan = document.createElement("span");
-  const newMenuEditButton = document.createElement("button");
-  const newMenuRemoveButton = document.createElement("button");
-  // id 추가
-  newMenuEditButton.id = "espresso-menu-edit-button";
-  newMenuRemoveButton.id = "espresso-menu-remove-button";
-  // 스타일 추가
-  newMenuLi.classList.add("menu-list-item", "d-flex", "items-center", "py-2");
-  newMenuSpan.classList.add("w-100", "pl-2", "menu-name");
-  newMenuEditButton.classList.add(
-    "bg-gray-50",
-    "text-gray-500",
-    "text-sm",
-    "mr-1",
-    "menu-edit-button"
-  );
-  newMenuRemoveButton.classList.add(
-    "bg-gray-50",
-    "text-gray-500",
-    "text-sm",
-    "menu-remove-button"
-  );
-  // 텍스트 추가
-  newMenuEditButton.innerText = "수정";
-  newMenuRemoveButton.innerText = "삭제";
-  newMenuSpan.innerHTML = `${name}`;
-
-  // 이벤트 리스너 할당
-  newMenuEditButton.addEventListener("click", handleEdit);
-  newMenuRemoveButton.addEventListener("click", handleRemove);
-
-  newMenuLi.appendChild(newMenuSpan);
-  newMenuLi.appendChild(newMenuEditButton);
-  newMenuLi.appendChild(newMenuRemoveButton);
-
-  $ul.appendChild(newMenuLi);
+  menuList.push(name);
+  renderMenuList(menuList);
+  // // 이벤트 리스너 할당
+  // newMenuEditButton.addEventListener("click", handleEdit);
+  // newMenuRemoveButton.addEventListener("click", handleRemove);
   plusMenuCount();
 };
 

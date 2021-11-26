@@ -13,20 +13,25 @@ function App() {
 
   let menuList = [];
 
-  function setMenuList(func){
-    menuList = func(menuList);
-
-    console.log("menuList : ", menuList)
-  }
-
-
   //메뉴 개수 count
-  const updateMenuCount = () => {
-    const menuCount = $menuList.querySelectorAll("li").length;
+  const updateMenuCount = (menuCount) => {
     $menuCount.innerText = `총 ${menuCount}개`;
-    $menuName.value = ""; //빈값 초기화
   };
   
+  function render(menuList){
+    return menuList.map(menuItemTemplate).join("")
+  }
+
+  function setMenuList(func){
+    menuList = func(menuList);
+    console.log("menuList : ", menuList)
+
+    updateMenuCount(menuList.length);
+    $menuName.value = ""; //빈값 초기화
+
+    $menuList.innerHTML = render(menuList);
+  }
+
   //메뉴 추가
   const addMenu = () => {
     const espressoMenuName = $menuName.value;
@@ -37,9 +42,6 @@ function App() {
     }
 
     setMenuList(old => [...old, $menuName.value]);
-
-    $menuList.insertAdjacentHTML("beforeend", menuItemTemplate(espressoMenuName));
-    updateMenuCount();
   };
 
   //클릭하여 메뉴 등록
@@ -55,27 +57,19 @@ function App() {
 
   //메뉴 수정
   const updateMenuName = (e) => {
-    const $menuName = e.target.closest("li").querySelector(".menu-name");
-    
-    const targetName = $menuName.innerText;
+    const $menuName = e.target.closest("li").querySelector(".menu-name");    const targetName = $menuName.innerText;
+    const newMenuName = prompt("메뉴 이름을 수정하세요.", targetName);
 
-    const newMenuName = prompt("메뉴 이름을 수정하세요.", $menuName.innerText);
-
-    $menuName.innerText = newMenuName;
-    
     setMenuList(old => old.map(name => (name === targetName ? newMenuName : name)));
   };
 
   //메뉴 삭제
   const removeMenu = (e) => {
     if (confirm("메뉴를 삭제할까요?")) {
-      e.target.closest("li").remove();
-
       const $menuName = e.target.closest("li").querySelector(".menu-name");
-      const targetMenu = $menuName.innerText;
+      const targetName = $menuName.innerText;
       
-      setMenuList(old => old.filter(menu => menu !== targetMenu));
-      updateMenuCount();
+      setMenuList(old => old.filter(menu => menu !== targetName));
     }
   };
 

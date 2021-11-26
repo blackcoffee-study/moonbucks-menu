@@ -1,4 +1,4 @@
-import { $ } from './util/selector.js'
+import { $ } from '../util/selector.js'
 
 export const renderMenuCount = (menuCount) => {
   const $menuCount = $("#espresso-menu-count");

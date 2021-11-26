@@ -87,7 +87,6 @@ const changeIdTags = (newMenuCategory) => {
   $submitButton.id = `${newMenuCategory}-menu-submit-button`;
   $form.id = `${newMenuCategory}-menu-form`;
   $ul.id = `${newMenuCategory}-menu-list`;
-  console.log(currentData.menuCategory, newMenuCategory, $input, $label);
   $input.id = `${newMenuCategory}-menu-name`;
   $input.name = `${newMenuCategory}MenuName`;
   $label.setAttribute('for', `${newMenuCategory}-menu-name`);

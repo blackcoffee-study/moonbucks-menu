@@ -2,6 +2,10 @@ import { renderMenuCount } from './render/renderMenuCount.js';
 import { renderMenuList } from './render/renderMenuList.js';
 import { resetValue } from './util/resestValue.js';
 import { isEmptyValue } from './util/validator.js';
+import {
+  saveDataonLocalStorage,
+  loadDataFromLocalStorage,
+} from './util/store.js';
 import { $ } from './util/selector.js';
 
 const $submitButton = $('#espresso-menu-submit-button');
@@ -9,10 +13,13 @@ const $form = $('#espresso-menu-form');
 const $ul = $('#espresso-menu-list');
 
 // 상태값
-let menuList = [];
+let menuCategory = 'espresso';
+let menuList = loadDataFromLocalStorage(menuCategory) || [];
 let menuCount = menuList.length;
+// console.log(menuList);
 
-renderMenuCount(0);
+renderMenuCount(menuCount);
+renderMenuList(menuList);
 
 // 메뉴 숫자 증가해주는 함수
 const plusMenuCount = () => {
@@ -30,6 +37,7 @@ const minusMenuCount = () => {
 const addMenu = (name) => {
   menuList.push(name);
   renderMenuList(menuList);
+  saveDataonLocalStorage(menuCategory, menuList);
   plusMenuCount();
 };
 
@@ -47,6 +55,7 @@ const editMenu = (targetIdx) => {
   const newMenu = prompt('메뉴명을 수정해주세요', menuList[targetIdx]);
   if (isEmptyValue(newMenu)) return alert('메뉴명을 입력해주세요!');
   menuList[targetIdx] = newMenu;
+  saveDataonLocalStorage(menuCategory, menuList);
   renderMenuList(menuList);
 };
 
@@ -57,6 +66,7 @@ const removeMenu = (targetIdx) => {
     menuList = menuList.filter((_, idx) => targetIdx !== idx);
   }
   minusMenuCount();
+  saveDataonLocalStorage(menuCategory, menuList);
   renderMenuList(menuList);
 };
 

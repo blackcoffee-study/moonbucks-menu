@@ -1,5 +1,6 @@
 import { renderMenuCount } from "./renderMenuCount.js"
 import { renderMenuList } from "./render/renderMenuList.js";
+import { resetValue } from './util/resestValue.js'
 import { $ } from './util/selector.js'
 
 const $submitButton = $("#espresso-menu-submit-button");
@@ -25,10 +26,6 @@ const minusMenuCount = () => {
   renderMenuCount(menuCount)
 };
 
-// 매개 변수로 받은 선택자의 value를 리셋하는 함수
-const resetValue = (selector) => {
-  selector.value = "";
-};
 
 // 메뉴 추가 함수
 const addMenu = (name) => {

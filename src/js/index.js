@@ -30,9 +30,6 @@ const minusMenuCount = () => {
 const addMenu = (name) => {
   menuList.push(name);
   renderMenuList(menuList);
-  // // 이벤트 리스너 할당
-  // newMenuEditButton.addEventListener("click", handleEdit);
-  // newMenuRemoveButton.addEventListener("click", handleRemove);
   plusMenuCount();
 };
 
@@ -68,6 +65,7 @@ const handleRemove = (targetIdx) => {
 };
 
 const handleClick = (event) => {
+  if (event.target.type !== 'button') return;
   const button = event.target;
   const targetLi = button.parentNode;
   const parentUl = targetLi.parentNode;

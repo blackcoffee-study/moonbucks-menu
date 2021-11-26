@@ -33,7 +33,6 @@ const addMenu = (name) => {
   plusMenuCount();
 };
 
-// 메뉴 등록 함수
 const handleSubmit = (event) => {
   const $input = $('#espresso-menu-name');
   if (event.type === 'submit') event.preventDefault();
@@ -44,7 +43,7 @@ const handleSubmit = (event) => {
 };
 
 // 메뉴 수정 함수
-const handleEdit = (targetIdx) => {
+const editMenu = (targetIdx) => {
   const newMenu = prompt('메뉴명을 수정해주세요', menuList[targetIdx]);
   if (isEmptyValue(newText)) return alert('메뉴명을 입력해주세요!');
   menuList[targetIdx] = newMenu;
@@ -52,7 +51,7 @@ const handleEdit = (targetIdx) => {
 };
 
 // 메뉴 삭제 함수
-const handleRemove = (targetIdx) => {
+const removeMenu = (targetIdx) => {
   const res = confirm('정말 삭제하시겠습니까?');
   if (res) {
     menuList = menuList.filter((_, idx) => targetIdx !== idx);
@@ -68,9 +67,9 @@ const handleClick = (event) => {
   const parentUl = targetLi.parentNode;
   const targetLiIdx = [...parentUl.children].indexOf(targetLi);
   if (button.classList.contains('menu-edit-button'))
-    return handleEdit(targetLiIdx);
+    return editMenu(targetLiIdx);
   if (button.classList.contains('menu-remove-button'))
-    return handleRemove(targetLiIdx);
+    return removeMenu(targetLiIdx);
 };
 
 // 이벤트 핸들러 등록

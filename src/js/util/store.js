@@ -6,7 +6,7 @@ export const loadDataFromLocalStorage = (key) => {
   return JSON.parse(localStorage.getItem(key));
 };
 
-export const currentData = {
+export const currentMenuData = {
   menuList: [],
   menuCount: 0,
   menuCategory: 'espresso',

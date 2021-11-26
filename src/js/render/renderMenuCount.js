@@ -1,6 +1,7 @@
 import { $ } from '../util/selector.js';
 
 export const renderMenuCount = (menuCount) => {
-  const $menuCount = $('#espresso-menu-count');
+  const main = $('main');
+  const $menuCount = $('span', main);
   $menuCount.innerText = `총 ${menuCount}개`;
 };

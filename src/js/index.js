@@ -1,5 +1,5 @@
 import { renderMenuCount } from "./renderMenuCount.js"
-import { $ } from './selector.js'
+import { $ } from './util/selector.js'
 
 const $submitButton = $("#espresso-menu-submit-button");
 const $input = $("#espresso-menu-name");

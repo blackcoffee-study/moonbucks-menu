@@ -45,7 +45,7 @@ const handleSubmit = (event) => {
 // 메뉴 수정 함수
 const editMenu = (targetIdx) => {
   const newMenu = prompt('메뉴명을 수정해주세요', menuList[targetIdx]);
-  if (isEmptyValue(newText)) return alert('메뉴명을 입력해주세요!');
+  if (isEmptyValue(newMenu)) return alert('메뉴명을 입력해주세요!');
   menuList[targetIdx] = newMenu;
   renderMenuList(menuList);
 };

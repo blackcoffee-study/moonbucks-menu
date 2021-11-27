@@ -1,6 +1,6 @@
-import Menu from "./menu.js";
+import Menu from "./menu/menu.js";
 import Storage from "./storage/menuStorage.js";
-import { $ } from "./utils.js";
+import { $ } from "./common/utils.js";
 
 function App() {
   const storages = {

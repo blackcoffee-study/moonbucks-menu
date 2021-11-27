@@ -1,14 +1,7 @@
-import { $ } from "./utils.js";
+import { $ } from "../common/utils.js";
+import MenuMessage from "./menuMessage.js";
 
 export default class Menu {
-  titles = {
-    espresso: "☕ 에스프레소 메뉴 관리",
-    frappuccino: "🥤 프라푸치노 메뉴 관리",
-    blended: "🍹 블렌디드 메뉴 관리",
-    teavana: "🫖 티바나 메뉴 관리",
-    desert: "🍰 디저트 메뉴 관리",
-  };
-
   constructor(storage) {
     this.$submitButton = $("#espresso-menu-submit-button");
     this.$espressoMenuList = $("#espresso-menu-list");
@@ -16,8 +9,9 @@ export default class Menu {
     this.$headingTitle = $(".heading").querySelector("h2");
     this.$menuCount = $(".menu-count");
     this.storage = storage;
-    this.$headingTitle.innerText = this.titles[storage.key];
+
     this.loadMenus(storage.datas);
+    this.renderMessage(storage.key);
 
     this.$submitButton.addEventListener("click", () => {
       this.addMenu();
@@ -59,23 +53,14 @@ export default class Menu {
     });
   }
 
-  toggleSoldOut = (elem) => {
-    elem.querySelector(".menu-name").classList.toggle("sold-out");
-  };
-
   setupWithStorage = (storage) => {
     if (this.storage.key === storage.key) {
       return;
     }
     this.storage = storage;
     this.removeAllMenuNodes();
-    this.$headingTitle.innerText = this.titles[storage.key];
+    this.renderMessage(storage.key);
     this.loadMenus(storage.datas);
-  };
-
-  removeAllMenuNodes = () => {
-    const node = this.$espressoMenuList;
-    node.querySelectorAll("*").forEach((n) => n.remove());
   };
 
   loadMenus = (datas) => {
@@ -86,22 +71,6 @@ export default class Menu {
       );
     });
     this.updateMenuCount();
-  };
-
-  removeMenu = (elem) => {
-    if (confirm("정말 삭제 하시겠어요?")) {
-      elem.remove();
-      this.updateMenuCount();
-    }
-  };
-
-  updateMenuCount = () => {
-    const menuCount = this.$espressoMenuList.querySelectorAll("li").length;
-    this.$menuCount.innerText = `총 ${menuCount}개`;
-  };
-
-  editMenuName = (elem, editedMenuName) => {
-    elem.innerText = editedMenuName;
   };
 
   addMenu = () => {
@@ -119,7 +88,37 @@ export default class Menu {
     this.$espressMenuInput.value = "";
   };
 
-  menuItemTemplate = ({ menuName, id, soldOut }) => {
+  updateMenuCount = () => {
+    const menuCount = this.$espressoMenuList.querySelectorAll("li").length;
+    this.$menuCount.innerText = `총 ${menuCount}개`;
+  };
+
+  removeMenu = (elem) => {
+    if (confirm("정말 삭제 하시겠어요?")) {
+      elem.remove();
+      this.updateMenuCount();
+    }
+  };
+
+  editMenuName = (elem, editedMenuName) => {
+    elem.innerText = editedMenuName;
+  };
+
+  toggleSoldOut = (elem) => {
+    elem.querySelector(".menu-name").classList.toggle("sold-out");
+  };
+
+  removeAllMenuNodes = () => {
+    const node = this.$espressoMenuList;
+    node.querySelectorAll("*").forEach((n) => n.remove());
+  };
+
+  renderMessage = (storageKey) => {
+    this.$headingTitle.innerText = MenuMessage[storageKey].title;
+    this.$espressMenuInput.placeholder = MenuMessage[storageKey].placeholder;
+  };
+
+  menuItemTemplate = ({ id, menuName, soldOut }) => {
     return `<li data-id=${id} class="menu-list-item d-flex items-center py-2">
       <span class="w-100 pl-2 menu-name ${
         soldOut ? "sold-out" : ""

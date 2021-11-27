@@ -1,3 +1,3 @@
 export const isEmptyValue = (value) => {
-  return !!value.trim() ? false : true;
+  return !value.trim();
 };

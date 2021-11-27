@@ -107,7 +107,7 @@ const handleClick = (event) => {
     return toggleSoldout(targetLi, targetLiIdx);
 };
 
-const changeIdTags = (newMenuCategory) => {
+const changeAttributes = (newMenuCategory) => {
   const $input = $(`#${currentMenuData.menuCategory}-menu-name`);
   const $label = $(`label[for="${currentMenuData.menuCategory}-menu-name"]`);
   $submitButton.id = `${newMenuCategory}-menu-submit-button`;
@@ -122,7 +122,7 @@ const changeMenuCategory = (event) => {
   const target = event.target;
   if (target.nodeName === 'BUTTON') {
     const newMenuCategory = target.dataset.categoryName;
-    changeIdTags(newMenuCategory);
+    changeAttributes(newMenuCategory);
     renderAll(newMenuCategory);
     currentMenuData.menuCategory = newMenuCategory;
   }

@@ -75,6 +75,14 @@ function App() {
     render();
   };
 
+  const updateMenuSoldout = (e) => {
+    const $menuItemList = e.target.closest("li");
+    const menuId = $menuItemList.dataset.menuId;
+    this.menu[this.currentMenu][menuId].soldOut =
+      !this.menu[this.currentMenu][menuId].soldOut;
+    menuStore.setLocalStorage(this.menu);
+  };
+
   $("#menu-form").addEventListener("submit", (e) => {
     e.preventDefault();
   });
@@ -89,6 +97,9 @@ function App() {
   $("#menu-submit-button").addEventListener("click", addMenuItem);
 
   $("#menu-list").addEventListener("click", (e) => {
+    if (e.target.classList.contains("menu-sold-out-button")) {
+      updateMenuSoldout(e);
+    }
     if (e.target.classList.contains("menu-edit-button")) {
       updateMenuItem(e);
     }

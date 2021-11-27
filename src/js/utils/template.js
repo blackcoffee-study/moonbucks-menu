@@ -1,8 +1,8 @@
 export const getMenuItemTemplate = (menuItem, index) => {
   return `<li data-menu-id="${index}" class="menu-list-item d-flex items-center py-2">
       <span class="${
-        menuItem.soldOut ? "sold-out" : ""
-      } w-100 pl-2 menu-name">${menuItem.name}</span>
+        menuItem.soldOut ? "sold-out " : ""
+      }w-100 pl-2 menu-name">${menuItem.name}</span>
       <button
         type="button"
         class="bg-gray-50 text-gray-500 text-sm mr-1 menu-sold-out-button"

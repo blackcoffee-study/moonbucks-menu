@@ -68,6 +68,11 @@ function App() {
     $("#menu-count").innerText = `총 ${menuCount}개`;
   };
 
+  const updateCurrentMenu = (e) => {
+    this.currentMenu = e.target.dataset.categoryName;
+    render();
+  };
+
   $("#menu-form").addEventListener("submit", (e) => {
     e.preventDefault();
   });
@@ -87,6 +92,12 @@ function App() {
     }
     if (e.target.classList.contains("menu-remove-button")) {
       removeMenuItem(e);
+    }
+  });
+
+  $("nav").addEventListener("click", (e) => {
+    if (e.target.classList.contains("cafe-category-name")) {
+      updateCurrentMenu(e);
     }
   });
 

@@ -30,7 +30,11 @@ const minusMenuCount = () => {
 
 // 메뉴 추가 함수
 const addMenu = (name) => {
-  currentMenuData.menuList.push(name);
+  const newMenu = {
+    name,
+    isSoldout: false,
+  };
+  currentMenuData.menuList.push(newMenu);
   renderMenuList(currentMenuData.menuList);
   saveDataonLocalStorage(
     currentMenuData.menuCategory,
@@ -51,10 +55,10 @@ const handleSubmit = (event) => {
 const editMenu = (targetIdx) => {
   const newMenu = prompt(
     '메뉴명을 수정해주세요',
-    currentMenuData.menuList[targetIdx]
+    currentMenuData.menuList[targetIdx].name
   );
   if (isEmptyValue(newMenu)) return alert('메뉴명을 입력해주세요!');
-  currentMenuData.menuList[targetIdx] = newMenu;
+  currentMenuData.menuList[targetIdx].name = newMenu;
   saveDataonLocalStorage(
     currentMenuData.menuCategory,
     currentMenuData.menuList
@@ -78,6 +82,16 @@ const removeMenu = (targetIdx) => {
   renderMenuList(currentMenuData.menuList);
 };
 
+const toggleSoldout = (target, targetIdx) => {
+  target.querySelector('span').classList.toggle('sold-out');
+  currentMenuData.menuList[targetIdx].isSoldout =
+    !currentMenuData.menuList[targetIdx].isSoldout;
+  saveDataonLocalStorage(
+    currentMenuData.menuCategory,
+    currentMenuData.menuList
+  );
+};
+
 const handleClick = (event) => {
   if (event.target.type !== 'button') return;
   const button = event.target;
@@ -88,6 +102,8 @@ const handleClick = (event) => {
     return editMenu(targetLiIdx);
   if (button.classList.contains('menu-remove-button'))
     return removeMenu(targetLiIdx);
+  if (button.classList.contains('menu-sold-out-button'))
+    return toggleSoldout(targetLi, targetLiIdx);
 };
 
 const changeIdTags = (newMenuCategory) => {

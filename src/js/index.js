@@ -22,7 +22,7 @@ function App() {
 
   const render = () => {
     const menuListTemplate = this.menu[this.currentMenu]
-      .map((menu, index) => getMenuItemTemplate(menu.name, index))
+      .map((menu, index) => getMenuItemTemplate(menu, index))
       .join("");
 
     $("#menu-list").innerHTML = menuListTemplate;
@@ -81,6 +81,7 @@ function App() {
     this.menu[this.currentMenu][menuId].soldOut =
       !this.menu[this.currentMenu][menuId].soldOut;
     menuStore.setLocalStorage(this.menu);
+    render();
   };
 
   $("#menu-form").addEventListener("submit", (e) => {

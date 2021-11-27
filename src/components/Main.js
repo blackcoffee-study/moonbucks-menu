@@ -68,67 +68,67 @@ export default class Main extends Component {
   `;
   }
 
-  setEvent() {
-    this.$target
-      .querySelector('#espresso-menu-form')
-      .addEventListener('submit', e => {
-        e.preventDefault();
-        const { espresso } = this.$state;
-        const input = this.$target.querySelector('#espresso-menu-name');
-        if (input.value === '') {
-          alert('값을 입력해주세요');
-          return;
-        }
-        this.setState({
-          espresso: [
-            ...espresso,
-            {
-              id: +`${
-                espresso.length === 0
-                  ? espresso.length + 1
-                  : espresso[espresso.length - 1].id + 1
-              }`,
-              name: input.value,
-            },
-          ],
-        });
-      });
+  // setEvent() {
+  //   this.$target
+  //     .querySelector('#espresso-menu-form')
+  //     .addEventListener('submit', e => {
+  //       e.preventDefault();
+  //       const { espresso } = this.$state;
+  //       const input = this.$target.querySelector('#espresso-menu-name');
+  //       if (input.value === '') {
+  //         alert('값을 입력해주세요');
+  //         return;
+  //       }
+  //       this.setState({
+  //         espresso: [
+  //           ...espresso,
+  //           {
+  //             id: +`${
+  //               espresso.length === 0
+  //                 ? espresso.length + 1
+  //                 : espresso[espresso.length - 1].id + 1
+  //             }`,
+  //             name: input.value,
+  //           },
+  //         ],
+  //       });
+  //     });
 
-    this.$state.espresso.map(item => {
-      const editButton = this.$target.querySelector(
-        `.menu-edit-button${item.id}`
-      );
-      const removeButton = this.$target.querySelector(
-        `.menu-remove-button${item.id}`
-      );
-      const menuName = this.$target.querySelector(
-        `.menu-name${item.id}`
-      ).innerText;
+  //   this.$state.espresso.map(item => {
+  //     const editButton = this.$target.querySelector(
+  //       `.menu-edit-button${item.id}`
+  //     );
+  //     const removeButton = this.$target.querySelector(
+  //       `.menu-remove-button${item.id}`
+  //     );
+  //     const menuName = this.$target.querySelector(
+  //       `.menu-name${item.id}`
+  //     ).innerText;
 
-      editButton.addEventListener('click', e => {
-        const value = prompt('메뉴명을 수정하세요', menuName);
-        const editItems = this.$state.espresso.map(item => {
-          if (value !== null && item.id === +e.target.dataset.id) {
-            return { id: item.id, name: value };
-          }
-          return item;
-        });
-        this.setState({
-          espresso: editItems,
-        });
-      });
+  //     editButton.addEventListener('click', e => {
+  //       const value = prompt('메뉴명을 수정하세요', menuName);
+  //       const editItems = this.$state.espresso.map(item => {
+  //         if (value !== null && item.id === +e.target.dataset.id) {
+  //           return { id: item.id, name: value };
+  //         }
+  //         return item;
+  //       });
+  //       this.setState({
+  //         espresso: editItems,
+  //       });
+  //     });
 
-      removeButton.addEventListener('click', e => {
-        const confirm = window.confirm('정말 삭제하시겠습니까?');
-        if (confirm) {
-          const filterItems = this.$state.espresso.filter(
-            item => item.id !== +e.target.dataset.id
-          );
-          this.setState({
-            espresso: filterItems,
-          });
-        }
-      });
-    });
-  }
+  //     removeButton.addEventListener('click', e => {
+  //       const confirm = window.confirm('정말 삭제하시겠습니까?');
+  //       if (confirm) {
+  //         const filterItems = this.$state.espresso.filter(
+  //           item => item.id !== +e.target.dataset.id
+  //         );
+  //         this.setState({
+  //           espresso: filterItems,
+  //         });
+  //       }
+  //     });
+  //   });
+  // }
 }

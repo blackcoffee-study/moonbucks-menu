@@ -40,4 +40,13 @@ export default class Header extends Component {
             </nav>
         `;
   }
+
+  setEvent() {
+    this.addEvent('click', 'button', e => {
+      console.log(e.target.dataset.categoryName);
+    });
+    // this.$target.addEventListener('click', e => {
+    //   console.log(e.target.dataset.categoryName);
+    // });
+  }
 }

@@ -57,6 +57,7 @@ const editMenu = (targetIdx) => {
     '메뉴명을 수정해주세요',
     currentMenuData.menuList[targetIdx].name
   );
+  if (!newMenu) return;
   if (isEmptyValue(newMenu)) return alert('메뉴명을 입력해주세요!');
   currentMenuData.menuList[targetIdx].name = newMenu;
   saveDataonLocalStorage(

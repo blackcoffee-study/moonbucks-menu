@@ -9,19 +9,18 @@ export default class Menu {
     this.$headingTitle = $(".heading").querySelector("h2");
     this.$menuCount = $(".menu-count");
     this.storage = storage;
-
     this.loadMenus(storage.datas);
     this.renderMessage(storage.key);
 
     this.$submitButton.addEventListener("click", () => {
-      this.addMenu();
+      this.addMenu(this.$espressMenuInput.value);
     });
 
     this.$espressMenuInput.addEventListener("keypress", (e) => {
       if (e.key !== "Enter") {
         return;
       }
-      this.addMenu();
+      this.addMenu(this.$espressMenuInput.value);
     });
 
     $("#espresso-menu-form").addEventListener("submit", (e) => {
@@ -43,9 +42,13 @@ export default class Menu {
       }
 
       if (e.target.classList.contains("menu-remove-button")) {
+        if (!confirm("정말 삭제 하시겠어요?")) {
+          return;
+        }
         this.storage.removeById(selectedId);
         this.removeMenu(menuElem);
       }
+
       if (e.target.classList.contains("menu-sold-out-button")) {
         this.storage.soldOutById(selectedId);
         this.toggleSoldOut(menuElem);
@@ -73,8 +76,7 @@ export default class Menu {
     this.updateMenuCount(datas.length);
   };
 
-  addMenu = () => {
-    const inputName = this.$espressMenuInput.value;
+  addMenu = (inputName) => {
     if (!inputName.trim()) {
       return;
     }
@@ -92,10 +94,8 @@ export default class Menu {
   };
 
   removeMenu = (elem) => {
-    if (confirm("정말 삭제 하시겠어요?")) {
-      elem.remove();
-      this.updateMenuCount(this.storage.datas.length);
-    }
+    elem.remove();
+    this.updateMenuCount(this.storage.datas.length);
   };
 
   editMenuName = (elem, editedMenuName) => {

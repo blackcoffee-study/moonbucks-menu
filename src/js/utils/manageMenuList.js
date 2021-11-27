@@ -13,9 +13,9 @@ const manageMenuList = action => {
             menuList[category].push(action.text);
             break;
         case 'EDIT':
-            const edit = prompt('메뉴명을 수정하세요', menuList[category][action.key]);
+            const edit = prompt('메뉴명을 수정하세요', menuList[category][action.key].text);
 
-            menuList[category][action.key] = edit ? edit : menuList[category][action.key];
+            menuList[category][action.key].text = edit ? edit : menuList[category][action.key].text;
             break;
         case 'DELETE':
             menuList[category].splice(action.key, 1);

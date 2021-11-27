@@ -24,12 +24,15 @@ App();
 
 $('header > nav').addEventListener('click', e => {
     const category = e.target.getAttribute('data-category-name');
-    const menuName = e.target.innerText;
-    const placeholder = menuName.substr(2);
 
-    $('main h2').innerText = `${menuName} 메뉴 관리`;
-    $('#espresso-menu-form  label').innerText = `${placeholder} 메뉴 이름`;
-    $('#espresso-menu-form  input').setAttribute('placeholder', `${placeholder} 메뉴 이름`);
+    if (category) {
+        const menuName = e.target.innerText;
+        const placeholder = menuName.substr(2);
 
-    App(category);
+        $('main h2').innerText = `${menuName} 메뉴 관리`;
+        $('#espresso-menu-form  label').innerText = `${placeholder} 메뉴 이름`;
+        $('#espresso-menu-form  input').setAttribute('placeholder', `${placeholder} 메뉴 이름`);
+
+        App(category);
+    }
 });

@@ -8,9 +8,9 @@ import MENU_CATEGORY_MESSAGE from '../constants/menuCategoryMessage.js';
 
 export const renderAll = (menuCategory) => {
   currentMenuData.menuList = loadDataFromLocalStorage(menuCategory) || [];
-  currentMenuData.menuCount = currentMenuData.menuList.length;
+  currentMenuData.menuTotalCount = currentMenuData.menuList.length;
   renderMenuList(currentMenuData.menuList);
-  renderMenuCount(currentMenuData.menuCount);
+  renderMenuCount(currentMenuData.menuTotalCount);
   renderPlaceholder(MENU_CATEGORY_MESSAGE[menuCategory].PLACEHOLDER);
   renderTitle(MENU_CATEGORY_MESSAGE[menuCategory].TITLE);
 };

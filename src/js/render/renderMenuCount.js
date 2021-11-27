@@ -1,7 +1,7 @@
 import { $ } from '../util/selector.js';
 
-export const renderMenuCount = (menuCount) => {
+export const renderMenuCount = (menuTotalCount) => {
   const main = $('main');
-  const $menuCount = $('span', main);
-  $menuCount.innerText = `총 ${menuCount}개`;
+  const $menuTotalCount = $('span', main);
+  $menuTotalCount.innerText = `총 ${menuTotalCount}개`;
 };

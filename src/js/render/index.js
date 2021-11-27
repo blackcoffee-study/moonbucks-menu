@@ -1,4 +1,4 @@
-import { renderMenuCount } from './renderMenuCount.js';
+import { renderMenuTotalCount } from './renderMenuTotalCount.js';
 import { renderMenuList } from './renderMenuList.js';
 import { renderPlaceholder } from './renderPlaceholder.js';
 import { renderTitle } from './renderTitle.js';
@@ -10,7 +10,7 @@ export const renderAll = (menuCategory) => {
   currentMenuData.menuList = loadDataFromLocalStorage(menuCategory) || [];
   currentMenuData.menuTotalCount = currentMenuData.menuList.length;
   renderMenuList(currentMenuData.menuList);
-  renderMenuCount(currentMenuData.menuTotalCount);
+  renderMenuTotalCount(currentMenuData.menuTotalCount);
   renderPlaceholder(MENU_CATEGORY_MESSAGE[menuCategory].PLACEHOLDER);
   renderTitle(MENU_CATEGORY_MESSAGE[menuCategory].TITLE);
 };

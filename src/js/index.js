@@ -1,4 +1,4 @@
-import { renderMenuCount } from './render/renderMenuCount.js';
+import { renderMenuTotalCount } from './render/renderMenuTotalCount.js';
 import { renderMenuList } from './render/renderMenuList.js';
 import { renderAll } from './render/index.js';
 import { resetValue } from './util/resestValue.js';
@@ -19,13 +19,13 @@ renderAll('espresso');
 // 메뉴 숫자 증가해주는 함수
 const plusMenuCount = () => {
   currentMenuData.menuTotalCount += 1;
-  renderMenuCount(currentMenuData.menuTotalCount);
+  renderMenuTotalCount(currentMenuData.menuTotalCount);
 };
 
 // 메뉴 숫자 감소해주는 함수
 const minusMenuCount = () => {
   currentMenuData.menuTotalCount -= 1;
-  renderMenuCount(currentMenuData.menuTotalCount);
+  renderMenuTotalCount(currentMenuData.menuTotalCount);
 };
 
 // 메뉴 추가 함수

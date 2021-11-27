@@ -10,6 +10,7 @@ import { $ } from './util/selector.js';
 const $submitButton = $(`#${currentMenuData.menuCategory}-menu-submit-button`);
 const $form = $(`#${currentMenuData.menuCategory}-menu-form`);
 const $ul = $(`#${currentMenuData.menuCategory}-menu-list`);
+const $input = $(`#${currentMenuData.menuCategory}-menu-name`);
 const $nav = $('nav');
 
 // 초기
@@ -39,7 +40,6 @@ const addMenu = (name) => {
 };
 
 const handleSubmit = (event) => {
-  const $input = $('#espresso-menu-name');
   if (event.type === 'submit') event.preventDefault();
   const menuName = $input.value;
   if (isEmptyValue(menuName)) return resetValue($input);

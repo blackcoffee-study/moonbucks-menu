@@ -1,6 +1,6 @@
 import { $ } from '/src/js/util/selector.js';
 
-const newMenuLi = (
+const menuHtml = (
   name,
   isSoldout
 ) => `<li class="menu-list-item d-flex items-center py-2">
@@ -31,6 +31,6 @@ const $ul = $('#espresso-menu-list');
 
 export const renderMenuList = (menuList) => {
   $ul.innerHTML = menuList.reduce((acc, cur) => {
-    return acc + newMenuLi(cur.name, cur.isSoldout);
+    return acc + menuHtml(cur.name, cur.isSoldout);
   }, '');
 };

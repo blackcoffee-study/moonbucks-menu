@@ -93,6 +93,29 @@
 
 ## 🎯 step2 요구사항 - 상태 관리로 메뉴 관리하기
 
+```
+- [ ] [localStorage](https://developer.mozilla.org/ko/docs/Web/API/Window/localStorage)에 데이터를 저장하여 새로고침해도 데이터가 남아있게 한다.
+  - [ ] localStorage 에 데이터를 저장한다.
+  - [ ] localStorage 의 데이터를 불러온다.
+  - [ ] 메뉴 추가 시 localStorage 에 해당 메뉴 데이터를 추가한다.
+  - [ ] 메뉴 수정 시 localStorage 의 해당 메뉴 데이터를 수정한다.
+  - [ ] 메뉴 삭제 시 localStorage 의 해당 메뉴 데이터를 삭제한다.
+
+- [ ] 에스프레소, 프라푸치노, 블렌디드, 티바나, 디저트 각각의 종류별로 메뉴판을 관리할 수 있게 만든다.
+  - [ ] 메뉴판 선택 시 카테고리 제목이 변경된다.
+  - [ ] 메뉴판 선택 시 localStorage 에서 해당 메뉴를 불러온다.
+  - [ ] 페이지에 최초로 접근할 때 localStorage 에서 espresso 메뉴를 불러온다.
+  - [ ] localStorage 에서 메뉴 데이터를 불러오면 화면에 출력한다.
+
+- [ ] 품절 상태인 경우를 보여줄 수 있게, 품절 버튼을 추가하고 `sold-out` class를 추가하여 상태를 변경한다.
+  - [ ] 품절 버튼을 추가한다.
+  - [ ] 메뉴 품절 시 localStorage 의 해당 메뉴 데이터의 품절 정보를 수정한다.
+  - [ ] li 태그에 `sold-out` class를 추가 또는 삭제한다.
+
+- key: menu
+- value: {"espresso":[{ name: "aaa", soldOut: false }, { name: "bbb", soldOut: true }], "frappuccino":[], "blended":[], "teavana":[], "desert":[]}
+```
+
 - [ ] [localStorage](https://developer.mozilla.org/ko/docs/Web/API/Window/localStorage)에 데이터를 저장하여 새로고침해도 데이터가 남아있게 한다.
 - [ ] 에스프레소, 프라푸치노, 블렌디드, 티바나, 디저트 각각의 종류별로 메뉴판을 관리할 수 있게 만든다.
   - [ ] 페이지에 최초로 접근할 때는 에스프레소 메뉴가 먼저 보이게 한다.

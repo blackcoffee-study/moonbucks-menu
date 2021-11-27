@@ -10,8 +10,8 @@ const edit = key => {
 };
 
 const del = key => {
-    if (confirm('정말 삭제하시겠습니까?')) {
-        manageMenuList({ type: 'DELETE', key });
+    {
+        confirm('정말 삭제하시겠습니까?') && manageMenuList({ type: 'DELETE', key });
     }
 };
 

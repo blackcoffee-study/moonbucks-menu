@@ -30,8 +30,8 @@ $('header > nav').addEventListener('click', e => {
         const placeholder = menuName.substr(2);
 
         $('main h2').innerText = `${menuName} 메뉴 관리`;
-        $('#espresso-menu-form  label').innerText = `${placeholder} 메뉴 이름`;
-        $('#espresso-menu-form  input').setAttribute('placeholder', `${placeholder} 메뉴 이름`);
+        $('#espresso-menu-form label').innerText = `${placeholder} 메뉴 이름`;
+        $('#espresso-menu-form input').setAttribute('placeholder', `${placeholder} 메뉴 이름`);
 
         App(category);
     }

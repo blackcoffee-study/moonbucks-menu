@@ -22,7 +22,7 @@ function App() {
 
   const render = () => {
     const menuListTemplate = this.menu[this.currentMenu]
-      .map((menu) => getMenuItemTemplate(menu.name))
+      .map((menu, index) => getMenuItemTemplate(menu.name, index))
       .join("");
 
     $("#menu-list").innerHTML = menuListTemplate;
@@ -44,9 +44,13 @@ function App() {
 
   const updateMenuItem = (e) => {
     const $menuItemList = e.target.closest("li");
-    const $menuName = $(".menu-name", $menuItemList);
-    const updatedMenuName = prompt("메뉴명을 수정하세요", $menuName.innerText);
-    $menuName.innerText = updatedMenuName;
+    const menuId = $menuItemList.dataset.menuId;
+    const menuName = $(".menu-name", $menuItemList).innerText;
+    const updatedMenuName = prompt("메뉴명을 수정하세요", menuName);
+
+    this.menu[this.currentMenu][menuId].name = updatedMenuName;
+    menuStore.setLocalStorage(this.menu);
+    render();
   };
 
   const removeMenuItem = (e) => {

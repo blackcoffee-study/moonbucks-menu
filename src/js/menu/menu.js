@@ -1,4 +1,5 @@
 import { $ } from "../common/utils.js";
+import { MenuComponent } from "./component.js";
 import MenuMessage from "./menuMessage.js";
 
 export default class Menu {
@@ -68,10 +69,7 @@ export default class Menu {
 
   loadMenus = (datas) => {
     datas.forEach((menu) => {
-      this.$espressoMenuList.insertAdjacentHTML(
-        "beforeend",
-        this.menuItemTemplate(menu)
-      );
+      this.createComponent(menu);
     });
     this.updateMenuCount(datas.length);
   };
@@ -81,10 +79,7 @@ export default class Menu {
       return;
     }
     const addedMenu = this.storage.add(inputName);
-    this.$espressoMenuList.insertAdjacentHTML(
-      "beforeend",
-      this.menuItemTemplate(addedMenu)
-    );
+    this.createComponent(addedMenu);
     this.updateMenuCount(this.storage.datas.length);
     this.$espressMenuInput.value = "";
   };
@@ -97,6 +92,11 @@ export default class Menu {
     elem.remove();
     this.updateMenuCount(this.storage.datas.length);
   };
+
+  createComponent(menu) {
+    const menuComponent = new MenuComponent(menu);
+    menuComponent.attachTo(this.$espressoMenuList);
+  }
 
   editMenuName = (elem, editedMenuName) => {
     elem.innerText = editedMenuName;
@@ -114,32 +114,5 @@ export default class Menu {
   renderMessage = (storageKey) => {
     this.$headingTitle.innerText = MenuMessage[storageKey].title;
     this.$espressMenuInput.placeholder = MenuMessage[storageKey].placeholder;
-  };
-
-  menuItemTemplate = ({ id, menuName, soldOut }) => {
-    return `<li data-id=${id} class="menu-list-item d-flex items-center py-2">
-      <span class="w-100 pl-2 menu-name ${
-        soldOut ? "sold-out" : ""
-      }">${menuName}</span>
-      <button
-      type="button"
-      class="bg-gray-50 text-gray-500 text-sm mr-1 menu-sold-out-button"
-    >
-      품절
-    </button>
-      <button
-        type="button"
-        class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
-      >
-        수정
-      </button>
-      <button
-        type="button"
-        class="bg-gray-50 text-gray-500 text-sm menu-remove-button"
-      >
-        삭제
-      </button>
-    </li>
-    `;
   };
 }

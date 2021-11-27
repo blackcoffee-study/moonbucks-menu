@@ -18,6 +18,6 @@ const menuListTemplate = (name, idx) => `
     </li>
 `;
 
-export default function addMenuList(menuList) {
+export default function applyMenuList(menuList) {
     $('#espresso-menu-list').innerHTML = menuList.map((e, i) => menuListTemplate(e, i)).join('');
 }

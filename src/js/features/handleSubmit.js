@@ -1,17 +1,14 @@
 import $ from '../utils/getDomElement';
-import addMenuList from '../utils/addMenuList';
-import setMenuCount from '../utils/setMenuCount';
+import manageMenuList from '../utils/manageMenuList';
 
 const setMenuToBlack = input => (input.value = '');
 
-const submitMenu = (input, menuList, text) => {
-    menuList.push(text);
-    addMenuList(menuList, text);
+const submitMenu = (input, text) => {
+    manageMenuList({ type: 'ADD', text });
     setMenuToBlack(input);
-    setMenuCount(menuList);
 };
 
-const submitMenuByInput = (input, menuList) => {
+const submitMenuByInput = input => {
     input.addEventListener('keypress', e => {
         const {
             key,
@@ -19,25 +16,25 @@ const submitMenuByInput = (input, menuList) => {
         } = e;
 
         {
-            key === 'Enter' && value.trim() && submitMenu(input, menuList, value);
+            key === 'Enter' && value.trim() && submitMenu(input, value);
         }
     });
 };
 
-const submitMenuByButton = (input, button, menuList) => {
+const submitMenuByButton = (input, button) => {
     button.addEventListener('click', () => {
         const inputValue = input.value;
 
         {
-            inputValue.trim() && submitMenu(input, menuList, inputValue);
+            inputValue.trim() && submitMenu(input, inputValue);
         }
     });
 };
 
-export default function handleSubmit(menuList) {
+export default function handleSubmit() {
     const submitInput = $('#espresso-menu-name');
     const submitButton = $('#espresso-menu-submit-button');
 
-    submitMenuByInput(submitInput, menuList);
-    submitMenuByButton(submitInput, submitButton, menuList);
+    submitMenuByInput(submitInput);
+    submitMenuByButton(submitInput, submitButton);
 }

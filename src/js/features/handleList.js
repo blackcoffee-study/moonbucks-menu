@@ -4,7 +4,10 @@ import setMenuCount from '../utils/setMenuCount';
 
 const edit = (menuList, key) => {
     const curMenu = menuList[key];
-    menuList[key] = prompt('메뉴명을 수정하세요', curMenu);
+    const editMenu = prompt('메뉴명을 수정하세요', curMenu);
+
+    menuList[key] = editMenu ? editMenu : curMenu;
+
     addMenuList(menuList);
 };
 

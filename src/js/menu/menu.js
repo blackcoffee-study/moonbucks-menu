@@ -38,17 +38,17 @@ export default class Menu {
           "수정할 메뉴명을 입력해 주세요.",
           elem.innerText
         );
-        this.editMenuName(elem, editedMenuName);
         this.storage.editMenuName(selectedId, editedMenuName);
+        this.editMenuName(elem, editedMenuName);
       }
 
       if (e.target.classList.contains("menu-remove-button")) {
-        this.removeMenu(menuElem);
         this.storage.removeById(selectedId);
+        this.removeMenu(menuElem);
       }
       if (e.target.classList.contains("menu-sold-out-button")) {
-        this.toggleSoldOut(menuElem);
         this.storage.soldOutById(selectedId);
+        this.toggleSoldOut(menuElem);
       }
     });
   }
@@ -70,33 +70,31 @@ export default class Menu {
         this.menuItemTemplate(menu)
       );
     });
-    this.updateMenuCount();
+    this.updateMenuCount(datas.length);
   };
 
   addMenu = () => {
-    const espressMenuName = this.$espressMenuInput.value;
-    if (espressMenuName === "") {
-      alert("값을 입력해 주세요.");
+    const inputName = this.$espressMenuInput.value;
+    if (!inputName.trim()) {
       return;
     }
-    const addedMenu = this.storage.add(espressMenuName);
+    const addedMenu = this.storage.add(inputName);
     this.$espressoMenuList.insertAdjacentHTML(
       "beforeend",
       this.menuItemTemplate(addedMenu)
     );
-    this.updateMenuCount();
+    this.updateMenuCount(this.storage.datas.length);
     this.$espressMenuInput.value = "";
   };
 
-  updateMenuCount = () => {
-    const menuCount = this.$espressoMenuList.querySelectorAll("li").length;
+  updateMenuCount = (menuCount) => {
     this.$menuCount.innerText = `총 ${menuCount}개`;
   };
 
   removeMenu = (elem) => {
     if (confirm("정말 삭제 하시겠어요?")) {
       elem.remove();
-      this.updateMenuCount();
+      this.updateMenuCount(this.storage.datas.length);
     }
   };
 

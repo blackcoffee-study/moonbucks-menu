@@ -1,4 +1,5 @@
-import { $ } from "./utils/index.js";
+import { $, $$ } from "./utils/index.js";
+import { getMenuItemTemplate } from "./utils/template.js";
 
 function App() {
   const addMenuItem = () => {
@@ -7,13 +8,18 @@ function App() {
       alert("값을 입력해주세요.");
       return;
     }
-    $("#espresso-menu-list").innerHTML += getMenuItemTemplate(espressoMenuName);
+
+    $("#espresso-menu-list").insertAdjacentHTML(
+      "beforeend",
+      getMenuItemTemplate(espressoMenuName)
+    );
     $("#espresso-menu-name").value = "";
     updateMenuCount();
   };
 
   const updateMenuItem = (e) => {
-    const $menuName = e.target.closest("li").querySelector(".menu-name");
+    const $menuItemList = e.target.closest("li");
+    const $menuName = $(".menu-name", $menuItemList);
     const updatedMenuName = prompt("메뉴명을 수정하세요", $menuName.innerText);
     $menuName.innerText = updatedMenuName;
   };
@@ -26,26 +32,9 @@ function App() {
   };
 
   const updateMenuCount = () => {
-    const menuCount = $("#espresso-menu-list").querySelectorAll("li").length;
+    const $menuList = $("#espresso-menu-list");
+    const menuCount = $$("li", $menuList).length;
     $("#menu-count").innerText = `총 ${menuCount}개`;
-  };
-
-  const getMenuItemTemplate = (menuItem) => {
-    return `<li class="menu-list-item d-flex items-center py-2">
-      <span class="w-100 pl-2 menu-name">${menuItem}</span>
-      <button
-        type="button"
-        class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
-      >
-        수정
-      </button>
-      <button
-        type="button"
-        class="bg-gray-50 text-gray-500 text-sm menu-remove-button"
-      >
-        삭제
-      </button>
-    </li>`;
   };
 
   $("#espresso-menu-form").addEventListener("submit", (e) =>
@@ -71,4 +60,4 @@ function App() {
   });
 }
 
-App();
+document.addEventListener("DOMContentLoaded", App);

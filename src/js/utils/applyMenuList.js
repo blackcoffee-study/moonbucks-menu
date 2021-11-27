@@ -1,8 +1,8 @@
 import $ from './getDomElement';
 
-const menuListTemplate = (name, idx) => `
+const menuListTemplate = (e, idx) => `
     <li class="menu-list-item d-flex items-center py-2" key=${idx}>
-        <span class="w-100 pl-2 menu-name sold-out">${name}</span>
+        <span class="w-100 pl-2 menu-name ${e.isSoldout ? 'sold-out' : ''}">${e.text}</span>
         <button
             type="button"
             class="bg-gray-50 text-gray-500 text-sm mr-1 menu-sold-out-button"

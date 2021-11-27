@@ -4,7 +4,7 @@ import manageMenuList from '../utils/manageMenuList';
 const setMenuToBlack = input => (input.value = '');
 
 const submitMenu = (input, text) => {
-    manageMenuList({ type: 'ADD', text });
+    manageMenuList({ type: 'ADD', text: { text, isSoldout: false } });
     setMenuToBlack(input);
 };
 

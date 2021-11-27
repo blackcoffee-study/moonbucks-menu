@@ -20,6 +20,9 @@ const manageMenuList = action => {
         case 'DELETE':
             menuList[category].splice(action.key, 1);
             break;
+        case 'SOLDOUT':
+            menuList[category][action.key].isSoldout = !menuList[category][action.key].isSoldout;
+            break;
         default:
             console.error('type error');
     }

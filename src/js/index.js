@@ -1,8 +1,8 @@
 import '../css/index.css';
+import $ from './utils/getDomElement';
 import handleSubmit from './features/handleSubmit';
 import preventAction from './utils/preventAction';
 import handleEditList from './features/handleEditList';
-import $ from './utils/getDomElement';
 import handleLocalStorage, { setLocalState } from './features/handleLocalStorage';
 import manageMenuList from './utils/manageMenuList';
 

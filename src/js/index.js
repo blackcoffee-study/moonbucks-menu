@@ -69,7 +69,9 @@ function App() {
   };
 
   const updateCurrentMenu = (e) => {
-    this.currentMenu = e.target.dataset.categoryName;
+    const $category = e.target;
+    this.currentMenu = $category.dataset.categoryName;
+    $("#category-title").innerText = `${$category.innerText} 메뉴 관리`;
     render();
   };
 

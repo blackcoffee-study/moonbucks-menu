@@ -1,19 +1,19 @@
 import { $, $$ } from "./utils/index.js";
-import { getMenuItemTemplate } from "./utils/template.js";
+import { getMenuItemTemplate } from "./utils/Template.js";
 
 function App() {
   const addMenuItem = () => {
-    const espressoMenuName = $("#espresso-menu-name").value;
+    const espressoMenuName = $("#menu-name").value;
     if (espressoMenuName === "") {
       alert("값을 입력해주세요.");
       return;
     }
 
-    $("#espresso-menu-list").insertAdjacentHTML(
+    $("#menu-list").insertAdjacentHTML(
       "beforeend",
       getMenuItemTemplate(espressoMenuName)
     );
-    $("#espresso-menu-name").value = "";
+    $("#menu-name").value = "";
     updateMenuCount();
   };
 
@@ -32,25 +32,25 @@ function App() {
   };
 
   const updateMenuCount = () => {
-    const $menuList = $("#espresso-menu-list");
+    const $menuList = $("#menu-list");
     const menuCount = $$("li", $menuList).length;
     $("#menu-count").innerText = `총 ${menuCount}개`;
   };
 
-  $("#espresso-menu-form").addEventListener("submit", (e) =>
-    e.preventDefault()
-  );
+  $("#menu-form").addEventListener("submit", (e) => {
+    e.preventDefault();
+  });
 
-  $("#espresso-menu-name").addEventListener("keypress", (e) => {
+  $("#menu-name").addEventListener("keypress", (e) => {
     if (e.key !== "Enter") {
       return;
     }
     addMenuItem();
   });
 
-  $("#espresso-menu-submit-button").addEventListener("click", addMenuItem);
+  $("#menu-submit-button").addEventListener("click", addMenuItem);
 
-  $("#espresso-menu-list").addEventListener("click", (e) => {
+  $("#menu-list").addEventListener("click", (e) => {
     if (e.target.classList.contains("menu-edit-button")) {
       updateMenuItem(e);
     }

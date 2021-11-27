@@ -84,7 +84,7 @@ const removeMenu = (targetIdx) => {
 };
 
 const toggleSoldout = (target, targetIdx) => {
-  target.querySelector('span').classList.toggle('sold-out');
+  $('span', target).classList.toggle('sold-out');
   currentMenuData.menuList[targetIdx].isSoldout =
     !currentMenuData.menuList[targetIdx].isSoldout;
   saveDataonLocalStorage(

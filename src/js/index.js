@@ -1,20 +1,45 @@
-import { $, $$ } from "./utils/index.js";
+import { $, menuStore } from "./utils/index.js";
 import { getMenuItemTemplate } from "./utils/Template.js";
 
 function App() {
+  this.currentMenu = "espresso";
+  this.menu = {
+    espresso: [],
+    frappuccino: [],
+    blended: [],
+    teavana: [],
+    desert: [],
+  };
+
+  this.init = () => {
+    if (menuStore.getLocalStorage()) {
+      this.menu = menuStore.getLocalStorage();
+      render();
+      return;
+    }
+    menuStore.setLocalStorage(this.menu);
+  };
+
+  const render = () => {
+    const menuListTemplate = this.menu[this.currentMenu]
+      .map((menu) => getMenuItemTemplate(menu.name))
+      .join("");
+
+    $("#menu-list").innerHTML = menuListTemplate;
+    updateMenuCount();
+  };
+
   const addMenuItem = () => {
-    const espressoMenuName = $("#menu-name").value;
-    if (espressoMenuName === "") {
+    const menuName = $("#menu-name").value;
+    if (menuName === "") {
       alert("값을 입력해주세요.");
       return;
     }
 
-    $("#menu-list").insertAdjacentHTML(
-      "beforeend",
-      getMenuItemTemplate(espressoMenuName)
-    );
+    this.menu[this.currentMenu].push({ name: menuName, soldOut: false });
+    menuStore.setLocalStorage(this.menu);
     $("#menu-name").value = "";
-    updateMenuCount();
+    render();
   };
 
   const updateMenuItem = (e) => {
@@ -32,8 +57,7 @@ function App() {
   };
 
   const updateMenuCount = () => {
-    const $menuList = $("#menu-list");
-    const menuCount = $$("li", $menuList).length;
+    const menuCount = this.menu[this.currentMenu].length;
     $("#menu-count").innerText = `총 ${menuCount}개`;
   };
 
@@ -58,6 +82,8 @@ function App() {
       removeMenuItem(e);
     }
   });
+
+  this.init();
 }
 
-document.addEventListener("DOMContentLoaded", App);
+document.addEventListener("DOMContentLoaded", new App());

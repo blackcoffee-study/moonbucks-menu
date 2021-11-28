@@ -1,9 +1,15 @@
+// 요구사항
+// 1. localStorage를 활용하여 새로고침해도 데이터가 남아있다.
+// 2. 각각의 메뉴 종류별로 메뉴판을 따로 관리한다.
+//    2-1) 앱 최초 접근 시 에스프레소 메뉴가 보인다.
+// 3. 
+
 const elMenuForm = document.querySelector("#espresso-menu-form");
 const elNameInput = document.querySelector("#espresso-menu-name");
 const elMenuList = document.querySelector("#espresso-menu-list");
 const elMenuCount = document.querySelector(".menu-count");
 
-const moonBucks = () => {
+const moonBucksApp = () => {
   elMenuForm.addEventListener("submit", (e) => {
     e.preventDefault();
 
@@ -13,15 +19,15 @@ const moonBucks = () => {
 
     // 2. 메뉴 생성 및 이벤트 등록
     const elMenuItem = createMenuItemElement(newMenuName);
-    addEditButtonEvent(elMenuItem);
-    addRemoveButtonEvent(elMenuItem);
+    addEventToEditButton(elMenuItem);
+    addEventToDeleteButton(elMenuItem);
 
     // 3. 메뉴 추가 및 인풋 초기화
     addMenu(elMenuItem);
     resetNameInput();
   });
 };
-moonBucks();
+moonBucksApp();
 
 /**
  * 전달받은 메뉴 이름의 유효성을 검사한다.
@@ -69,7 +75,7 @@ const createMenuItemElement = (menuName) => {
  * 전달 받은 메뉴 아이템 엘리먼트에 "삭제" 버튼 이벤트를 추가한다.
  * @param {HTMLLIElement} elMenuItem 메뉴 아이템 엘리먼트(`li`)
  */
-const addRemoveButtonEvent = (elMenuItem) => {
+const addEventToDeleteButton = (elMenuItem) => {
   const elRemoveButton = elMenuItem.querySelector(".menu-remove-button");
 
   elRemoveButton.addEventListener("click", (e) => {
@@ -84,7 +90,7 @@ const addRemoveButtonEvent = (elMenuItem) => {
  * 전달 받은 메뉴 아이템 엘리먼트에 "수정" 버튼 이벤트를 추가한다.
  * @param {HTMLLIElement} elMenuItem 메뉴 아이템 엘리먼트(`li`)
  */
-const addEditButtonEvent = (elMenuItem) => {
+const addEventToEditButton = (elMenuItem) => {
   const elEditButton = elMenuItem.querySelector(".menu-edit-button");
 
   elEditButton.addEventListener("click", (e) => {
@@ -94,7 +100,7 @@ const addEditButtonEvent = (elMenuItem) => {
       elCurrentName.textContent
     );
 
-    if (!isValidMenuName(editedName)) return;
+    // if (!isValidMenuName(editedName)) return;
     elCurrentName.textContent = editedName;
   });
 }

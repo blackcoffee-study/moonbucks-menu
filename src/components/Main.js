@@ -40,7 +40,16 @@ export default class Main extends Component {
           .map(item => {
             return `
             <li class="menu-list-item d-flex items-center py-2">
-                <span class="w-100 pl-2 menu-name">${item.name}</span>
+                <span class="w-100 pl-2 menu-name ${
+                  item.soldout && 'sold-out'
+                }">${item.name}</span>
+                <button
+                  type="button"
+                  class="bg-gray-50 text-gray-500 text-sm mr-1 menu-sold-out-button"
+                  data-id=${item.id}
+                >
+                  품절
+                </button>
                 <button
                     type="button"
                     class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
@@ -87,8 +96,14 @@ export default class Main extends Component {
       this.$props.editMenu(e.target.dataset.id);
     };
 
+    const editSoldoutHandler = e => {
+      if (!e.target.className.includes('menu-sold-out-button')) return;
+      this.$props.editSoldout(e.target.dataset.id);
+    };
+
     this.addEvent('submit', `#${selected}-menu-form`, addHandler);
     this.addEvent('click', `#${selected}-menu-list`, deleteHandler);
     this.addEvent('click', `#${selected}-menu-list`, editHandler);
+    this.addEvent('click', `#${selected}-menu-list`, editSoldoutHandler);
   }
 }

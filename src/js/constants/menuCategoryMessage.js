@@ -1,4 +1,4 @@
-const MENU_CATEGORY_MESSAGE = {
+const CATEGORY_MESSAGE = {
   espresso: {
     TITLE: '☕ 에스프레소 메뉴 관리',
     PLACEHOLDER: '에스프레소 메뉴 이름',
@@ -21,4 +21,4 @@ const MENU_CATEGORY_MESSAGE = {
   },
 };
 
-export default MENU_CATEGORY_MESSAGE;
+export default CATEGORY_MESSAGE;

@@ -3,15 +3,15 @@ import { renderMenuList } from './render/renderMenuList.js';
 import { renderAll } from './render/index.js';
 import { resetValue } from './util/resestValue.js';
 import { isEmptyValue } from './util/validator.js';
-import { currentMenuData } from './util/store.js';
+import { category } from './util/store.js';
 import { saveDataonLocalStorage } from './util/store.js';
 import { loadData } from './util/store.js';
 import { $ } from './util/selector.js';
 
-const $submitButton = $(`#${currentMenuData.menuCategory}-menu-submit-button`);
-const $form = $(`#${currentMenuData.menuCategory}-menu-form`);
-const $ul = $(`#${currentMenuData.menuCategory}-menu-list`);
-const $input = $(`#${currentMenuData.menuCategory}-menu-name`);
+const $submitButton = $(`#${category.name}-menu-submit-button`);
+const $form = $(`#${category.name}-menu-form`);
+const $ul = $(`#${category.name}-menu-list`);
+const $input = $(`#${category.name}-menu-name`);
 const $nav = $('nav');
 
 // init
@@ -20,13 +20,13 @@ renderAll();
 
 // 메뉴 숫자 증가해주는 함수
 const plusMenuCount = () => {
-  currentMenuData.menuTotalCount += 1;
+  category.menuTotalCount += 1;
   renderMenuTotalCount();
 };
 
 // 메뉴 숫자 감소해주는 함수
 const minusMenuCount = () => {
-  currentMenuData.menuTotalCount -= 1;
+  category.menuTotalCount -= 1;
   renderMenuTotalCount();
 };
 
@@ -36,12 +36,9 @@ const addMenu = (name) => {
     name,
     isSoldout: false,
   };
-  currentMenuData.menuList.push(newMenu);
+  category.menus.push(newMenu);
   renderMenuList();
-  saveDataonLocalStorage(
-    currentMenuData.menuCategory,
-    currentMenuData.menuList
-  );
+  saveDataonLocalStorage(category.name, category.menus);
   plusMenuCount();
 };
 
@@ -57,15 +54,12 @@ const handleSubmit = (event) => {
 const editMenu = (targetIdx) => {
   const newMenu = prompt(
     '메뉴명을 수정해주세요',
-    currentMenuData.menuList[targetIdx].name
+    category.menus[targetIdx].name
   );
   if (newMenu === null) return;
   if (isEmptyValue(newMenu)) return alert('메뉴명을 입력해주세요!');
-  currentMenuData.menuList[targetIdx].name = newMenu;
-  saveDataonLocalStorage(
-    currentMenuData.menuCategory,
-    currentMenuData.menuList
-  );
+  category.menus[targetIdx].name = newMenu;
+  saveDataonLocalStorage(category.name, category.menus);
   renderMenuList();
 };
 
@@ -73,26 +67,17 @@ const editMenu = (targetIdx) => {
 const removeMenu = (targetIdx) => {
   const res = confirm('정말 삭제하시겠습니까?');
   if (res) {
-    currentMenuData.menuList = currentMenuData.menuList.filter(
-      (_, idx) => targetIdx !== idx
-    );
+    category.menus = category.menus.filter((_, idx) => targetIdx !== idx);
   }
   minusMenuCount();
-  saveDataonLocalStorage(
-    currentMenuData.menuCategory,
-    currentMenuData.menuList
-  );
+  saveDataonLocalStorage(category.name, category.menus);
   renderMenuList();
 };
 
 const toggleSoldout = (target, targetIdx) => {
   $('span', target).classList.toggle('sold-out');
-  currentMenuData.menuList[targetIdx].isSoldout =
-    !currentMenuData.menuList[targetIdx].isSoldout;
-  saveDataonLocalStorage(
-    currentMenuData.menuCategory,
-    currentMenuData.menuList
-  );
+  category.menus[targetIdx].isSoldout = !category.menus[targetIdx].isSoldout;
+  saveDataonLocalStorage(category.name, category.menus);
 };
 
 const handleClick = (event) => {
@@ -110,8 +95,8 @@ const handleClick = (event) => {
 };
 
 const changeAttributes = (newMenuCategory) => {
-  const $input = $(`#${currentMenuData.menuCategory}-menu-name`);
-  const $label = $(`label[for="${currentMenuData.menuCategory}-menu-name"]`);
+  const $input = $(`#${category.name}-menu-name`);
+  const $label = $(`label[for="${category.name}-menu-name"]`);
   $submitButton.id = `${newMenuCategory}-menu-submit-button`;
   $form.id = `${newMenuCategory}-menu-form`;
   $ul.id = `${newMenuCategory}-menu-list`;
@@ -125,7 +110,7 @@ const changeMenuCategory = (event) => {
   if (target.nodeName === 'BUTTON') {
     const newMenuCategory = target.dataset.categoryName;
     changeAttributes(newMenuCategory);
-    currentMenuData.menuCategory = newMenuCategory;
+    category.name = newMenuCategory;
     loadData();
     renderAll();
   }

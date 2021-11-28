@@ -1,5 +1,5 @@
 import { $ } from '/src/js/util/selector.js';
-import { currentMenuData } from '../util/store.js';
+import { category } from '../util/store.js';
 
 const menuHtml = (
   name,
@@ -29,10 +29,10 @@ const menuHtml = (
 </li>`;
 
 export const renderMenuList = () => {
-  const menuCategory = currentMenuData.menuCategory;
-  const menuList = currentMenuData.menuList;
-  const $ul = $(`#${menuCategory}-menu-list`);
-  $ul.innerHTML = menuList.reduce((acc, cur) => {
+  const name = category.name;
+  const menus = category.menus;
+  const $ul = $(`#${name}-menu-list`);
+  $ul.innerHTML = menus.reduce((acc, cur) => {
     return acc + menuHtml(cur.name, cur.isSoldout);
   }, '');
 };

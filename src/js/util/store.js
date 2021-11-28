@@ -6,12 +6,12 @@ export const loadDataFromLocalStorage = (key) => {
   return JSON.parse(localStorage.getItem(key));
 };
 
-export const currentMenuData = {
-  menuList: [],
-  menuCategory: 'espresso',
+export const category = {
+  name: 'espresso',
+  menus: [],
 };
 
 export const loadData = () => {
-  const { menuCategory } = currentMenuData;
-  currentMenuData.menuList = loadDataFromLocalStorage(menuCategory) || [];
+  const { name } = category;
+  category.menus = loadDataFromLocalStorage(name) || [];
 };

@@ -1,6 +1,7 @@
 import Component from './core/Component.js';
 import Header from './components/Header.js';
-import Main from './components/Main.js';
+import MenuForm from './components/MenuForm.js';
+import MenuList from './components/MenuList.js';
 
 export default class App extends Component {
   setup() {
@@ -32,7 +33,12 @@ export default class App extends Component {
       <div class="d-flex justify-center mt-5 w-100">
         <div class="w-100">
             <header class="my-4" data-component="header"></header>
-            <main class="mt-10 d-flex justify-center" data-component="main"></main>
+            <main class="mt-10 d-flex justify-center">
+              <div class="wrapper bg-white p-10">
+                <div data-component="menu-form"></div>
+                <div data-component="menu-list"></div>
+              </div>
+            </main>
         </div>
       </div>  
       `;
@@ -40,14 +46,22 @@ export default class App extends Component {
 
   mounted() {
     const $header = this.$target.querySelector('[data-component="header"]');
-    const $main = this.$target.querySelector('[data-component="main"]');
+    const $menuForm = this.$target.querySelector(
+      '[data-component="menu-form"]'
+    );
+    const $menuList = this.$target.querySelector(
+      '[data-component="menu-list"]'
+    );
 
     new Header($header, {
       changeMenu: this.changeMenu.bind(this),
     });
-    new Main($main, {
+    new MenuForm($menuForm, {
       ...this.$state,
       addMenu: this.addMenu.bind(this),
+    });
+    new MenuList($menuList, {
+      ...this.$state,
       deleteMenu: this.deleteMenu.bind(this),
       editMenu: this.editMenu.bind(this),
       editSoldout: this.editSoldout.bind(this),

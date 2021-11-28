@@ -19,6 +19,8 @@ export default function handleEditList() {
     const coffeeMenuList = $('#espresso-menu-list');
 
     coffeeMenuList.addEventListener('click', e => {
+        e.stopImmediatePropagation();
+
         const key = e.target.closest('li').getAttribute('key');
 
         if (e.target.classList.contains('menu-edit-button')) edit(key);

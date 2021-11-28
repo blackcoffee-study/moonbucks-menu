@@ -35,7 +35,7 @@ const addMenu = (name) => {
     isSoldout: false,
   };
   currentMenuData.menuList.push(newMenu);
-  renderMenuList(currentMenuData.menuList);
+  renderMenuList();
   saveDataonLocalStorage(
     currentMenuData.menuCategory,
     currentMenuData.menuList
@@ -64,7 +64,7 @@ const editMenu = (targetIdx) => {
     currentMenuData.menuCategory,
     currentMenuData.menuList
   );
-  renderMenuList(currentMenuData.menuList);
+  renderMenuList();
 };
 
 // 메뉴 삭제 함수
@@ -80,7 +80,7 @@ const removeMenu = (targetIdx) => {
     currentMenuData.menuCategory,
     currentMenuData.menuList
   );
-  renderMenuList(currentMenuData.menuList);
+  renderMenuList();
 };
 
 const toggleSoldout = (target, targetIdx) => {

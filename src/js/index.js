@@ -14,7 +14,7 @@ const $input = $(`#${currentMenuData.menuCategory}-menu-name`);
 const $nav = $('nav');
 
 // 초기
-renderAll('espresso');
+renderAll();
 
 // 메뉴 숫자 증가해주는 함수
 const plusMenuCount = () => {
@@ -123,8 +123,8 @@ const changeMenuCategory = (event) => {
   if (target.nodeName === 'BUTTON') {
     const newMenuCategory = target.dataset.categoryName;
     changeAttributes(newMenuCategory);
-    renderAll(newMenuCategory);
     currentMenuData.menuCategory = newMenuCategory;
+    renderAll();
   }
 };
 

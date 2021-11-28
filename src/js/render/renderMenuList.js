@@ -1,4 +1,5 @@
 import { $ } from '/src/js/util/selector.js';
+import { currentMenuData } from '../util/store.js';
 
 const menuHtml = (
   name,
@@ -27,9 +28,10 @@ const menuHtml = (
   </button>
 </li>`;
 
-const $ul = $('#espresso-menu-list');
-
-export const renderMenuList = (menuList) => {
+export const renderMenuList = () => {
+  const menuCategory = currentMenuData.menuCategory;
+  const menuList = currentMenuData.menuList;
+  const $ul = $(`#${menuCategory}-menu-list`);
   $ul.innerHTML = menuList.reduce((acc, cur) => {
     return acc + menuHtml(cur.name, cur.isSoldout);
   }, '');

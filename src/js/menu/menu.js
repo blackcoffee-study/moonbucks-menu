@@ -38,6 +38,9 @@ export default class Menu {
           "수정할 메뉴명을 입력해 주세요.",
           elem.innerText
         );
+        if (!editedMenuName) {
+          return;
+        }
         this.storage.editMenuName(selectedId, editedMenuName);
         this.editMenuName(elem, editedMenuName);
       }

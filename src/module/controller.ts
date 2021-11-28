@@ -16,6 +16,7 @@ class Controller {
     this.model.bindMenuListChanged(this.render);
   }
 
+
   render = (menuList: Array<string>) => {
     this.view.renderMenuList(menuList);
     this.view.renderMenuCount(menuList);

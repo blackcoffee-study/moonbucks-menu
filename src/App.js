@@ -4,14 +4,27 @@ import Main from './components/Main.js';
 
 export default class App extends Component {
   setup() {
-    this.$state = {
-      selected: 'espresso',
-      espresso: { title: '☕ 에스프레소', items: [] },
-      frappuccino: { title: '🥤 프라푸치노', items: [] },
-      blended: { title: '🍹 블렌디드', items: [] },
-      teavana: { title: '🫖 티바나', items: [] },
-      desert: { title: '🍰 디저트', items: [] },
+    const saveData = () => {
+      localStorage.setItem(
+        'item',
+        JSON.stringify({ ...this.$state, selected: 'espresso' })
+      );
+      window.removeEventListener('beforeunload', saveData);
     };
+    window.addEventListener('beforeunload', saveData);
+    const loadData = JSON.parse(localStorage.getItem('item'));
+    if (loadData === null) {
+      this.$state = {
+        selected: 'espresso',
+        espresso: { title: '☕ 에스프레소', items: [] },
+        frappuccino: { title: '🥤 프라푸치노', items: [] },
+        blended: { title: '🍹 블렌디드', items: [] },
+        teavana: { title: '🫖 티바나', items: [] },
+        desert: { title: '🍰 디저트', items: [] },
+      };
+    } else {
+      this.$state = loadData;
+    }
   }
 
   template() {

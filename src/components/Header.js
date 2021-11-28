@@ -43,10 +43,7 @@ export default class Header extends Component {
 
   setEvent() {
     this.addEvent('click', 'button', e => {
-      console.log(e.target.dataset.categoryName);
+      this.$props.changeMenu(e);
     });
-    // this.$target.addEventListener('click', e => {
-    //   console.log(e.target.dataset.categoryName);
-    // });
   }
 }

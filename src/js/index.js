@@ -19,13 +19,13 @@ renderAll('espresso');
 // 메뉴 숫자 증가해주는 함수
 const plusMenuCount = () => {
   currentMenuData.menuTotalCount += 1;
-  renderMenuTotalCount(currentMenuData.menuTotalCount);
+  renderMenuTotalCount();
 };
 
 // 메뉴 숫자 감소해주는 함수
 const minusMenuCount = () => {
   currentMenuData.menuTotalCount -= 1;
-  renderMenuTotalCount(currentMenuData.menuTotalCount);
+  renderMenuTotalCount();
 };
 
 // 메뉴 추가 함수

@@ -8,6 +8,5 @@ export const loadDataFromLocalStorage = (key) => {
 
 export const currentMenuData = {
   menuList: [],
-  menuTotalCount: 0,
   menuCategory: 'espresso',
 };

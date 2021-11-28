@@ -10,3 +10,8 @@ export const currentMenuData = {
   menuList: [],
   menuCategory: 'espresso',
 };
+
+export const loadData = () => {
+  const { menuCategory } = currentMenuData;
+  currentMenuData.menuList = loadDataFromLocalStorage(menuCategory) || [];
+};

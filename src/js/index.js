@@ -5,6 +5,7 @@ import { resetValue } from './util/resestValue.js';
 import { isEmptyValue } from './util/validator.js';
 import { currentMenuData } from './util/store.js';
 import { saveDataonLocalStorage } from './util/store.js';
+import { loadData } from './util/store.js';
 import { $ } from './util/selector.js';
 
 const $submitButton = $(`#${currentMenuData.menuCategory}-menu-submit-button`);
@@ -13,7 +14,8 @@ const $ul = $(`#${currentMenuData.menuCategory}-menu-list`);
 const $input = $(`#${currentMenuData.menuCategory}-menu-name`);
 const $nav = $('nav');
 
-// 초기
+// init
+loadData();
 renderAll();
 
 // 메뉴 숫자 증가해주는 함수
@@ -124,6 +126,7 @@ const changeMenuCategory = (event) => {
     const newMenuCategory = target.dataset.categoryName;
     changeAttributes(newMenuCategory);
     currentMenuData.menuCategory = newMenuCategory;
+    loadData();
     renderAll();
   }
 };

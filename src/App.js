@@ -58,12 +58,12 @@ export default class App extends Component {
     });
     new MenuForm($menuForm, {
       ...this.$state,
-      addMenu: this.addMenu.bind(this),
+      addMenuList: this.addMenuList.bind(this),
     });
     new MenuList($menuList, {
       ...this.$state,
-      deleteMenu: this.deleteMenu.bind(this),
-      editMenu: this.editMenu.bind(this),
+      deleteMenuList: this.deleteMenuList.bind(this),
+      editMenuList: this.editMenuList.bind(this),
       editSoldout: this.editSoldout.bind(this),
     });
   }
@@ -75,7 +75,7 @@ export default class App extends Component {
     });
   }
 
-  addMenu(inputValue) {
+  addMenuList(inputValue) {
     const { selected } = this.$state;
     const { items } = this.$state[selected];
 
@@ -101,7 +101,7 @@ export default class App extends Component {
     });
   }
 
-  deleteMenu(id) {
+  deleteMenuList(id) {
     const { selected } = this.$state;
     const confirm = window.confirm('정말 삭제하시겠습니까?');
     if (confirm) {
@@ -115,7 +115,7 @@ export default class App extends Component {
     }
   }
 
-  editMenu(id) {
+  editMenuList(id) {
     const { selected } = this.$state;
     const menu = this.$state[selected].items.find(item => item.id === +id);
     const value = prompt('메뉴를 수정하세요', menu.name);

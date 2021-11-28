@@ -46,12 +46,12 @@ export default class MenuList extends Component {
 
     const deleteHandler = e => {
       if (!e.target.className.includes('menu-remove-button')) return;
-      this.$props.deleteMenu(e.target.dataset.id);
+      this.$props.deleteMenuList(e.target.dataset.id);
     };
 
     const editHandler = e => {
       if (!e.target.className.includes('menu-edit-button')) return;
-      this.$props.editMenu(e.target.dataset.id);
+      this.$props.editMenuList(e.target.dataset.id);
     };
 
     const editSoldoutHandler = e => {

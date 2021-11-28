@@ -46,7 +46,7 @@ export default class MenuForm extends Component {
         alert('값을 입력해주세요');
         return;
       }
-      this.$props.addMenu(input.value);
+      this.$props.addMenuList(input.value);
     };
 
     this.addEvent('submit', `#${selected}-menu-form`, addHandler);

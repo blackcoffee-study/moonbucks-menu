@@ -109,7 +109,6 @@ export default class App extends Component {
     const { selected } = this.$state;
     const editItems = this.$state[selected].items.map(item => {
       if (item.id === +id) {
-        console.log(!!item.soldout);
         return { id: item.id, name: item.name, soldout: !item.soldout };
       }
       return item;

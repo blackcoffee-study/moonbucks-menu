@@ -16,12 +16,12 @@ class Controller {
     this.model.bindMenuListChanged(this.render);
   }
 
-  render = (menuList) => {
+  render = (menuList: Array<string>) => {
     this.view.renderMenuList(menuList);
     this.view.renderMenuCount(menuList);
   };
 
-  handleAddMenu = (event) => {
+  handleAddMenu = (event: Event) => {
     event.preventDefault();
 
     const name = this.view.menuName;
@@ -33,37 +33,37 @@ class Controller {
     this.view.resetInput();
   }
 
-  handleEditMenu = (event) => {
+  handleEditMenu = (event: { target: HTMLButtonElement }) => {
     if (event.target.name === "edit") {
       const editedName = window.prompt("수정할 메뉴 이름을 입력해주세요");
 
       if (editedName) {
-        const { menuId } = event.target.parentNode.dataset;
+        const { menuId } = (event.target.parentNode as HTMLLIElement).dataset;
         this.model.editMenu(menuId, editedName);
       }
     }
   }
 
-  handleDeleteMenu = (event) => {
+  handleDeleteMenu = (event: { target: HTMLButtonElement }) => {
     if (event.target.name === "delete") {
       const deleteConfirm = window.confirm("메뉴를 삭제하시겠습니까?");
 
       if (deleteConfirm) {
-        const { menuId } = event.target.parentNode.dataset;
+        const { menuId } = (event.target.parentNode as HTMLLIElement).dataset;
         this.model.deleteMenu(menuId);
       }
     }
   }
 
-  handleClickMenuTab = (event) => {
+  handleClickMenuTab = (event: { target : HTMLButtonElement }) => {
     const { categoryName } = event.target.dataset;
 
     this.model.selectMenuTab(categoryName);
   }
 
-  handleSoldOutMenu = (event) => {
+  handleSoldOutMenu = (event: { target : HTMLButtonElement }) => {
     if (event.target.name === 'soldOut') {
-      const menuText = event.target.parentNode.childNodes[1];
+      const menuText = event.target.parentNode.childNodes[1] as HTMLSpanElement;
       menuText.classList.add('sold-out')
     }
   }

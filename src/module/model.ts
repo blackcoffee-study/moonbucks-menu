@@ -15,7 +15,7 @@ class Model {
     this.selectedTab = "espresso";
   }
 
-  bindMenuListChanged(handler) {
+  bindMenuListChanged(handler: Function) {
     this.menuObserver = handler;
   }
 
@@ -27,25 +27,25 @@ class Model {
     );
   }
 
-  addMenu(menuName) {
+  addMenu(menuName: string) {
     this.menu[this.selectedTab].push(menuName)
 
     this.onMenuChanged();
   }
 
-  editMenu(menuId, editedName) {
+  editMenu(menuId: number, editedName: string) {
     this.menu[this.selectedTab][menuId] = editedName;
 
     this.onMenuChanged();
   }
 
-  deleteMenu(menuId) {
+  deleteMenu(menuId: number) {
     this.menu[this.selectedTab].splice(menuId, 1)
 
     this.onMenuChanged();
   }
 
-  selectMenuTab(selectedTab) {
+  selectMenuTab(selectedTab: MenuCategory) {
     this.selectedTab = selectedTab;
 
     this.onMenuChanged();

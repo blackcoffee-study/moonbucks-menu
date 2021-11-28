@@ -20,7 +20,7 @@ class View {
     return (this.input.value = "");
   }
 
-  getMenuElement(menuList) {
+  getMenuElement(menuList: Array<string>) {
     return menuList.map((menu, index) =>
       `<li class="menu-list-item d-flex items-center py-2" data-menu-id=${index}>
   <span class="w-100 pl-2 menu-name">${menu}</span>
@@ -50,7 +50,7 @@ class View {
       .join("");
   }
 
-  renderMenuList(menus) {
+  renderMenuList(menus: Array<string>) {
     while (this.menuList.firstChild) {
       this.menuList.removeChild(this.menuList.firstChild);
     }
@@ -63,30 +63,30 @@ class View {
     this.menuList.innerHTML = menuListElement;
   }
 
-  renderMenuCount(menus) {
+  renderMenuCount(menus: Array<string>) {
     if (!menus) { return this.menuCount.innerText = '총 0개' }
     this.menuCount.innerText = `총 ${menus.length}개`;
   }
 
-  bindAddMenu(handler) {
+  bindAddMenu(handler: Function) {
     this.form.addEventListener("submit", (event) => handler(event))
   }
 
-  bindEditMenu(handler) {
+  bindEditMenu(handler: Function) {
     this.menuList.addEventListener("click", (event) => handler(event))
   }
 
-  bindDeleteMenu(handler) {
+  bindDeleteMenu(handler: Function) {
     this.menuList.addEventListener("click", (event) => handler(event))
   }
 
-  bindClickMenuTab(handler) {
+  bindClickMenuTab(handler: Function) {
     this.categoryButtons.forEach((button) =>
       button.addEventListener("click", event => handler(event))
     )
   }
 
-  bindSoldOutMenu(handler) {
+  bindSoldOutMenu(handler: Function) {
     this.menuList.addEventListener("click", event => handler(event))
   }
 }

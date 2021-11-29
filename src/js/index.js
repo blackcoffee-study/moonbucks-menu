@@ -12,6 +12,7 @@
 const $addMenuBtn = document.getElementById("espresso-menu-submit-button");
 const $menuList = document.getElementById("espresso-menu-list");
 const $inputMenu = document.getElementById("espresso-menu-name");
+const $totalNum = document.querySelector(".menu-count");
 const menuArrs = []
 
 
@@ -26,9 +27,11 @@ function addMenu(e) {
 }
 
 function updateMenuList(inputMenuValue) {
-  menuArrs.push(inputMenuValue)
-  renderMenu(menuArrs)
+  menuArrs.push(inputMenuValue);
+  renderMenu(menuArrs);
+  undateCount(menuArrs);
 }
+
 function renderMenu(menuArrs, event) {
   $menuList.innerText = ''; 
   menuArrs.map((menuArr) => {
@@ -52,13 +55,19 @@ function renderMenu(menuArrs, event) {
    menuLi.innerHTML = liContents
   });
 
-  const $targetUpdateBtn = document.querySelectorAll('.menu-edit-button');
+  const $targetUpdateBtn = document.querySelector('.menu-edit-button');
   function updateMenu(event) {
-    const updateBtn = event.target.closest('li').querySelector('.menu-name')  
+    const updateBtn = this.closest('li').querySelector('.menu-name')  
     console.log(updateBtn);
   }
   
   $targetUpdateBtn.addEventListener('click',updateMenu)  
 }
+
+function undateCount(menuArrs) {
+  const totalNum = menuArrs.length;
+  $totalNum.innerText = `총 ${totalNum}개`
+}
+
 $addMenuBtn.addEventListener('click', addMenu)
 $addMenuBtn.addEventListener('keypress', addMenu)

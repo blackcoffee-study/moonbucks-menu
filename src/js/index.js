@@ -1,29 +1,41 @@
-// 요구사항
-// 1. localStorage를 활용하여 새로고침해도 데이터가 남아있다.
-// 2. 각각의 메뉴 종류별로 메뉴판을 따로 관리한다.
-//    2-1) 앱 최초 접근 시 에스프레소 메뉴가 보인다.
-// 3. 
-
+const $nav = document.querySelector("header > nav");
 const elMenuForm = document.querySelector("#espresso-menu-form");
 const elNameInput = document.querySelector("#espresso-menu-name");
 const elMenuList = document.querySelector("#espresso-menu-list");
 const elMenuCount = document.querySelector(".menu-count");
 
+const CATEGORIES = ["espresso", "frappuccino", "blended", "teavana", "desert"];
+let selectedCategory = "";
+
 const moonBucksApp = () => {
+  selectedCategory = "espresso";
+  initializeMenuElements(selectedCategory);
+
+  // 카테고리 선택 이벤트
+  $nav.addEventListener("click", (e) => {
+    e.stopPropagation();
+
+    const $target = e.target;
+    if (!$target.classList.contains("cafe-category-name")) return;
+
+    const newCategoryName = $target.dataset.categoryName;
+    if (!CATEGORIES.includes(newCategoryName)) return;
+
+    selectedCategory = newCategoryName;
+    initializeMenuElements(selectedCategory);
+    updateMenuCount();
+  });
+
+  // 메뉴 제출 이벤트
   elMenuForm.addEventListener("submit", (e) => {
     e.preventDefault();
 
-    // 1. 유효성 검사
     const newMenuName = elNameInput.value;
     if (!isValidMenuName(newMenuName)) return;
 
-    // 2. 메뉴 생성 및 이벤트 등록
-    const elMenuItem = createMenuItemElement(newMenuName);
-    addEventToEditButton(elMenuItem);
-    addEventToDeleteButton(elMenuItem);
-
-    // 3. 메뉴 추가 및 인풋 초기화
-    addMenu(elMenuItem);
+    appendMenuElement(newMenuName);
+    saveMenuNameToStorage(newMenuName, selectedCategory);
+    updateMenuCount();
     resetNameInput();
   });
 };
@@ -33,7 +45,7 @@ moonBucksApp();
  * 전달받은 메뉴 이름의 유효성을 검사한다.
  * @param {string} menuName 메뉴 이름
  */
-const isValidMenuName = (menuName) => {
+function isValidMenuName(menuName) {
   if (!menuName) return;
   const name = menuName.trim();
 
@@ -43,14 +55,14 @@ const isValidMenuName = (menuName) => {
   }
 
   return true;
-};
+}
 
 /**
  * 전달받은 메뉴 이름으로 메뉴 아이템 엘리먼트를 생성한다.
  * @param {string} menuName 메뉴 이름
  * @returns {HTMLLIElement} 메뉴 아이템 엘리먼트(`li`)
  */
-const createMenuItemElement = (menuName) => {
+function createMenuItemElement(menuName) {
   const template = `<li class="menu-list-item d-flex items-center py-2">
     <span class="w-100 pl-2 menu-name">${menuName}</span>
     <button
@@ -68,14 +80,19 @@ const createMenuItemElement = (menuName) => {
     </li>`;
   const wrapper = document.createElement("div");
   wrapper.innerHTML = template;
-  return wrapper.firstElementChild;
-};
+
+  const $menuItem = wrapper.firstElementChild;
+  addEventToDeleteButton($menuItem);
+  addEventToEditButton($menuItem);
+
+  return $menuItem;
+}
 
 /**
  * 전달 받은 메뉴 아이템 엘리먼트에 "삭제" 버튼 이벤트를 추가한다.
  * @param {HTMLLIElement} elMenuItem 메뉴 아이템 엘리먼트(`li`)
  */
-const addEventToDeleteButton = (elMenuItem) => {
+function addEventToDeleteButton(elMenuItem) {
   const elRemoveButton = elMenuItem.querySelector(".menu-remove-button");
 
   elRemoveButton.addEventListener("click", (e) => {
@@ -84,13 +101,13 @@ const addEventToDeleteButton = (elMenuItem) => {
       updateMenuCount();
     }
   });
-};
+}
 
 /**
  * 전달 받은 메뉴 아이템 엘리먼트에 "수정" 버튼 이벤트를 추가한다.
  * @param {HTMLLIElement} elMenuItem 메뉴 아이템 엘리먼트(`li`)
  */
-const addEventToEditButton = (elMenuItem) => {
+function addEventToEditButton(elMenuItem) {
   const elEditButton = elMenuItem.querySelector(".menu-edit-button");
 
   elEditButton.addEventListener("click", (e) => {
@@ -106,26 +123,74 @@ const addEventToEditButton = (elMenuItem) => {
 }
 
 /**
- * 전달받은 메뉴 아이템 엘리먼트를 메뉴 리스트에 추가한다.
+ * 전달받은 메뉴 이름으로 메뉴 엘리먼트를 생성하여 메뉴 리스트에 추가한다.
  * @param {HTMLLIElement} elMenuItem 메뉴 아이템 엘리먼트(`li`)
  */
-const addMenu = (elMenuItem) => {
-  elMenuList.appendChild(elMenuItem);
-  updateMenuCount();
-};
+function appendMenuElement(menuName) {
+  const $menuItem = createMenuItemElement(menuName);
+  elMenuList.appendChild($menuItem);
+}
+
+/**
+ * 로컬 스토리지에서 선택된 카테고리의 메뉴 이름 목록을 가져온다.
+ * @param {string} categoryName
+ * @returns {string[]} 메뉴 이름 목록
+ */
+function getMenuNamesFromStorage(categoryName) {
+  if (!categoryName) return;
+
+  let existingMenus = localStorage.getItem(`${categoryName}Menus`);
+  return existingMenus ? existingMenus.split(",") : [];
+}
+
+/**
+ * 전달 받은 메뉴 이름을 카테고리 이름에 맞게 로컬 스토리지에 저장한다.
+ * @param {string} menuName 저장할 메뉴 이름
+ * @param {string} categoryName 가져올 카테고리 이름
+ */
+function saveMenuNameToStorage(menuName, categoryName) {
+  const existingMenus = getMenuNamesFromStorage(categoryName);
+  existingMenus.push(menuName);
+
+  localStorage.setItem(`${selectedCategory}Menus`, existingMenus.toString());
+}
 
 /**
  * 메뉴 이름 인풋값을 초기화한다.
  */
-const resetNameInput = () => {
+function resetNameInput() {
   if (!elNameInput) return;
   elNameInput.value = "";
-};
+}
 
 /**
  * 메뉴 카운트를 현재 메뉴 아이템 개수로 갱신한다.
  */
-const updateMenuCount = () => {
+function updateMenuCount() {
   const elMenuItems = elMenuList.querySelectorAll(".menu-list-item");
   elMenuCount.textContent = `총 ${elMenuItems.length}개`;
-};
+}
+
+/**
+ * 메뉴 리스트에 있는 모든 메뉴 아이템 엘리먼트를 제거한다.
+ */
+function removeMenuItemElements() {
+  if (!elMenuList) return;
+
+  while (elMenuList.firstChild) {
+    elMenuList.removeChild(elMenuList.firstChild);
+  }
+}
+
+/**
+ * 전달받은 카테고리의 모든 메뉴 아이템 엘리먼트를 메뉴 리스트에 추가한다.
+ * @param {string} categoryName
+ */
+function initializeMenuElements(categoryName) {
+  removeMenuItemElements();
+  
+  const menuNames = getMenuNamesFromStorage(categoryName);
+  for (let i = 0; i < menuNames.length; i++) {
+    appendMenuElement(menuNames[i]);
+  }
+}

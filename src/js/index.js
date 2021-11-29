@@ -20,20 +20,17 @@ function addMenu(e) {
   if(inputMenuValue == ''){
     return;
   } else {
-    updateMenu(inputMenuValue);
+    updateMenuList(inputMenuValue);
     $inputMenu.value = '';
   }
 }
 
-function updateMenu(inputMenuValue) {
+function updateMenuList(inputMenuValue) {
   menuArrs.push(inputMenuValue)
   renderMenu(menuArrs)
 }
-function renderMenu(menuArrs) {
+function renderMenu(menuArrs, event) {
   $menuList.innerText = ''; 
-
-
-  // resetList();
   menuArrs.map((menuArr) => {
     const li = document.createElement('li');
     const menuLi = $menuList.appendChild(li);
@@ -52,15 +49,16 @@ function renderMenu(menuArrs) {
       삭제
     </button>
   </li>`
-  return menuLi.innerHTML = liContents
+   menuLi.innerHTML = liContents
   });
-}
 
-function resetList($menuList) {
-    while ($menuList.li) {
-        $menuList.removeChild($menuList.li);
-    }
+  const $targetUpdateBtn = document.querySelectorAll('.menu-edit-button');
+  function updateMenu(event) {
+    const updateBtn = event.target.closest('li').querySelector('.menu-name')  
+    console.log(updateBtn);
+  }
+  
+  $targetUpdateBtn.addEventListener('click',updateMenu)  
 }
-
 $addMenuBtn.addEventListener('click', addMenu)
 $addMenuBtn.addEventListener('keypress', addMenu)

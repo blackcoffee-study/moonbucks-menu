@@ -158,7 +158,7 @@ function addEventToEditButton(elMenuItem) {
  }
 
 /**
- * 전달받은 메뉴 이름으로 메뉴 엘리먼트를 생성하여 메뉴 리스트에 추가한다.
+ * 전달받은 메뉴 정보로 메뉴 엘리먼트를 생성하여 메뉴 리스트에 추가한다.
  * @param {string} menuName - 메뉴 이름
  * @param {boolean} soldOut - 메뉴 품절 여부
  */
@@ -195,7 +195,7 @@ function removeMenuItemElements() {
 }
 
 /**
- * 전달받은 카테고리의 모든 메뉴 아이템 엘리먼트를 메뉴 리스트에 추가한다.
+ * 전달 받은 카테고리 이름에 해당하는 메뉴들을 찾아 메뉴 리스트에 추가한다.
  * @param {string} categoryName
  */
 function initializeMenuElements(categoryName) {

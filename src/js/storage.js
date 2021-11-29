@@ -9,7 +9,7 @@
 // }
 
 /**
- * 로컬 스토리지에서 메뉴 목록을 가져온다.
+ * 로컬 스토리지에서 카테고리별 메뉴 데이터를 가져온다.
  * @returns {object} 메뉴 목록 객체
  */
 export function loadMenuData() {
@@ -39,17 +39,17 @@ export function createMenu(categoryName, menuName) {
 }
 
 /**
- * 
- * @param {string} categoryName 
+ * 전달 받은 카테고리/메뉴 이름으로 수정 대상 데이터를 찾아 새로운 데이터로 갱신한다.
+ * @param {string} targetCategoryName 
  * @param {string} targetMenuName 
  * @param {Object} newMenuData 
  * @param {string} newMenuData.name
  * @param {boolean} newMenuData.soldOut
  * @returns 
  */
-export function updateMenu(categoryName, targetMenuName, newMenuData) {
+export function updateMenu(targetCategoryName, targetMenuName, newMenuData) {
   const menuData = loadMenuData();
-  const selectedMenus = menuData[categoryName];
+  const selectedMenus = menuData[targetCategoryName];
   if (!selectedMenus) return;
 
   const idx = selectedMenus.findIndex(

@@ -11,7 +11,7 @@ function App() {
 
   $('#espresso-menu-list').addEventListener('click', e => {
     if (e.target.classList.contains('menu-edit-button')) {
-      updateMenuName(e);
+      updateMenuName(e, this.menu);
     }
 
     if (e.target.classList.contains('menu-remove-button')) {
@@ -23,10 +23,7 @@ function App() {
     e.preventDefault();
   });
 
-  $('#espresso-menu-submit-button').addEventListener(
-    'click',
-    addMenuName(this.menu),
-  );
+  $('#espresso-menu-submit-button').addEventListener('click', addMenuName);
 
   $('#espresso-menu-name').addEventListener('keypress', e => {
     if (e.key === 'Enter') addMenuName(this.menu);

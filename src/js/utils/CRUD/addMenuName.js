@@ -9,12 +9,12 @@ const addMenuName = menu => {
   }
 
   const espressoMenuName = $('#espresso-menu-name').value;
-  menu.push({ name: espressoMenuName });
+  menu.push({ id: Date.now().toString(), name: espressoMenuName });
   store.setData(menu);
   const template = menu
     .map(item => {
       return `
-        <li class="menu-list-item d-flex items-center py-2">
+        <li data-menu-id=${item.id} class="menu-list-item d-flex items-center py-2">
           <span class="w-100 pl-2 menu-name">${item.name}</span>
           <button
             type="button"

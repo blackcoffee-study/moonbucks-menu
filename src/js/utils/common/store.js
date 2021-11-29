@@ -4,6 +4,6 @@ export const store = {
   },
 
   getData() {
-    localStorage.getItem('menu');
+    return JSON.parse(localStorage.getItem('menu'));
   },
 };

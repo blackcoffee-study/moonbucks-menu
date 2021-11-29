@@ -1,7 +1,10 @@
 import $ from './utils/selector.js';
-import storage from './utils/storage.js';
+import storage from './storage/index.js';
+import isEmptyString from './utils/helper.js';
 
 function App() {
+  this.currentCategory = 'espresso';
+
   this.menu = {
     espresso: [],
     frappuccino: [],
@@ -10,27 +13,21 @@ function App() {
     dessert: [],
   };
 
-  this.currentCategory = 'espresso';
-
   this.init = () => {
+    initEventListener();
     if (storage.getLocalStorage()) {
       this.menu = storage.getLocalStorage();
-      renderMenuList();
+      render();
       updateMenuCount();
     }
   };
 
-  const isEmptyString = (string) => {
-    if (string === null) {
-      return true;
-    }
-    if (string.trim() === '') {
-      return true;
-    }
-    return false;
-  };
+  const $menuForm = $('#menu-form');
+  const $menuList = $('#menu-list');
+  const $menuName = $('#menu-name');
+  const $nav = $('nav');
 
-  const renderMenuList = () => {
+  const render = () => {
     const menuListTemplate = this.menu[this.currentCategory]
       .map(
         (menuItem, index) =>
@@ -63,20 +60,14 @@ function App() {
     $menuList.innerHTML = menuListTemplate;
   };
 
-  const $menuForm = $('#menu-form');
-  const $menuList = $('#menu-list');
-  const $menuName = $('#menu-name');
-  const $nav = $('nav');
-
   const updateMenuCount = () => {
     const $menuCount = $('.menu-count');
     const menuCount = this.menu[this.currentCategory].length;
 
     $menuCount.innerText = `총 ${menuCount}개`;
-    $menuName.value = '';
   };
 
-  const addMenuName = () => {
+  const addMenu = () => {
     const menuName = $menuName.value;
 
     if (isEmptyString(menuName)) {
@@ -85,12 +76,13 @@ function App() {
     }
     this.menu[this.currentCategory].push({ name: menuName, soldOut: false });
     storage.setLocalStorage(this.menu);
-    renderMenuList();
+    render();
 
     updateMenuCount();
+    $menuName.value = '';
   };
 
-  const updatedMenuName = (e) => {
+  const updateMenu = (e) => {
     const menuId = e.target.closest('li').dataset.menuId;
     const updatedMenuName = prompt(
       '메뉴명을 수정하세요.',
@@ -100,17 +92,17 @@ function App() {
     if (!isEmptyString(updatedMenuName)) {
       this.menu[this.currentCategory][menuId].name = updatedMenuName;
       storage.setLocalStorage(this.menu);
-      renderMenuList();
+      render();
     }
   };
 
-  const removeMenuName = (e) => {
+  const removeMenu = (e) => {
     const menuId = e.target.closest('li').dataset.menuId;
     const menuName = $menuList.querySelector('.menu-name').innerText;
     if (confirm(`${menuName} 메뉴를 정말 삭제하시겠습니까?`)) {
       this.menu[this.currentCategory].splice(menuId, 1);
       storage.setLocalStorage(this.menu);
-      renderMenuList();
+      render();
       updateMenuCount();
     }
   };
@@ -120,43 +112,45 @@ function App() {
     this.menu[this.currentCategory][menuId].soldOut =
       !this.menu[this.currentCategory][menuId].soldOut;
     storage.setLocalStorage(this.menu);
-    renderMenuList();
+    render();
   };
 
   $menuForm.addEventListener('submit', (e) => {
     e.preventDefault();
-    addMenuName();
+    addMenu();
   });
 
-  $menuList.addEventListener('click', (e) => {
-    const isTargetHasClass = (className) =>
-      e.target.classList.contains(className);
-    if (isTargetHasClass('menu-edit-button')) {
-      updatedMenuName(e);
-      return;
-    }
+  const initEventListener = () => {
+    $menuList.addEventListener('click', (e) => {
+      const isTargetHasClass = (className) =>
+        e.target.classList.contains(className);
+      if (isTargetHasClass('menu-edit-button')) {
+        updateMenu(e);
+        return;
+      }
 
-    if (isTargetHasClass('menu-remove-button')) {
-      removeMenuName(e);
-      return;
-    }
+      if (isTargetHasClass('menu-remove-button')) {
+        removeMenu(e);
+        return;
+      }
 
-    if (isTargetHasClass('menu-sold-out-button')) {
-      soldOutMenu(e);
-      return;
-    }
-  });
+      if (isTargetHasClass('menu-sold-out-button')) {
+        soldOutMenu(e);
+        return;
+      }
+    });
 
-  $nav.addEventListener('click', (e) => {
-    const categoryName = e.target.dataset.categoryName;
+    $nav.addEventListener('click', (e) => {
+      const categoryName = e.target.dataset.categoryName;
 
-    if (categoryName != null) {
-      this.currentCategory = categoryName;
-      $('#category-title').innerText = `${e.target.innerText} 메뉴 관리`;
-      renderMenuList();
-      updateMenuCount();
-    }
-  });
+      if (categoryName != null) {
+        this.currentCategory = categoryName;
+        $('#category-title').innerText = `${e.target.innerText} 메뉴 관리`;
+        render();
+        updateMenuCount();
+      }
+    });
+  };
 }
 
 const app = new App();

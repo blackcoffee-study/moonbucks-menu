@@ -29,8 +29,12 @@ function updateMenu(inputMenuValue) {
   menuArrs.push(inputMenuValue)
   renderMenu(menuArrs)
 }
-function renderMenu(menuArrs){ 
-   menuArrs.map((menuArr) => {
+function renderMenu(menuArrs) {
+  $menuList.innerText = ''; 
+
+
+  // resetList();
+  menuArrs.map((menuArr) => {
     const li = document.createElement('li');
     const menuLi = $menuList.appendChild(li);
     const liContents = `<li class="menu-list-item d-flex items-center py-2">
@@ -50,6 +54,12 @@ function renderMenu(menuArrs){
   </li>`
   return menuLi.innerHTML = liContents
   });
+}
+
+function resetList($menuList) {
+    while ($menuList.li) {
+        $menuList.removeChild($menuList.li);
+    }
 }
 
 $addMenuBtn.addEventListener('click', addMenu)

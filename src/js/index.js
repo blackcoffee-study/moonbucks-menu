@@ -18,6 +18,7 @@ function App() {
             this.menu = store.getLocalStorage();
         }
         render();
+        initEventListeners();
     }
 
     const render = () => {
@@ -73,44 +74,46 @@ function App() {
         render();
     }
 
-    $("#menu-form").addEventListener("submit", (e) => {
-        e.preventDefault();
-    });
+    const initEventListeners = () => {
+        $("#menu-list").addEventListener("click", (e) => {
+            if (e.target.classList.contains("menu-edit-button")) {
+                updateMenuName(e);
+                return;
+            }
+            if (e.target.classList.contains("menu-remove-button")) {
+                deleteMenu(e);
+                return;
+            }
+            if (e.target.classList.contains("menu-sold-out-button")) {
+                soldOutMenu(e);
+                return;
+            }
+        });
 
-    $("#menu-name").addEventListener("keypress", (e) => {
-        if (e.key !== "Enter") {
-            return;
-        }
-        addMenu();
-    });
+        $("#menu-form").addEventListener("submit", (e) => {
+            e.preventDefault();
+        });
 
-    $("#menu-submit-button").addEventListener("click", () => {
-        addMenu();
-    })
+        $("#menu-submit-button").addEventListener("click", () => {
+            addMenu();
+        });
 
-    $("#menu-list").addEventListener("click", (e) => {
-        if (e.target.classList.contains("menu-edit-button")) {
-            updateMenuName(e);
-            return;
-        }
-        if (e.target.classList.contains("menu-remove-button")) {
-            deleteMenu(e);
-            return;
-        }
-        if (e.target.classList.contains("menu-sold-out-button")) {
-            soldOutMenu(e);
-            return;
-        }
-    })
+        $("#menu-name").addEventListener("keypress", (e) => {
+            if (e.key !== "Enter") {
+                return;
+            }
+            addMenu();
+        });
 
-    $("nav").addEventListener("click", (e) => {
-        const isCategoryButton = e.target.classList.contains(("cafe-category-name"));
-        if (isCategoryButton) {
-            this.currentCategory = e.target.dataset.categoryName;
-            $("#category-title").innerText = `${e.target.innerText} 메뉴 관리`;
-            render();
-        }
-    });
+        $("nav").addEventListener("click", (e) => {
+            const isCategoryButton = e.target.classList.contains(("cafe-category-name"));
+            if (isCategoryButton) {
+                this.currentCategory = e.target.dataset.categoryName;
+                $("#category-title").innerText = `${e.target.innerText} 메뉴 관리`;
+                render();
+            }
+        });
+    }
 
     const menuItemTemplate = () => {
         return this.menu[this.currentCategory].map((menuItem, index) => {

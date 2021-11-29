@@ -1,12 +1,13 @@
 import $ from './utils/common/selector.js';
 import { store } from './utils/common/store.js';
-import updateMenuCount from './utils/CRUD/updateMenuCount.js';
+// import addMenuName from './utils/CRUD/addMenuName.js';
 import addMenuName from './utils/CRUD/addMenuName.js';
 import updateMenuName from './utils/CRUD/updateMenuName.js';
 import removeMenuName from './utils/CRUD/removeMenuName.js';
 
-const App = () => {
+function App() {
   // 상태(=변할 수 있는 데이터) - 갯수, 메뉴명
+  this.menu = [];
 
   $('#espresso-menu-list').addEventListener('click', e => {
     if (e.target.classList.contains('menu-edit-button')) {
@@ -22,12 +23,15 @@ const App = () => {
     e.preventDefault();
   });
 
-  $('#espresso-menu-submit-button').addEventListener('click', addMenuName);
+  $('#espresso-menu-submit-button').addEventListener(
+    'click',
+    addMenuName(this.menu),
+  );
 
   $('#espresso-menu-name').addEventListener('keypress', e => {
-    if (e.key === 'Enter') addMenuName();
+    if (e.key === 'Enter') addMenuName(this.menu);
     else return;
   });
-};
+}
 
-App();
+const app = new App();

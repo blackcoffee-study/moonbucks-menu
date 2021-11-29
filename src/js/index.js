@@ -1,10 +1,10 @@
 import * as storageAPI from "./storage.js";
 
 const $nav = document.querySelector("header > nav");
-const elMenuForm = document.querySelector("#espresso-menu-form");
-const elNameInput = document.querySelector("#espresso-menu-name");
-const elMenuList = document.querySelector("#espresso-menu-list");
-const elMenuCount = document.querySelector(".menu-count");
+const $menuForm = document.querySelector("#espresso-menu-form");
+const $nameInput = document.querySelector("#espresso-menu-name");
+const $menuList = document.querySelector("#espresso-menu-list");
+const $menuCount = document.querySelector(".menu-count");
 
 const CATEGORIES = ["espresso", "frappuccino", "blended", "teavana", "desert"];
 let selectedCategory = "";
@@ -12,6 +12,7 @@ let selectedCategory = "";
 const moonBucksApp = () => {
   selectedCategory = "espresso";
   initializeMenuElements(selectedCategory);
+  updateMenuCount();
 
   // 카테고리 선택 이벤트
   $nav.addEventListener("click", (e) => {
@@ -29,10 +30,10 @@ const moonBucksApp = () => {
   });
 
   // 메뉴 제출 이벤트
-  elMenuForm.addEventListener("submit", (e) => {
+  $menuForm.addEventListener("submit", (e) => {
     e.preventDefault();
 
-    const newMenuName = elNameInput.value;
+    const newMenuName = $nameInput.value;
     if (!isValidMenuName(newMenuName)) return;
 
     storageAPI.createMenu(selectedCategory, newMenuName);
@@ -68,7 +69,9 @@ function isValidMenuName(menuName) {
  */
 function createMenuItemElement(menuName, soldOut) {
   const template = `<li class="menu-list-item d-flex items-center py-2">
-    <span class="w-100 pl-2 menu-name ${soldOut ? 'sold-out' : ''}">${menuName}</span>
+    <span class="w-100 pl-2 menu-name ${
+      soldOut ? "sold-out" : ""
+    }">${menuName}</span>
     <button
     type="button"
     class="bg-gray-50 text-gray-500 text-sm mr-1 menu-sold-out-button"
@@ -101,14 +104,14 @@ function createMenuItemElement(menuName, soldOut) {
 
 /**
  * 전달 받은 메뉴 아이템 엘리먼트에 "삭제" 버튼 이벤트를 추가한다.
- * @param {HTMLLIElement} elMenuItem 메뉴 아이템 엘리먼트(`li`)
+ * @param {HTMLLIElement} $menuItem 메뉴 아이템 엘리먼트(`li`)
  */
-function addEventToDeleteButton(elMenuItem) {
-  const elRemoveButton = elMenuItem.querySelector(".menu-remove-button");
+function addEventToDeleteButton($menuItem) {
+  const $removeButton = $menuItem.querySelector(".menu-remove-button");
 
-  elRemoveButton.addEventListener("click", (e) => {
+  $removeButton.addEventListener("click", (e) => {
     if (confirm("정말 삭제하시겠습니까?")) {
-      elMenuItem.remove();
+      $menuItem.remove();
       updateMenuCount();
     }
   });
@@ -116,28 +119,28 @@ function addEventToDeleteButton(elMenuItem) {
 
 /**
  * 전달 받은 메뉴 아이템 엘리먼트에 "수정" 버튼 이벤트를 추가한다.
- * @param {HTMLLIElement} elMenuItem 메뉴 아이템 엘리먼트(`li`)
+ * @param {HTMLLIElement} $menuItem 메뉴 아이템 엘리먼트(`li`)
  */
-function addEventToEditButton(elMenuItem) {
-  const elEditButton = elMenuItem.querySelector(".menu-edit-button");
+function addEventToEditButton($menuItem) {
+  const $editButton = $menuItem.querySelector(".menu-edit-button");
 
-  elEditButton.addEventListener("click", (e) => {
-    const elCurrentName = elMenuItem.querySelector(".menu-name");
-    const editedName = prompt(
-      "메뉴명을 수정하세요.",
-      elCurrentName.textContent
-    );
+  $editButton.addEventListener("click", (e) => {
+    const $currentName = $menuItem.querySelector(".menu-name");
+    const previousName = $currentName.textContent;
+    const editedName = prompt("메뉴명을 수정하세요.", previousName);
 
-    // if (!isValidMenuName(editedName)) return;
-    elCurrentName.textContent = editedName;
+    $currentName.textContent = editedName;
+    storageAPI.updateMenu(selectedCategory, previousName, {
+      name: editedName,
+    });
   });
 }
 
 /**
  * 전달 받은 메뉴 아이템 엘리먼트에 "품절" 버튼 이벤트를 추가한다.
- * @param {HTMLLIElement} elMenuItem 메뉴 아이템 엘리먼트(`li`)
+ * @param {HTMLLIElement} $menuItem 메뉴 아이템 엘리먼트(`li`)
  */
- function addEventToSoldOutButton($menuItem) {
+function addEventToSoldOutButton($menuItem) {
   const $soldOutButton = $menuItem.querySelector(".menu-sold-out-button");
 
   $soldOutButton.addEventListener("click", () => {
@@ -145,17 +148,13 @@ function addEventToEditButton(elMenuItem) {
     $menuName.classList.toggle("sold-out");
 
     if ($menuName.classList.contains("sold-out")) {
-      storageAPI.updateMenu(
-        selectedCategory,
-        $menuName.textContent, 
-        {
-          name: $menuName.textContent,
-          soldOut: true,
-        }
-      );
+      storageAPI.updateMenu(selectedCategory, $menuName.textContent, {
+        name: $menuName.textContent,
+        soldOut: true,
+      });
     }
-  })
- }
+  });
+}
 
 /**
  * 전달받은 메뉴 정보로 메뉴 엘리먼트를 생성하여 메뉴 리스트에 추가한다.
@@ -164,33 +163,33 @@ function addEventToEditButton(elMenuItem) {
  */
 function appendMenuElement(menuName, soldOut = false) {
   const $menuItem = createMenuItemElement(menuName, soldOut);
-  elMenuList.appendChild($menuItem);
+  $menuList.appendChild($menuItem);
 }
 
 /**
  * 메뉴 이름 인풋값을 초기화한다.
  */
 function resetNameInput() {
-  if (!elNameInput) return;
-  elNameInput.value = "";
+  if (!$nameInput) return;
+  $nameInput.value = "";
 }
 
 /**
  * 메뉴 카운트를 현재 메뉴 아이템 개수로 갱신한다.
  */
 function updateMenuCount() {
-  const elMenuItems = elMenuList.querySelectorAll(".menu-list-item");
-  elMenuCount.textContent = `총 ${elMenuItems.length}개`;
+  const $menuItems = $menuList.querySelectorAll(".menu-list-item");
+  $menuCount.textContent = `총 ${$menuItems.length}개`;
 }
 
 /**
  * 메뉴 리스트에 있는 모든 메뉴 아이템 엘리먼트를 제거한다.
  */
 function removeMenuItemElements() {
-  if (!elMenuList) return;
+  if (!$menuList) return;
 
-  while (elMenuList.firstChild) {
-    elMenuList.removeChild(elMenuList.firstChild);
+  while ($menuList.firstChild) {
+    $menuList.removeChild($menuList.firstChild);
   }
 }
 
@@ -200,7 +199,7 @@ function removeMenuItemElements() {
  */
 function initializeMenuElements(categoryName) {
   removeMenuItemElements();
-  
+
   const categoryMenus = storageAPI.loadMenuData()[categoryName];
   if (!categoryMenus) return;
 

@@ -14,9 +14,7 @@
  */
 export function loadMenuData() {
   let existingMenus = localStorage.getItem("menus");
-  return existingMenus
-    ? JSON.parse(existingMenus)
-    : {};
+  return existingMenus ? JSON.parse(existingMenus) : {};
 }
 
 /**
@@ -40,25 +38,21 @@ export function createMenu(categoryName, menuName) {
 
 /**
  * 전달 받은 카테고리/메뉴 이름으로 수정 대상 데이터를 찾아 새로운 데이터로 갱신한다.
- * @param {string} targetCategoryName 
- * @param {string} targetMenuName 
- * @param {Object} newMenuData 
+ * @param {string} targetCategoryName
+ * @param {string} targetMenuName
+ * @param {Object} newMenuData
  * @param {string} newMenuData.name
  * @param {boolean} newMenuData.soldOut
- * @returns 
+ * @returns
  */
 export function updateMenu(targetCategoryName, targetMenuName, newMenuData) {
   const menuData = loadMenuData();
   const selectedMenus = menuData[targetCategoryName];
   if (!selectedMenus) return;
 
-  const idx = selectedMenus.findIndex(
-    (menu) => menu.name === targetMenuName
-  );
+  const idx = selectedMenus.findIndex((menu) => menu.name === targetMenuName);
 
-  if (idx !== -1) {
-    selectedMenus[idx] = newMenuData;
-  }
-
+  if (idx === -1) return;
+  selectedMenus[idx] = { ...selectedMenus[idx], ...newMenuData };
   localStorage.setItem("menus", JSON.stringify(menuData, ...selectedMenus));
 }

@@ -1,3 +1,5 @@
+import * as storageAPI from "./storage.js";
+
 const $nav = document.querySelector("header > nav");
 const elMenuForm = document.querySelector("#espresso-menu-form");
 const elNameInput = document.querySelector("#espresso-menu-name");
@@ -33,8 +35,9 @@ const moonBucksApp = () => {
     const newMenuName = elNameInput.value;
     if (!isValidMenuName(newMenuName)) return;
 
+    storageAPI.createMenu(selectedCategory, newMenuName);
     appendMenuElement(newMenuName);
-    saveMenuNameToStorage(newMenuName, selectedCategory);
+
     updateMenuCount();
     resetNameInput();
   });
@@ -60,11 +63,18 @@ function isValidMenuName(menuName) {
 /**
  * 전달받은 메뉴 이름으로 메뉴 아이템 엘리먼트를 생성한다.
  * @param {string} menuName 메뉴 이름
+ * @param {boolean} soldOut 메뉴 품절 여부
  * @returns {HTMLLIElement} 메뉴 아이템 엘리먼트(`li`)
  */
-function createMenuItemElement(menuName) {
+function createMenuItemElement(menuName, soldOut) {
   const template = `<li class="menu-list-item d-flex items-center py-2">
-    <span class="w-100 pl-2 menu-name">${menuName}</span>
+    <span class="w-100 pl-2 menu-name ${soldOut ? 'sold-out' : ''}">${menuName}</span>
+    <button
+    type="button"
+    class="bg-gray-50 text-gray-500 text-sm mr-1 menu-sold-out-button"
+    >
+      품절
+    </button>
     <button
       type="button"
       class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
@@ -84,6 +94,7 @@ function createMenuItemElement(menuName) {
   const $menuItem = wrapper.firstElementChild;
   addEventToDeleteButton($menuItem);
   addEventToEditButton($menuItem);
+  addEventToSoldOutButton($menuItem);
 
   return $menuItem;
 }
@@ -123,36 +134,37 @@ function addEventToEditButton(elMenuItem) {
 }
 
 /**
- * 전달받은 메뉴 이름으로 메뉴 엘리먼트를 생성하여 메뉴 리스트에 추가한다.
+ * 전달 받은 메뉴 아이템 엘리먼트에 "품절" 버튼 이벤트를 추가한다.
  * @param {HTMLLIElement} elMenuItem 메뉴 아이템 엘리먼트(`li`)
  */
-function appendMenuElement(menuName) {
-  const $menuItem = createMenuItemElement(menuName);
+ function addEventToSoldOutButton($menuItem) {
+  const $soldOutButton = $menuItem.querySelector(".menu-sold-out-button");
+
+  $soldOutButton.addEventListener("click", () => {
+    const $menuName = $menuItem.querySelector("span.menu-name");
+    $menuName.classList.toggle("sold-out");
+
+    if ($menuName.classList.contains("sold-out")) {
+      storageAPI.updateMenu(
+        selectedCategory,
+        $menuName.textContent, 
+        {
+          name: $menuName.textContent,
+          soldOut: true,
+        }
+      );
+    }
+  })
+ }
+
+/**
+ * 전달받은 메뉴 이름으로 메뉴 엘리먼트를 생성하여 메뉴 리스트에 추가한다.
+ * @param {string} menuName - 메뉴 이름
+ * @param {boolean} soldOut - 메뉴 품절 여부
+ */
+function appendMenuElement(menuName, soldOut = false) {
+  const $menuItem = createMenuItemElement(menuName, soldOut);
   elMenuList.appendChild($menuItem);
-}
-
-/**
- * 로컬 스토리지에서 선택된 카테고리의 메뉴 이름 목록을 가져온다.
- * @param {string} categoryName
- * @returns {string[]} 메뉴 이름 목록
- */
-function getMenuNamesFromStorage(categoryName) {
-  if (!categoryName) return;
-
-  let existingMenus = localStorage.getItem(`${categoryName}Menus`);
-  return existingMenus ? existingMenus.split(",") : [];
-}
-
-/**
- * 전달 받은 메뉴 이름을 카테고리 이름에 맞게 로컬 스토리지에 저장한다.
- * @param {string} menuName 저장할 메뉴 이름
- * @param {string} categoryName 가져올 카테고리 이름
- */
-function saveMenuNameToStorage(menuName, categoryName) {
-  const existingMenus = getMenuNamesFromStorage(categoryName);
-  existingMenus.push(menuName);
-
-  localStorage.setItem(`${selectedCategory}Menus`, existingMenus.toString());
 }
 
 /**
@@ -189,8 +201,11 @@ function removeMenuItemElements() {
 function initializeMenuElements(categoryName) {
   removeMenuItemElements();
   
-  const menuNames = getMenuNamesFromStorage(categoryName);
-  for (let i = 0; i < menuNames.length; i++) {
-    appendMenuElement(menuNames[i]);
+  const categoryMenus = storageAPI.loadMenuData()[categoryName];
+  if (!categoryMenus) return;
+
+  for (let i = 0; i < categoryMenus.length; i++) {
+    const menu = categoryMenus[i];
+    appendMenuElement(menu.name, menu.soldOut);
   }
 }

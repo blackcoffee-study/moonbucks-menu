@@ -15,8 +15,6 @@ function App() {
     desert: [],
   };
 
-  console.log('cate: ', this.currentCategory);
-
   this.init = () => {
     if (store.getData()) this.menu = store.getData();
     this.currentCategory = 'espresso';
@@ -47,7 +45,9 @@ function App() {
       e.preventDefault();
     });
 
-    $('#menu-submit-button').addEventListener('click', addMenuName);
+    $('#menu-submit-button').addEventListener('click', () => {
+      addMenuName(this.menu, this.currentCategory);
+    });
 
     $('#menu-name').addEventListener('keypress', e => {
       if (e.key === 'Enter') addMenuName(this.menu, this.currentCategory);

@@ -100,7 +100,7 @@ function createMenuItemElement(menuName, soldOut) {
     </li>`;
   const wrapper = document.createElement("div");
   wrapper.innerHTML = template;
-
+  
   const $menuItem = wrapper.firstElementChild;
   addEventToDeleteButton($menuItem);
   addEventToEditButton($menuItem);

@@ -1,49 +1,53 @@
 import * as storageAPI from "./storage.js";
 
 const $nav = document.querySelector("header > nav");
-const $menuForm = document.querySelector("#espresso-menu-form");
-const $nameInput = document.querySelector("#espresso-menu-name");
-const $menuList = document.querySelector("#espresso-menu-list");
+const $menuForm = document.querySelector("#menu-form");
+const $nameInput = document.querySelector("#menu-name");
+const $menuList = document.querySelector("#menu-list");
 const $menuCount = document.querySelector(".menu-count");
+const $menuHeading = document.querySelector(".heading > h2");
 
 const CATEGORIES = ["espresso", "frappuccino", "blended", "teavana", "desert"];
 let selectedCategory = "";
 
 const moonBucksApp = () => {
   selectedCategory = "espresso";
+  replaceMenuHeader(selectedCategory);
   initializeMenuElements(selectedCategory);
   updateMenuCount();
 
-  // 카테고리 선택 이벤트
-  $nav.addEventListener("click", (e) => {
-    e.stopPropagation();
-
-    const $target = e.target;
-    if (!$target.classList.contains("cafe-category-name")) return;
-
-    const newCategoryName = $target.dataset.categoryName;
-    if (!CATEGORIES.includes(newCategoryName)) return;
-
-    selectedCategory = newCategoryName;
-    initializeMenuElements(selectedCategory);
-    updateMenuCount();
-  });
-
-  // 메뉴 제출 이벤트
-  $menuForm.addEventListener("submit", (e) => {
-    e.preventDefault();
-
-    const newMenuName = $nameInput.value;
-    if (!isValidMenuName(newMenuName)) return;
-
-    storageAPI.createMenu(selectedCategory, newMenuName);
-    appendMenuElement(newMenuName);
-
-    updateMenuCount();
-    resetNameInput();
-  });
+  $nav.addEventListener("click", handleNavigation);
+  $menuForm.addEventListener("submit", handleSubmit);
 };
 moonBucksApp();
+
+function handleNavigation(e) {
+  e.stopPropagation();
+
+  const $target = e.target;
+  if (!$target.classList.contains("cafe-category-name")) return;
+
+  const newCategoryName = $target.dataset.categoryName;
+  if (!CATEGORIES.includes(newCategoryName)) return;
+
+  selectedCategory = newCategoryName;
+  replaceMenuHeader(selectedCategory);
+  initializeMenuElements(selectedCategory);
+  updateMenuCount();
+}
+
+function handleSubmit(e) {
+  e.preventDefault();
+
+  const newMenuName = $nameInput.value;
+  if (!isValidMenuName(newMenuName)) return;
+
+  storageAPI.createMenu(selectedCategory, newMenuName);
+  appendMenuElement(newMenuName);
+
+  updateMenuCount();
+  resetNameInput();
+}
 
 /**
  * 전달받은 메뉴 이름의 유효성을 검사한다.
@@ -207,4 +211,22 @@ function initializeMenuElements(categoryName) {
     const menu = categoryMenus[i];
     appendMenuElement(menu.name, menu.soldOut);
   }
+}
+
+/**
+ * 메뉴판 헤더 텍스트를 전달 받은 메뉴 이름으로 교체한다.
+ * @param {string} categoryName 
+ */
+function replaceMenuHeader(categoryName) {
+  if (!CATEGORIES.includes(categoryName)) return;
+
+  const heading = {
+    espresso: "☕ 에스프레소",
+    frappuccino: "🥤 프라푸치노",
+    blended: "🍹 블렌디드",
+    teavana: "🫖 티바나",
+    desert: "🍰 디저트",
+  };
+
+  $menuHeading.textContent = `${heading[categoryName]} 메뉴 관리`;
 }

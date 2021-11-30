@@ -1,11 +1,11 @@
 import { store } from '../common/store.js';
 
-const updateMenuName = (e, menu) => {
+const updateMenuName = (e, menu, category) => {
   const menuId = e.target.closest('li').dataset.menuId;
   const menuName = e.target.closest('li').querySelector('.menu-name');
   const updatedMenuName = prompt('메뉴명을 수정하세요', menuName.innerText);
 
-  const newMenu = menu.map(item => {
+  menu[category] = [...menu[category]].map(item => {
     if (item.id == menuId) {
       item.name = updatedMenuName;
       item.id = item.id;
@@ -13,8 +13,12 @@ const updateMenuName = (e, menu) => {
     return item;
   });
 
-  store.setData(newMenu);
-  menuName.innerText = updatedMenuName;
+  if (updatedMenuName) {
+    menuName.innerText = updatedMenuName;
+    store.setData(menu);
+  }
+
+  // console.log('newMenu: ', newMenu);
 };
 
 export default updateMenuName;

@@ -7,25 +7,33 @@ import removeMenuName from './utils/CRUD/removeMenuName.js';
 import render from './utils/common/render.js';
 
 function App() {
-  this.menu = [];
+  this.menu = {
+    espresso: [],
+    frappuccino: [],
+    blended: [],
+    teavana: [],
+    desert: [],
+  };
+
+  this.currentCategory = 'espresso';
 
   this.setState = newState => {
     this.state = { ...this.state, ...newState };
-    this.render();
+    render(this.menu, this.currentCategory);
   };
 
   this.init = () => {
     if (store.getData()) this.menu = store.getData();
-    render(this.menu);
+    render(this.menu, this.currentCategory);
   };
 
   $('#espresso-menu-list').addEventListener('click', e => {
     if (e.target.classList.contains('menu-edit-button')) {
-      updateMenuName(e, this.menu);
+      updateMenuName(e, this.menu, this.currentCategory);
     }
 
     if (e.target.classList.contains('menu-remove-button')) {
-      removeMenuName(e, this.menu);
+      removeMenuName(e, this.menu, this.currentCategory);
     }
   });
 
@@ -33,15 +41,18 @@ function App() {
     e.preventDefault();
   });
 
-  $('#espresso-menu-submit-button').addEventListener(
-    'click',
-    addMenuName,
-    this.menu,
-  );
+  $('#espresso-menu-submit-button').addEventListener('click', addMenuName);
 
   $('#espresso-menu-name').addEventListener('keypress', e => {
-    if (e.key === 'Enter') addMenuName(this.menu);
+    if (e.key === 'Enter') addMenuName(this.menu, this.currentCategory);
     else return;
+  });
+
+  $('nav').addEventListener('click', e => {
+    const isCategoryButton = e.target.classList.contains('cafe-category-name');
+    if (isCategoryButton) {
+      const categoryName = e.target.dataset.categoryName;
+    }
   });
 }
 

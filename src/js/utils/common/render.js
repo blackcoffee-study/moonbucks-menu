@@ -1,8 +1,8 @@
 import updateMenuCount from '../CRUD/updateMenuCount.js';
 import $ from './selector.js';
 
-const render = menu => {
-  const template = menu
+const render = (menu, category) => {
+  const template = menu[category]
     .map(item => {
       return `
         <li data-menu-id=${item.id} class="menu-list-item d-flex items-center py-2">

@@ -1,23 +1,38 @@
 import '../css/index.css';
-import Form from './form';
-import blockRefreshWhenSubmit from './module/blockRefreshWhenSubmit';
-import handleList from './handleList';
+import $ from './utils/getDomElement';
+import handleSubmit from './features/handleSubmit';
+import preventAction from './utils/preventAction';
+import handleEditList from './features/handleEditList';
+import handleLocalStorage, { setLocalState } from './features/handleLocalStorage';
+import manageMenuList from './utils/manageMenuList';
 
-// 전역 상태를 위한 스토어
-const store = {
-    menuList: [],
-};
+preventAction('#espresso-menu-form');
 
-function App() {
-    // form에 대한 e.preventDefault 적용
-    blockRefreshWhenSubmit();
+function App(category = 'espresso') {
+    setLocalState('category', category);
 
-    // form에 대한 로직 -> <input> || <button>
-    const form = new Form();
-    form.submit(store.menuList);
+    handleLocalStorage();
 
-    // 리스트의 수정 및 변경에 관련된 로직
-    handleList(store.menuList);
+    manageMenuList({ type: 'LOADING' });
+
+    handleSubmit();
+
+    handleEditList();
 }
 
 App();
+
+$('header > nav').addEventListener('click', e => {
+    const category = e.target.getAttribute('data-category-name');
+
+    if (category) {
+        const menuName = e.target.innerText;
+        const placeholder = menuName.substr(2);
+
+        $('main h2').innerText = `${menuName} 메뉴 관리`;
+        $('#espresso-menu-form label').innerText = `${placeholder} 메뉴 이름`;
+        $('#espresso-menu-form input').setAttribute('placeholder', `${placeholder} 메뉴 이름`);
+
+        App(category);
+    }
+});

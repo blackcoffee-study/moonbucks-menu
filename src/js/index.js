@@ -115,12 +115,11 @@ function App() {
     render();
   };
 
-  $menuForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    addMenu();
-  });
-
   const initEventListener = () => {
+    $menuForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      addMenu();
+    });
     $menuList.addEventListener('click', (e) => {
       const isTargetHasClass = (className) =>
         e.target.classList.contains(className);

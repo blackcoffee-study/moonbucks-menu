@@ -1,13 +1,3 @@
-// const menus = {
-//   espresso: [
-//     {
-//       name: "에스프레소 1",
-//       soldOut: true,
-//     }
-//   ],
-//   ...
-// }
-
 /**
  * 로컬 스토리지에서 카테고리별 메뉴 데이터를 가져온다.
  * @returns {object} 메뉴 목록 객체
@@ -43,7 +33,6 @@ export function createMenu(categoryName, menuName) {
  * @param {Object} newMenuData
  * @param {string} newMenuData.name
  * @param {boolean} newMenuData.soldOut
- * @returns
  */
 export function updateMenu(targetCategoryName, targetMenuName, newMenuData) {
   const menuData = loadMenuData();
@@ -55,4 +44,22 @@ export function updateMenu(targetCategoryName, targetMenuName, newMenuData) {
   if (idx === -1) return;
   selectedMenus[idx] = { ...selectedMenus[idx], ...newMenuData };
   localStorage.setItem("menus", JSON.stringify(menuData, ...selectedMenus));
+}
+
+/**
+ * 전달 받은 카테고리의 메뉴를 삭제한다.
+ * @param {string} targetCategoryName - 삭제할 메뉴의 카테고리 이름
+ * @param {string} targetMenuName - 삭제할 메뉴 이름
+ */
+export function deleteMenu(targetCategoryName, targetMenuName) {
+  const menuData = loadMenuData();
+  const selectedMenus = menuData[targetCategoryName];
+  if (!selectedMenus) return;
+
+  const newSelectedMenus = selectedMenus.filter(
+    (menu) => menu.name !== targetMenuName
+  );
+  menuData[targetCategoryName] = newSelectedMenus;
+
+  localStorage.setItem("menus", JSON.stringify(menuData));
 }

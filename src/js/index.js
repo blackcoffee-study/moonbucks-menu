@@ -11,15 +11,18 @@ const CATEGORIES = ["espresso", "frappuccino", "blended", "teavana", "desert"];
 let selectedCategory = "";
 
 const moonBucksApp = () => {
+  // 앱 초기화
   selectedCategory = "espresso";
   replaceMenuHeader(selectedCategory);
   initializeMenuElements(selectedCategory);
   updateMenuCount();
 
+  // 주요 이벤트 등록
   $nav.addEventListener("click", handleNavigation);
   $menuForm.addEventListener("submit", handleSubmit);
 };
 moonBucksApp();
+
 
 function handleNavigation(e) {
   e.stopPropagation();
@@ -112,9 +115,11 @@ function createMenuItemElement(menuName, soldOut) {
  */
 function addEventToDeleteButton($menuItem) {
   const $removeButton = $menuItem.querySelector(".menu-remove-button");
+  const $menuName = $menuItem.querySelector(".menu-name");
 
   $removeButton.addEventListener("click", (e) => {
     if (confirm("정말 삭제하시겠습니까?")) {
+      storageAPI.deleteMenu(selectedCategory, $menuName.textContent);
       $menuItem.remove();
       updateMenuCount();
     }
@@ -133,7 +138,7 @@ function addEventToEditButton($menuItem) {
     const previousName = $currentName.textContent;
     const editedName = prompt("메뉴명을 수정하세요.", previousName);
     if (!isValidMenuName(editedName)) return;
-    
+
     $currentName.textContent = editedName;
     storageAPI.updateMenu(selectedCategory, previousName, {
       name: editedName,
@@ -216,7 +221,7 @@ function initializeMenuElements(categoryName) {
 
 /**
  * 메뉴판 헤더 텍스트를 전달 받은 메뉴 이름으로 교체한다.
- * @param {string} categoryName 
+ * @param {string} categoryName
  */
 function replaceMenuHeader(categoryName) {
   if (!CATEGORIES.includes(categoryName)) return;

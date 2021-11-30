@@ -51,7 +51,8 @@ function App() {
       return alert("메뉴를 입력해주세요.");
     }
 
-    setMenuList(old => [...old, $menuName.value]);
+    const newMenu = { soldOut: false, menuName : espressoMenuName };
+    setMenuList(old => [...old, newMenu]);
   };
 
   //클릭하여 메뉴 등록
@@ -71,7 +72,11 @@ function App() {
     const targetName = $menuName.innerText;
     const newMenuName = prompt("메뉴 이름을 수정하세요.", targetName);
 
-    setMenuList(old => old.map(name => (name === targetName ? newMenuName : name)));
+    setMenuList(old => {
+      const target = old.find(menu => menu.menuName === targetName);
+      target.menuName = newMenuName;
+      return old;
+    })
   };
 
   //메뉴 삭제
@@ -80,9 +85,20 @@ function App() {
       const $menuName = e.target.closest("li").querySelector(".menu-name");
       const targetName = $menuName.innerText;
       
-      setMenuList(old => old.filter(menu => menu !== targetName));
+      setMenuList(old => old.filter(menu => menu.menuName !== targetName));
     }
   };
+
+  const soldoutMenu = (e) => {
+    const $menuName = e.target.closest("li").querySelector(".menu-name");
+    const targetName = $menuName.innerText;
+
+    setMenuList(old => {
+      const target = old.find(menu => menu.menuName === targetName);
+      target.soldOut = !target.soldOut;
+      return old;
+    });
+  }
 
   //실행부
   //submit 이벤트, prevent
@@ -98,6 +114,9 @@ function App() {
     }
     if (e.target.classList.contains("menu-remove-button")) {
       removeMenu(e);
+    }
+    if (e.target.classList.contains("menu-sold-out-button")) {
+      soldoutMenu(e);
     }
   });
 }

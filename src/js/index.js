@@ -7,6 +7,7 @@ import {
   listTemplate,
   CATEGORIES,
   $,
+  isExistMenu,
 } from "./utils.js";
 
 window.addEventListener("DOMContentLoaded", () => {
@@ -74,14 +75,19 @@ class App {
 
   submitHandler(e) {
     e.preventDefault();
-    if (isInputEmpty(this.$menuInput)) return;
+
     const menuList = this.getMenuList();
+
+    if (isInputEmpty(this.$menuInput)) return;
+    if (isExistMenu(menuList, this.$menuInput.value)) return;
+    setInputEmpty(this.$menuInput);
+
     const newMenuList = [
       ...menuList,
       { menuName: this.$menuInput.value, soldOut: false },
     ];
+
     this.setMenuList(newMenuList);
-    setInputEmpty(this.$menuInput);
     this.render();
   }
 
@@ -98,34 +104,51 @@ class App {
   listClickHandler(e) {
     const $li = e.target.closest("li");
     const menuName = $li.querySelector("span").textContent;
-    if (isEditBtn(e)) {
-      this.editList(menuName);
-    } else if (isDeleteBtn(e)) {
-      this.deleteList(menuName);
-    } else if (isSoldOutBtn(e)) {
-      this.soldOutList(menuName);
+
+    switch (true) {
+      case isEditBtn(e):
+        this.editList(menuName);
+        break;
+      case isDeleteBtn(e):
+        this.deleteList(menuName);
+        break;
+      case isSoldOutBtn(e):
+        this.soldOutList(menuName);
+        break;
     }
   }
 
-  soldOutList(menuName) {
-    const newMenuList = this.getMenuList().map((prevMenu) => {
-      if (prevMenu.menuName === menuName)
-        return { menuName: menuName, soldOut: !prevMenu.soldOut };
-      return prevMenu;
+  soldOutList(soldOutMenuName) {
+    const newMenuList = this.getMenuList().map((menu) => {
+      if (menu.menuName === soldOutMenuName)
+        return { menuName: soldOutMenuName, soldOut: !menu.soldOut };
+      return menu;
     });
     this.setMenuList(newMenuList);
     this.render();
   }
 
-  editList(menuName) {
+  editList(editedMenuName) {
     const newMenuName = window.prompt("수정하시겠습니까?");
-    const newMenuList = this.getMenuList().map((prevMenuName) => {
-      if (prevMenuName === menuName)
-        return { menuName: newMenuName, soldOut: false };
-      return prevMenu;
-    });
-    this.setMenuList(newMenuList);
-    this.render();
+    if (editedMenuName) {
+      const newMenuList = this.getMenuList().map((menu) => {
+        if (menu.menuName === editedMenuName)
+          return { menuName: newMenuName, soldOut: false };
+        return menu;
+      });
+      this.setMenuList(newMenuList);
+      this.render();
+    }
+  }
+
+  deleteList(deletedMenName) {
+    if (window.confirm("삭제하시겠습니까?")) {
+      const newMenuList = this.getMenuList().filter(
+        (menu) => menu.menuName !== deletedMenName
+      );
+      this.setMenuList(newMenuList);
+      this.render();
+    }
   }
 
   getMenuList() {
@@ -134,15 +157,5 @@ class App {
 
   setMenuList(newMenuList) {
     this.localStroage.setItem(this.state.category, JSON.stringify(newMenuList));
-  }
-
-  deleteList(menuName) {
-    if (window.confirm("삭제하시겠습니까?")) {
-      const newMenuList = this.getMenuList().filter(
-        (prevMenu) => prevMenu.menuName !== menuName
-      );
-      this.setMenuList(newMenuList);
-      this.render();
-    }
   }
 }

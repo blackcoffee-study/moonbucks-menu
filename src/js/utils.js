@@ -61,3 +61,8 @@ export const CATEGORIES = {
 export const isSoldOutBtn = (e) => {
   return e.target.classList.contains("menu-sold-out-button");
 };
+
+export const isExistMenu = (menuList, menuName) => {
+  const menuIndex = menuList.findIndex((menu) => menu.menuName === menuName);
+  return menuIndex !== -1 ? true : false;
+};

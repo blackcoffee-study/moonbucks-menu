@@ -69,8 +69,6 @@ function App() {
             store.setLocalStorage(this.menu);
             renderMenu();
         }
-
-        $("#menu-name").value = "";
     };
 
     const updateMenuCount = () => {

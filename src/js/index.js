@@ -132,7 +132,8 @@ function addEventToEditButton($menuItem) {
     const $currentName = $menuItem.querySelector(".menu-name");
     const previousName = $currentName.textContent;
     const editedName = prompt("메뉴명을 수정하세요.", previousName);
-
+    if (!isValidMenuName(editedName)) return;
+    
     $currentName.textContent = editedName;
     storageAPI.updateMenu(selectedCategory, previousName, {
       name: editedName,

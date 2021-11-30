@@ -40,4 +40,9 @@ export default class Header extends Component {
             </nav>
         `;
   }
+  setEvent() {
+    this.addEvent('click', 'button', e => {
+      this.$props.changeMenu(e);
+    });
+  }
 }

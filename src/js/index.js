@@ -20,11 +20,11 @@ function App() {
     $menuCount.innerText = `총 ${menuCount}개`;
   };
   
-  function render(menuList){
+  const render = (menuList) => {
     return menuList.map(menuItemTemplate).join("")
   }
 
-  function setMenuList(func){
+  const setMenuList = () => {
     menuList = func(menuList);
     console.log("menuList : ", menuList)
 

@@ -20,10 +20,6 @@ function App() {
     initEventListener()
   }
 
-  $('#menu-form').addEventListener('submit', (e) => {
-    e.preventDefault()
-  })
-
   const render = () => {
     const template = this.menu[this.currentCategory]
       .map((menuItem, index) => {
@@ -115,6 +111,11 @@ function App() {
   }
 
   const initEventListener = () => {
+
+    $('#menu-form').addEventListener('submit', (e) => {
+        e.preventDefault()
+      })
+      
     $('#menu-submit-button').addEventListener('click', addMenuName)
 
     $('#menu-name').addEventListener('keyup', (e) => {

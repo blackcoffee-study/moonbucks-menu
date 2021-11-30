@@ -3,19 +3,37 @@ class App {
     this.menuName = '';
     this.menuCount = 0;
 
-    const input = document.getElementById('espresso-menu-name');
-    const form = document.getElementById('espresso-menu-form');
+    const input = this.$('#espresso-menu-name');
+    const form = this.$('#espresso-menu-form');
+    const ul = this.$('#espresso-menu-list');
+
+    ul.addEventListener('click', (e) => {
+      if (e.target.classList.contains('menu-edit-button')) {
+        const span = e.target.closest('li').querySelector('.menu-name');
+        span.innerText = window.prompt('메뉴명을 수정하세요', span.innerText);
+      }
+
+      if (e.target.classList.contains('menu-remove-button')) {
+        if (!window.confirm('정말로 삭제하시겠습니까?')) return;
+        e.target.closest('li').remove();
+        this.updateMenuCount();
+      }
+    });
 
     input.addEventListener('input', (e) => {
-        setTimeout(() => this.updateMenuName(e.target.value), 0);
+      setTimeout(() => this.updateMenuName(e.target.value), 0);
     });
-    
+
     form.addEventListener('submit', (e) => {
       e.preventDefault();
       this.confirmMenuName();
-    })
+    });
   }
 
+  $(property) {
+    return document.querySelector(property);
+  }
+  
   confirmMenuName() {
     if (!!this.menuName.trim()) {
       window.confirm('입력하시겠습니까?') && this.createLi();
@@ -26,8 +44,8 @@ class App {
     this.menuName = val;
   }
 
-  updateMenuCount(type) {
-    this.menuCount = type ? this.menuCount + 1 : this.menuCount - 1;
+  updateMenuCount() {
+    this.menuCount = document.querySelectorAll('.menu-list-item').length;
     document.getElementsByClassName(
       'menu-count'
     )[0].textContent = `총 ${this.menuCount}개`;
@@ -39,58 +57,28 @@ class App {
   }
 
   createLi() {
-    const li = document.createElement('li');
-    li.classList.add('menu-list-item', 'd-flex', 'items-center', 'py-2');
-    const currentMenuId = `menu-${this.menuCount}`;
-    li.setAttribute('id', currentMenuId);
-
-    const span = document.createElement('span');
-    span.classList.add('w-100', 'pl-2', 'menu-name');
-    span.textContent = this.menuName;
-    this.menuName = '';
-    const modifyBtn = document.createElement('button');
-    modifyBtn.classList.add(
-      'bg-gray-50',
-      'text-gray-500',
-      'text-sm',
-      'mr-1',
-      'menu-edit-button'
-    );
-    modifyBtn.setAttribute('type', 'button');
-    modifyBtn.textContent = '수정';
-    modifyBtn.addEventListener('click', () => this.modifyLi(currentMenuId));
-
-    const deleteBtn = document.createElement('button');
-    deleteBtn.classList.add(
-      'bg-gray-50',
-      'text-gray-500',
-      'text-sm',
-      'menu-remove-button'
-    );
-    deleteBtn.setAttribute('type', 'button');
-    deleteBtn.textContent = '삭제';
-    deleteBtn.addEventListener('click', () => this.deleteLi(currentMenuId));
-    li.appendChild(span);
-    li.appendChild(modifyBtn);
-    li.appendChild(deleteBtn);
+    const li = `<li class="menu-list-item d-flex items-center py-2">
+        <span class="w-100 pl-2 menu-name">${this.menuName}</span>
+        <button
+          type="button"
+          class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
+        >
+          수정
+        </button>
+        <button
+          type="button"
+          class="bg-gray-50 text-gray-500 text-sm menu-remove-button"
+        >
+          삭제
+        </button>
+      </li>`;
 
     const ul = document.getElementById('espresso-menu-list');
-    ul.appendChild(li);
-    this.updateMenuCount(1);
-    this.resetInputVal()
-  }
 
-  deleteLi(id) {
-    if (window.confirm('정말로 삭제하시겠습니까?')) {
-      document.getElementById(id).remove();
-      this.updateMenuCount(0);
-    }
-  }
-
-  modifyLi(id) {
-    const modified = window.prompt('메뉴명을 수정하세요');
-    const span = document.querySelector(`#${id} span`);
-    span.textContent = modified;
+    ul.insertAdjacentHTML('beforeend', li);
+    this.menuName = '';
+    this.updateMenuCount();
+    this.resetInputVal();
   }
 }
 

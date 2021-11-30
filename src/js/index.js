@@ -12,7 +12,9 @@ function App() {
   const $menuSubmitButton = $("#espresso-menu-submit-button");
   //const $menuSubmitButton = document.getElementById("espresso-menu-submit-button");
 
+  //menu 객체의 프로퍼티로 name, soldout, category를 가짐
   let menuList = [];
+  let nowCategory = ''; //현재 선택한 카테고리
 
   //메뉴 개수 count
   const updateMenuCount = (menuCount) => {
@@ -21,6 +23,11 @@ function App() {
   
   const render = (menuList) => {
     return menuList.map(menuItemTemplate).join("")
+  }
+
+  const setNowCategory = (func) => {
+    nowCategory = func(nowCategory);
+    console.log({ nowCategory });
   }
 
   const setMenuList = (func) => {
@@ -89,6 +96,7 @@ function App() {
     }
   };
 
+  //품절
   const soldoutMenu = (e) => {
     const $menuName = e.target.closest("li").querySelector(".menu-name");
     const targetName = $menuName.innerText;
@@ -98,6 +106,10 @@ function App() {
       target.soldOut = !target.soldOut;
       return old;
     });
+  }
+
+  //카테고리 클릭
+  const selectCategory = (e) => {
   }
 
   //실행부

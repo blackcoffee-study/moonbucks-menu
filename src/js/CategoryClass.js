@@ -5,11 +5,11 @@ export default class CategoryClass {
   constructor({ target }) {
     this.$target = target
     this.render()
-    this.evnetHandler()
+    this.eventHandler()
     this.pubsub = PubSub;
   }
 
-  evnetHandler() {
+  eventHandler() {
     this.$target.addEventListener('click', (e) => {
       const categoryName = e.target.dataset.categoryName
       this.pubsub.pub('currentCategory', categoryName)

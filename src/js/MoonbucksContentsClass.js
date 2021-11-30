@@ -22,12 +22,13 @@ export default class MoonbucksContentsClass {
     this.eventHandler()
   }
 
-  submit() {
+  submit(e) {
+    e.preventDefault();
     const $menuInput = domSelector('#espresso-menu-name');
-    const value = $menuInput.value
-    this.menus.push(value)
+    const menuName = $menuInput.value
+    this.menus.push(menuName)
     setLocalStorage(this.currentCategory, this.menus)
-    if (value) {
+    if (menuName) {
       $menuInput.value = ''
     }
   }
@@ -35,10 +36,7 @@ export default class MoonbucksContentsClass {
 
   eventHandler() {
     const $menuInputForm = domSelector('#espresso-menu-form');
-    $menuInputForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      this.submit()
-    })
+    $menuInputForm.addEventListener('submit', this.submit);
   }
 
   render() {

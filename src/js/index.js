@@ -1,4 +1,6 @@
 import menuItemTemplate from './menuItemTemplate.js';
+import soldoutTemplate from './soldoutTemplate.js';
+import store from './store.js'
 
 const $ = (selector) => document.querySelector(selector);
 

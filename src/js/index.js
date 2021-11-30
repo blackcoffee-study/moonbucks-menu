@@ -1,33 +1,62 @@
-const elMenuForm = document.querySelector("#espresso-menu-form");
-const elNameInput = document.querySelector("#espresso-menu-name");
-const elMenuList = document.querySelector("#espresso-menu-list");
-const elMenuCount = document.querySelector(".menu-count");
+import * as storageAPI from "./storage.js";
 
-const moonBucks = () => {
-  elMenuForm.addEventListener("submit", (e) => {
-    e.preventDefault();
+const $nav = document.querySelector("header > nav");
+const $menuForm = document.querySelector("#menu-form");
+const $nameInput = document.querySelector("#menu-name");
+const $menuList = document.querySelector("#menu-list");
+const $menuCount = document.querySelector(".menu-count");
+const $menuHeading = document.querySelector(".heading > h2");
 
-    // 1. 유효성 검사
-    const newMenuName = elNameInput.value;
-    if (!isValidMenuName(newMenuName)) return;
+const CATEGORIES = ["espresso", "frappuccino", "blended", "teavana", "desert"];
+let selectedCategory = "";
 
-    // 2. 메뉴 생성 및 이벤트 등록
-    const elMenuItem = createMenuItemElement(newMenuName);
-    addEditButtonEvent(elMenuItem);
-    addRemoveButtonEvent(elMenuItem);
+const moonBucksApp = () => {
+  // 앱 초기화
+  selectedCategory = "espresso";
+  replaceMenuHeader(selectedCategory);
+  initializeMenuElements(selectedCategory);
+  updateMenuCount();
 
-    // 3. 메뉴 추가 및 인풋 초기화
-    addMenu(elMenuItem);
-    resetNameInput();
-  });
+  // 주요 이벤트 등록
+  $nav.addEventListener("click", handleNavigation);
+  $menuForm.addEventListener("submit", handleSubmit);
 };
-moonBucks();
+moonBucksApp();
+
+
+function handleNavigation(e) {
+  e.stopPropagation();
+
+  const $target = e.target;
+  if (!$target.classList.contains("cafe-category-name")) return;
+
+  const newCategoryName = $target.dataset.categoryName;
+  if (!CATEGORIES.includes(newCategoryName)) return;
+
+  selectedCategory = newCategoryName;
+  replaceMenuHeader(selectedCategory);
+  initializeMenuElements(selectedCategory);
+  updateMenuCount();
+}
+
+function handleSubmit(e) {
+  e.preventDefault();
+
+  const newMenuName = $nameInput.value;
+  if (!isValidMenuName(newMenuName)) return;
+
+  storageAPI.createMenu(selectedCategory, newMenuName);
+  appendMenuElement(newMenuName);
+
+  updateMenuCount();
+  resetNameInput();
+}
 
 /**
  * 전달받은 메뉴 이름의 유효성을 검사한다.
  * @param {string} menuName 메뉴 이름
  */
-const isValidMenuName = (menuName) => {
+function isValidMenuName(menuName) {
   if (!menuName) return;
   const name = menuName.trim();
 
@@ -37,16 +66,25 @@ const isValidMenuName = (menuName) => {
   }
 
   return true;
-};
+}
 
 /**
  * 전달받은 메뉴 이름으로 메뉴 아이템 엘리먼트를 생성한다.
  * @param {string} menuName 메뉴 이름
+ * @param {boolean} soldOut 메뉴 품절 여부
  * @returns {HTMLLIElement} 메뉴 아이템 엘리먼트(`li`)
  */
-const createMenuItemElement = (menuName) => {
+function createMenuItemElement(menuName, soldOut) {
   const template = `<li class="menu-list-item d-flex items-center py-2">
-    <span class="w-100 pl-2 menu-name">${menuName}</span>
+    <span class="w-100 pl-2 menu-name ${
+      soldOut ? "sold-out" : ""
+    }">${menuName}</span>
+    <button
+    type="button"
+    class="bg-gray-50 text-gray-500 text-sm mr-1 menu-sold-out-button"
+    >
+      품절
+    </button>
     <button
       type="button"
       class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
@@ -62,64 +100,139 @@ const createMenuItemElement = (menuName) => {
     </li>`;
   const wrapper = document.createElement("div");
   wrapper.innerHTML = template;
-  return wrapper.firstElementChild;
-};
+  
+  const $menuItem = wrapper.firstElementChild;
+  addEventToDeleteButton($menuItem);
+  addEventToEditButton($menuItem);
+  addEventToSoldOutButton($menuItem);
+
+  return $menuItem;
+}
 
 /**
  * 전달 받은 메뉴 아이템 엘리먼트에 "삭제" 버튼 이벤트를 추가한다.
- * @param {HTMLLIElement} elMenuItem 메뉴 아이템 엘리먼트(`li`)
+ * @param {HTMLLIElement} $menuItem 메뉴 아이템 엘리먼트(`li`)
  */
-const addRemoveButtonEvent = (elMenuItem) => {
-  const elRemoveButton = elMenuItem.querySelector(".menu-remove-button");
+function addEventToDeleteButton($menuItem) {
+  const $removeButton = $menuItem.querySelector(".menu-remove-button");
+  const $menuName = $menuItem.querySelector(".menu-name");
 
-  elRemoveButton.addEventListener("click", (e) => {
+  $removeButton.addEventListener("click", (e) => {
     if (confirm("정말 삭제하시겠습니까?")) {
-      elMenuItem.remove();
+      storageAPI.deleteMenu(selectedCategory, $menuName.textContent);
+      $menuItem.remove();
       updateMenuCount();
     }
-  });
-};
-
-/**
- * 전달 받은 메뉴 아이템 엘리먼트에 "수정" 버튼 이벤트를 추가한다.
- * @param {HTMLLIElement} elMenuItem 메뉴 아이템 엘리먼트(`li`)
- */
-const addEditButtonEvent = (elMenuItem) => {
-  const elEditButton = elMenuItem.querySelector(".menu-edit-button");
-
-  elEditButton.addEventListener("click", (e) => {
-    const elCurrentName = elMenuItem.querySelector(".menu-name");
-    const editedName = prompt(
-      "메뉴명을 수정하세요.",
-      elCurrentName.textContent
-    );
-
-    if (!isValidMenuName(editedName)) return;
-    elCurrentName.textContent = editedName;
   });
 }
 
 /**
- * 전달받은 메뉴 아이템 엘리먼트를 메뉴 리스트에 추가한다.
- * @param {HTMLLIElement} elMenuItem 메뉴 아이템 엘리먼트(`li`)
+ * 전달 받은 메뉴 아이템 엘리먼트에 "수정" 버튼 이벤트를 추가한다.
+ * @param {HTMLLIElement} $menuItem 메뉴 아이템 엘리먼트(`li`)
  */
-const addMenu = (elMenuItem) => {
-  elMenuList.appendChild(elMenuItem);
-  updateMenuCount();
-};
+function addEventToEditButton($menuItem) {
+  const $editButton = $menuItem.querySelector(".menu-edit-button");
+
+  $editButton.addEventListener("click", (e) => {
+    const $currentName = $menuItem.querySelector(".menu-name");
+    const previousName = $currentName.textContent;
+    const editedName = prompt("메뉴명을 수정하세요.", previousName);
+    if (!isValidMenuName(editedName)) return;
+
+    $currentName.textContent = editedName;
+    storageAPI.updateMenu(selectedCategory, previousName, {
+      name: editedName,
+    });
+  });
+}
+
+/**
+ * 전달 받은 메뉴 아이템 엘리먼트에 "품절" 버튼 이벤트를 추가한다.
+ * @param {HTMLLIElement} $menuItem 메뉴 아이템 엘리먼트(`li`)
+ */
+function addEventToSoldOutButton($menuItem) {
+  const $soldOutButton = $menuItem.querySelector(".menu-sold-out-button");
+
+  $soldOutButton.addEventListener("click", () => {
+    const $menuName = $menuItem.querySelector("span.menu-name");
+    $menuName.classList.toggle("sold-out");
+
+    if ($menuName.classList.contains("sold-out")) {
+      storageAPI.updateMenu(selectedCategory, $menuName.textContent, {
+        name: $menuName.textContent,
+        soldOut: true,
+      });
+    }
+  });
+}
+
+/**
+ * 전달받은 메뉴 정보로 메뉴 엘리먼트를 생성하여 메뉴 리스트에 추가한다.
+ * @param {string} menuName - 메뉴 이름
+ * @param {boolean} soldOut - 메뉴 품절 여부
+ */
+function appendMenuElement(menuName, soldOut = false) {
+  const $menuItem = createMenuItemElement(menuName, soldOut);
+  $menuList.appendChild($menuItem);
+}
 
 /**
  * 메뉴 이름 인풋값을 초기화한다.
  */
-const resetNameInput = () => {
-  if (!elNameInput) return;
-  elNameInput.value = "";
-};
+function resetNameInput() {
+  if (!$nameInput) return;
+  $nameInput.value = "";
+}
 
 /**
  * 메뉴 카운트를 현재 메뉴 아이템 개수로 갱신한다.
  */
-const updateMenuCount = () => {
-  const elMenuItems = elMenuList.querySelectorAll(".menu-list-item");
-  elMenuCount.textContent = `총 ${elMenuItems.length}개`;
-};
+function updateMenuCount() {
+  const $menuItems = $menuList.querySelectorAll(".menu-list-item");
+  $menuCount.textContent = `총 ${$menuItems.length}개`;
+}
+
+/**
+ * 메뉴 리스트에 있는 모든 메뉴 아이템 엘리먼트를 제거한다.
+ */
+function removeMenuItemElements() {
+  if (!$menuList) return;
+
+  while ($menuList.firstChild) {
+    $menuList.removeChild($menuList.firstChild);
+  }
+}
+
+/**
+ * 전달 받은 카테고리 이름에 해당하는 메뉴들을 찾아 메뉴 리스트에 추가한다.
+ * @param {string} categoryName
+ */
+function initializeMenuElements(categoryName) {
+  removeMenuItemElements();
+
+  const categoryMenus = storageAPI.loadMenuData()[categoryName];
+  if (!categoryMenus) return;
+
+  for (let i = 0; i < categoryMenus.length; i++) {
+    const menu = categoryMenus[i];
+    appendMenuElement(menu.name, menu.soldOut);
+  }
+}
+
+/**
+ * 메뉴판 헤더 텍스트를 전달 받은 메뉴 이름으로 교체한다.
+ * @param {string} categoryName
+ */
+function replaceMenuHeader(categoryName) {
+  if (!CATEGORIES.includes(categoryName)) return;
+
+  const heading = {
+    espresso: "☕ 에스프레소",
+    frappuccino: "🥤 프라푸치노",
+    blended: "🍹 블렌디드",
+    teavana: "🫖 티바나",
+    desert: "🍰 디저트",
+  };
+
+  $menuHeading.textContent = `${heading[categoryName]} 메뉴 관리`;
+}

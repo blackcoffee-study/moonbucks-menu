@@ -1,8 +1,8 @@
 import { store } from '../common/store.js';
-import render from '../common/render.js';
-import updateMenuCount from './updateMenuCount.js';
+import { render } from '../common/render.js';
+import { updateMenuCount } from './updateMenuCount.js';
 
-const removeMenuName = (e, menu, category) => {
+export const removeMenuName = (e, menu, category) => {
   if (confirm('정말 삭제하시겠습니까?')) {
     const menuId = e.target.closest('li').dataset.menuId;
     menu[category] = [...menu[category]].filter(item => item.id !== menuId);
@@ -13,5 +13,3 @@ const removeMenuName = (e, menu, category) => {
     updateMenuCount();
   }
 };
-
-export default removeMenuName;

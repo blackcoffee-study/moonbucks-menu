@@ -1,7 +1,7 @@
-import updateMenuCount from '../CRUD/updateMenuCount.js';
+import { updateMenuCount } from '../menu/updateMenuCount.js';
 import $ from './selector.js';
 
-const render = (menu, category) => {
+export const render = (menu, category) => {
   const template = menu[category]
     .map(item => {
       return `
@@ -23,8 +23,6 @@ const render = (menu, category) => {
     })
     .join('');
 
-  $('#espresso-menu-list').innerHTML = template;
+  $('#menu-list').innerHTML = template;
   updateMenuCount();
 };
-
-export default render;

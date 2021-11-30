@@ -1,3 +1,6 @@
+import menuItemTemplate from './menuItemTemplate.js';
+import store from './store.js'
+
 const $ = (selector) => document.querySelector(selector);
 
 function App() {
@@ -7,8 +10,45 @@ function App() {
   const $menuCount = $(".menu-count");
   const $menuName = $("#espresso-menu-name");
   const $menuSubmitButton = $("#espresso-menu-submit-button");
+  //const $menuSubmitButton = document.getElementById("espresso-menu-submit-button");
 
-  //함수 선언부
+  //menu 객체의 프로퍼티로 name, soldout, category를 가짐
+  let menuList = [];
+  let nowCategory = ''; //현재 선택한 카테고리
+
+  //메뉴 개수 count
+  const updateMenuCount = (menuCount) => {
+    $menuCount.innerText = `총 ${menuCount}개`;
+  };
+  
+  const render = (menuList) => {
+    return menuList.map(menuItemTemplate).join("")
+  }
+
+  const setNowCategory = (func) => {
+    nowCategory = func(nowCategory);
+    console.log({ nowCategory });
+  }
+
+  const setMenuList = (func) => {
+    menuList = func(menuList);
+    console.log("menuList : ", menuList)
+    store.setLocalStorage(menuList); //로컬스토리지에 추가
+    updateMenuCount(menuList.length);
+    
+    $menuName.value = ""; //빈값 초기화
+
+    $menuList.innerHTML = render(menuList);
+  }
+
+  //초기화 함수
+  this.init = () => {
+    const saved = store.getLocalStorage();
+    if (saved) {
+      setMenuList(_ => saved)
+    }
+  }
+
   //메뉴 추가
   const addMenu = () => {
     const espressoMenuName = $menuName.value;
@@ -18,30 +58,59 @@ function App() {
       return alert("메뉴를 입력해주세요.");
     }
 
-    $menuList.insertAdjacentHTML("beforeend", menuItemTemplate(espressoMenuName));
-    updateMenuCount();
+    const newMenu = { soldOut: false, menuName : espressoMenuName };
+    setMenuList(old => [...old, newMenu]);
   };
 
-  //메뉴 개수 count
-  const updateMenuCount = () => {
-    const menuCount = $menuList.querySelectorAll("li").length;
-    $menuCount.innerText = `총 ${menuCount}개`;
-    $menuName.value = ""; //빈값 초기화
-  };
+  //클릭하여 메뉴 등록
+  $menuSubmitButton.addEventListener("click", addMenu);
+
+  //엔터키로 메뉴 등록
+  $menuName.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      addMenu();
+    }
+  });
+
 
   //메뉴 수정
   const updateMenuName = (e) => {
     const $menuName = e.target.closest("li").querySelector(".menu-name");
-    $menuName.innerText = prompt("메뉴 이름을 수정하세요.", $menuName.innerText);
+    const targetName = $menuName.innerText;
+    const newMenuName = prompt("메뉴 이름을 수정하세요.", targetName);
+
+    setMenuList(old => {
+      const target = old.find(menu => menu.menuName === targetName);
+      target.menuName = newMenuName;
+      return old;
+    })
   };
 
   //메뉴 삭제
   const removeMenu = (e) => {
     if (confirm("메뉴를 삭제할까요?")) {
-      e.target.closest("li").remove();
-      updateMenuCount();
+      const $menuName = e.target.closest("li").querySelector(".menu-name");
+      const targetName = $menuName.innerText;
+      
+      setMenuList(old => old.filter(menu => menu.menuName !== targetName));
     }
   };
+
+  //품절
+  const soldoutMenu = (e) => {
+    const $menuName = e.target.closest("li").querySelector(".menu-name");
+    const targetName = $menuName.innerText;
+
+    setMenuList(old => {
+      const target = old.find(menu => menu.menuName === targetName);
+      target.soldOut = !target.soldOut;
+      return old;
+    });
+  }
+
+  //카테고리 클릭
+  const selectCategory = (e) => {
+  }
 
   //실행부
   //submit 이벤트, prevent
@@ -49,16 +118,6 @@ function App() {
     e.preventDefault();
   });
 
-  //클릭하여 메뉴 등록
-  $menuSubmitButton.addEventListener("click", addMenu);
-
-  //엔터키로 메뉴 등록
-  $menuName.addEventListener("keydown", (e) => {
-    if (e.key !== "Enter") {
-      return;
-    }
-    addMenu();
-  });
 
   //메뉴 수정,삭제
   $menuList.addEventListener("click", (e) => {
@@ -68,26 +127,11 @@ function App() {
     if (e.target.classList.contains("menu-remove-button")) {
       removeMenu(e);
     }
+    if (e.target.classList.contains("menu-sold-out-button")) {
+      soldoutMenu(e);
+    }
   });
-
-  //노드 추가를 위한 템플릿
-  const menuItemTemplate = (espressoMenuName) => {
-    return `<li class="menu-list-item d-flex items-center py-2">
-                <span class="w-100 pl-2 menu-name">${espressoMenuName}</span>
-                <button
-                  type="button"
-                  class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
-                >
-                  수정
-                </button>
-                <button
-                  type="button"
-                  class="bg-gray-50 text-gray-500 text-sm menu-remove-button"
-                >
-                  삭제
-                </button>
-              </li>`;
-  };
 }
 
-App();
+const app = new App()
+app.init()

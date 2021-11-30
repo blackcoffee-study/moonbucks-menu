@@ -13,7 +13,8 @@ export const addMenuName = (menu, category) => {
     id: Date.now().toString(),
     name: menuName,
   });
+  $('#menu-name').value = '';
+
   store.setData(menu);
   render(menu, category);
-  $('#menu-name').value = '';
 };

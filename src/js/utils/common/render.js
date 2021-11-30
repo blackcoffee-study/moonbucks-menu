@@ -1,12 +1,22 @@
-import { updateMenuCount } from '../menu/updateMenuCount.js';
 import $ from './selector.js';
+import { updateMenuCount } from '../menu/updateMenuCount.js';
 
 export const render = (menu, category) => {
   const template = menu[category]
     .map(item => {
       return `
-        <li data-menu-id=${item.id} class="menu-list-item d-flex items-center py-2">
-          <span class="w-100 pl-2 menu-name">${item.name}</span>
+        <li data-menu-id=${
+          item.id
+        } class=" menu-list-item d-flex items-center py-2">
+          <span class="w-100 pl-2 menu-name ${
+            item.soldOut ? 'sold-out' : ''
+          }">${item.name}</span>
+          <button
+            type="button"
+            class="bg-gray-50 text-gray-500 text-sm mr-1 menu-sold-out-button"
+          >
+            품절
+          </button>
           <button
             type="button"
             class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
@@ -24,5 +34,5 @@ export const render = (menu, category) => {
     .join('');
 
   $('#menu-list').innerHTML = template;
-  updateMenuCount();
+  updateMenuCount(menu, category);
 };

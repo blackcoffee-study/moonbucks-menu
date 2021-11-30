@@ -1,5 +1,4 @@
 import menuItemTemplate from './menuItemTemplate.js';
-import soldoutTemplate from './soldoutTemplate.js';
 import store from './store.js'
 
 const $ = (selector) => document.querySelector(selector);
@@ -24,14 +23,23 @@ function App() {
     return menuList.map(menuItemTemplate).join("")
   }
 
-  const setMenuList = () => {
+  const setMenuList = (func) => {
     menuList = func(menuList);
     console.log("menuList : ", menuList)
-
+    store.setLocalStorage(menuList); //로컬스토리지에 추가
     updateMenuCount(menuList.length);
+    
     $menuName.value = ""; //빈값 초기화
 
     $menuList.innerHTML = render(menuList);
+  }
+
+  //초기화 함수
+  this.init = () => {
+    const saved = store.getLocalStorage();
+    if (saved) {
+      setMenuList(_ => saved)
+    }
   }
 
   //메뉴 추가
@@ -59,7 +67,8 @@ function App() {
 
   //메뉴 수정
   const updateMenuName = (e) => {
-    const $menuName = e.target.closest("li").querySelector(".menu-name");    const targetName = $menuName.innerText;
+    const $menuName = e.target.closest("li").querySelector(".menu-name");
+    const targetName = $menuName.innerText;
     const newMenuName = prompt("메뉴 이름을 수정하세요.", targetName);
 
     setMenuList(old => old.map(name => (name === targetName ? newMenuName : name)));
@@ -93,4 +102,5 @@ function App() {
   });
 }
 
-App();
+const app = new App()
+app.init()

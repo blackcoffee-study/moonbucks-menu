@@ -1,7 +1,13 @@
 import $ from './selector.js';
 import { updateMenuCount } from '../menu/updateMenuCount.js';
+import { get } from './request.js';
+import { BASE_URL, getMenuAPI } from '../../constants/api.js';
 
-export const render = (menu, category) => {
+export const render = async (menu, category) => {
+  await get(`${BASE_URL}${getMenuAPI(category)}/`).then(data => {
+    menu[category] = data;
+  });
+
   const template = menu[category]
     .map(item => {
       return `

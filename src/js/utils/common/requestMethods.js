@@ -1,12 +1,8 @@
-const isResponseSuccess = (success, data) => {
-  if (!success) throw Error(data);
-  return data;
-};
-
 export const get = async url => {
   const res = await fetch(url);
   const data = await res.json();
-  isResponseSuccess(res.ok, data);
+  if (!res.ok) throw Error(data);
+  return data;
 };
 
 export const post = async (url, body, headers = {}) => {
@@ -20,7 +16,8 @@ export const post = async (url, body, headers = {}) => {
   };
   const res = await fetch(url, options);
   const data = await res.json();
-  isResponseSuccess(res.ok, data);
+  if (!res.ok) throw Error(data);
+  return data;
 };
 
 export const put = async (url, body, headers = {}) => {
@@ -34,10 +31,12 @@ export const put = async (url, body, headers = {}) => {
   };
   const res = await fetch(url, options);
   const data = await res.json();
-  isResponseSuccess(res.ok, data);
+  if (!res.ok) throw Error(data);
+  return data;
 };
 
 export const Delete = async url => {
   const res = await fetch(url, { method: 'DELETE' });
-  isResponseSuccess(res.ok, data);
+  if (!res.ok) throw Error(res);
+  return res;
 };

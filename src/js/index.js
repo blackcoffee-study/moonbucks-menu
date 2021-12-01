@@ -49,11 +49,6 @@ function App() {
       addMenuName(this.menu, this.currentCategory);
     });
 
-    // $('#menu-name').addEventListener('keypress', e => {
-    //   if (e.key === 'Enter') addMenuName(this.menu, this.currentCategory);
-    //   else return;
-    // });
-
     $('nav').addEventListener('click', e => {
       if (e.target.classList.contains('cafe-category-name')) {
         changeCategory(e, this.menu);

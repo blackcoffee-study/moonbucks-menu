@@ -42,16 +42,17 @@ function App() {
 
     $('#menu-form').addEventListener('submit', e => {
       e.preventDefault();
+      addMenuName(this.menu, this.currentCategory);
     });
 
     $('#menu-submit-button').addEventListener('click', () => {
       addMenuName(this.menu, this.currentCategory);
     });
 
-    $('#menu-name').addEventListener('keypress', e => {
-      if (e.key === 'Enter') addMenuName(this.menu, this.currentCategory);
-      else return;
-    });
+    // $('#menu-name').addEventListener('keypress', e => {
+    //   if (e.key === 'Enter') addMenuName(this.menu, this.currentCategory);
+    //   else return;
+    // });
 
     $('nav').addEventListener('click', e => {
       if (e.target.classList.contains('cafe-category-name')) {

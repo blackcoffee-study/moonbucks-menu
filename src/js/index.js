@@ -1,12 +1,20 @@
 class App {
   constructor() {
+    let category = this.getItem('category');
+    if (!category) {
+      this.setItem('category', 'espresso');
+      category = 'espresso';
+    }
+    const menuId = this.getItem('menu-id') || 0;
+
+    this.menuId = this.generateId(menuId);
+    this.category = category;
     this.menuName = '';
     this.menuCount = 0;
 
     const input = this.$('#espresso-menu-name');
     const form = this.$('#espresso-menu-form');
     const ul = this.$('#espresso-menu-list');
-
     ul.addEventListener('click', (e) => {
       if (e.target.classList.contains('menu-edit-button')) {
         const span = e.target.closest('li').querySelector('.menu-name');
@@ -28,15 +36,62 @@ class App {
       e.preventDefault();
       this.confirmMenuName();
     });
+
+    this.setMenu();
+  }
+
+  setMenu() {
+    const existingMenu = this.getItem('menu'); // string 값으로 받아옴
+    if (!existingMenu) {
+      this.setItem('menu', {
+        espresso: [],
+        frappuccino: [],
+        blended: [],
+        teavana: [],
+        desert: [],
+      });
+    } else {
+      const menuDetail = existingMenu[this.category];
+      menuDetail.map((menu) => this.createLi(menu));
+    }
   }
 
   $(property) {
     return document.querySelector(property);
   }
-  
+
+  *generateId(givenId) {
+    let id = givenId;
+    while (true) {
+      id++;
+      yield id;
+    }
+  }
+
   confirmMenuName() {
     if (!!this.menuName.trim()) {
-      window.confirm('입력하시겠습니까?') && this.createLi();
+      const existingMenu = this.getItem('menu');
+      const newMenu = {
+        id: this.menuId.next().value,
+        name: this.menuName.trim(),
+        soldOut: false,
+      };
+      existingMenu[this.category].push(newMenu);
+      this.setItem('menu', existingMenu);
+      window.confirm('입력하시겠습니까?') && this.createLi(newMenu);
+    }
+  }
+
+  setItem(key, val) {
+    localStorage.setItem(key, JSON.stringify(val));
+  }
+
+  getItem(key) {
+    const val = localStorage.getItem(key);
+    try {
+      return JSON.parse(val);
+    } catch (err) {
+      return val;
     }
   }
 
@@ -58,7 +113,13 @@ class App {
 
   createLi() {
     const li = `<li class="menu-list-item d-flex items-center py-2">
-        <span class="w-100 pl-2 menu-name">${this.menuName}</span>
+        <span class="w-100 pl-2 menu-name">${menu.name}</span>
+        <button
+        type="button"
+        class="bg-gray-50 text-gray-500 text-sm mr-1 menu-sold-out-button"
+      >
+        품절
+      </button>
         <button
           type="button"
           class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
@@ -73,7 +134,7 @@ class App {
         </button>
       </li>`;
 
-    const ul = document.getElementById('espresso-menu-list');
+    const ul = this.$('#espresso-menu-list');
 
     ul.insertAdjacentHTML('beforeend', li);
     this.menuName = '';

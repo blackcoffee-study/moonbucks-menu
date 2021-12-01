@@ -16,7 +16,7 @@ function App() {
 
   this.init = async () => {
     this.currentCategory = 'espresso';
-    $('#category-title').innerText = `${this.currentCategory} 메뉴 관리`;
+    $('#category-title').innerText = `☕ 에스프레소 메뉴 관리`;
     await render(this.menu, this.currentCategory);
     this.initEventListeners();
   };

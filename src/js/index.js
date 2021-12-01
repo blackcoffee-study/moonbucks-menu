@@ -4,6 +4,7 @@ import { updateMenuName } from './utils/menu/updateMenuName.js';
 import { removeMenuName } from './utils/menu/removeMenuName.js';
 import { render } from './utils/common/render.js';
 import { soldOutMenu } from './utils/menu/soldOutMenu.js';
+import { changeCategory } from './utils/menu/changeCategory.js';
 
 function App() {
   this.menu = {
@@ -54,10 +55,7 @@ function App() {
 
     $('nav').addEventListener('click', e => {
       if (e.target.classList.contains('cafe-category-name')) {
-        const categoryName = e.target.dataset.categoryName;
-        this.currentCategory = categoryName;
-        $('#category-title').innerText = `${e.target.innerText} 메뉴 관리`;
-        render(this.menu, this.currentCategory);
+        changeCategory(e, this.menu);
       }
     });
   };

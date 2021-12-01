@@ -7,3 +7,6 @@ export const soldoutMenuAPI = (category, menuId) =>
   `/category/${category}/menu/${menuId}/soldout`;
 export const updateMenuAPI = (category, menuId) =>
   `/category/${category}/menu/${menuId}`;
+
+export const deleteMenuAPI = (category, menuId) =>
+  `/category/${category}/menu/${menuId}`;

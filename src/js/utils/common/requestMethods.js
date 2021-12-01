@@ -46,3 +46,13 @@ export const put = async (url, body, headers = {}) => {
     throw Error(data);
   }
 };
+
+export const Delete = async url => {
+  const res = await fetch(url, { method: 'DELETE' });
+
+  if (res.ok) {
+    return res;
+  } else {
+    throw Error(res);
+  }
+};

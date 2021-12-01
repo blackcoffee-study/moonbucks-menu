@@ -1,7 +1,8 @@
-import { get, put, post } from '../common/requestMethods.js';
+import { get, put, post, Delete } from '../common/requestMethods.js';
 import {
   addMenuAPI,
   BASE_URL,
+  deleteMenuAPI,
   getMenuAPI,
   soldoutMenuAPI,
   updateMenuAPI,
@@ -48,7 +49,10 @@ export const updateMenu = async (category, menuId, updatedName) => {
     `${BASE_URL}${updateMenuAPI(category, menuId)}/`,
     body,
   );
-
   console.log('updatedData: ', data);
   return data;
+};
+
+export const deleteMenu = async (category, menuId) => {
+  await Delete(`${BASE_URL}${deleteMenuAPI(category, menuId)}/`);
 };

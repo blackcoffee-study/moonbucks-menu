@@ -15,6 +15,33 @@ class App {
     const input = this.$('#espresso-menu-name');
     const form = this.$('#espresso-menu-form');
     const ul = this.$('#espresso-menu-list');
+    const categories = document.getElementsByClassName('cafe-category-name');
+    const categoryArr = Array.from(categories);
+    categoryArr.forEach((cat) => {
+      cat.addEventListener('click', (e) => {
+        const dataCategoryName = e.target.getAttribute('data-category-name');
+        if (this.category !== dataCategoryName) this.removeAllLi();
+        this.category = dataCategoryName;
+        switch (dataCategoryName) {
+          case 'frappuccino':
+            this.$('#menu-management').innerText = '🥤 프라푸치노 메뉴 관리';
+            break;
+          case 'blended':
+            this.$('#menu-management').innerText = '🍹 블렌디드 메뉴 관리';
+            break;
+          case 'teavana':
+            this.$('#menu-management').innerText = '🫖 티바나 메뉴 관리';
+            break;
+          case 'desert':
+            this.$('#menu-management').innerText = '🍰 디저트 메뉴 관리';
+            break;
+          default:
+            this.$('#menu-management').innerText = '☕ 에스프레소 메뉴 관리';
+            break;
+        }
+        this.setMenu()
+      });
+    });
     ul.addEventListener('click', (e) => {
       if (e.target.classList.contains('menu-edit-button')) {
         const span = e.target.closest('li').querySelector('.menu-name');
@@ -111,7 +138,12 @@ class App {
     input.value = '';
   }
 
-  createLi() {
+  removeAllLi() {
+    const ul = this.$('#espresso-menu-list');
+    ul.innerHTML = '';
+  }
+
+  createLi(menu) {
     const li = `<li class="menu-list-item d-flex items-center py-2">
         <span class="w-100 pl-2 menu-name">${menu.name}</span>
         <button

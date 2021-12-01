@@ -43,13 +43,34 @@ class App {
       });
     });
     ul.addEventListener('click', (e) => {
-      if (e.target.classList.contains('menu-edit-button')) {
+      if (e.target.classList.contains('menu-sold-out-button')) {
+        const existingMenu = this.getItem('menu');
+        const liToSellOut = e.target.closest('li');
+        const span = liToSellOut.querySelector('.menu-name');
+        const allLi = document.querySelectorAll('.menu-list-item');
+        const listArr = Array.prototype.slice.call(allLi);
+        const idx = listArr.indexOf(liToSellOut);
+        let isSoldOut = existingMenu[this.category][idx].soldOut;
+        if (isSoldOut) {
+          existingMenu[this.category][idx].soldOut = false;
+          span.classList.remove('sold-out');
+        } else {
+          existingMenu[this.category][idx].soldOut = true;
+          span.classList.add('sold-out');
+        }
+        this.setItem('menu', existingMenu);
+      } else if (e.target.classList.contains('menu-edit-button')) {
         const span = e.target.closest('li').querySelector('.menu-name');
         span.innerText = window.prompt('메뉴명을 수정하세요', span.innerText);
-      }
-
-      if (e.target.classList.contains('menu-remove-button')) {
+      } else if (e.target.classList.contains('menu-remove-button')) {
         if (!window.confirm('정말로 삭제하시겠습니까?')) return;
+        const existingMenu = this.getItem('menu');
+        const liToDelete = e.target.closest('li');
+        const allLi = document.querySelectorAll('.menu-list-item');
+        const listArr = Array.prototype.slice.call(allLi);
+        const idx = listArr.indexOf(liToDelete);
+        existingMenu[this.category].splice(idx, 1);
+        this.setItem('menu', existingMenu);
         e.target.closest('li').remove();
         this.updateMenuCount();
       }

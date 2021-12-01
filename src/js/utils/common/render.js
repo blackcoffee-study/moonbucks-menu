@@ -1,6 +1,6 @@
 import $ from './selector.js';
 import { updateMenuCount } from '../menu/updateMenuCount.js';
-import { fetchMenu } from '../menu/fetchMenu.js';
+import { fetchMenu } from '../api/api.js';
 
 export const render = async (menu, category) => {
   menu[category] = await fetchMenu(category);
@@ -12,7 +12,7 @@ export const render = async (menu, category) => {
           item.id
         } class=" menu-list-item d-flex items-center py-2">
           <span class="w-100 pl-2 menu-name ${
-            item.soldOut ? 'sold-out' : ''
+            item.isSoldOut ? 'sold-out' : ''
           }">${item.name}</span>
           <button
             type="button"

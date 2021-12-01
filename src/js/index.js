@@ -1,5 +1,4 @@
 import $ from './utils/common/selector.js';
-import { store } from './utils/common/store.js';
 import { addMenuName } from './utils/menu/addMenuName.js';
 import { updateMenuName } from './utils/menu/updateMenuName.js';
 import { removeMenuName } from './utils/menu/removeMenuName.js';
@@ -15,11 +14,10 @@ function App() {
     desert: [],
   };
 
-  this.init = () => {
-    if (store.getData()) this.menu = store.getData();
+  this.init = async () => {
     this.currentCategory = 'espresso';
     $('#category-title').innerText = `${this.currentCategory} 메뉴 관리`;
-    render(this.menu, this.currentCategory);
+    await render(this.menu, this.currentCategory);
     this.initEventListeners();
   };
 

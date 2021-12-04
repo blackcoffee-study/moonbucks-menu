@@ -112,6 +112,13 @@ const addNewMenu = () => {
   $input.value = '';
 };
 
+// 메뉴 변경에 따른 localStorage 업데이트
+const updateLocalStorageMenu = updatedMenuList => {
+  menuObj = JSON.parse(localStorage.getItem('menu'));
+  menuObj[selectedMenu] = updatedMenuList;
+  localStorage.setItem('menu', JSON.stringify(menuObj));
+};
+
 // 메뉴 품절 여부 토글
 const toggleSoldOut = ($li, idx, selectedMenuList) => {
   const $menuName = $li.firstElementChild;
@@ -120,9 +127,7 @@ const toggleSoldOut = ($li, idx, selectedMenuList) => {
   // localStorage
   const isSoldOut = selectedMenuList[idx]['soldOut'];
   selectedMenuList[idx]['soldOut'] = isSoldOut ? false : true;
-  menuObj = JSON.parse(localStorage.getItem('menu'));
-  menuObj[selectedMenu] = selectedMenuList;
-  localStorage.setItem('menu', JSON.stringify(menuObj));
+  updateLocalStorageMenu(selectedMenuList);
 };
 
 // 메뉴 수정
@@ -139,9 +144,7 @@ const editMenu = ($li, idx, selectedMenuList) => {
 
   // localStorage
   selectedMenuList[idx]['name'] = editedName;
-  menuObj = JSON.parse(localStorage.getItem('menu'));
-  menuObj[selectedMenu] = selectedMenuList;
-  localStorage.setItem('menu', JSON.stringify(menuObj));
+  updateLocalStorageMenu(selectedMenuList);
 };
 
 // 메뉴 삭제
@@ -155,9 +158,8 @@ const deleteMenu = ($li, idx, selectedMenuList) => {
   updateTotalMenuNum();
 
   // localStorage
-  menuObj = JSON.parse(localStorage.getItem('menu'));
-  menuObj[selectedMenu] = selectedMenuList.filter((_, index) => index !== idx);
-  localStorage.setItem('menu', JSON.stringify(menuObj));
+  selectedMenuList = selectedMenuList.filter((_, index) => index !== idx);
+  updateLocalStorageMenu(selectedMenuList);
 };
 
 // event

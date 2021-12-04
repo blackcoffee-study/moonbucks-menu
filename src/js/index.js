@@ -77,9 +77,20 @@ const addNewMenu = () => {
   updateTotalMenuNum();
 };
 
+// 메뉴 품절 여부 토글
+const toggleSoldOut = ($li, idx, selectedMenuList) => {
+  const $menuName = $li.firstElementChild;
+  $menuName.classList.toggle('sold-out');
+
+  // localStorage
+  selectedMenuList[idx]['soldOut'] = !selectedMenuList[idx]['soldOut'];
+  menuObj[selectedMenu] = selectedMenuList;
+  localStorage.setItem('menu', JSON.stringify(menuObj));
+};
+
 // 메뉴 수정
-const editMenu = target => {
-  const $menuName = target.previousElementSibling;
+const editMenu = ($li, idx, selectedMenuList) => {
+  const $menuName = $li.firstElementChild;
   const editedName = window.prompt(
     '메뉴명을 수정하세요',
     $menuName.textContent,
@@ -88,16 +99,25 @@ const editMenu = target => {
   if (editedName === null) return;
 
   $menuName.textContent = editedName;
+
+  // localStorage
+  selectedMenuList[idx]['name'] = editedName;
+  menuObj[selectedMenu] = selectedMenuList;
+  localStorage.setItem('menu', JSON.stringify(menuObj));
 };
 
 // 메뉴 삭제
-const deleteMenu = target => {
-  const $selectedMenu = target.parentNode;
+const deleteMenu = ($li, idx, selectedMenuList) => {
+  const $selectedMenu = $li;
   const result = window.confirm('정말 삭제하시겠습니까?');
 
   if (!result) return;
 
   $espressoMenuList.removeChild($selectedMenu);
+
+  // localStorage
+  menuObj[selectedMenu] = selectedMenuList.filter((_, index) => index !== idx);
+  localStorage.setItem('menu', JSON.stringify(menuObj));
 };
 
 // event
@@ -120,35 +140,28 @@ $espressoMenuForm.addEventListener('keyup', e => {
   addNewMenu();
 });
 
-// 품절 버튼 클릭 시, 메뉴 품절 상태 토글
+// 메뉴별 품절, 수정, 삭제 버튼 클릭 이벤트
 $espressoMenuList.addEventListener('click', e => {
   const $li = e.target.closest('li');
-  const numOfLi = [...$espressoMenuList.children].findIndex(li => li === $li);
-
-  if (!e.target.matches('.menu-sold-out-button')) return;
-
-  const $menuName = e.target.previousElementSibling;
-  $menuName.classList.toggle('sold-out');
-
+  const idxOfLi = [...$espressoMenuList.children].findIndex(li => li === $li);
   const selectedMenuList = JSON.parse(localStorage.getItem('menu'))[
     selectedMenu
   ];
-  selectedMenuList[numOfLi]['soldOut'] = !selectedMenuList[numOfLi]['soldOut'];
-  menuObj[selectedMenu] = selectedMenuList;
-  localStorage.setItem('menu', JSON.stringify(menuObj));
-});
 
-// 수정 버튼 클릭 시, 메뉴 이름 수정
-$espressoMenuList.addEventListener('click', e => {
-  if (!e.target.matches('.menu-edit-button')) return;
-
-  editMenu(e.target);
-});
-
-// 삭제 버튼 클릭 시, 메뉴 삭제
-$espressoMenuList.addEventListener('click', e => {
-  if (!e.target.matches('.menu-remove-button')) return;
-
-  deleteMenu(e.target);
-  updateTotalMenuNum();
+  // 품절 버튼 클릭 시, 메뉴 품절 상태 토글
+  if (e.target.matches('.menu-sold-out-button')) {
+    toggleSoldOut($li, idxOfLi, selectedMenuList);
+    return;
+  }
+  // 수정 버튼 클릭 시, 메뉴 이름 수정
+  if (e.target.matches('.menu-edit-button')) {
+    editMenu($li, idxOfLi, selectedMenuList);
+    return;
+  }
+  // 삭제 버튼 클릭 시, 메뉴 삭제
+  if (e.target.matches('.menu-remove-button')) {
+    deleteMenu($li, idxOfLi, selectedMenuList);
+    updateTotalMenuNum();
+    return;
+  }
 });

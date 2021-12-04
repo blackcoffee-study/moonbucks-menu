@@ -2,6 +2,15 @@
 const $espressoMenuForm = document.getElementById('espresso-menu-form');
 const $espressoMenuList = document.getElementById('espresso-menu-list');
 
+let selectedMenu = 'espresso';
+let menuObj = {
+  blended: [],
+  desert: [],
+  espresso: [],
+  frappuccino: [],
+  teavana: [],
+};
+
 // 총 메뉴갯수 count
 const updateTotalMenuNum = () => {
   const $menuCount = document.querySelector('.menu-count');
@@ -19,6 +28,12 @@ const makeMenuTemplate = menuName => {
     <span class="w-100 pl-2 menu-name">${menuName}</span>
     <button
       type="button"
+      class="bg-gray-50 text-gray-500 text-sm mr-1 menu-sold-out-button"
+    >
+      품절
+    </button>
+    <button
+      type="button"
       class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
     >
       수정
@@ -34,6 +49,18 @@ const makeMenuTemplate = menuName => {
   $espressoMenuList.appendChild($li);
 };
 
+const addMenuToLocalStorage = menuName => {
+  let selectedMenuList =
+    JSON.parse(localStorage.getItem('menu'))?.[selectedMenu] ||
+    menuObj[selectedMenu];
+  selectedMenuList.push({
+    name: menuName,
+    soldOut: false,
+  });
+  menuObj[selectedMenu] = selectedMenuList;
+  localStorage.setItem('menu', JSON.stringify(menuObj));
+};
+
 // 메뉴 추가
 const addNewMenu = () => {
   const $input = document.getElementById('espresso-menu-name');
@@ -45,6 +72,7 @@ const addNewMenu = () => {
   }
 
   makeMenuTemplate(menuName);
+  addMenuToLocalStorage(menuName);
   $input.value = '';
   updateTotalMenuNum();
 };
@@ -90,6 +118,24 @@ $espressoMenuForm.addEventListener('keyup', e => {
   if (e.key !== 'Enter') return;
 
   addNewMenu();
+});
+
+// 품절 버튼 클릭 시, 메뉴 품절 상태 토글
+$espressoMenuList.addEventListener('click', e => {
+  const $li = e.target.closest('li');
+  const numOfLi = [...$espressoMenuList.children].findIndex(li => li === $li);
+
+  if (!e.target.matches('.menu-sold-out-button')) return;
+
+  const $menuName = e.target.previousElementSibling;
+  $menuName.classList.toggle('sold-out');
+
+  const selectedMenuList = JSON.parse(localStorage.getItem('menu'))[
+    selectedMenu
+  ];
+  selectedMenuList[numOfLi]['soldOut'] = !selectedMenuList[numOfLi]['soldOut'];
+  menuObj[selectedMenu] = selectedMenuList;
+  localStorage.setItem('menu', JSON.stringify(menuObj));
 });
 
 // 수정 버튼 클릭 시, 메뉴 이름 수정

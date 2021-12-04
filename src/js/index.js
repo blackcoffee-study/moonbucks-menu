@@ -1,6 +1,7 @@
 // elem
 const $espressoMenuForm = document.getElementById('espresso-menu-form');
 const $espressoMenuList = document.getElementById('espresso-menu-list');
+const $nav = document.querySelector('nav');
 
 let selectedMenu = 'espresso';
 let menuObj = {
@@ -20,11 +21,33 @@ const updateTotalMenuNum = () => {
 };
 
 // 메뉴 li 만들기
-const makeMenuTemplate = menuName => {
+const makeMenuTemplate = (menuName, soldOut) => {
   const $li = document.createElement('li');
 
   $li.classList.add('menu-list-item', 'd-flex', 'items-center', 'py-2');
-  $li.innerHTML = `
+  $li.innerHTML = soldOut
+    ? `
+      <span class="w-100 pl-2 menu-name sold-out">${menuName}</span>
+      <button
+        type="button"
+        class="bg-gray-50 text-gray-500 text-sm mr-1 menu-sold-out-button"
+      >
+        품절
+      </button>
+      <button
+        type="button"
+        class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
+      >
+        수정
+      </button>
+      <button
+        type="button"
+        class="bg-gray-50 text-gray-500 text-sm menu-remove-button"
+      >
+        삭제
+      </button>
+    `
+    : `
     <span class="w-100 pl-2 menu-name">${menuName}</span>
     <button
       type="button"
@@ -49,32 +72,44 @@ const makeMenuTemplate = menuName => {
   $espressoMenuList.appendChild($li);
 };
 
-const addMenuToLocalStorage = menuName => {
-  let selectedMenuList =
-    JSON.parse(localStorage.getItem('menu'))?.[selectedMenu] ||
-    menuObj[selectedMenu];
-  selectedMenuList.push({
-    name: menuName,
-    soldOut: false,
-  });
-  menuObj[selectedMenu] = selectedMenuList;
-  localStorage.setItem('menu', JSON.stringify(menuObj));
+// 메뉴 리스트 렌더링
+const renderMenu = () => {
+  if (!localStorage.getItem('menu')) return;
+
+  const selectedMenuList = JSON.parse(localStorage.getItem('menu'))[
+    selectedMenu
+  ];
+
+  $espressoMenuList.innerHTML = '';
+  selectedMenuList.map(({ name, soldOut }) => makeMenuTemplate(name, soldOut));
+  updateTotalMenuNum();
 };
 
 // 메뉴 추가
 const addNewMenu = () => {
   const $input = document.getElementById('espresso-menu-name');
   const menuName = $input.value;
+  let selectedMenuList = [];
 
   if ($input.value.trim() === '') {
     $input.value = '';
     return;
   }
 
-  makeMenuTemplate(menuName);
-  addMenuToLocalStorage(menuName);
+  // localStorage
+  if (localStorage.getItem('menu')) {
+    menuObj = JSON.parse(localStorage.getItem('menu'));
+    selectedMenuList = menuObj[selectedMenu];
+  }
+  selectedMenuList.push({
+    name: menuName,
+    soldOut: false,
+  });
+  menuObj[selectedMenu] = selectedMenuList;
+  localStorage.setItem('menu', JSON.stringify(menuObj));
+
+  renderMenu();
   $input.value = '';
-  updateTotalMenuNum();
 };
 
 // 메뉴 품절 여부 토글
@@ -83,7 +118,9 @@ const toggleSoldOut = ($li, idx, selectedMenuList) => {
   $menuName.classList.toggle('sold-out');
 
   // localStorage
-  selectedMenuList[idx]['soldOut'] = !selectedMenuList[idx]['soldOut'];
+  const isSoldOut = selectedMenuList[idx]['soldOut'];
+  selectedMenuList[idx]['soldOut'] = isSoldOut ? false : true;
+  menuObj = JSON.parse(localStorage.getItem('menu'));
   menuObj[selectedMenu] = selectedMenuList;
   localStorage.setItem('menu', JSON.stringify(menuObj));
 };
@@ -102,6 +139,7 @@ const editMenu = ($li, idx, selectedMenuList) => {
 
   // localStorage
   selectedMenuList[idx]['name'] = editedName;
+  menuObj = JSON.parse(localStorage.getItem('menu'));
   menuObj[selectedMenu] = selectedMenuList;
   localStorage.setItem('menu', JSON.stringify(menuObj));
 };
@@ -114,8 +152,10 @@ const deleteMenu = ($li, idx, selectedMenuList) => {
   if (!result) return;
 
   $espressoMenuList.removeChild($selectedMenu);
+  updateTotalMenuNum();
 
   // localStorage
+  menuObj = JSON.parse(localStorage.getItem('menu'));
   menuObj[selectedMenu] = selectedMenuList.filter((_, index) => index !== idx);
   localStorage.setItem('menu', JSON.stringify(menuObj));
 };
@@ -161,7 +201,24 @@ $espressoMenuList.addEventListener('click', e => {
   // 삭제 버튼 클릭 시, 메뉴 삭제
   if (e.target.matches('.menu-remove-button')) {
     deleteMenu($li, idxOfLi, selectedMenuList);
-    updateTotalMenuNum();
     return;
   }
+});
+
+// nav 메뉴 클릭 시, 해당 메뉴 관리 보이기
+$nav.addEventListener('click', e => {
+  if (!e.target.classList.contains('cafe-category-name')) return;
+
+  const categoryName = e.target.dataset.categoryName;
+  const nameWithIcon = e.target.textContent;
+  selectedMenu = categoryName;
+  renderMenu();
+
+  const $h2 = document.querySelector('main h2');
+  $h2.textContent = `${nameWithIcon} 메뉴 관리`;
+});
+
+// 초기 렌더 및 새로고침 시, localStorage에 저장된 메뉴 렌더링
+window.addEventListener('DOMContentLoaded', () => {
+  renderMenu();
 });

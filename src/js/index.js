@@ -42,8 +42,6 @@ function renderMenuList(menuArrs, event) {
     )
   });
   };
-
-  
   
 $menuList.addEventListener('click', function updateMenu(event) {
   if (event.target.classList.contains('menu-edit-button')) {
@@ -64,8 +62,6 @@ $menuList.addEventListener('click', function updateMenu(event) {
     undateCount(menuArrs);
   };
 });
-
-
 
 $addMenuBtn.addEventListener('click', addMenu)
 $addMenuBtn.addEventListener('keypress', addMenu)

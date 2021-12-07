@@ -1,3 +1,5 @@
+import  { menuItemTemplate } from "./template/menu.js"
+
 const $addMenuBtn = document.getElementById("espresso-menu-submit-button");
 const $menuList = document.getElementById("espresso-menu-list");
 const $inputMenu = document.getElementById("espresso-menu-name");
@@ -9,39 +11,28 @@ function addMenu(e) {
   if(inputMenuValue == ''){
     return;
   } else {
-    updateMenuList(inputMenuValue);
+    addMenuList(inputMenuValue);
     $inputMenu.value = '';
   }
 }
 
-function updateMenuList(inputMenuValue) {
+function addMenuList(inputMenuValue) {
   menuArrs.push(inputMenuValue);
-  renderMenu(menuArrs);
+  renderMenuList(menuArrs);
   undateCount(menuArrs);
 }
 
-function renderMenu(menuArrs, event) {
+function renderMenuList(menuArrs, event) {
   $menuList.innerText = ''; 
   menuArrs.map((menuArr) => {
     const li = document.createElement('li');
     const menuLi = $menuList.appendChild(li);
-    const liContents = `<li class="menu-list-item d-flex items-center py-2">
-    <span class="w-100 pl-2 menu-name">${menuArr}</span>
-    <button
-      type="button"
-      class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
-    >
-      수정
-    </button>
-    <button
-      type="button"
-      class="bg-gray-50 text-gray-500 text-sm menu-remove-button"
-    >
-      삭제
-    </button>
-  </li>`
-   menuLi.innerHTML = liContents
+    $menuList.insertAdjacentHTML(
+      'beforeend',
+      menuItemTemplate(menuArr)
+    )
   });
+  };
 
   
   $menuList.addEventListener('click', function updateMenu(event) {
@@ -60,7 +51,7 @@ function renderMenu(menuArrs, event) {
       const $targetMenuName = event.target.closest("li").remove();
     };
   });
-};
+
 
 function undateCount(menuArrs) {
   const totalNum = menuArrs.length;

@@ -4,20 +4,21 @@ const $addMenuBtn = document.getElementById("espresso-menu-submit-button");
 const $menuList = document.getElementById("espresso-menu-list");
 const $inputMenu = document.getElementById("espresso-menu-name");
 const $totalNum = document.querySelector(".menu-count");
-const menuArrs = []
+const menuArrs = [];
 
-function addMenu(e) {
-  const inputMenuValue = document.getElementById("espresso-menu-name").value
-  if(inputMenuValue == ''){
+const isMenuInputEmpty = (e) => {
+  const inputMenuName = document.getElementById("espresso-menu-name").value
+  if(inputMenuName == ''){
     return;
   } else {
-    addMenuList(inputMenuValue);
+    addMenuList(inputMenuName);
     $inputMenu.value = '';
   }
 }
 
-function addMenuList(inputMenuValue) {
-  menuArrs.push(inputMenuValue);
+const addMenuList = (inputMenuName) => {
+  menuArrs.push({ menuName: inputMenuName });
+  localStorage.setItem( 'menuName', inputMenuName );
   renderMenuList(menuArrs);
   undateCount(menuArrs);
 }
@@ -28,12 +29,12 @@ const removeItemFromArray = ($targetMenuName) => {
   menuArrs.splice(menuIdx, 1)
 }
 
-function undateCount(menuArrs) {
+const undateCount = (menuArrs) => {
   const totalNum = menuArrs.length;
   $totalNum.innerText = `총 ${totalNum}개`
 }
 
-function renderMenuList(menuArrs, event) {
+const renderMenuList = (menuArrs, event) => {
   $menuList.innerText = ''; 
   menuArrs.map((menuArr) => {
     $menuList.insertAdjacentHTML(
@@ -49,10 +50,10 @@ $menuList.addEventListener('click', function updateMenu(event) {
     const updatedMenuName = prompt(
       "수정하고 싶은 메뉴명을 입력해주세요!",
     );
-    if (updatedMenuName === null) return;
     $targetMenuName.innerText = updatedMenuName;
   }
   if (event.target.classList.contains('menu-remove-button')) {
+    if (updatedMenuName === null) return;
     confirm(
       "선택하신 메뉴를 삭제하시겠습니까?",
     );
@@ -63,5 +64,5 @@ $menuList.addEventListener('click', function updateMenu(event) {
   };
 });
 
-$addMenuBtn.addEventListener('click', addMenu)
-$addMenuBtn.addEventListener('keypress', addMenu)
+$addMenuBtn.addEventListener('click', isMenuInputEmpty)
+$addMenuBtn.addEventListener('keypress', isMenuInputEmpty)

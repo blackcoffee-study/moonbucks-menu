@@ -5,6 +5,14 @@ const $menuList = document.getElementById("espresso-menu-list");
 const $inputMenu = document.getElementById("espresso-menu-name");
 const $totalNum = document.querySelector(".menu-count");
 const menuArrs = [];
+const store = {
+  setLocalStorage(menuArrs) {
+    localStorage.setItem("menu", JSON.stringify(menuArrs))
+  },
+  getLocalStorage() {
+    localStorage.getItem("menu");
+  }
+}
 
 const isMenuInputEmpty = (e) => {
   const inputMenuName = document.getElementById("espresso-menu-name").value
@@ -18,13 +26,21 @@ const isMenuInputEmpty = (e) => {
 
 const addMenuList = (inputMenuName) => {
   menuArrs.push({ menuName: inputMenuName });
-  localStorage.setItem( 'menuName', inputMenuName );
+  store.setLocalStorage(menuArrs);
   renderMenuList(menuArrs);
   undateCount(menuArrs);
 }
 
+const renderMenuList = (menuArrs, event) => {
+  $menuList.innerText = ''; 
+  const template = menuArrs.map((menuArr) => {
+    return menuItemTemplate(menuArr)
+  }).join('');
+  $menuList.innerHTML = template;
+
+};
+
 const removeItemFromArray = ($targetMenuName) => {
-  const menuName = $targetMenuName.querySelector('.menu-name').innerText;
   const menuIdx = menuArrs.indexOf(menuName);
   menuArrs.splice(menuIdx, 1)
 }
@@ -34,15 +50,7 @@ const undateCount = (menuArrs) => {
   $totalNum.innerText = `총 ${totalNum}개`
 }
 
-const renderMenuList = (menuArrs, event) => {
-  $menuList.innerText = ''; 
-  menuArrs.map((menuArr) => {
-    $menuList.insertAdjacentHTML(
-      'beforeend',
-      menuItemTemplate(menuArr)
-    )
-  });
-  };
+
   
 $menuList.addEventListener('click', function updateMenu(event) {
   if (event.target.classList.contains('menu-edit-button')) {

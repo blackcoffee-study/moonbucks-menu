@@ -41,8 +41,10 @@ const renderMenuList = (menuArrs, event) => {
 };
 
 const removeItemFromArray = ($targetMenuName) => {
-  const menuIdx = menuArrs.indexOf(menuName);
+  const menuIdx = menuArrs.indexOf($targetMenuName);
   menuArrs.splice(menuIdx, 1)
+  store.setLocalStorage(menuArrs);
+  // console.log(menuArrs);
 }
 
 const undateCount = (menuArrs) => {
@@ -53,21 +55,22 @@ const undateCount = (menuArrs) => {
 
   
 $menuList.addEventListener('click', function updateMenu(event) {
+  const $targetMenuName = event.target.closest("li").querySelector(".menu-name");
   if (event.target.classList.contains('menu-edit-button')) {
-    const $targetMenuName = event.target.closest("li").querySelector(".menu-name");
-    const updatedMenuName = prompt(
-      "수정하고 싶은 메뉴명을 입력해주세요!",
-    );
-    $targetMenuName.innerText = updatedMenuName;
+    const updatedMenuName = () => {
+      if (updatedMenuName === null) return;
+      prompt(
+        "수정하고 싶은 메뉴명을 입력해주세요!",
+      );
+      $targetMenuName.innerText = updatedMenuName;
+    };
   }
   if (event.target.classList.contains('menu-remove-button')) {
-    if (updatedMenuName === null) return;
     confirm(
       "선택하신 메뉴를 삭제하시겠습니까?",
     );
-    const $targetMenuName = event.target.closest("li");
-    $targetMenuName.remove(); // render함수에서 해결할 수 있으면 좋겠다.
     removeItemFromArray($targetMenuName);
+    renderMenuList(menuArrs);
     undateCount(menuArrs);
   };
 });

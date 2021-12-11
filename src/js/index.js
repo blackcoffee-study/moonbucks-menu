@@ -33,37 +33,32 @@ const addMenuList = (inputMenuName) => {
 
 const renderMenuList = (menuArrs, event) => {
   $menuList.innerText = ''; 
-  const template = menuArrs.map((menuArr) => {
-    return menuItemTemplate(menuArr)
+  const template = menuArrs.map((menuArr, index) => {
+    return menuItemTemplate(menuArr, index);
   }).join('');
   $menuList.innerHTML = template;
-
 };
 
 const removeItemFromArray = ($targetMenuName) => {
   const menuIdx = menuArrs.indexOf($targetMenuName);
   menuArrs.splice(menuIdx, 1)
   store.setLocalStorage(menuArrs);
-  // console.log(menuArrs);
 }
 
 const undateCount = (menuArrs) => {
   const totalNum = menuArrs.length;
   $totalNum.innerText = `총 ${totalNum}개`
 }
-
-
   
 $menuList.addEventListener('click', function updateMenu(event) {
-  const $targetMenuName = event.target.closest("li").querySelector(".menu-name");
+  const $targetMenuName = event.target.closest("li")
+  const menuId = $targetMenuName.dataset.menuId
+
   if (event.target.classList.contains('menu-edit-button')) {
-    const updatedMenuName = () => {
-      if (updatedMenuName === null) return;
-      prompt(
-        "수정하고 싶은 메뉴명을 입력해주세요!",
-      );
-      $targetMenuName.innerText = updatedMenuName;
-    };
+    const newMenuName = prompt("수정하고 싶은 메뉴명을 입력해주세요!");
+    $targetMenuName.innerText = newMenuName;
+    menuArrs[menuId].menuName = newMenuName;
+    store.setLocalStorage(menuArrs);  
   }
   if (event.target.classList.contains('menu-remove-button')) {
     confirm(

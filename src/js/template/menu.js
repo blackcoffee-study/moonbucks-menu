@@ -1,5 +1,5 @@
-export const menuItemTemplate = (menuArr) =>`
-<li class="menu-list-item d-flex items-center py-2">
+export const menuItemTemplate = (menuArr, index) =>`
+<li data-menu-id="${index}" class="menu-list-item d-flex items-center py-2">
     <span class="w-100 pl-2 menu-name">${menuArr.menuName}</span>
     <button
       type="button"

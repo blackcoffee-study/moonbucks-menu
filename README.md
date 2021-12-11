@@ -74,7 +74,9 @@
 ## 🎯 step2 요구사항 - 상태 관리로 메뉴 관리하기
 
 - [localStorage] Read & Write
-- [ ] [localStorage]에 데이터를 저장한다
+- [x] 메뉴 추가시[localStorage]에 데이터를 저장한다
+- [x] 메뉴 삭제시[localStorage]에 데이터를 저장한다
+- [ ] 메뉴 수정시[localStorage]에 데이터를 저장한다
 - [ ] 새로고침 할 때 [localStorage]에서 데이터를 읽어온다.
     (https://developer.mozilla.org/ko/docs/Web/API/Window/localStorage)
 

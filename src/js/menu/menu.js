@@ -99,7 +99,7 @@ export default class Menu {
     this.storage
       .fetchAll()
       .then((menu) => this.renderMenus(menu))
-      .catch(() => console.log("Error-loadMenus::", error));
+      .catch(() => console.log("Error-loadMenus"));
   };
 
   setupWithStorage = (storage) => {
@@ -116,7 +116,7 @@ export default class Menu {
     datas.forEach((menu) => {
       this.createComponent(menu);
     });
-    this.updateMenuCount(datas.length);
+    this.updateMenuCount();
   };
 
   addMenu = (inputName) => {
@@ -124,7 +124,10 @@ export default class Menu {
       return;
     }
 
-    // 중복 메뉴이름 검사
+    if (this.storage.isAlreadyExistName(inputName)) {
+      alert("이미 존재하는 메뉴 이름 입니다");
+      return;
+    }
 
     this.storage
       .add(inputName)
@@ -136,7 +139,8 @@ export default class Menu {
       .catch((error) => console.log("error", error));
   };
 
-  updateMenuCount = (menuCount = this.$menuList.childElementCount) => {
+  updateMenuCount = () => {
+    const menuCount = this.storage.getMenuCount();
     this.$menuCount.innerText = `총 ${menuCount}개`;
   };
 

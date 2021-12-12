@@ -6,8 +6,17 @@ export default class MenuStorage {
     this.datas = [];
   }
 
+  isAlreadyExistName = (name) => {
+    const resultList = this.datas.filter((menu) => menu.name === name);
+    return resultList.length > 0;
+  };
+
   getCategory = () => {
     return this.category;
+  };
+
+  getMenuCount = () => {
+    return this.datas.length;
   };
 
   fetchAll = async () => {

@@ -4,9 +4,9 @@ import MenuMessage from "./menuMessage.js";
 
 export default class Menu {
   constructor(storage) {
-    this.$submitButton = $("#espresso-menu-submit-button");
-    this.$espressoMenuList = $("#espresso-menu-list");
-    this.$espressMenuInput = $("#espresso-menu-name");
+    this.$submitButton = $("#menu-submit-button");
+    this.$menuList = $("#menu-list");
+    this.$menuInput = $("#menu-name");
     this.$headingTitle = $(".heading").querySelector("h2");
     this.$menuCount = $(".menu-count");
     this.storage = storage;
@@ -14,21 +14,21 @@ export default class Menu {
     this.renderMessage(storage.key);
 
     this.$submitButton.addEventListener("click", () => {
-      this.addMenu(this.$espressMenuInput.value);
+      this.addMenu(this.$menuInput.value);
     });
 
-    this.$espressMenuInput.addEventListener("keypress", (e) => {
+    this.$menuInput.addEventListener("keypress", (e) => {
       if (e.key !== "Enter") {
         return;
       }
-      this.addMenu(this.$espressMenuInput.value);
+      this.addMenu(this.$menuInput.value);
     });
 
-    $("#espresso-menu-form").addEventListener("submit", (e) => {
+    $("#menu-form").addEventListener("submit", (e) => {
       e.preventDefault();
     });
 
-    this.$espressoMenuList.addEventListener("click", (e) => {
+    this.$menuList.addEventListener("click", (e) => {
       const menuElem = e.target.closest("li");
       const selectedId = menuElem.getAttribute("data-id");
 
@@ -84,7 +84,7 @@ export default class Menu {
     const addedMenu = this.storage.add(inputName);
     this.createComponent(addedMenu);
     this.updateMenuCount(this.storage.datas.length);
-    this.$espressMenuInput.value = "";
+    this.$menuInput.value = "";
   };
 
   updateMenuCount = (menuCount) => {
@@ -98,7 +98,7 @@ export default class Menu {
 
   createComponent(menu) {
     const menuComponent = new MenuComponent(menu);
-    menuComponent.attachTo(this.$espressoMenuList);
+    menuComponent.attachTo(this.$menuList);
   }
 
   editMenuName = (elem, editedMenuName) => {
@@ -110,12 +110,12 @@ export default class Menu {
   };
 
   removeAllMenuNodes = () => {
-    const node = this.$espressoMenuList;
+    const node = this.$menuList;
     node.querySelectorAll("*").forEach((n) => n.remove());
   };
 
   renderMessage = (storageKey) => {
     this.$headingTitle.innerText = MenuMessage[storageKey].title;
-    this.$espressMenuInput.placeholder = MenuMessage[storageKey].placeholder;
+    this.$menuInput.placeholder = MenuMessage[storageKey].placeholder;
   };
 }

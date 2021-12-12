@@ -41,7 +41,7 @@ export default class MenuStorage {
     }
   };
 
-  add(menuName) {
+  add = (menuName) => {
     const menuData = {
       id: this.datas.length == 0 ? 0 : this.datas[this.datas.length - 1].id + 1,
       menuName: menuName,
@@ -51,5 +51,5 @@ export default class MenuStorage {
     this.storage.setItem(this.key, JSON.stringify(updatedDatas));
     this.datas = updatedDatas;
     return menuData;
-  }
+  };
 }

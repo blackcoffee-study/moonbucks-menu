@@ -44,7 +44,11 @@ export default class Menu {
         if (!editedMenuName) {
           return;
         }
-        this.storage.editMenuName(selectedId, editedMenuName);
+        // this.storage.editMenuName(selectedId, editedMenuName);
+
+        // console.log("변경할 이름", editedMenuName);
+        // console.log("변경아이디", selectedId);
+        this.editMenuNameStorage(selectedId, editedMenuName);
         this.editMenuName(elem, editedMenuName);
       }
 
@@ -57,11 +61,26 @@ export default class Menu {
       }
 
       if (e.target.classList.contains("menu-sold-out-button")) {
-        this.storage.soldOutById(selectedId);
+        // this.storage.soldOutById(selectedId);
+        this.soldOutStorage(selectedId, menuName);
         this.toggleSoldOut(menuElem);
       }
     });
   }
+
+  soldOutStorage = (id, name) => {
+    this.storage
+      .soldOut(id, name)
+      .then(console.log)
+      .catch((error) => console.log("error", error));
+  };
+
+  editMenuNameStorage = (id, name) => {
+    this.storage
+      .editMenuName(id, name)
+      .then(console.log)
+      .catch((error) => console.log("error", error));
+  };
 
   removeStorage = (id, name) => {
     this.storage

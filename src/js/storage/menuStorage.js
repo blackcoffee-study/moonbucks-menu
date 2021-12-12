@@ -28,24 +28,33 @@ export default class MenuStorage {
     return result;
   };
 
-  soldOutById = (id) => {
-    const menu = this.datas.find((m) => m.id == id);
-    const menuIdx = this.datas.findIndex((m) => m.id == id);
-    if (menu) {
-      menu.soldOut = !menu.soldOut;
-      this.datas[menuIdx] = menu;
-      this.storage.setItem(this.category, JSON.stringify(this.datas));
-    }
+  // error: 수정은 서버에서 OK 뜨고 서버에서 결과값을 던져줌.
+  // 하지만, 수정된 name 필드가 삭제됨
+  //{{baseUrl}}/api/category/:category/menu/:menuId
+  editMenuName = async (id, name) => {
+    console.log("name == ", name);
+    const url = `${this.baseUrl}/api/category/${this.category}/menu/${id}`;
+    const response = await fetch(url, {
+      method: "put",
+      body: JSON.stringify({
+        name: name,
+      }),
+    });
+    const result = await response.json();
+    return result;
   };
 
-  editMenuName = (id, name) => {
-    const menu = this.datas.find((m) => m.id == id);
-    const menuIdx = this.datas.findIndex((m) => m.id == id);
-    if (menu) {
-      menu.menuName = name;
-      this.datas[menuIdx] = menu;
-      this.storage.setItem(this.category, JSON.stringify(this.datas));
-    }
+  soldOut = async (id, name) => {
+    console.log("soldout name == ", name);
+    const url = `${this.baseUrl}/api/category/${this.category}/menu/${id}/soldout`;
+    const response = await fetch(url, {
+      method: "put",
+      body: JSON.stringify({
+        name: name,
+      }),
+    });
+    const result = await response.json();
+    return result;
   };
 
   add = (menuName) => {

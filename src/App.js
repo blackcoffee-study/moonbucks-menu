@@ -2,30 +2,23 @@ import Component from './core/Component.js';
 import Header from './components/Header.js';
 import MenuForm from './components/MenuForm.js';
 import MenuList from './components/MenuList.js';
+import { getMenuList } from './api/menu.js';
 
 export default class App extends Component {
-  setup() {
-    const saveData = () => {
-      localStorage.setItem(
-        'item',
-        JSON.stringify({ ...this.$state, selected: 'espresso' })
-      );
-      window.removeEventListener('beforeunload', saveData);
+  async setup() {
+    this.$state = {
+      selected: 'espresso',
+      espresso: { title: '☕ 에스프레소', items: [] },
+      frappuccino: { title: '🥤 프라푸치노', items: [] },
+      blended: { title: '🍹 블렌디드', items: [] },
+      teavana: { title: '🫖 티바나', items: [] },
+      desert: { title: '🍰 디저트', items: [] },
     };
-    window.addEventListener('beforeunload', saveData);
-    const loadData = JSON.parse(localStorage.getItem('item'));
-    if (loadData === null) {
-      this.$state = {
-        selected: 'espresso',
-        espresso: { title: '☕ 에스프레소', items: [] },
-        frappuccino: { title: '🥤 프라푸치노', items: [] },
-        blended: { title: '🍹 블렌디드', items: [] },
-        teavana: { title: '🫖 티바나', items: [] },
-        desert: { title: '🍰 디저트', items: [] },
-      };
-    } else {
-      this.$state = loadData;
-    }
+    const menuList = await getMenuList(this.$state.selected);
+    const newState = { ...this.$state[this.$state.selected], items: menuList };
+    this.setState({
+      [this.$state.selected]: newState,
+    });
   }
 
   template() {
@@ -68,10 +61,15 @@ export default class App extends Component {
     });
   }
 
-  changeMenu(e) {
+  async changeMenu(e) {
     this.setState({
       ...this.$state,
       selected: e.target.dataset.categoryName,
+    });
+    const menuList = await getMenuList(this.$state.selected);
+    const newState = { ...this.$state[this.$state.selected], items: menuList };
+    this.setState({
+      [this.$state.selected]: newState,
     });
   }
 
@@ -90,7 +88,7 @@ export default class App extends Component {
               : items[items.length - 1].id + 1
           }`,
           name: inputValue,
-          soldout: false,
+          isSoldOut: false,
         },
       ],
     };
@@ -122,7 +120,7 @@ export default class App extends Component {
 
     const editItems = this.$state[selected].items.map(item => {
       if (value !== null && item.id === +id) {
-        return { id: item.id, name: value, soldout: item.soldout };
+        return { id: item.id, name: value, isSoldOut: item.isSoldOut };
       }
       return item;
     });
@@ -136,7 +134,7 @@ export default class App extends Component {
     const { selected } = this.$state;
     const editItems = this.$state[selected].items.map(item => {
       if (item.id === +id) {
-        return { id: item.id, name: item.name, soldout: !item.soldout };
+        return { id: item.id, name: item.name, isSoldOut: !item.isSoldOut };
       }
       return item;
     });

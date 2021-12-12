@@ -65,7 +65,9 @@ export default class Menu {
       .then(() => {
         this.toggleSoldOut(elem);
       })
-      .catch((error) => console.log("error", error));
+      .catch(
+        alert("Error: 품절 처리를 실패했습니다. 잠시후 다시 시도해 주세요.")
+      );
   };
 
   toggleSoldOut = (elem) => {
@@ -76,7 +78,9 @@ export default class Menu {
     this.storage
       .editMenuName(id, name)
       .then((elem.innerText = name))
-      .catch((error) => console.log("error", error));
+      .catch(
+        alert("Error: 메뉴 수정을 실패했습니다. 잠시후 다시 시도해 주세요.")
+      );
   };
 
   removeMenu = (id, name, elem) => {
@@ -86,14 +90,16 @@ export default class Menu {
         elem.remove();
         this.updateMenuCount();
       })
-      .catch((error) => console.log("error", error));
+      .catch(
+        alert("Error: 메뉴 삭제를 실패했습니다. 잠시후 다시 시도해 주세요.")
+      );
   };
 
   loadMenus = () => {
     this.storage
       .fetchAll()
       .then((menu) => this.renderMenus(menu))
-      .catch((error) => console.log("error", error));
+      .catch((error) => console.log("Error-loadMenus::", error));
   };
 
   setupWithStorage = (storage) => {

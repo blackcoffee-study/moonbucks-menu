@@ -1,8 +1,10 @@
 export class MenuComponent {
   element;
+
   constructor({ id, name, isSoldOut }) {
     const template = document.createElement("li");
     template.setAttribute("data-id", id);
+
     template.classList = "menu-list-item d-flex items-center py-2";
     template.innerHTML = `
         <span class="w-100 pl-2 menu-name"></span>

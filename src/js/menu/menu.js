@@ -117,13 +117,14 @@ export default class Menu {
       this.createComponent(menu);
     });
     this.updateMenuCount();
+
   };
 
   addMenu = (inputName) => {
     if (!inputName.trim()) {
       return;
     }
-
+    
     if (this.storage.isAlreadyExistName(inputName)) {
       alert("이미 존재하는 메뉴 이름 입니다");
       return;

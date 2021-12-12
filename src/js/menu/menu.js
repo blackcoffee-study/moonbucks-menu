@@ -13,7 +13,7 @@ export default class Menu {
 
     this.loadMenus();
 
-    this.renderMessage(storage.key);
+    this.renderMessage(storage.getCategory());
 
     this.$submitButton.addEventListener("click", () => {
       this.addMenu(this.$menuInput.value);
@@ -33,6 +33,7 @@ export default class Menu {
     this.$menuList.addEventListener("click", (e) => {
       const menuElem = e.target.closest("li");
       const selectedId = menuElem.getAttribute("data-id");
+      const menuName = menuElem.querySelector(".menu-name").innerText;
 
       if (e.target.classList.contains("menu-edit-button")) {
         const elem = e.target.closest("li").querySelector(".menu-name");
@@ -51,7 +52,7 @@ export default class Menu {
         if (!confirm("정말 삭제 하시겠어요?")) {
           return;
         }
-        this.storage.removeById(selectedId);
+        this.removeStorage(selectedId, menuName);
         this.removeMenu(menuElem);
       }
 
@@ -61,6 +62,13 @@ export default class Menu {
       }
     });
   }
+
+  removeStorage = (id, name) => {
+    this.storage
+      .remove(id, name)
+      .then(console.log)
+      .catch((error) => console.log("error", error));
+  };
 
   loadMenus = () => {
     this.storage
@@ -103,7 +111,8 @@ export default class Menu {
 
   removeMenu = (elem) => {
     elem.remove();
-    this.updateMenuCount(this.storage.datas.length);
+    const childCount = this.$menuList.childElementCount;
+    this.updateMenuCount(childCount);
   };
 
   createComponent(menu) {

@@ -1,21 +1,31 @@
 export default class MenuStorage {
   baseUrl = "http://localhost:3000";
 
-  constructor(storageKey) {
-    this.key = storageKey;
+  constructor(category) {
+    this.category = category;
   }
 
+  getCategory = () => {
+    return this.category;
+  };
+
   fetchAll = async () => {
-    const url = `${this.baseUrl}/api/category/${this.key}/menu`;
+    const url = `${this.baseUrl}/api/category/${this.category}/menu`;
     const response = await fetch(url);
     const result = await response.json();
     return result;
   };
 
-  removeById = (id) => {
-    const updatedDatas = this.datas.filter((menu) => menu.id != id);
-    this.storage.setItem(this.key, JSON.stringify(updatedDatas));
-    this.datas = updatedDatas;
+  remove = async (id, name) => {
+    const url = `${this.baseUrl}/api/category/${this.category}/menu/${id}`;
+    const response = await fetch(url, {
+      method: "delete",
+      body: JSON.stringify({
+        name: name,
+      }),
+    });
+    const result = await response.text();
+    return result;
   };
 
   soldOutById = (id) => {
@@ -24,7 +34,7 @@ export default class MenuStorage {
     if (menu) {
       menu.soldOut = !menu.soldOut;
       this.datas[menuIdx] = menu;
-      this.storage.setItem(this.key, JSON.stringify(this.datas));
+      this.storage.setItem(this.category, JSON.stringify(this.datas));
     }
   };
 
@@ -34,7 +44,7 @@ export default class MenuStorage {
     if (menu) {
       menu.menuName = name;
       this.datas[menuIdx] = menu;
-      this.storage.setItem(this.key, JSON.stringify(this.datas));
+      this.storage.setItem(this.category, JSON.stringify(this.datas));
     }
   };
 
@@ -45,7 +55,7 @@ export default class MenuStorage {
       soldOut: false,
     };
     const updatedDatas = [...this.datas, menuData];
-    this.storage.setItem(this.key, JSON.stringify(updatedDatas));
+    this.storage.setItem(this.category, JSON.stringify(updatedDatas));
     this.datas = updatedDatas;
     return menuData;
   };

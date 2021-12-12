@@ -65,7 +65,7 @@ export default class Menu {
       .then(() => {
         this.toggleSoldOut(elem);
       })
-      .catch(
+      .catch(() =>
         alert("Error: 품절 처리를 실패했습니다. 잠시후 다시 시도해 주세요.")
       );
   };
@@ -78,7 +78,7 @@ export default class Menu {
     this.storage
       .editMenuName(id, name)
       .then((elem.innerText = name))
-      .catch(
+      .catch(() =>
         alert("Error: 메뉴 수정을 실패했습니다. 잠시후 다시 시도해 주세요.")
       );
   };
@@ -90,7 +90,7 @@ export default class Menu {
         elem.remove();
         this.updateMenuCount();
       })
-      .catch(
+      .catch(() =>
         alert("Error: 메뉴 삭제를 실패했습니다. 잠시후 다시 시도해 주세요.")
       );
   };
@@ -99,7 +99,7 @@ export default class Menu {
     this.storage
       .fetchAll()
       .then((menu) => this.renderMenus(menu))
-      .catch((error) => console.log("Error-loadMenus::", error));
+      .catch(() => console.log("Error-loadMenus::", error));
   };
 
   setupWithStorage = (storage) => {
@@ -123,6 +123,9 @@ export default class Menu {
     if (!inputName.trim()) {
       return;
     }
+
+    // 중복 메뉴이름 검사
+
     this.storage
       .add(inputName)
       .then((menu) => {

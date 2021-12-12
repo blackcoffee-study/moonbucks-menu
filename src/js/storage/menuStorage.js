@@ -3,6 +3,7 @@ export default class MenuStorage {
 
   constructor(category) {
     this.category = category;
+    this.datas = [];
   }
 
   getCategory = () => {
@@ -13,6 +14,7 @@ export default class MenuStorage {
     const url = `${this.baseUrl}/api/category/${this.category}/menu`;
     const response = await fetch(url);
     const result = await response.json();
+    this.datas = result;
     return result;
   };
 
@@ -23,7 +25,7 @@ export default class MenuStorage {
       body: JSON.stringify({
         name: name,
       }),
-    });
+    }).then(this._removeData(id));
     const result = await response.text();
     return result;
   };
@@ -38,6 +40,7 @@ export default class MenuStorage {
       }),
     });
     const result = await response.json();
+    this._editNameData(result);
     return result;
   };
 
@@ -51,6 +54,7 @@ export default class MenuStorage {
       }),
     });
     const result = await response.json();
+    this._soldOutData(result);
     return result;
   };
 
@@ -64,6 +68,28 @@ export default class MenuStorage {
       }),
     });
     const result = await response.json();
+    this._addData(result);
     return result;
+  };
+
+  // Private functions
+  _addData = (addedMenu) => {
+    const updatedDatas = [...this.datas, addedMenu];
+    this.datas = updatedDatas;
+  };
+
+  _editNameData = (menu) => {
+    const menuIdx = this.datas.findIndex((m) => m.id === menu.id);
+    this.datas[menuIdx] = menu;
+  };
+
+  _removeData = (id) => {
+    const updatedDatas = this.datas.filter((menu) => menu.id !== id);
+    this.datas = updatedDatas;
+  };
+
+  _soldOutData = (menu) => {
+    const menuIdx = this.datas.findIndex((m) => m.id === menu.id);
+    this.datas[menuIdx].isSoldOut = menu.isSoldOut;
   };
 }

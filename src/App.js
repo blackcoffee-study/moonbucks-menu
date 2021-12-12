@@ -2,7 +2,7 @@ import Component from './core/Component.js';
 import Header from './components/Header.js';
 import MenuForm from './components/MenuForm.js';
 import MenuList from './components/MenuList.js';
-import { getMenuList } from './api/menu.js';
+import { createMenu, deleteMenu, getMenuList } from './api/menu.js';
 
 export default class App extends Component {
   async setup() {
@@ -14,8 +14,10 @@ export default class App extends Component {
       teavana: { title: '🫖 티바나', items: [] },
       desert: { title: '🍰 디저트', items: [] },
     };
-    const menuList = await getMenuList(this.$state.selected);
-    const newState = { ...this.$state[this.$state.selected], items: menuList };
+
+    const result = await getMenuList(this.$state.selected);
+
+    const newState = { ...this.$state[this.$state.selected], items: result };
     this.setState({
       [this.$state.selected]: newState,
     });
@@ -66,31 +68,23 @@ export default class App extends Component {
       ...this.$state,
       selected: e.target.dataset.categoryName,
     });
-    const menuList = await getMenuList(this.$state.selected);
-    const newState = { ...this.$state[this.$state.selected], items: menuList };
+    const result = await getMenuList(this.$state.selected);
+    const newState = { ...this.$state[this.$state.selected], items: result };
     this.setState({
       [this.$state.selected]: newState,
     });
   }
 
-  addMenuList(inputValue) {
+  async addMenuList(inputValue) {
     const { selected } = this.$state;
     const { items } = this.$state[selected];
 
+    const result = await createMenu(this.$state.selected, inputValue);
+    if (result === false) return;
+
     const newItems = {
       ...this.$state[selected],
-      items: [
-        ...items,
-        {
-          id: +`${
-            items.length === 0
-              ? items.length + 1
-              : items[items.length - 1].id + 1
-          }`,
-          name: inputValue,
-          isSoldOut: false,
-        },
-      ],
+      items: [...items, result],
     };
 
     this.setState({
@@ -99,13 +93,18 @@ export default class App extends Component {
     });
   }
 
-  deleteMenuList(id) {
+  async deleteMenuList(id) {
     const { selected } = this.$state;
     const confirm = window.confirm('정말 삭제하시겠습니까?');
     if (confirm) {
+      const result = await deleteMenu(selected, id);
+
+      if (result === false) return;
+
       const filterItems = this.$state[selected].items.filter(
-        item => item.id !== +id
+        item => item.id !== id
       );
+
       this.setState({
         ...this.$state,
         [selected]: { ...this.$state[selected], items: filterItems },

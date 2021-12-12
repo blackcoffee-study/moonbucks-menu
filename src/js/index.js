@@ -2,6 +2,8 @@ import { $ } from './utils/dom.js'
 import store from './store/index.js'
 
 function App() {
+  const ESPRESSO = 'espresso'
+
   this.menu = {
     espresso: [],
     frappuccino: [],
@@ -9,7 +11,7 @@ function App() {
     teavana: [],
     desert: [],
   }
-  this.currentCategory = 'espresso'
+  this.currentCategory = ESPRESSO
 
   this.init = () => {
     if (store.getLocalStorage()) {
@@ -20,17 +22,11 @@ function App() {
     initEventListener()
   }
 
-  $('#menu-form').addEventListener('submit', (e) => {
-    e.preventDefault()
-  })
-
-  const render = () => {
-    const template = this.menu[this.currentCategory]
+  const template = (currentCategory) => {
+    return currentCategory
       .map((menuItem, index) => {
         return `<li data-menu-id="${index}" class="menu-list-item d-flex items-center py-2">
-          <span class="w-100 pl-2 menu-name ${
-            menuItem.soldOut ? 'sold-out' : ''
-          }">
+          <span class="w-100 pl-2 menu-name ${menuItem.soldOut && 'sold-out'}">
             ${menuItem.name}
           </span>
           <button
@@ -54,8 +50,14 @@ function App() {
         </li>`
       })
       .join('')
+  }
 
-    $('#menu-list').innerHTML = template
+  const preventDefault = (e) => {
+    e.preventDefault()
+  }
+
+  const render = () => {
+    $('#menu-list').innerHTML = template(this.menu[this.currentCategory])
 
     updateMenuCount()
   }
@@ -114,47 +116,51 @@ function App() {
     render()
   }
 
+  const enterMenuName = (e) => {
+    if (e.key !== 'Enter') {
+      return
+    }
+
+    addMenuName()
+  }
+
+  const handleMenuList = (e) => {
+    if (e.target.classList.contains('menu-edit-button')) {
+      updateMenuName(e)
+
+      return
+    }
+
+    if (e.target.classList.contains('menu-remove-button')) {
+      removeMenuName(e)
+
+      return
+    }
+
+    if (e.target.classList.contains('menu-sold-out-button')) {
+      soldOutMenu(e)
+
+      return
+    }
+  }
+
+  const changeCurrentCategory = (e) => {
+    const isCategoryButton = e.target.classList.contains('cafe-category-name')
+    if (isCategoryButton) {
+      const categoryName = e.target.dataset.categoryName
+      this.currentCategory = categoryName
+      $('#category-title').innerText = `${e.target.innerText} 메뉴 관리`
+
+      render()
+    }
+  }
+
   const initEventListener = () => {
+    $('#menu-form').addEventListener('submit', preventDefault)
     $('#menu-submit-button').addEventListener('click', addMenuName)
-
-    $('#menu-name').addEventListener('keyup', (e) => {
-      if (e.key !== 'Enter') {
-        return
-      }
-
-      addMenuName()
-    })
-
-    $('#menu-list').addEventListener('click', (e) => {
-      if (e.target.classList.contains('menu-edit-button')) {
-        updateMenuName(e)
-
-        return
-      }
-
-      if (e.target.classList.contains('menu-remove-button')) {
-        removeMenuName(e)
-
-        return
-      }
-
-      if (e.target.classList.contains('menu-sold-out-button')) {
-        soldOutMenu(e)
-
-        return
-      }
-    })
-
-    $('nav').addEventListener('click', (e) => {
-      const isCategoryButton = e.target.classList.contains('cafe-category-name')
-      if (isCategoryButton) {
-        const categoryName = e.target.dataset.categoryName
-        this.currentCategory = categoryName
-        $('#category-title').innerText = `${e.target.innerText} 메뉴 관리`
-
-        render()
-      }
-    })
+    $('#menu-name').addEventListener('keyup', enterMenuName)
+    $('#menu-list').addEventListener('click', handleMenuList)
+    $('nav').addEventListener('click', changeCurrentCategory)
   }
 }
 

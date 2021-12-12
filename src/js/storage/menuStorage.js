@@ -42,7 +42,6 @@ export default class MenuStorage {
   };
 
   soldOut = async (id, name) => {
-    console.log("soldout name == ", name);
     const url = `${this.baseUrl}/api/category/${this.category}/menu/${id}/soldout`;
     const response = await fetch(url, {
       method: "put",

@@ -2,7 +2,6 @@ import Menu from "./menu/menu.js";
 import Storage from "./storage/menuStorage.js";
 import { $ } from "./common/utils.js";
 
-
 function App() {
   const storages = {
     espresso: new Storage("espresso"),

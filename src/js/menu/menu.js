@@ -12,7 +12,6 @@ export default class Menu {
     this.storage = storage;
 
     this.loadMenus();
-
     this.renderMessage(storage.getCategory());
 
     this.$submitButton.addEventListener("click", () => {
@@ -44,43 +43,49 @@ export default class Menu {
         if (!editedMenuName) {
           return;
         }
-        this.editMenuNameStorage(selectedId, editedMenuName);
-        this.editMenuName(elem, editedMenuName);
+        this.editMenuName(selectedId, editedMenuName, elem);
       }
 
       if (e.target.classList.contains("menu-remove-button")) {
         if (!confirm("정말 삭제 하시겠어요?")) {
           return;
         }
-        this.removeStorage(selectedId, menuName);
-        this.removeMenu(menuElem);
+        this.removeMenu(selectedId, menuName, menuElem);
       }
 
       if (e.target.classList.contains("menu-sold-out-button")) {
-        this.soldOutStorage(selectedId, menuName);
-        this.toggleSoldOut(menuElem);
+        this.soldOut(selectedId, menuName, menuElem);
       }
     });
   }
 
-  soldOutStorage = (id, name) => {
+  soldOut = (id, name, elem) => {
     this.storage
       .soldOut(id, name)
-      .then(console.log)
+      .then(() => {
+        this.toggleSoldOut(elem);
+      })
       .catch((error) => console.log("error", error));
   };
 
-  editMenuNameStorage = (id, name) => {
+  toggleSoldOut = (elem) => {
+    elem.querySelector(".menu-name").classList.toggle("sold-out");
+  };
+
+  editMenuName = (id, name, elem) => {
     this.storage
       .editMenuName(id, name)
-      .then(console.log)
+      .then((elem.innerText = name))
       .catch((error) => console.log("error", error));
   };
 
-  removeStorage = (id, name) => {
+  removeMenu = (id, name, elem) => {
     this.storage
       .remove(id, name)
-      .then(console.log)
+      .then(() => {
+        elem.remove();
+        this.updateMenuCount();
+      })
       .catch((error) => console.log("error", error));
   };
 
@@ -92,12 +97,12 @@ export default class Menu {
   };
 
   setupWithStorage = (storage) => {
-    if (this.storage.key === storage.key) {
+    if (this.storage.getCategory() === storage.getCategory()) {
       return;
     }
     this.storage = storage;
     this.removeAllMenuNodes();
-    this.renderMessage(storage.key);
+    this.renderMessage(storage.getCategory());
     this.loadMenus();
   };
 
@@ -126,23 +131,10 @@ export default class Menu {
     this.$menuCount.innerText = `총 ${menuCount}개`;
   };
 
-  removeMenu = (elem) => {
-    elem.remove();
-    this.updateMenuCount();
-  };
-
   createComponent(menu) {
     const menuComponent = new MenuComponent(menu);
     menuComponent.attachTo(this.$menuList);
   }
-
-  editMenuName = (elem, editedMenuName) => {
-    elem.innerText = editedMenuName;
-  };
-
-  toggleSoldOut = (elem) => {
-    elem.querySelector(".menu-name").classList.toggle("sold-out");
-  };
 
   removeAllMenuNodes = () => {
     const node = this.$menuList;

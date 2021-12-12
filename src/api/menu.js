@@ -107,3 +107,31 @@ export const putMenuName = async (category, menuId, menuName) => {
     console.log(err);
   }
 };
+
+export const putMenuSoldout = async (category, menuId) => {
+  try {
+    const response = await fetch(
+      `${baseUrl}/${category}/menu/${menuId}/soldout`,
+      {
+        method: 'PUT',
+      }
+    );
+
+    const result = await response.json();
+
+    if (response.status === 200) {
+      return result;
+    }
+
+    if (
+      response.status === 400 ||
+      response.status === 404 ||
+      response.status === 500
+    ) {
+      alert(result.message);
+      return false;
+    }
+  } catch (err) {
+    console.log(err);
+  }
+};

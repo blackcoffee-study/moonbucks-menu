@@ -7,6 +7,7 @@ import {
   deleteMenu,
   getMenuList,
   putMenuName,
+  putMenuSoldout,
 } from './api/menu.js';
 
 export default class App extends Component {
@@ -138,11 +139,15 @@ export default class App extends Component {
     });
   }
 
-  editSoldout(id) {
+  async editSoldout(id) {
     const { selected } = this.$state;
+
+    const result = await putMenuSoldout(selected, id);
+    if (result === false) return;
+
     const editItems = this.$state[selected].items.map(item => {
       if (item.id === id) {
-        return { id: item.id, name: item.name, isSoldOut: !item.isSoldOut };
+        return result;
       }
       return item;
     });

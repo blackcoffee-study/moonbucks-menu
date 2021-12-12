@@ -44,10 +44,6 @@ export default class Menu {
         if (!editedMenuName) {
           return;
         }
-        // this.storage.editMenuName(selectedId, editedMenuName);
-
-        // console.log("변경할 이름", editedMenuName);
-        // console.log("변경아이디", selectedId);
         this.editMenuNameStorage(selectedId, editedMenuName);
         this.editMenuName(elem, editedMenuName);
       }
@@ -61,7 +57,6 @@ export default class Menu {
       }
 
       if (e.target.classList.contains("menu-sold-out-button")) {
-        // this.storage.soldOutById(selectedId);
         this.soldOutStorage(selectedId, menuName);
         this.toggleSoldOut(menuElem);
       }
@@ -107,7 +102,6 @@ export default class Menu {
   };
 
   renderMenus = (datas) => {
-    console.log("renderMenus=", datas);
     datas.forEach((menu) => {
       this.createComponent(menu);
     });
@@ -118,20 +112,23 @@ export default class Menu {
     if (!inputName.trim()) {
       return;
     }
-    const addedMenu = this.storage.add(inputName);
-    this.createComponent(addedMenu);
-    this.updateMenuCount(this.storage.datas.length);
-    this.$menuInput.value = "";
+    this.storage
+      .add(inputName)
+      .then((menu) => {
+        this.createComponent(menu);
+        this.updateMenuCount();
+        this.$menuInput.value = "";
+      })
+      .catch((error) => console.log("error", error));
   };
 
-  updateMenuCount = (menuCount) => {
+  updateMenuCount = (menuCount = this.$menuList.childElementCount) => {
     this.$menuCount.innerText = `총 ${menuCount}개`;
   };
 
   removeMenu = (elem) => {
     elem.remove();
-    const childCount = this.$menuList.childElementCount;
-    this.updateMenuCount(childCount);
+    this.updateMenuCount();
   };
 
   createComponent(menu) {

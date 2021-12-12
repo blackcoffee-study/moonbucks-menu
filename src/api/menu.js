@@ -76,3 +76,34 @@ export const deleteMenu = async (category, menuId) => {
     console.log(err);
   }
 };
+
+export const putMenuName = async (category, menuId, menuName) => {
+  try {
+    const response = await fetch(`${baseUrl}/${category}/menu/${menuId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        name: menuName,
+      }),
+    });
+
+    const result = await response.json();
+
+    if (response.status === 200) {
+      return result;
+    }
+
+    if (
+      response.status === 400 ||
+      response.status === 404 ||
+      response.status === 500
+    ) {
+      alert(result.message);
+      return false;
+    }
+  } catch (err) {
+    console.log(err);
+  }
+};

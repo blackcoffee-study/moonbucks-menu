@@ -2,7 +2,12 @@ import Component from './core/Component.js';
 import Header from './components/Header.js';
 import MenuForm from './components/MenuForm.js';
 import MenuList from './components/MenuList.js';
-import { createMenu, deleteMenu, getMenuList } from './api/menu.js';
+import {
+  createMenu,
+  deleteMenu,
+  getMenuList,
+  putMenuName,
+} from './api/menu.js';
 
 export default class App extends Component {
   async setup() {
@@ -112,17 +117,21 @@ export default class App extends Component {
     }
   }
 
-  editMenuList(id) {
+  async editMenuList(id) {
     const { selected } = this.$state;
-    const menu = this.$state[selected].items.find(item => item.id === +id);
+    const menu = this.$state[selected].items.find(item => item.id === id);
     const value = prompt('메뉴를 수정하세요', menu.name);
 
+    const result = await putMenuName(selected, menu.id, value);
+    if (result === false) return;
+
     const editItems = this.$state[selected].items.map(item => {
-      if (value !== null && item.id === +id) {
-        return { id: item.id, name: value, isSoldOut: item.isSoldOut };
+      if (value !== null && item.id === id) {
+        return result;
       }
       return item;
     });
+
     this.setState({
       ...this.$state,
       [selected]: { ...this.$state[selected], items: editItems },
@@ -132,7 +141,7 @@ export default class App extends Component {
   editSoldout(id) {
     const { selected } = this.$state;
     const editItems = this.$state[selected].items.map(item => {
-      if (item.id === +id) {
+      if (item.id === id) {
         return { id: item.id, name: item.name, isSoldOut: !item.isSoldOut };
       }
       return item;

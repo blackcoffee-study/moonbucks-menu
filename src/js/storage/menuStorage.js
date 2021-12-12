@@ -1,18 +1,15 @@
 export default class MenuStorage {
+  baseUrl = "http://localhost:3000";
+
   constructor(storageKey) {
-    this.storage = window.localStorage;
     this.key = storageKey;
-    this.fetchAll();
   }
 
-  fetchAll = () => {
-    const fetchDatas = JSON.parse(this.storage.getItem(this.key));
-    if (fetchDatas) {
-      this.datas = fetchDatas;
-    } else {
-      this.datas = [];
-    }
-    return this.datas;
+  fetchAll = async () => {
+    const url = `${this.baseUrl}/api/category/${this.key}/menu`;
+    const response = await fetch(url);
+    const result = await response.json();
+    return result;
   };
 
   removeById = (id) => {

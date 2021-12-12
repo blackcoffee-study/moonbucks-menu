@@ -10,7 +10,9 @@ export default class Menu {
     this.$headingTitle = $(".heading").querySelector("h2");
     this.$menuCount = $(".menu-count");
     this.storage = storage;
-    this.loadMenus(storage.datas);
+
+    this.loadMenus();
+
     this.renderMessage(storage.key);
 
     this.$submitButton.addEventListener("click", () => {
@@ -60,6 +62,13 @@ export default class Menu {
     });
   }
 
+  loadMenus = () => {
+    this.storage
+      .fetchAll()
+      .then((menu) => this.renderMenus(menu))
+      .catch((error) => console.log("error", error));
+  };
+
   setupWithStorage = (storage) => {
     if (this.storage.key === storage.key) {
       return;
@@ -67,10 +76,11 @@ export default class Menu {
     this.storage = storage;
     this.removeAllMenuNodes();
     this.renderMessage(storage.key);
-    this.loadMenus(storage.datas);
+    this.loadMenus();
   };
 
-  loadMenus = (datas) => {
+  renderMenus = (datas) => {
+    console.log("renderMenus=", datas);
     datas.forEach((menu) => {
       this.createComponent(menu);
     });

@@ -1,8 +1,8 @@
 export class MenuComponent {
   element;
-  constructor(menu) {
+  constructor({ id, name, isSoldOut }) {
     const template = document.createElement("li");
-    template.setAttribute("data-id", menu.id);
+    template.setAttribute("data-id", id);
     template.classList = "menu-list-item d-flex items-center py-2";
     template.innerHTML = `
         <span class="w-100 pl-2 menu-name"></span>
@@ -29,8 +29,8 @@ export class MenuComponent {
     this.element = template;
 
     const spanElement = this.element.querySelector(".menu-name");
-    spanElement.innerText = menu.menuName;
-    menu.soldOut && spanElement.classList.add("sold-out");
+    spanElement.innerText = name;
+    isSoldOut && spanElement.classList.add("sold-out");
   }
 
   attachTo(parentElement, position = "beforeend") {

@@ -102,7 +102,7 @@ function createMenuItemElement(menuId, menuName, soldOut) {
     </li>`;
   const wrapper = document.createElement("div");
   wrapper.innerHTML = template;
-
+  
   const $menuItem = wrapper.firstElementChild;
   $menuItem.dataset.menuId = menuId;
   addEventToDeleteButton($menuItem);

@@ -28,7 +28,7 @@ export default class App extends Component {
       [this.$state.selected]: newState,
     });
   }
-
+  
   template() {
     return `
       <div class="d-flex justify-center mt-5 w-100">

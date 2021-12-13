@@ -49,6 +49,21 @@ export const menuApi = {
 
     return response.json();
   },
-  async updateMenuSoldOut() {},
+  async updateMenuSoldOut(category, menuId) {
+    const response = await fetch(
+      `${BASE_URL}/category/${category}/menu/${menuId}/soldout`,
+      {
+        method: "PUT",
+      }
+    );
+
+    if (!response.ok) {
+      const errorMessage = await response.json().then((data) => data.message);
+      alert(errorMessage);
+      throw new Error(errorMessage);
+    }
+
+    return response.json();
+  },
   async removeMenu() {},
 };

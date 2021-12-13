@@ -54,12 +54,11 @@ function App() {
     $("#menu-name").value = "";
   };
 
-  const updateMenuSoldOut = (e) => {
+  const updateMenuSoldOut = async (e) => {
     const $menuItemList = e.target.closest("li");
     const menuId = $menuItemList.dataset.menuId;
 
-    this.menu[this.category][menuId].soldOut =
-      !this.menu[this.category][menuId].soldOut;
+    await menuApi.updateMenuSoldOut(this.category, menuId);
     updateMenuStore();
   };
 

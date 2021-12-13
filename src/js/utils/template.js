@@ -3,7 +3,7 @@ export const getMenuItemTemplate = (menuItem) => {
     menuItem.id
   }" class="menu-list-item d-flex items-center py-2">
       <span class="${
-        menuItem.soldOut ? "sold-out " : ""
+        menuItem.isSoldOut ? "sold-out " : ""
       }w-100 pl-2 menu-name">${menuItem.name}</span>
       <button
         type="button"

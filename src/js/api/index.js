@@ -29,7 +29,26 @@ export const menuApi = {
 
     return response.json();
   },
-  async updateMenuName() {},
+  async updateMenuName(category, menuId, name) {
+    const response = await fetch(
+      `${BASE_URL}/category/${category}/menu/${menuId}`,
+      {
+        method: "PUT",
+        body: JSON.stringify({ name }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (!response.ok) {
+      const errorMessage = await response.json().then((data) => data.message);
+      alert(errorMessage);
+      throw new Error(errorMessage);
+    }
+
+    return response.json();
+  },
   async updateMenuSoldOut() {},
   async removeMenu() {},
 };

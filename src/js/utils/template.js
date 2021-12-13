@@ -1,5 +1,7 @@
-export const getMenuItemTemplate = (menuItem, index) => {
-  return `<li data-menu-id="${index}" class="menu-list-item d-flex items-center py-2">
+export const getMenuItemTemplate = (menuItem) => {
+  return `<li data-menu-id="${
+    menuItem.id
+  }" class="menu-list-item d-flex items-center py-2">
       <span class="${
         menuItem.soldOut ? "sold-out " : ""
       }w-100 pl-2 menu-name">${menuItem.name}</span>

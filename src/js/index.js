@@ -22,7 +22,7 @@ function App() {
     this.menu[this.category] = await menuApi.getMenu(this.category);
 
     const menuItemListTemplate = this.menu[this.category]
-      .map((menu, index) => getMenuItemTemplate(menu, index))
+      .map((menu) => getMenuItemTemplate(menu))
       .join("");
 
     $("#menu-list").innerHTML = menuItemListTemplate;
@@ -63,13 +63,13 @@ function App() {
     updateMenuStore();
   };
 
-  const updateMenuItem = (e) => {
+  const updateMenuItem = async (e) => {
     const $menuItemList = e.target.closest("li");
     const menuId = $menuItemList.dataset.menuId;
     const menuName = $(".menu-name", $menuItemList).innerText;
     const updatedMenuName = prompt("메뉴명을 수정하세요", menuName);
 
-    this.menu[this.category][menuId].name = updatedMenuName;
+    await menuApi.updateMenuName(this.category, menuId, updatedMenuName);
     updateMenuStore();
   };
 

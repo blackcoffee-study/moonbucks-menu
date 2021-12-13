@@ -72,12 +72,12 @@ function App() {
     updateMenuStore();
   };
 
-  const removeMenuItem = (e) => {
+  const removeMenuItem = async (e) => {
     if (confirm("정말 삭제하시겠습니까?")) {
       const $menuItemList = e.target.closest("li");
       const menuId = $menuItemList.dataset.menuId;
 
-      this.menu[this.category].splice(menuId, 1);
+      await menuApi.removeMenu(this.category, menuId);
       updateMenuStore();
     }
   };

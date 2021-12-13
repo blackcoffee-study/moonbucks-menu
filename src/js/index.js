@@ -19,6 +19,8 @@ function App() {
     initEventListener()
   }
 
+  const $menuId = (e) => e.target.closest('li').dataset.menuId
+
   const template = (currentCategory) => {
     return currentCategory
       .map((menuItem) => {
@@ -79,6 +81,16 @@ function App() {
       return
     }
 
+    const duplicatedItem = this.menu[this.currentCategory].find(
+      (menuItem) => menuItem.name === $('#menu-name').value
+    )
+    if (duplicatedItem) {
+      alert('이미 등록된 메뉴입니다. 다시 입력해주세요.')
+      $('#menu-name').value = ''
+
+      return
+    }
+
     const menuName = $('#menu-name').value
     await MenuApi.createMenu(this.currentCategory, menuName)
 
@@ -87,30 +99,27 @@ function App() {
   }
 
   const updateMenuName = async (e) => {
-    const menuId = e.target.closest('li').dataset.menuId
     const $menuName = e.target.closest('li').querySelector('.menu-name')
     const updatedMenuName = prompt('메뉴명을 수정하세요', $menuName.innerText)
     if (!updatedMenuName) {
       return
     }
 
-    await MenuApi.updateMenu(this.currentCategory, updatedMenuName, menuId)
+    await MenuApi.updateMenu(this.currentCategory, updatedMenuName, $menuId(e))
 
     render()
   }
 
   const removeMenuName = async (e) => {
     if (confirm('정말 삭제하시겠습니까?')) {
-      const menuId = e.target.closest('li').dataset.menuId
-      await MenuApi.deleteMenu(this.currentCategory, menuId)
+      await MenuApi.deleteMenu(this.currentCategory, $menuId(e))
 
       render()
     }
   }
 
   const soldOutMenu = async (e) => {
-    const menuId = e.target.closest('li').dataset.menuId
-    await MenuApi.toggleSoldOutMenu(this.currentCategory, menuId)
+    await MenuApi.toggleSoldOutMenu(this.currentCategory, $menuId(e))
 
     render()
   }

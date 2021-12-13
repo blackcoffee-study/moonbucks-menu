@@ -1,5 +1,5 @@
 import { $ } from './utils/dom.js'
-import store from './store/index.js'
+import MenuApi from './api/index.js'
 
 function App() {
   const ESPRESSO = 'espresso'
@@ -13,20 +13,21 @@ function App() {
   }
   this.currentCategory = ESPRESSO
 
-  this.init = () => {
-    if (store.getLocalStorage()) {
-      this.menu = store.getLocalStorage()
-    }
-
+  this.init = async () => {
     render()
+
     initEventListener()
   }
 
   const template = (currentCategory) => {
     return currentCategory
-      .map((menuItem, index) => {
-        return `<li data-menu-id="${index}" class="menu-list-item d-flex items-center py-2">
-          <span class="w-100 pl-2 menu-name ${menuItem.soldOut && 'sold-out'}">
+      .map((menuItem) => {
+        return `<li data-menu-id="${
+          menuItem.id
+        }" class="menu-list-item d-flex items-center py-2">
+          <span class="w-100 pl-2 menu-name ${
+            menuItem.isSoldOut && 'sold-out'
+          }">
             ${menuItem.name}
           </span>
           <button
@@ -56,7 +57,11 @@ function App() {
     e.preventDefault()
   }
 
-  const render = () => {
+  const render = async () => {
+    this.menu[this.currentCategory] = await MenuApi.getAllMenuByCategory(
+      this.currentCategory
+    )
+
     $('#menu-list').innerHTML = template(this.menu[this.currentCategory])
 
     updateMenuCount()
@@ -67,7 +72,7 @@ function App() {
     $('.menu-count').innerText = `총 ${menuCount} 개`
   }
 
-  const addMenuName = () => {
+  const addMenuName = async () => {
     if ($('#menu-name').value.trim() === '') {
       alert('값을 입력해주세요.')
 
@@ -75,15 +80,13 @@ function App() {
     }
 
     const menuName = $('#menu-name').value
-    this.menu[this.currentCategory].push({ name: menuName })
-    store.setLocalStorage(this.menu)
+    await MenuApi.createMenu(this.currentCategory, menuName)
 
     render()
-
     $('#menu-name').value = ''
   }
 
-  const updateMenuName = (e) => {
+  const updateMenuName = async (e) => {
     const menuId = e.target.closest('li').dataset.menuId
     const $menuName = e.target.closest('li').querySelector('.menu-name')
     const updatedMenuName = prompt('메뉴명을 수정하세요', $menuName.innerText)
@@ -91,27 +94,23 @@ function App() {
       return
     }
 
-    this.menu[this.currentCategory][menuId].name = updatedMenuName
-    store.setLocalStorage(this.menu)
+    await MenuApi.updateMenu(this.currentCategory, updatedMenuName, menuId)
 
     render()
   }
 
-  const removeMenuName = (e) => {
+  const removeMenuName = async (e) => {
     if (confirm('정말 삭제하시겠습니까?')) {
       const menuId = e.target.closest('li').dataset.menuId
-      this.menu[this.currentCategory].splice(menuId, 1)
-      store.setLocalStorage(this.menu)
+      await MenuApi.deleteMenu(this.currentCategory, menuId)
 
       render()
     }
   }
 
-  const soldOutMenu = (e) => {
+  const soldOutMenu = async (e) => {
     const menuId = e.target.closest('li').dataset.menuId
-    this.menu[this.currentCategory][menuId].soldOut =
-      !this.menu[this.currentCategory][menuId].soldOut
-    store.setLocalStorage(this.menu)
+    await MenuApi.toggleSoldOutMenu(this.currentCategory, menuId)
 
     render()
   }
@@ -144,7 +143,7 @@ function App() {
     }
   }
 
-  const changeCurrentCategory = (e) => {
+  const changeCategory = (e) => {
     const isCategoryButton = e.target.classList.contains('cafe-category-name')
     if (isCategoryButton) {
       const categoryName = e.target.dataset.categoryName
@@ -160,7 +159,7 @@ function App() {
     $('#menu-submit-button').addEventListener('click', addMenuName)
     $('#menu-name').addEventListener('keyup', enterMenuName)
     $('#menu-list').addEventListener('click', handleMenuList)
-    $('nav').addEventListener('click', changeCurrentCategory)
+    $('nav').addEventListener('click', changeCategory)
   }
 }
 

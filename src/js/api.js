@@ -45,10 +45,11 @@ export async function updateMenuName(categoryName, menuId, newMenuName) {
     }),
   })
     .then(handleResponse)
+    .then((response) => response.json())
     .catch(handleError);
 }
 
-export async function deleteMenu(categoryName, menuId, newMenuName) {
+export async function deleteMenu(categoryName, menuId) {
   return await fetch(`${CATEGORY_API}/${categoryName}/menu/${menuId}`, {
     method: "DELETE",
   })
@@ -61,5 +62,6 @@ export async function toggleSoldOut(categoryName, menuId) {
     method: "PUT",
   })
     .then(handleResponse)
+    .then((response) => response.json())
     .catch(handleError);
 }

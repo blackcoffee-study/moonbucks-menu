@@ -147,7 +147,9 @@ function addEventToEditButton($menuItem) {
     const menuId = $menuItem.dataset.menuId;
     API.updateMenuName(selectedCategory, menuId, editedName).then(
       (updatedMenu) => {
-        $currentName.textContent = updatedMenu.name;
+        if (updatedMenu) {
+          $currentName.textContent = updatedMenu.name;
+        }
       }
     );
   });

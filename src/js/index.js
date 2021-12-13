@@ -16,11 +16,8 @@ window.addEventListener("DOMContentLoaded", () => {
 
 class App {
   constructor() {
-    this.localStroage = window.localStorage;
-
     this.state = {
       category: "espresso",
-      menuList: this.localStroage.getItem("espresso"),
     };
 
     this.$menuInput = $("#menu-name");
@@ -149,13 +146,5 @@ class App {
       this.setMenuList(newMenuList);
       this.render();
     }
-  }
-
-  getMenuList() {
-    return JSON.parse(this.localStroage.getItem(this.state.category)) || [];
-  }
-
-  setMenuList(newMenuList) {
-    this.localStroage.setItem(this.state.category, JSON.stringify(newMenuList));
   }
 }

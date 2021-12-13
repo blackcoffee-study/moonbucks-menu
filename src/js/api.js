@@ -1,19 +1,22 @@
 const SERVER_URL = "http://localhost:3000/api";
 const CATEGORY_API = `${SERVER_URL}/category`;
 
+function handleResponse(response) {
+  if (!response.ok) throw response;
+  return response;
+}
+
+function handleError(error) {
+  error.json().then((body) => {
+    alert(body.message);
+  });
+}
+
 export async function getMenusByCategory(categoryName) {
   return await fetch(`${CATEGORY_API}/${categoryName}/menu`)
-    .then((response) => {
-      if (!response.ok) {
-        alert(`${response.status}: ${response.statusText}`);
-        return;
-      }
-      console.log("Fetch Menus: ", response);
-      return response.json();
-    })
-    .catch((error) => {
-      console.error(error);
-    });
+    .then(handleResponse)
+    .then((response) => response.json())
+    .catch(handleError);
 }
 
 export async function createMenu(categoryName, menuName) {
@@ -26,16 +29,9 @@ export async function createMenu(categoryName, menuName) {
       name: menuName,
     }),
   })
-    .then((response) => {
-      if (!response.ok) {
-        alert(`${response.status} ${response.statusText}`);
-        return;
-      }
-      return response.json();
-    })
-    .catch((error) => {
-      console.error(error);
-    });
+    .then(handleResponse)
+    .then((response) => response.json())
+    .catch(handleError);
 }
 
 export async function updateMenuName(categoryName, menuId, newMenuName) {
@@ -48,46 +44,22 @@ export async function updateMenuName(categoryName, menuId, newMenuName) {
       name: newMenuName,
     }),
   })
-    .then((response) => {
-      if (!response.ok) {
-        alert(`${response.status} ${response.statusText}`);
-        return;
-      }
-      return response.json();
-    })
-    .catch((error) => {
-      console.error(error);
-    });
+    .then(handleResponse)
+    .catch(handleError);
 }
 
 export async function deleteMenu(categoryName, menuId, newMenuName) {
   return await fetch(`${CATEGORY_API}/${categoryName}/menu/${menuId}`, {
     method: "DELETE",
   })
-    .then((response) => {
-      if (!response.ok) {
-        alert(`${response.status} ${response.statusText}`);
-        return;
-      }
-      return response;
-    })
-    .catch((error) => {
-      console.error(error);
-    });
+    .then(handleResponse)
+    .catch(handleError);
 }
 
 export async function toggleSoldOut(categoryName, menuId) {
   return await fetch(`${CATEGORY_API}/${categoryName}/menu/${menuId}/soldout`, {
     method: "PUT",
   })
-    .then((response) => {
-      if (!response.ok) {
-        alert(`${response.status} ${response.statusText}`);
-        return;
-      }
-      return response.json();
-    })
-    .catch((error) => {
-      console.error(error);
-    });
+    .then(handleResponse)
+    .catch(handleError);
 }

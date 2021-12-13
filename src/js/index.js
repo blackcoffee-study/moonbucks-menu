@@ -39,9 +39,11 @@ function handleSubmit(e) {
   if (!isValidMenuName(newMenuName)) return;
 
   API.createMenu(selectedCategory, newMenuName).then((newMenu) => {
-    appendMenuItemElement(newMenu.id, newMenu.name, newMenu.isSoldOut);
-    menus.push(newMenu);
-    updateMenuCount();
+    if (newMenu) {
+      appendMenuItemElement(newMenu.id, newMenu.name, newMenu.isSoldOut);
+      menus.push(newMenu);
+      updateMenuCount();
+    }
     resetNameInput();
   });
 }

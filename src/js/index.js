@@ -1,4 +1,5 @@
 import * as storageAPI from "./storage.js";
+import * as API from "./api.js";
 
 const $nav = document.querySelector("header > nav");
 const $menuForm = document.querySelector("#menu-form");
@@ -9,20 +10,15 @@ const $menuHeading = document.querySelector(".heading > h2");
 
 const CATEGORIES = ["espresso", "frappuccino", "blended", "teavana", "desert"];
 let selectedCategory = "";
+let menus = [];
 
 const moonBucksApp = () => {
-  // 앱 초기화
-  selectedCategory = "espresso";
-  replaceMenuHeader(selectedCategory);
-  initializeMenuElements(selectedCategory);
-  updateMenuCount();
+  selectCategory("espresso")
 
-  // 주요 이벤트 등록
   $nav.addEventListener("click", handleNavigation);
   $menuForm.addEventListener("submit", handleSubmit);
 };
 moonBucksApp();
-
 
 function handleNavigation(e) {
   e.stopPropagation();
@@ -33,10 +29,7 @@ function handleNavigation(e) {
   const newCategoryName = $target.dataset.categoryName;
   if (!CATEGORIES.includes(newCategoryName)) return;
 
-  selectedCategory = newCategoryName;
-  replaceMenuHeader(selectedCategory);
-  initializeMenuElements(selectedCategory);
-  updateMenuCount();
+  selectCategory(newCategoryName);
 }
 
 function handleSubmit(e) {
@@ -45,11 +38,18 @@ function handleSubmit(e) {
   const newMenuName = $nameInput.value;
   if (!isValidMenuName(newMenuName)) return;
 
-  storageAPI.createMenu(selectedCategory, newMenuName);
-  appendMenuElement(newMenuName);
+  API.createMenu(selectedCategory, newMenuName).then((newMenu) => {
+    appendMenuItemElement(newMenu.name, newMenu.isSoldOut);
+    menus.push(newMenu);
+    updateMenuCount();
+    resetNameInput();
+  });
+}
 
-  updateMenuCount();
-  resetNameInput();
+function selectCategory(categoryName) {
+  selectedCategory = categoryName;
+  replaceMenuHeader(selectedCategory);
+  loadMenus(selectedCategory);
 }
 
 /**
@@ -171,7 +171,7 @@ function addEventToSoldOutButton($menuItem) {
  * @param {string} menuName - 메뉴 이름
  * @param {boolean} soldOut - 메뉴 품절 여부
  */
-function appendMenuElement(menuName, soldOut = false) {
+function appendMenuItemElement(menuName, soldOut = false) {
   const $menuItem = createMenuItemElement(menuName, soldOut);
   $menuList.appendChild($menuItem);
 }
@@ -190,6 +190,7 @@ function resetNameInput() {
 function updateMenuCount() {
   const $menuItems = $menuList.querySelectorAll(".menu-list-item");
   $menuCount.textContent = `총 ${$menuItems.length}개`;
+  console.log("Current Menus: ", menus);
 }
 
 /**
@@ -207,16 +208,17 @@ function removeMenuItemElements() {
  * 전달 받은 카테고리 이름에 해당하는 메뉴들을 찾아 메뉴 리스트에 추가한다.
  * @param {string} categoryName
  */
-function initializeMenuElements(categoryName) {
+function loadMenus(categoryName) {
   removeMenuItemElements();
 
-  const categoryMenus = storageAPI.loadMenuData()[categoryName];
-  if (!categoryMenus) return;
-
-  for (let i = 0; i < categoryMenus.length; i++) {
-    const menu = categoryMenus[i];
-    appendMenuElement(menu.name, menu.soldOut);
-  }
+  API.getMenusByCategory(categoryName).then((data) => {
+    menus = data;
+    for (let i = 0; i < menus.length; i++) {
+      const menu = menus[i];
+      appendMenuItemElement(menu.name, menu.soldOut);
+    }
+    updateMenuCount();
+  });
 }
 
 /**

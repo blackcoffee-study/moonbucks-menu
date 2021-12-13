@@ -122,6 +122,7 @@ export default class App extends Component {
     const { selected } = this.$state;
     const menu = this.$state[selected].items.find(item => item.id === id);
     const value = prompt('메뉴를 수정하세요', menu.name);
+    if (value === null) return;
 
     const result = await putMenuName(selected, menu.id, value);
     if (result === false) return;

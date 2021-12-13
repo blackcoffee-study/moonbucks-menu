@@ -1,5 +1,16 @@
 const baseUrl = 'http://localhost:3000/api/category';
 
+const errorHandler = (result, response) => {
+  if (
+    response.status === 400 ||
+    response.status === 404 ||
+    response.status === 500
+  ) {
+    alert(result.message);
+    return false;
+  }
+};
+
 export const getMenuList = async category => {
   try {
     const response = await fetch(`${baseUrl}/${category}/menu`);
@@ -8,15 +19,8 @@ export const getMenuList = async category => {
 
     if (response.status === 200) {
       return result;
-    }
-
-    if (
-      response.status === 400 ||
-      response.status === 404 ||
-      response.status === 500
-    ) {
-      alert(result.message);
-      return false;
+    } else {
+      return errorHandler(result, response);
     }
   } catch (err) {
     console.log(err);
@@ -39,15 +43,8 @@ export const createMenu = async (category, inputValue) => {
 
     if (response.status === 200) {
       return result;
-    }
-
-    if (
-      response.status === 400 ||
-      response.status === 404 ||
-      response.status === 500
-    ) {
-      alert(result.message);
-      return false;
+    } else {
+      return errorHandler(result, response);
     }
   } catch (err) {
     console.log(err);
@@ -62,15 +59,8 @@ export const deleteMenu = async (category, menuId) => {
 
     if (response.status === 200) {
       return;
-    }
-
-    if (
-      response.status === 400 ||
-      response.status === 404 ||
-      response.status === 500
-    ) {
-      alert(result.message);
-      return false;
+    } else {
+      return errorHandler(response);
     }
   } catch (err) {
     console.log(err);
@@ -93,15 +83,8 @@ export const putMenuName = async (category, menuId, menuName) => {
 
     if (response.status === 200) {
       return result;
-    }
-
-    if (
-      response.status === 400 ||
-      response.status === 404 ||
-      response.status === 500
-    ) {
-      alert(result.message);
-      return false;
+    } else {
+      return errorHandler(result, response);
     }
   } catch (err) {
     console.log(err);
@@ -121,15 +104,8 @@ export const putMenuSoldout = async (category, menuId) => {
 
     if (response.status === 200) {
       return result;
-    }
-
-    if (
-      response.status === 400 ||
-      response.status === 404 ||
-      response.status === 500
-    ) {
-      alert(result.message);
-      return false;
+    } else {
+      return errorHandler(result, response);
     }
   } catch (err) {
     console.log(err);

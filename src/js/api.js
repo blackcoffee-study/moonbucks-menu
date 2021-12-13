@@ -60,6 +60,22 @@ export async function updateMenuName(categoryName, menuId, newMenuName) {
     });
 }
 
+export async function deleteMenu(categoryName, menuId, newMenuName) {
+  return await fetch(`${CATEGORY_API}/${categoryName}/menu/${menuId}`, {
+    method: "DELETE",
+  })
+    .then((response) => {
+      if (!response.ok) {
+        alert(`${response.status} ${response.statusText}`);
+        return;
+      }
+      return response;
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+}
+
 export async function toggleSoldOut(categoryName, menuId) {
   return await fetch(`${CATEGORY_API}/${categoryName}/menu/${menuId}/soldout`, {
     method: "PUT",

@@ -120,9 +120,11 @@ function addEventToDeleteButton($menuItem) {
 
   $removeButton.addEventListener("click", (e) => {
     if (confirm("정말 삭제하시겠습니까?")) {
-      storageAPI.deleteMenu(selectedCategory, $menuName.textContent);
-      $menuItem.remove();
-      updateMenuCount();
+      const menuId = $menuItem.dataset.menuId;
+      API.deleteMenu(selectedCategory, menuId).then(() => {
+        $menuItem.remove();
+        updateMenuCount();
+      });
     }
   });
 }

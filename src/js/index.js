@@ -197,7 +197,6 @@ function resetNameInput() {
 function updateMenuCount() {
   const $menuItems = $menuList.querySelectorAll(".menu-list-item");
   $menuCount.textContent = `총 ${$menuItems.length}개`;
-  console.log("Current Menus: ", menus);
 }
 
 /**

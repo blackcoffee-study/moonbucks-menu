@@ -1,14 +1,6 @@
 const SERVER_URL = "http://localhost:3000/api";
 const CATEGORY_API = `${SERVER_URL}/category`;
 
-// fetch('http://example.com/movies.json')
-//   .then(function(response) {
-//     return response.json();
-//   })
-//   .then(function(myJson) {
-//     console.log(JSON.stringify(myJson));
-//   });
-
 export async function getMenusByCategory(categoryName) {
   return await fetch(`${CATEGORY_API}/${categoryName}/menu`)
     .then((response) => {
@@ -55,6 +47,22 @@ export async function updateMenuName(categoryName, menuId, newMenuName) {
     body: JSON.stringify({
       name: newMenuName,
     }),
+  })
+    .then((response) => {
+      if (!response.ok) {
+        alert(`${response.status} ${response.statusText}`);
+        return;
+      }
+      return response.json();
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+}
+
+export async function toggleSoldOut(categoryName, menuId) {
+  return await fetch(`${CATEGORY_API}/${categoryName}/menu/${menuId}/soldout`, {
+    method: "PUT",
   })
     .then((response) => {
       if (!response.ok) {

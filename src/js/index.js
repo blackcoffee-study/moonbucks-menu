@@ -158,14 +158,12 @@ function addEventToSoldOutButton($menuItem) {
 
   $soldOutButton.addEventListener("click", () => {
     const $menuName = $menuItem.querySelector("span.menu-name");
-    $menuName.classList.toggle("sold-out");
-
-    if ($menuName.classList.contains("sold-out")) {
-      storageAPI.updateMenu(selectedCategory, $menuName.textContent, {
-        name: $menuName.textContent,
-        soldOut: true,
-      });
-    }
+    const menuId = $menuItem.dataset.menuId;
+    API.toggleSoldOut(selectedCategory, menuId).then((menu) => {
+      menu.isSoldOut
+        ? $menuName.classList.add("sold-out")
+        : $menuName.classList.remove("sold-out");
+    });
   });
 }
 
@@ -218,7 +216,7 @@ function loadMenus(categoryName) {
     menus = data;
     for (let i = 0; i < menus.length; i++) {
       const menu = menus[i];
-      appendMenuItemElement(menu.id, menu.name, menu.soldOut);
+      appendMenuItemElement(menu.id, menu.name, menu.isSoldOut);
     }
     updateMenuCount();
   });

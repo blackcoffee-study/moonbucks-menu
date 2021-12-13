@@ -68,7 +68,7 @@ export default class App extends Component {
       editSoldout: this.editSoldout.bind(this),
     });
   }
-
+  
   async changeMenu(e) {
     this.setState({
       ...this.$state,
@@ -91,7 +91,7 @@ export default class App extends Component {
     const newItems = {
       ...this.$state[selected],
       items: [...items, result],
-    };
+  };
 
     this.setState({
       ...this.$state,

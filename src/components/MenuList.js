@@ -9,6 +9,7 @@ export default class MenuList extends Component {
       .map(item => {
         return `
         <li class="menu-list-item d-flex items-center py-2">
+
         <span class="w-100 pl-2 menu-name ${item.isSoldOut && 'sold-out'}">${
           item.name
         }</span>

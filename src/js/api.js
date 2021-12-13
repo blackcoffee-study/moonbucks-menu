@@ -45,3 +45,25 @@ export async function createMenu(categoryName, menuName) {
       console.error(error);
     });
 }
+
+export async function updateMenuName(categoryName, menuId, newMenuName) {
+  return await fetch(`${CATEGORY_API}/${categoryName}/menu/${menuId}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json;charset=utf-8",
+    },
+    body: JSON.stringify({
+      name: newMenuName,
+    }),
+  })
+    .then((response) => {
+      if (!response.ok) {
+        alert(`${response.status} ${response.statusText}`);
+        return;
+      }
+      return response.json();
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+}

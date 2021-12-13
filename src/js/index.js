@@ -1,4 +1,5 @@
 import { $ } from "./utils/index.js";
+import { menuApi } from "./api/index.js";
 import { menuStore } from "./stores/index.js";
 import { getMenuItemTemplate } from "./utils/Template.js";
 
@@ -13,15 +14,13 @@ function App() {
   };
 
   this.init = () => {
-    if (!menuStore.getLocalStorage()) {
-      menuStore.setLocalStorage(this.menu);
-    }
-    this.menu = menuStore.getLocalStorage();
     initEventListeners();
     render();
   };
 
-  const render = () => {
+  const render = async () => {
+    this.menu[this.category] = await menuApi.getMenu(this.category);
+
     const menuItemListTemplate = this.menu[this.category]
       .map((menu, index) => getMenuItemTemplate(menu, index))
       .join("");
@@ -40,7 +39,7 @@ function App() {
     render();
   };
 
-  const addMenuItem = () => {
+  const addMenuItem = async () => {
     if ($("#menu-name").value === "") {
       alert("값을 입력해주세요.");
       return;
@@ -50,6 +49,7 @@ function App() {
       name: $("#menu-name").value,
       soldOut: false,
     });
+    await menuApi.addMenu(this.category, $("#menu-name").value);
     updateMenuStore();
     $("#menu-name").value = "";
   };

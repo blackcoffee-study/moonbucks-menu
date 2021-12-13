@@ -1,4 +1,3 @@
-import * as storageAPI from "./storage.js";
 import * as API from "./api.js";
 
 const $nav = document.querySelector("header > nav");

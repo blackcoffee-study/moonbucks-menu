@@ -13,8 +13,7 @@ class App {
 
     const store = new Store();
     new Controller({ views, store });
-  }
-}
+
 
 window.addEventListener("DOMContentLoaded", () => {
   new App();

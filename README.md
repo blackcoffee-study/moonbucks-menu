@@ -126,13 +126,13 @@
 
 ### React처럼 상태관리 해보기
 
-- [] [Vanilla Javascript로 웹 컴포넌트 만들기](https://junilhwang.github.io/TIL/Javascript/Design/Vanilla-JS-Component/#_1-%E1%84%8F%E1%85%A5%E1%86%B7%E1%84%91%E1%85%A9%E1%84%82%E1%85%A5%E1%86%AB%E1%84%90%E1%85%B3%E1%84%8B%E1%85%AA-%E1%84%89%E1%85%A1%E1%86%BC%E1%84%90%E1%85%A2%E1%84%80%E1%85%AA%E1%86%AB%E1%84%85%E1%85%B5) 읽어보기
+- [x] [Vanilla Javascript로 웹 컴포넌트 만들기](https://junilhwang.github.io/TIL/Javascript/Design/Vanilla-JS-Component/#_1-%E1%84%8F%E1%85%A5%E1%86%B7%E1%84%91%E1%85%A9%E1%84%82%E1%85%A5%E1%86%AB%E1%84%90%E1%85%B3%E1%84%8B%E1%85%AA-%E1%84%89%E1%85%A1%E1%86%BC%E1%84%90%E1%85%A2%E1%84%80%E1%85%AA%E1%86%AB%E1%84%85%E1%85%B5) 읽어보기
 
-- [] [(Design Pattern) Observer Pattern 이란?](https://medium.com/@su_bak/design-pattern-observer-pattern-%EC%9D%B4%EB%9E%80-ef4b74303359) 읽어보기
+- [x] [(Design Pattern) Observer Pattern 이란?](https://medium.com/@su_bak/design-pattern-observer-pattern-%EC%9D%B4%EB%9E%80-ef4b74303359) 읽어보기
 
-- [] [바닐라 자바스크립트로 Observer Pattern(옵저버 패턴) 흉내내보기](https://stitchcoding.tistory.com/m/39) 읽어보기
+- [x] [바닐라 자바스크립트로 Observer Pattern(옵저버 패턴) 흉내내보기](https://stitchcoding.tistory.com/m/39) 읽어보기
 
-- [] [상태관리(Stage Management)와 옵저버패턴(Observer Pattern)](https://365kim.tistory.com/89) 읽어보기
+- [x] [상태관리(Stage Management)와 옵저버패턴(Observer Pattern)](https://365kim.tistory.com/89) 읽어보기
 
 ## 📝 API
 

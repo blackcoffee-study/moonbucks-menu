@@ -43,14 +43,14 @@
 
 ## 🎯 step1 요구사항 - 돔 조작과 이벤트 핸들링으로 메뉴 관리하기
 
-- [ ] 에스프레소 메뉴에 새로운 메뉴를 확인 버튼 또는 엔터키 입력으로 추가한다.
-  - [ ] 메뉴가 추가되고 나면, input은 빈 값으로 초기화한다.
-  - [ ] 사용자 입력값이 빈 값이라면 추가되지 않는다.
-- [ ] 메뉴의 수정 버튼을 눌러 메뉴 이름 수정할 수 있다.
-  - [ ] 메뉴 수정시 브라우저에서 제공하는 `prompt` 인터페이스를 활용한다.
-- [ ] 메뉴 삭제 버튼을 이용하여 메뉴 삭제할 수 있다.
-  - [ ] 메뉴 삭제시 브라우저에서 제공하는 `confirm` 인터페이스를 활용한다.
-- [ ] 총 메뉴 갯수를 count하여 상단에 보여준다.
+- [X] 에스프레소 메뉴에 새로운 메뉴를 확인 버튼 또는 엔터키 입력으로 추가한다.
+  - [X] 메뉴가 추가되고 나면, input은 빈 값으로 초기화한다.
+  - [X] 사용자 입력값이 빈 값이라면 추가되지 않는다.
+- [X] 메뉴의 수정 버튼을 눌러 메뉴 이름 수정할 수 있다.
+  - [X] 메뉴 수정시 브라우저에서 제공하는 `prompt` 인터페이스를 활용한다.
+- [X] 메뉴 삭제 버튼을 이용하여 메뉴 삭제할 수 있다.
+  - [X] 메뉴 삭제시 브라우저에서 제공하는 `confirm` 인터페이스를 활용한다.
+- [X] 총 메뉴 갯수를 count하여 상단에 보여준다.
 - 추가되는 메뉴의 아래 마크업은 `<ul id="espresso-menu-list" class="mt-3 pl-0"></ul>` 안에 삽입해야 한다.
 
 ```js
@@ -72,13 +72,39 @@
 ```
 
 ## 🎯 step2 요구사항 - 상태 관리로 메뉴 관리하기
+```
+TODO localStorage Read&Write
+- [X] localStorage에 데이터를 저장한다.
+- [X] 메뉴를 추가할 때
+- [X] 메뉴를 수정할 때
+- [X] 메뉴를 삭제할 때
+- [X] localStorage에 있는 데이터를 읽어온다.
 
-- [ ] [localStorage](https://developer.mozilla.org/ko/docs/Web/API/Window/localStorage)에 데이터를 저장하여 새로고침해도 데이터가 남아있게 한다.
-- [ ] 에스프레소, 프라푸치노, 블렌디드, 티바나, 디저트 각각의 종류별로 메뉴판을 관리할 수 있게 만든다.
-  - [ ] 페이지에 최초로 접근할 때는 에스프레소 메뉴가 먼저 보이게 한다.
-- [ ] 품절 상태인 경우를 보여줄 수 있게, 품절 버튼을 추가하고 `sold-out` class를 추가하여 상태를 변경한다.
+TODO 카테고리별 메뉴판 관리
+- [X] 에스프레소 메뉴판 관리
+- [X] 프라푸치노 메뉴판 관리
+- [X] 블렌디드 메뉴판 관리
+- [X] 티바나 메뉴판 관리
+- [X] 디저트 메뉴판 관리
+
+TODO 페이지 접근시 최초 데이터 Read&Rendering
+- [X] 페이지에 최초로 로딩될 때 localStorage의 에스프레소 메뉴를 읽어온다.
+- [X] 에스프레소 메뉴를 페이지에 그려준다.
+
+TODO 품절 상태 관리
+- [X] 품절 버튼을 추가한다.
+- [X] 품절 버튼을 클릭하면 localStorage에 상태값이 저장된다.
+- [X] 클릭이벤트에서 가장 가까운 li 태그의 class 속상 값에 sold-out을 추가한다.
+- [X] 품절 상태인 경우를 보여줄 수 있게, 품절 버튼을 추가하고 sold-out class를 추가하여 상태를 변경한다.
+```
+
+- [X] [localStorage](https://developer.mozilla.org/ko/docs/Web/API/Window/localStorage)에 데이터를 저장하여 새로고침해도 데이터가 남아있게 한다.
+- [X] 에스프레소, 프라푸치노, 블렌디드, 티바나, 디저트 각각의 종류별로 메뉴판을 관리할 수 있게 만든다.
+  - [X] 페이지에 최초로 접근할 때는 에스프레소 메뉴가 먼저 보이게 한다.
+- [X] 품절 상태인 경우를 보여줄 수 있게, 품절 버튼을 추가하고 `sold-out` class를 추가하여 상태를 변경한다.
 - 품절 상태 메뉴의 마크업
 
+  // 상태(변할 수 있는 데이터)
 ```js
 <li class="menu-list-item d-flex items-center py-2">
   <span class="w-100 pl-2 menu-name sold-out">${name}</span>
@@ -105,9 +131,13 @@
 
 ## 🎯 step3 요구사항 - 서버와의 통신을 통해 메뉴 관리하기
 
-- [ ] [링크](https://github.com/blackcoffee-study/moonbucks-menu-server)에 있는 웹 서버 저장소를 clone하여 로컬에서 웹 서버를 실행시킨다.
+- [X] [링크](https://github.com/blackcoffee-study/moonbucks-menu-server)에 있는 웹 서버 저장소를 clone하여 로컬에서 웹 서버를 실행시킨다.
 - [ ] 웹 서버를 띄워서 실제 서버에 데이터의 변경을 저장하는 형태로 리팩터링한다.
-  - [ ] localStorage에 저장하는 로직은 지운다.
+  - [ ] localStorage에 저장하는 로직을 api를 이용하여 post방식으로 변경한다.
+  - [ ] localStorage에 있는 데이터를 수정하는 로직을 api를 이용하여 put 방식으로 변경한다.
+  - [ ] localStorage에 있는 데이터를 삭제하는 로직을 api를 이용하여 delete 방식으로 변경한다.
+  - [ ] localStorage에 있는 데이터를 읽어오는 로직을 api를 이용하여 get 방식으로 변경한다.
+  - [ ] 품절 처리하는 로직을 변경한다.
   - [ ] fetch 비동기 api를 사용하는 부분을 async await을 사용하여 구현한다.
   - [ ] API 통신이 실패하는 경우에 대해 사용자가 알 수 있게 [alert](https://developer.mozilla.org/ko/docs/Web/API/Window/alert)으로 예외처리를 진행한다.
 - [ ] 중복되는 메뉴는 추가할 수 없다.

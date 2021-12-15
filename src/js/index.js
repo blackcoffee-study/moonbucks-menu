@@ -39,6 +39,7 @@ function App() {
 			})
 			.join('');
 		$menuList.innerHTML = template;
+		undateCount();
 	};
 
 	const isMenuInputEmpty = (e) => {
@@ -60,12 +61,12 @@ function App() {
 
 	const removeItemFromArray = ($targetMenuName, event) => {
 		const targetId = $targetMenuName.dataset.menuId;
-		this.menuArrs.splice(targetId, 1);
+		this.menuArrs[this.currentCategory].splice(targetId, 1);
 		store.setLocalStorage(this.menuArrs);
 	};
 
 	const undateCount = () => {
-		const totalNum = this.menuArrs.length;
+		const totalNum = this.menuArrs[this.currentCategory].length;
 		$totalNum.innerText = `총 ${totalNum}개`;
 	};
 
@@ -79,14 +80,15 @@ function App() {
 				return;
 			}
 			$targetMenuName.innerText = newMenuName;
-			this.menuArrs[menuId].menuName = newMenuName;
+			this.menuArrs[this.currentCategory.menuId].menuName = newMenuName;
 			store.setLocalStorage(this.menuArrs);
 		}
 		if (event.target.classList.contains('menu-remove-button')) {
-			confirm('선택하신 메뉴를 삭제하시겠습니까?');
-			removeItemFromArray($targetMenuName);
-			renderMenuList(this.menuArrs);
-			undateCount(this.menuArrs);
+			if (confirm('선택하신 메뉴를 삭제하시겠습니까?')) {
+				removeItemFromArray($targetMenuName);
+				renderMenuList(this.menuArrs);
+				undateCount(this.menuArrs);
+			}
 		}
 	});
 
@@ -96,7 +98,10 @@ function App() {
 		const isCategoryBtn = e.target.classList.contains('cafe-category-name');
 		if (isCategoryBtn) {
 			const categoryName = e.target.dataset.categoryName;
-			console.log(categoryName);
+			this.currentCategory = categoryName;
+			const targetCategoryTitle = document.querySelector('#category-title');
+			targetCategoryTitle.innerText = `${e.target.innerText} 메뉴관리`;
+			renderMenuList(renderMenuList(this.menuArrs[this.currentCategory]));
 		}
 	});
 }

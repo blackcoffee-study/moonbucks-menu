@@ -1,9 +1,9 @@
-import  { menuItemTemplate } from "./template/menu.js"
+import { menuItemTemplate } from './template/menu.js';
 
-const $addMenuBtn = document.getElementById("espresso-menu-submit-button");
-const $menuList = document.getElementById("espresso-menu-list");
-const $inputMenu = document.getElementById("espresso-menu-name");
-const $totalNum = document.querySelector(".menu-count");
+const $addMenuBtn = document.getElementById('espresso-menu-submit-button');
+const $menuList = document.getElementById('espresso-menu-list');
+const $inputMenu = document.getElementById('espresso-menu-name');
+const $totalNum = document.querySelector('.menu-count');
 const $categoryNav = document.querySelector('nav');
 
 const store = {
@@ -82,13 +82,21 @@ function App() {
 			$targetMenuName.innerText = newMenuName;
 			this.menuArrs[this.currentCategory.menuId].menuName = newMenuName;
 			store.setLocalStorage(this.menuArrs);
+			return;
 		}
 		if (event.target.classList.contains('menu-remove-button')) {
 			if (confirm('선택하신 메뉴를 삭제하시겠습니까?')) {
 				removeItemFromArray($targetMenuName);
 				renderMenuList(this.menuArrs);
 				undateCount(this.menuArrs);
+				return;
 			}
+		}
+		if (event.target.classList.contains('menu-sold-out-button')) {
+			const menuId = $targetMenuName.dataset.menuId;
+			this.menuArrs[this.currentCategory].soldOut = true;
+			store.setLocalStorage(this.menu);
+			renderMenuList(this.menuArrs);
 		}
 	});
 

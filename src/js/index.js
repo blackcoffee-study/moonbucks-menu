@@ -31,6 +31,7 @@ function App() {
 		}
 		renderMenuList(this.menuArrs);
 	};
+
 	const renderMenuList = () => {
 		$menuList.innerText = '';
 		const template = this.menuArrs[this.currentCategory]
@@ -39,7 +40,7 @@ function App() {
 			})
 			.join('');
 		$menuList.innerHTML = template;
-		undateCount();
+		undateMenuCount();
 	};
 
 	const isMenuInputEmpty = (e) => {
@@ -56,7 +57,7 @@ function App() {
 		this.menuArrs[this.currentCategory].push({ menuName: inputMenuName });
 		store.setLocalStorage(this.menuArrs);
 		renderMenuList(this.menuArrs);
-		undateCount(this.menuArrs);
+		undateMenuCount(this.menuArrs);
 	};
 
 	const removeItemFromArray = ($targetMenuName, event) => {
@@ -65,42 +66,48 @@ function App() {
 		store.setLocalStorage(this.menuArrs);
 	};
 
-	const undateCount = () => {
+	const undateMenuCount = () => {
 		const totalNum = this.menuArrs[this.currentCategory].length;
 		$totalNum.innerText = `총 ${totalNum}개`;
+	};
+
+	const updateMenu = (e) => {
+		const $targetMenuName = e.target.closest('li').querySelector('span');
+		const newMenuName = prompt('수정하고 싶은 메뉴명을 입력해주세요!');
+		if (newMenuName === '') {
+			return;
+		}
+		$targetMenuName.innerText = newMenuName;
+		this.menuArrs[this.currentCategory].menuName = newMenuName;
+		store.setLocalStorage(this.menuArrs);
+	};
+
+	const deleteMenu = (e) => {
+		const $targetMenuLi = e.target.closest('li');
+		if (confirm('선택하신 메뉴를 삭제하시겠습니까?')) {
+			removeItemFromArray($targetMenuLi);
+			renderMenuList(this.menuArrs);
+			undateMenuCount(this.menuArrs);
+			return;
+		}
 	};
 
 	const soldOutMenu = (e) => {
 		const $targetMenuLi = e.target.closest('li');
 		const menuId = $targetMenuLi.dataset.menuId;
 		this.menuArrs[this.currentCategory][menuId].soldOut = !this.menuArrs[this.currentCategory][menuId].soldOut;
-		console.log(this.menuArrs);
 		store.setLocalStorage(this.menuArrs);
 		renderMenuList(this.menuArrs);
 	};
 
 	$menuList.addEventListener('click', (e) => {
-		const $targetMenuLi = e.target.closest('li');
-		const $targetMenuName = e.target.closest('li').querySelector('span');
-		const menuId = $targetMenuLi.dataset.menuId;
-
 		if (e.target.classList.contains('menu-edit-button')) {
-			const newMenuName = prompt('수정하고 싶은 메뉴명을 입력해주세요!');
-			if (newMenuName === '') {
-				return;
-			}
-			$targetMenuName.innerText = newMenuName;
-			this.menuArrs[this.currentCategory].menuName = newMenuName;
-			store.setLocalStorage(this.menuArrs);
+			updateMenu(e);
 			return;
 		}
 		if (e.target.classList.contains('menu-remove-button')) {
-			if (confirm('선택하신 메뉴를 삭제하시겠습니까?')) {
-				removeItemFromArray($targetMenuLi);
-				renderMenuList(this.menuArrs);
-				undateCount(this.menuArrs);
-				return;
-			}
+			deleteMenu(e);
+			return;
 		}
 		if (e.target.classList.contains('menu-sold-out-button')) {
 			soldOutMenu(e);

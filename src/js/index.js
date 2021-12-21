@@ -70,33 +70,41 @@ function App() {
 		$totalNum.innerText = `총 ${totalNum}개`;
 	};
 
-	$menuList.addEventListener('click', function updateMenu(event) {
-		const $targetMenuName = event.target.closest('li');
-		const menuId = $targetMenuName.dataset.menuId;
+	const soldOutMenu = (e) => {
+		const $targetMenuLi = e.target.closest('li');
+		const menuId = $targetMenuLi.dataset.menuId;
+		this.menuArrs[this.currentCategory][menuId].soldOut = !this.menuArrs[this.currentCategory][menuId].soldOut;
+		console.log(this.menuArrs);
+		store.setLocalStorage(this.menuArrs);
+		renderMenuList(this.menuArrs);
+	};
 
-		if (event.target.classList.contains('menu-edit-button')) {
+	$menuList.addEventListener('click', (e) => {
+		const $targetMenuLi = e.target.closest('li');
+		const $targetMenuName = e.target.closest('li').querySelector('span');
+		const menuId = $targetMenuLi.dataset.menuId;
+
+		if (e.target.classList.contains('menu-edit-button')) {
 			const newMenuName = prompt('수정하고 싶은 메뉴명을 입력해주세요!');
 			if (newMenuName === '') {
 				return;
 			}
 			$targetMenuName.innerText = newMenuName;
-			this.menuArrs[this.currentCategory.menuId].menuName = newMenuName;
+			this.menuArrs[this.currentCategory].menuName = newMenuName;
 			store.setLocalStorage(this.menuArrs);
 			return;
 		}
-		if (event.target.classList.contains('menu-remove-button')) {
+		if (e.target.classList.contains('menu-remove-button')) {
 			if (confirm('선택하신 메뉴를 삭제하시겠습니까?')) {
-				removeItemFromArray($targetMenuName);
+				removeItemFromArray($targetMenuLi);
 				renderMenuList(this.menuArrs);
 				undateCount(this.menuArrs);
 				return;
 			}
 		}
-		if (event.target.classList.contains('menu-sold-out-button')) {
-			const menuId = $targetMenuName.dataset.menuId;
-			this.menuArrs[this.currentCategory].soldOut = true;
-			store.setLocalStorage(this.menu);
-			renderMenuList(this.menuArrs);
+		if (e.target.classList.contains('menu-sold-out-button')) {
+			soldOutMenu(e);
+			return;
 		}
 	});
 
@@ -108,7 +116,9 @@ function App() {
 			const categoryName = e.target.dataset.categoryName;
 			this.currentCategory = categoryName;
 			const targetCategoryTitle = document.querySelector('#category-title');
+			const targetCategoryLabel = document.querySelector('#espresso-menu-name');
 			targetCategoryTitle.innerText = `${e.target.innerText} 메뉴관리`;
+			targetCategoryLabel.innerText = `${e.target.innerText} 메뉴 이름`;
 			renderMenuList(renderMenuList(this.menuArrs[this.currentCategory]));
 		}
 	});

@@ -89,34 +89,8 @@
 - [x] 페이지에 최초로 접근할 때는 에스프레소 메뉴가 먼저 보이게 한다.
 
 - 품절 상태 관리
-- [ ] 품절 상태인 경우를 보여줄 수 있게, 품절 버튼을 추가한다
-- [ ] 품절 상태인 경우를 보여줄 수 있게, `sold-out` class를 추가하여 상태를 변경한다.
-
-- 품절 상태 메뉴의 마크업
-
-```js
-<li class="menu-list-item d-flex items-center py-2">
-  <span class="w-100 pl-2 menu-name sold-out">${name}</span>
-  <button
-    type="button"
-    class="bg-gray-50 text-gray-500 text-sm mr-1 menu-sold-out-button"
-  >
-    품절
-  </button>
-  <button
-    type="button"
-    class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
-  >
-    수정
-  </button>
-  <button
-    type="button"
-    class="bg-gray-50 text-gray-500 text-sm menu-remove-button"
-  >
-    삭제
-  </button>
-</li>
-```
+- [x] 품절 상태인 경우를 보여줄 수 있게, 품절 버튼을 추가한다
+- [x] 품절 상태인 경우를 보여줄 수 있게, `sold-out` class를 추가하여 상태를 변경한다.
 
 ## 🎯 step3 요구사항 - 서버와의 통신을 통해 메뉴 관리하기
 

@@ -1,5 +1,7 @@
 import { menuItemTemplate } from './template/menu.js';
 
+const BASE_URL = 'http://localhost:3000/api/category';
+
 const $addMenuBtn = document.getElementById('espresso-menu-submit-button');
 const $menuList = document.getElementById('espresso-menu-list');
 const $inputMenu = document.getElementById('espresso-menu-name');
@@ -23,6 +25,7 @@ function App() {
 		desert: [],
 		teavana: [],
 	};
+
 	this.currentCategory = 'espresso';
 
 	this.init = () => {
@@ -54,10 +57,24 @@ function App() {
 	};
 
 	const addMenuList = (inputMenuName) => {
-		this.menuArrs[this.currentCategory].push({ menuName: inputMenuName });
-		store.setLocalStorage(this.menuArrs);
-		renderMenuList(this.menuArrs);
-		undateMenuCount(this.menuArrs);
+		fetch(`${BASE_URL}/${this.currentCategory}/menu`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({ name: inputMenuName }),
+		})
+			.then((response) => {
+				return response.json();
+			})
+			.then((data) => {
+				console.log(data);
+			});
+
+		// this.menuArrs[this.currentCategory].push({ menuName: inputMenuName });
+		// store.setLocalStorage(this.menuArrs);
+		// renderMenuList(this.menuArrs);
+		// undateMenuCount(this.menuArrs);
 	};
 
 	const removeItemFromArray = ($targetMenuName, event) => {

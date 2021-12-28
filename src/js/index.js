@@ -63,29 +63,14 @@ function App() {
 				'Content-Type': 'application/json',
 			},
 			body: JSON.stringify({ name: inputMenuName }),
-		})
-			.then((response) => {
-				return response.json();
-			})
-			.then((data) => {
-				// renderMenuList(data);
-				console.log(data);
-				console.log(1);
-			});
+		}).then((response) => {
+			return response.json();
+		});
 
-		await fetch(`${BASE_URL}/category/${this.currentCategory}/menu`)
-			.then((response) => {
-				return response.json();
-			})
-			.then((data) => {
-				console.log(2);
-				console.log(data);
-			});
+		await fetch(`${BASE_URL}/category/${this.currentCategory}/menu`).then((response) => {
+			return response.json();
+		});
 		// 먼저 작성한 코드가 먼저 작동되지 않을 수 있다. 비동기 통신의 순서를 보장하기 위해서 async await을 사용한다.
-		// this.menuArrs[this.currentCategory].push({ menuName: inputMenuName });
-		// store.setLocalStorage(this.menuArrs);
-		// renderMenuList(this.menuArrs);
-		// undateMenuCount(this.menuArrs);
 	};
 
 	const removeItemFromArray = ($targetMenuName, event) => {

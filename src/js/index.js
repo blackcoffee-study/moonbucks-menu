@@ -1,6 +1,6 @@
 import { menuItemTemplate } from './template/menu.js';
 
-const BASE_URL = 'http://localhost:3000/api/category';
+const BASE_URL = 'http://localhost:3000/api/';
 
 const $addMenuBtn = document.getElementById('espresso-menu-submit-button');
 const $menuList = document.getElementById('espresso-menu-list');
@@ -56,8 +56,8 @@ function App() {
 		}
 	};
 
-	const addMenuList = (inputMenuName) => {
-		fetch(`${BASE_URL}/${this.currentCategory}/menu`, {
+	const addMenuList = async (inputMenuName) => {
+		await fetch(`${BASE_URL}/category/${this.currentCategory}/menu`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
@@ -68,9 +68,20 @@ function App() {
 				return response.json();
 			})
 			.then((data) => {
+				// renderMenuList(data);
 				console.log(data);
+				console.log(1);
 			});
 
+		await fetch(`${BASE_URL}/category/${this.currentCategory}/menu`)
+			.then((response) => {
+				return response.json();
+			})
+			.then((data) => {
+				console.log(2);
+				console.log(data);
+			});
+		// 먼저 작성한 코드가 먼저 작동되지 않을 수 있다. 비동기 통신의 순서를 보장하기 위해서 async await을 사용한다.
 		// this.menuArrs[this.currentCategory].push({ menuName: inputMenuName });
 		// store.setLocalStorage(this.menuArrs);
 		// renderMenuList(this.menuArrs);

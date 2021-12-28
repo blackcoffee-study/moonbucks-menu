@@ -1,6 +1,6 @@
 import { menuItemTemplate } from './template/menu.js';
 
-const BASE_URL = 'http://localhost:3000/api/';
+const BASE_URL = 'http://localhost:3000/api';
 
 const $addMenuBtn = document.getElementById('espresso-menu-submit-button');
 const $menuList = document.getElementById('espresso-menu-list');
@@ -17,6 +17,13 @@ const store = {
 	},
 };
 
+const MenuApi = {
+	async getAllMenyByCategory(category) {
+		const response = await fetch(`${BASE_URL}/category/${category}/menu`);
+		return response.json();
+	},
+};
+
 function App() {
 	this.menuArrs = {
 		espresso: [],
@@ -25,14 +32,11 @@ function App() {
 		desert: [],
 		teavana: [],
 	};
-
 	this.currentCategory = 'espresso';
 
-	this.init = () => {
-		if (store.getLocalStorage()) {
-			this.menuArrs = store.getLocalStorage();
-		}
-		renderMenuList(this.menuArrs);
+	this.init = async () => {
+		this.menuArrs[this.currentCategory] = MenuApi.getAllMenyByCategory(this.currentCategory);
+		renderMenuList();
 	};
 
 	const renderMenuList = () => {
@@ -67,9 +71,9 @@ function App() {
 			return response.json();
 		});
 
-		await fetch(`${BASE_URL}/category/${this.currentCategory}/menu`).then((response) => {
-			return response.json();
-		});
+		this.menuArrs[this.currentCategory] = await MenuApi.getAllMenyByCategory(this.currentCategory);
+		console.log(this.menuArrs[this.currentCategory]);
+		renderMenuList();
 		// 먼저 작성한 코드가 먼저 작동되지 않을 수 있다. 비동기 통신의 순서를 보장하기 위해서 async await을 사용한다.
 	};
 

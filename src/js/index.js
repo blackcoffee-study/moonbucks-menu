@@ -18,8 +18,34 @@ const store = {
 };
 
 const MenuApi = {
-	async getAllMenyByCategory(category) {
+	async getAllMenuByCategory(category) {
 		const response = await fetch(`${BASE_URL}/category/${category}/menu`);
+		return response.json();
+	},
+	async createMenu(category, name) {
+		const response = await fetch(`${BASE_URL}/category/${category}/menu`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({ name }),
+		});
+		if (!response.ok) {
+			console.error('error');
+		}
+		return response.json();
+	},
+	async updateMenu(category, menu, menuId) {
+		const response = await fetch(`${BASE_URL}/category/${category}/menu`, {
+			method: 'PUT',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({ menu }),
+		});
+		if (!response.ok) {
+			console.error('error');
+		}
 		return response.json();
 	},
 };
@@ -35,15 +61,15 @@ function App() {
 	this.currentCategory = 'espresso';
 
 	this.init = async () => {
-		this.menuArrs[this.currentCategory] = MenuApi.getAllMenyByCategory(this.currentCategory);
+		this.menuArrs[this.currentCategory] = await MenuApi.getAllMenuByCategory(this.currentCategory);
 		renderMenuList();
 	};
 
 	const renderMenuList = () => {
 		$menuList.innerText = '';
 		const template = this.menuArrs[this.currentCategory]
-			.map((menuArr, index) => {
-				return menuItemTemplate(menuArr, index);
+			.map((menuItem) => {
+				return menuItemTemplate(menuItem);
 			})
 			.join('');
 		$menuList.innerHTML = template;
@@ -61,19 +87,12 @@ function App() {
 	};
 
 	const addMenuList = async (inputMenuName) => {
-		await fetch(`${BASE_URL}/category/${this.currentCategory}/menu`, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify({ name: inputMenuName }),
-		}).then((response) => {
-			return response.json();
-		});
-
-		this.menuArrs[this.currentCategory] = await MenuApi.getAllMenyByCategory(this.currentCategory);
-		console.log(this.menuArrs[this.currentCategory]);
+		this.menuArrs[this.currentCategory] = MenuApi.getAllMenuByCategory(this.currentCategory);
+		console.log('메뉴' + this.menuArrs[this.currentCategory]);
+		console.log('할당' + MenuApi.getAllMenuByCategory(this.currentCategory));
+		await MenuApi.createMenu(this.currentCategory, inputMenuName);
 		renderMenuList();
+		// console.log(this.menuArrs[this.currentCategory]);
 		// 먼저 작성한 코드가 먼저 작동되지 않을 수 있다. 비동기 통신의 순서를 보장하기 위해서 async await을 사용한다.
 	};
 
@@ -88,15 +107,17 @@ function App() {
 		$totalNum.innerText = `총 ${totalNum}개`;
 	};
 
-	const updateMenu = (e) => {
+	const updateMenu = async (e) => {
+		const menuId = e.target.closest('li').dataset.menuId;
 		const $targetMenuName = e.target.closest('li').querySelector('span');
 		const newMenuName = prompt('수정하고 싶은 메뉴명을 입력해주세요!');
 		if (newMenuName === '') {
 			return;
 		}
+		await MenuApi.updateMenu(this.currentCategory, newMenuName, menuId);
 		$targetMenuName.innerText = newMenuName;
-		this.menuArrs[this.currentCategory].menuName = newMenuName;
-		store.setLocalStorage(this.menuArrs);
+		// this.menuArrs[this.currentCategory].menuName = newMenuName;
+		renderMenuList();
 	};
 
 	const deleteMenu = (e) => {

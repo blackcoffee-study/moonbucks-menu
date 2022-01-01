@@ -1,6 +1,18 @@
 import { $ } from './util/dom.js';
 const BASE_URL = 'http://localhost:3000/api';
 
+function Server() {
+  this.getAllMenuForCategory = async (category, menu) => {
+    await fetch(`${BASE_URL}/category/${category}/menu`)
+      .then(res => {
+        return res.json();
+      })
+      .then(data => {
+        menu[category] = data;
+      });
+  };
+}
+
 function App() {
   this.menu = {
     espresso: [],
@@ -10,8 +22,10 @@ function App() {
     desert: [],
   };
   this.menu.categoryName = '';
+  const server = new Server();
 
   const renderMenuItem = () => {
+    console.log(this.menu[this.menu.categoryName]);
     const template = this.menu[this.menu.categoryName].map((item, index) => {
       const isSoldOut = item.isSoldOut ? 'sold-out' : '';
       return `
@@ -41,7 +55,8 @@ function App() {
     $('.menu-count').innerHTML = `총 ${menuItemCount}개`;
     $('#espresso-menu-name').value = '';
   };
-  const addMenu = () => {
+
+  const addMenu = async () => {
     const menuName = $('#espresso-menu-name').value;
     if (menuName === '') {
       return;
@@ -52,7 +67,7 @@ function App() {
       isSoldOut,
     });
 
-    fetch(`${BASE_URL}/category/${this.menu.categoryName}/menu`, {
+    await fetch(`${BASE_URL}/category/${this.menu.categoryName}/menu`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -130,29 +145,31 @@ function App() {
     });
   };
 
-  this.ChangeCategoryName = e => {
+  this.ChangeCategoryName = async e => {
     if (e.target.classList.contains('cafe-category-name')) {
       this.menu.categoryName = e.target.dataset.categoryName;
       $('#cafe-category-title').innerHTML = `${e.target.innerHTML} 메뉴 관리`;
+      await fetch(`${BASE_URL}/category/${this.menu.categoryName}/menu`)
+        .then(res => {
+          return res.json();
+        })
+        .then(data => {
+          this.menu[this.menu.categoryName] = data;
+        });
       renderMenuItem();
     }
   };
 
-  this.init = () => {
+  this.init = async () => {
     this.menu.categoryName = 'espresso';
-    /*
-    if (store.getLocalStorage() != undefined) {
-      this.menu = store.getLocalStorage();
-    }
-    */
-    fetch(`${BASE_URL}/category/${this.menu.categoryName}/menu`)
+    await fetch(`${BASE_URL}/category/${this.menu.categoryName}/menu`)
       .then(res => {
         return res.json();
       })
       .then(data => {
-        console.log(data);
+        this.menu[this.menu.categoryName] = data;
       });
-
+    console.log(this.menu);
     renderMenuItem();
     initEventListeners();
   };

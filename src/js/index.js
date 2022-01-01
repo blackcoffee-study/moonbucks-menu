@@ -1,8 +1,8 @@
 import { $ } from './util/dom.js';
 const BASE_URL = 'http://localhost:3000/api';
 
-function Server() {
-  this.getAllMenuForCategory = async (category, menu) => {
+const menuApi = {
+  async getAllMenuForCategory(category, menu) {
     await fetch(`${BASE_URL}/category/${category}/menu`)
       .then(res => {
         return res.json();
@@ -10,8 +10,8 @@ function Server() {
       .then(data => {
         menu[category] = data;
       });
-  };
-}
+  },
+};
 
 function App() {
   this.menu = {
@@ -22,10 +22,8 @@ function App() {
     desert: [],
   };
   this.menu.categoryName = '';
-  const server = new Server();
 
   const renderMenuItem = () => {
-    console.log(this.menu[this.menu.categoryName]);
     const template = this.menu[this.menu.categoryName].map((item, index) => {
       const isSoldOut = item.isSoldOut ? 'sold-out' : '';
       return `
@@ -48,6 +46,7 @@ function App() {
     });
     $('#espresso-menu-list').innerHTML = template.join('');
     updateMenuCount();
+    console.log(this.menu);
   };
 
   const updateMenuCount = () => {
@@ -149,27 +148,14 @@ function App() {
     if (e.target.classList.contains('cafe-category-name')) {
       this.menu.categoryName = e.target.dataset.categoryName;
       $('#cafe-category-title').innerHTML = `${e.target.innerHTML} 메뉴 관리`;
-      await fetch(`${BASE_URL}/category/${this.menu.categoryName}/menu`)
-        .then(res => {
-          return res.json();
-        })
-        .then(data => {
-          this.menu[this.menu.categoryName] = data;
-        });
+      await menuApi.getAllMenuForCategory(this.menu.categoryName, this.menu);
       renderMenuItem();
     }
   };
 
   this.init = async () => {
     this.menu.categoryName = 'espresso';
-    await fetch(`${BASE_URL}/category/${this.menu.categoryName}/menu`)
-      .then(res => {
-        return res.json();
-      })
-      .then(data => {
-        this.menu[this.menu.categoryName] = data;
-      });
-    console.log(this.menu);
+    await menuApi.getAllMenuForCategory(this.menu.categoryName, this.menu);
     renderMenuItem();
     initEventListeners();
   };

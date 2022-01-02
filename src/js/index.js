@@ -23,6 +23,7 @@ const MenuApi = {
 		return response.json();
 	},
 	async createMenu(category, name) {
+		console.log(`${BASE_URL}/category/${category}/menu`);
 		const response = await fetch(`${BASE_URL}/category/${category}/menu`, {
 			method: 'POST',
 			headers: {
@@ -33,10 +34,9 @@ const MenuApi = {
 		if (!response.ok) {
 			console.error('error');
 		}
-		return response.json();
 	},
 	async updateMenu(category, menu, menuId) {
-		const response = await fetch(`${BASE_URL}/category/${category}/menu`, {
+		const response = await fetch(`${BASE_URL}/category/${category}/${menuId}`, {
 			method: 'PUT',
 			headers: {
 				'Content-Type': 'application/json',
@@ -73,7 +73,7 @@ function App() {
 			})
 			.join('');
 		$menuList.innerHTML = template;
-		undateMenuCount();
+		updateMenuCount();
 	};
 
 	const isMenuInputEmpty = (e) => {
@@ -87,11 +87,12 @@ function App() {
 	};
 
 	const addMenuList = async (inputMenuName) => {
-		this.menuArrs[this.currentCategory] = MenuApi.getAllMenuByCategory(this.currentCategory);
+		// this.menuArrs[this.currentCategory] = MenuApi.getAllMenuByCategory(this.currentCategory);
+		const response = await MenuApi.createMenu(this.currentCategory, inputMenuName);
 		console.log('메뉴' + this.menuArrs[this.currentCategory]);
 		console.log('할당' + MenuApi.getAllMenuByCategory(this.currentCategory));
-		await MenuApi.createMenu(this.currentCategory, inputMenuName);
-		renderMenuList();
+
+		renderMenuList(response);
 		// console.log(this.menuArrs[this.currentCategory]);
 		// 먼저 작성한 코드가 먼저 작동되지 않을 수 있다. 비동기 통신의 순서를 보장하기 위해서 async await을 사용한다.
 	};
@@ -102,7 +103,7 @@ function App() {
 		store.setLocalStorage(this.menuArrs);
 	};
 
-	const undateMenuCount = () => {
+	const updateMenuCount = () => {
 		const totalNum = this.menuArrs[this.currentCategory].length;
 		$totalNum.innerText = `총 ${totalNum}개`;
 	};
@@ -125,7 +126,7 @@ function App() {
 		if (confirm('선택하신 메뉴를 삭제하시겠습니까?')) {
 			removeItemFromArray($targetMenuLi);
 			renderMenuList(this.menuArrs);
-			undateMenuCount(this.menuArrs);
+			updateMenuCount(this.menuArrs);
 			return;
 		}
 	};

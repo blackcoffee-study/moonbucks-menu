@@ -1,15 +1,41 @@
 import { $ } from './util/dom.js';
+import { renderMenuItem } from './render/render.js';
 const BASE_URL = 'http://localhost:3000/api';
 
 const menuApi = {
+  async addMenu(category, menuName) {
+    await fetch(`${BASE_URL}/category/${category}/menu`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ name: menuName }),
+    });
+  },
+
   async getAllMenuForCategory(category, menu) {
     await fetch(`${BASE_URL}/category/${category}/menu`)
-      .then(res => {
-        return res.json();
+      .then(response => {
+        return response.json();
       })
       .then(data => {
         menu[category] = data;
       });
+  },
+
+  // 400 오류 발생 중...
+  async updateMenu(category, menuName, menuId) {
+    await fetch(`${BASE_URL}/category/${category}/menu/${menuId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ name: menuName }),
+    });
+    if (!response.ok) {
+      window.alert('에러가 발생했습니다.');
+    }
+    return response.json();
   },
 };
 
@@ -23,38 +49,6 @@ function App() {
   };
   this.menu.categoryName = '';
 
-  const renderMenuItem = () => {
-    const template = this.menu[this.menu.categoryName].map((item, index) => {
-      const isSoldOut = item.isSoldOut ? 'sold-out' : '';
-      return `
-        <li data-menu-id="${index}" class="menu-list-item d-flex items-center py-2">
-            <span class="w-100 pl-2 menu-name ${isSoldOut}">${item.name}</span>
-            <button
-                type="button"
-                class="bg-gray-50 text-gray-500 text-sm mr-1 menu-sold-out-button"
-            >품절</button>
-            <button
-                type="button"
-                class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
-            >수정</button>
-            <button
-                type="button"
-                class="bg-gray-50 text-gray-500 text-sm menu-remove-button"
-            >삭제</button>
-        </li>
-        `;
-    });
-    $('#espresso-menu-list').innerHTML = template.join('');
-    updateMenuCount();
-    console.log(this.menu);
-  };
-
-  const updateMenuCount = () => {
-    const menuItemCount = this.menu[this.menu.categoryName].length;
-    $('.menu-count').innerHTML = `총 ${menuItemCount}개`;
-    $('#espresso-menu-name').value = '';
-  };
-
   const addMenu = async () => {
     const menuName = $('#espresso-menu-name').value;
     if (menuName === '') {
@@ -65,25 +59,11 @@ function App() {
       name: menuName,
       isSoldOut,
     });
-
-    await fetch(`${BASE_URL}/category/${this.menu.categoryName}/menu`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ name: menuName }),
-    })
-      .then(res => {
-        return res.json();
-      })
-      .then(data => {
-        console.log(data);
-      });
-    renderMenuItem();
-    //store.setLocalStorage(this.menu);
+    await menuApi.addMenu(this.menu.categoryName, menuName);
+    renderMenuItem(this.menu, this.menu.categoryName);
   };
 
-  const updateMenu = e => {
+  const updateMenu = async e => {
     const $menuName = e.target.closest('li').querySelector('.menu-name');
     const menuId = e.target.closest('li').dataset.menuId;
     const updatedMenuName = window.prompt(
@@ -93,9 +73,10 @@ function App() {
     if (updatedMenuName === null) {
       return;
     }
+    await menuApi.updateMenu(this.menu.categoryName, $menuName, menuId);
     this.menu[this.menu.categoryName][menuId].name = updatedMenuName;
-    //store.setLocalStorage(this.menu);
     $menuName.innerHTML = updatedMenuName;
+    renderMenuItem(this.menu, this.menu.categoryName);
   };
 
   const removeMenu = e => {
@@ -105,7 +86,7 @@ function App() {
       this.menu[this.menu.categoryName].splice(menuId, 1);
       store.setLocalStorage(this.menu);
       e.target.closest('li').remove();
-      renderMenuItem();
+      renderMenuItem(this.menu, this.menu.categoryName);
     }
   };
 
@@ -149,14 +130,14 @@ function App() {
       this.menu.categoryName = e.target.dataset.categoryName;
       $('#cafe-category-title').innerHTML = `${e.target.innerHTML} 메뉴 관리`;
       await menuApi.getAllMenuForCategory(this.menu.categoryName, this.menu);
-      renderMenuItem();
+      renderMenuItem(this.menu, this.menu.categoryName);
     }
   };
 
   this.init = async () => {
     this.menu.categoryName = 'espresso';
     await menuApi.getAllMenuForCategory(this.menu.categoryName, this.menu);
-    renderMenuItem();
+    renderMenuItem(this.menu, this.menu.categoryName);
     initEventListeners();
   };
 }

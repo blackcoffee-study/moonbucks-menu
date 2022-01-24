@@ -1,3 +1,91 @@
+### Vanilla JS 문벅스 카페 메뉴 앱 만들기
+[https://www.udemy.com/course/vanilla-js-lv1/learn/lecture/27839466#overview]
+
+---
+
+반복되는 document.querySelector() 을 변수에담아 보다 효율적으로 사용하기위해
+
+document.querySelector() 괄호안헤 들어올 변수를 select에 담고 
+변수 $에 대입함
+
+```
+const $ = (selector) =>document.querySelector(selector);
+```
+
+
+에스프레소 메뉴관리의 input에 메뉴명을 입력하고 enter를 입력하는 이벤트를 작성
+
+```
+$("#espresso-menu-name").addEventListener("keypress", (e) => {
+    console.log(e.key);
+    // espresso-menu-name 이라는 id값을 가진 input에 
+    // keypress(어떤 키가 눌리는지) 를 입력받는 이벤트를 적용
+
+      if (e.key === "Enter") {
+        const espressoMenuName = $(`#espresso-menu-name`).value;
+        // input에 입력된 value를 변수에담음
+
+        const menuItemTemplate = (espressoMenuName) => {
+        // 해당변수를 담은 li를 return 하는 함수를 만듦
+        return  `
+          <li class="menu-list-item d-flex items-center py-2">
+            <span class="w-100 pl-2 menu-name">${espressoMenuName}</span>
+            <button
+              type="button"
+              class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
+            >
+              수정
+            </button>
+            <button
+              type="button"
+              class="bg-gray-50 text-gray-500 text-sm menu-remove-button"
+            >
+              삭제
+            </button>
+          </li>`;
+      };
+      // $(`#espresso-menu-list`).innerHTML = menuItemTemplate
+      (espressoMenuName);
+      // innerHTML은 해당 태그에 덧씌울뿐 추가로 생성되지않기때문에 사용할수없다
+
+      $(`#espresso-menu-list`).insertAdjacentHTML(
+        "afterbegin",
+        menuItemTemplate(espressoMenuName)
+      )
+      console.log(menuItemTemplate(espressoMenuName));
+    } 
+  });
+```
+
+#### insertAdjacentHTML 메소드
+
+innerHTML은 생성된 html을 덧씌움으로 사용할수없어서
+insertAdjacentHTML 을 사용해준다
+[https://developer.mozilla.org/ko/docs/Web/API/Element/insertAdjacentHTML]
+
+insertAdjacentHTML 메소드는 내가 선택한 태그의 원하는위치에 html을 삽입할수있게끔 편하게 설정할수있다
+
+beforebegin - 내가 선택한 태그가 시작하기전
+afterbegin - 태그가 시작한 직후
+beforeend - 태그가 끝나기 직전
+aterend - 태그가 끝난 후 
+
+등 으로 사용된다
+
+```
+ // $(`#espresso-menu-list`).innerHTML = menuItemTemplate
+      (espressoMenuName);
+      // innerHTML은 해당 태그에 덧씌울뿐 추가로 생성되지않기때문에 사용할수없다
+
+      $(`#espresso-menu-list`).insertAdjacentHTML(
+        "afterbegin",
+        menuItemTemplate(espressoMenuName)
+      )
+      console.log(menuItemTemplate(espressoMenuName));
+```
+
+
+
 <br/>
 <p align="middle">
   <img width="200px;" src="./src/images/moonbucks.png"/>

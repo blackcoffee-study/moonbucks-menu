@@ -33,6 +33,7 @@ function App(){
 
   // 메뉴의 이름을 입력받는건
   $("#espresso-menu-name").addEventListener("keypress", (e) => {
+    console.log(e.key);
       if (e.key === "Enter") {
         const espressoMenuName = $(`#espresso-menu-name`).value;
         // input에 입력된 value를 변수에담음
@@ -56,7 +57,11 @@ function App(){
             </button>
           </li>`;
       };
-      $(`#espresso-menu-list`).innerHTML = menuItemTemplate(espressoMenuName);
+      // $(`#espresso-menu-list`).innerHTML = menuItemTemplate(espressoMenuName);
+      $(`#espresso-menu-list`).insertAdjacentHTML(
+        "afterbegin",
+        menuItemTemplate(espressoMenuName)
+      )
       console.log(menuItemTemplate(espressoMenuName));
     } 
   });

@@ -1,6 +1,7 @@
 // step1 요구사항 구현을 위한 전략
 // TODO 메뉴 추가
 // - [x] 메뉴의 이름을 입력 받고 엔터키 입력으로 추가한다.
+// - [x] 메뉴의 이름을 입력 받고 확인 버튼을 클릭하면 메뉴를 추가한다.
 // - [x] 추가되는 메뉴의 마크업은 `<ul id="expresso-menu-list" class="mt-3 pl-0"></ul>` 안에 삽입해야 한다.
 // - [x] 총 메뉴 갯수를  count하여 상단에 보여준다.
 // - [x] 메뉴가 추가되고 나면, input은 빈 값으로 초기화한다.
@@ -15,30 +16,19 @@ const $ = (selector) =>document.querySelector(selector);
 function App(){
   console.log(`자바스크립트 연결됨`);
 
+
+
   // form태그가 엔터로인해 자동으로 submit되는걸 막기
   $(`#espresso-menu-form`)
   .addEventListener(`submit`, (e) => {
     e.preventDefault();
   });
-
   
-  // 
+  const espressoAddMenuName = () => {
+    // 중복되는코드를 재사용할수있는 함수를 만듦
 
-  // document.querySelector('#asd')
-  // .onclick = (e) => {
-  //   e.preventDefault();
-  // };
-
-  // 
-
-  // 메뉴의 이름을 입력받는건
-  $("#espresso-menu-name").addEventListener("keypress", (e) => {
-    console.log(e.key);
-    if(e.key !== "Enter"){
-      // enter를 누른것이 아니라면 바로 retrun
-      // 그 외에 enter라면 아래의 스크립트가 실행되게끔 짜여져있다
-      return;
-    }
+    const espressoMenuName = $(`#espresso-menu-name`).value;
+    // input에 입력된 value를 변수에담음
 
     if($("#espresso-menu-name").value === ""){
       alert("값을 입력해주세요.");
@@ -46,36 +36,49 @@ function App(){
       return;
       // 하지만 return을 하면 실행되지 않는다
     };
-     
-        const espressoMenuName = $(`#espresso-menu-name`).value;
-        // input에 입력된 value를 변수에담음
+    const menuItemTemplate = (espressoMenuName) => {
+    // 해당변수를 담은 li를 return 하는 함수를 만듦
+    return  `
+      <li class="menu-list-item d-flex items-center py-2">
+        <span class="w-100 pl-2 menu-name">${espressoMenuName}</span>
+        <button
+          type="button"
+          class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
+        >
+          수정
+        </button>
+        <button
+          type="button"
+          class="bg-gray-50 text-gray-500 text-sm menu-remove-button"
+        >
+          삭제
+        </button>
+      </li>`;
+    };
+    // $(`#espresso-menu-list`).innerHTML = menuItemTemplate(espressoMenuName);
+    $(`#espresso-menu-list`).insertAdjacentHTML(
+      "afterbegin",
+      menuItemTemplate(espressoMenuName)
+    )
+    console.log(menuItemTemplate(espressoMenuName));
+  } // espressoAddMenuName end
 
-        const menuItemTemplate = (espressoMenuName) => {
-        // 해당변수를 담은 li를 return 하는 함수를 만듦
-        return  `
-          <li class="menu-list-item d-flex items-center py-2">
-            <span class="w-100 pl-2 menu-name">${espressoMenuName}</span>
-            <button
-              type="button"
-              class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
-            >
-              수정
-            </button>
-            <button
-              type="button"
-              class="bg-gray-50 text-gray-500 text-sm menu-remove-button"
-            >
-              삭제
-            </button>
-          </li>`;
-      };
-      // $(`#espresso-menu-list`).innerHTML = menuItemTemplate(espressoMenuName);
-      $(`#espresso-menu-list`).insertAdjacentHTML(
-        "afterbegin",
-        menuItemTemplate(espressoMenuName)
-      )
-      console.log(menuItemTemplate(espressoMenuName));
-    
+  // 클릭시 이름을 입력받는 건
+  $("#espresso-menu-submit-button").addEventListener("click",(e)=>{
+    espressoAddMenuName();
+  });// 클릭시 이름을 입력받는 건 end
+
+
+  // 메뉴의 이름을 입력받는 건
+  $("#espresso-menu-name").addEventListener("keypress", (e) => {
+    console.log(e.key);
+    if(e.key !== "Enter"){
+      // enter를 누른것이 아니라면 바로 retrun
+      // 그 외에 enter라면 아래의 스크립트가 실행되게끔 짜여져있다
+      return;
+    }
+    espressoAddMenuName();
+
     const menuCount = $(`#espresso-menu-list`).querySelectorAll("li").length;
     // #espresso-menu-list 에 생성되는 모든 li들을 가져와서 그 갯수를 length로 가져오고 menuCount에 대입함
     $(`.menu-count`).innerText = `총 ${menuCount}개`;
@@ -84,7 +87,7 @@ function App(){
 
     $(`#espresso-menu-name`).value = "";
     // 스크립트 과정 처리 후 input의 내용을 빈칸으로 변경
-  });
+  }); // 메뉴의 이름을 입력받는 건 end
 
 }; // App;
 

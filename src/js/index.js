@@ -4,7 +4,7 @@
 // - [x] 추가되는 메뉴의 마크업은 `<ul id="expresso-menu-list" class="mt-3 pl-0"></ul>` 안에 삽입해야 한다.
 // - [x] 총 메뉴 갯수를  count하여 상단에 보여준다.
 // - [x] 메뉴가 추가되고 나면, input은 빈 값으로 초기화한다.
-// - [ ] 사용자 입력값이 빈 값이라면 추가되지 않는다.
+// - [x] 사용자 입력값이 빈 값이라면 추가되지 않는다.
 
 //
 const $ = (selector) =>document.querySelector(selector);
@@ -34,7 +34,19 @@ function App(){
   // 메뉴의 이름을 입력받는건
   $("#espresso-menu-name").addEventListener("keypress", (e) => {
     console.log(e.key);
-      if (e.key === "Enter") {
+    if(e.key !== "Enter"){
+      // enter를 누른것이 아니라면 바로 retrun
+      // 그 외에 enter라면 아래의 스크립트가 실행되게끔 짜여져있다
+      return;
+    }
+
+    if($("#espresso-menu-name").value === ""){
+      alert("값을 입력해주세요.");
+      // 여기까지만 입력하면 alert창이 생성된후 바로 아래코드가 실행된다
+      return;
+      // 하지만 return을 하면 실행되지 않는다
+    };
+     
         const espressoMenuName = $(`#espresso-menu-name`).value;
         // input에 입력된 value를 변수에담음
 
@@ -63,7 +75,7 @@ function App(){
         menuItemTemplate(espressoMenuName)
       )
       console.log(menuItemTemplate(espressoMenuName));
-    } 
+    
     const menuCount = $(`#espresso-menu-list`).querySelectorAll("li").length;
     // #espresso-menu-list 에 생성되는 모든 li들을 가져와서 그 갯수를 length로 가져오고 menuCount에 대입함
     $(`.menu-count`).innerText = `총 ${menuCount}개`;

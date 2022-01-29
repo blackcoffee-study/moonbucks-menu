@@ -1,6 +1,5 @@
-// elem
-const $espressoMenuForm = document.getElementById('espresso-menu-form');
-const $espressoMenuList = document.getElementById('espresso-menu-list');
+const $menuForm = document.getElementById('menu-form');
+const $menuList = document.getElementById('menu-list');
 const $nav = document.querySelector('nav');
 
 let selectedMenu = 'espresso';
@@ -16,7 +15,7 @@ let menuObj = {
 const updateTotalMenuNum = () => {
   const $menuCount = document.querySelector('.menu-count');
 
-  const totalMenuNum = $espressoMenuList.children.length;
+  const totalMenuNum = $menuList.children.length;
   $menuCount.textContent = `총 ${totalMenuNum}개`;
 };
 
@@ -69,7 +68,7 @@ const makeMenuTemplate = (menuName, soldOut) => {
     </button>
   `;
 
-  $espressoMenuList.appendChild($li);
+  $menuList.appendChild($li);
 };
 
 // 메뉴 리스트 렌더링
@@ -80,14 +79,14 @@ const renderMenu = () => {
     selectedMenu
   ];
 
-  $espressoMenuList.innerHTML = '';
+  $menuList.innerHTML = '';
   selectedMenuList.map(({ name, soldOut }) => makeMenuTemplate(name, soldOut));
   updateTotalMenuNum();
 };
 
 // 메뉴 추가
 const addNewMenu = () => {
-  const $input = document.getElementById('espresso-menu-name');
+  const $input = document.getElementById('menu-name');
   const menuName = $input.value;
   let selectedMenuList = [];
 
@@ -154,7 +153,7 @@ const deleteMenu = ($li, idx, selectedMenuList) => {
 
   if (!result) return;
 
-  $espressoMenuList.removeChild($selectedMenu);
+  $menuList.removeChild($selectedMenu);
   updateTotalMenuNum();
 
   // localStorage
@@ -164,28 +163,28 @@ const deleteMenu = ($li, idx, selectedMenuList) => {
 
 // event
 // form의 submit default 이벤트 막기
-$espressoMenuForm.addEventListener('submit', e => {
+$menuForm.addEventListener('submit', e => {
   e.preventDefault();
 });
 
 // 확인 버튼 클릭 시, 메뉴 추가
-$espressoMenuForm.addEventListener('click', e => {
-  if (e.target.id !== 'espresso-menu-submit-button') return;
+$menuForm.addEventListener('click', e => {
+  if (e.target.id !== 'menu-submit-button') return;
 
   addNewMenu();
 });
 
 // Enter 키 입력 시, 메뉴 추가
-$espressoMenuForm.addEventListener('keyup', e => {
+$menuForm.addEventListener('keyup', e => {
   if (e.key !== 'Enter') return;
 
   addNewMenu();
 });
 
 // 메뉴별 품절, 수정, 삭제 버튼 클릭 이벤트
-$espressoMenuList.addEventListener('click', e => {
+$menuList.addEventListener('click', e => {
   const $li = e.target.closest('li');
-  const idxOfLi = [...$espressoMenuList.children].findIndex(li => li === $li);
+  const idxOfLi = [...$menuList.children].findIndex(li => li === $li);
   const selectedMenuList = JSON.parse(localStorage.getItem('menu'))[
     selectedMenu
   ];

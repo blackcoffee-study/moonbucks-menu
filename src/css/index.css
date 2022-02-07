@@ -1,5 +1,5 @@
-@import "./shared/index.css";
-@import "./ui/index.css";
+@import './shared/index.css';
+@import './ui/index.css';
 
 html,
 body {
@@ -32,21 +32,28 @@ hr {
   height: 1px;
   background-color: lightgray;
 }
-
+#espresso-menu-list li {
+  display: block;
+}
 ul li button {
-  width: 60px;
+  background-color: rgba(0, 0, 0, 0.2);
+  width: 40px;
   line-height: inherit;
   cursor: pointer;
   height: auto;
   border: none;
   outline: none;
   border-radius: 2rem;
+  margin-left: 0.3rem;
 }
 
 ul li button:hover {
   background-color: rgb(229, 231, 235);
 }
-
+.desc-put-button {
+}
+.desc-delete-button {
+}
 .sold-out {
   text-decoration: line-through;
   color: gray;

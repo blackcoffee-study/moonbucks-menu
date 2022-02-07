@@ -2,30 +2,31 @@ import Component from './core/Component.js';
 import Header from './components/Header.js';
 import MenuForm from './components/MenuForm.js';
 import MenuList from './components/MenuList.js';
+import {
+  createMenu,
+  deleteMenu,
+  getMenuList,
+  putMenuName,
+  putMenuSoldout,
+} from './api/menu.js';
 
 export default class App extends Component {
-  setup() {
-    const saveData = () => {
-      localStorage.setItem(
-        'item',
-        JSON.stringify({ ...this.$state, selected: 'espresso' })
-      );
-      window.removeEventListener('beforeunload', saveData);
+  async setup() {
+    this.$state = {
+      selected: 'espresso',
+      espresso: { title: '☕ 에스프레소', items: [] },
+      frappuccino: { title: '🥤 프라푸치노', items: [] },
+      blended: { title: '🍹 블렌디드', items: [] },
+      teavana: { title: '🫖 티바나', items: [] },
+      desert: { title: '🍰 디저트', items: [] },
     };
-    window.addEventListener('beforeunload', saveData);
-    const loadData = JSON.parse(localStorage.getItem('item'));
-    if (loadData === null) {
-      this.$state = {
-        selected: 'espresso',
-        espresso: { title: '☕ 에스프레소', items: [] },
-        frappuccino: { title: '🥤 프라푸치노', items: [] },
-        blended: { title: '🍹 블렌디드', items: [] },
-        teavana: { title: '🫖 티바나', items: [] },
-        desert: { title: '🍰 디저트', items: [] },
-      };
-    } else {
-      this.$state = loadData;
-    }
+
+    const result = await getMenuList(this.$state.selected);
+
+    const newState = { ...this.$state[this.$state.selected], items: result };
+    this.setState({
+      [this.$state.selected]: newState,
+    });
   }
   
   template() {
@@ -67,33 +68,30 @@ export default class App extends Component {
       editSoldout: this.editSoldout.bind(this),
     });
   }
-
-  changeMenu(e) {
+  
+  async changeMenu(e) {
     this.setState({
       ...this.$state,
       selected: e.target.dataset.categoryName,
     });
+    const result = await getMenuList(this.$state.selected);
+    const newState = { ...this.$state[this.$state.selected], items: result };
+    this.setState({
+      [this.$state.selected]: newState,
+    });
   }
 
-  addMenuList(inputValue) {
+  async addMenuList(inputValue) {
     const { selected } = this.$state;
     const { items } = this.$state[selected];
 
+    const result = await createMenu(this.$state.selected, inputValue);
+    if (result === false) return;
+
     const newItems = {
       ...this.$state[selected],
-      items: [
-        ...items,
-        {
-          id: +`${
-            items.length === 0
-              ? items.length + 1
-              : items[items.length - 1].id + 1
-          }`,
-          name: inputValue,
-          soldout: false,
-        },
-      ],
-    };
+      items: [...items, result],
+  };
 
     this.setState({
       ...this.$state,
@@ -101,13 +99,18 @@ export default class App extends Component {
     });
   }
 
-  deleteMenuList(id) {
+  async deleteMenuList(id) {
     const { selected } = this.$state;
     const confirm = window.confirm('정말 삭제하시겠습니까?');
     if (confirm) {
+      const result = await deleteMenu(selected, id);
+
+      if (result === false) return;
+
       const filterItems = this.$state[selected].items.filter(
-        item => item.id !== +id
+        item => item.id !== id
       );
+
       this.setState({
         ...this.$state,
         [selected]: { ...this.$state[selected], items: filterItems },
@@ -115,28 +118,37 @@ export default class App extends Component {
     }
   }
 
-  editMenuList(id) {
+  async editMenuList(id) {
     const { selected } = this.$state;
-    const menu = this.$state[selected].items.find(item => item.id === +id);
+    const menu = this.$state[selected].items.find(item => item.id === id);
     const value = prompt('메뉴를 수정하세요', menu.name);
+    if (value === null) return;
+
+    const result = await putMenuName(selected, menu.id, value);
+    if (result === false) return;
 
     const editItems = this.$state[selected].items.map(item => {
-      if (value !== null && item.id === +id) {
-        return { id: item.id, name: value, soldout: item.soldout };
+      if (value !== null && item.id === id) {
+        return result;
       }
       return item;
     });
+
     this.setState({
       ...this.$state,
       [selected]: { ...this.$state[selected], items: editItems },
     });
   }
 
-  editSoldout(id) {
+  async editSoldout(id) {
     const { selected } = this.$state;
+
+    const result = await putMenuSoldout(selected, id);
+    if (result === false) return;
+
     const editItems = this.$state[selected].items.map(item => {
-      if (item.id === +id) {
-        return { id: item.id, name: item.name, soldout: !item.soldout };
+      if (item.id === id) {
+        return result;
       }
       return item;
     });

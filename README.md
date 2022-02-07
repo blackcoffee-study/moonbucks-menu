@@ -163,6 +163,9 @@
 
 ```javascript
 {
+ requestBody: {
+   "name": "string"
+ },
  response: {
    "id": "string",
    "name": "string",

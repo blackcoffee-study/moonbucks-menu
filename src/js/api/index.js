@@ -1,5 +1,7 @@
 const BASE_URL = 'http://localhost:3000/api'
 
+const ERRORMESSAGE = '에러가 발생했습니다.'
+
 const HTTP_METHOD = {
   POST(data) {
     return {
@@ -27,23 +29,31 @@ const HTTP_METHOD = {
 }
 
 const request = async (url, option) => {
-  const response = await fetch(url, option)
-  if (!response.ok) {
-    alert('에러가 발생했습니다.')
-    console.error('에러가 발생했습니다.')
-  }
+  try {
+    const response = await fetch(url, option)
+    if (!response.ok) {
+      alert(ERRORMESSAGE)
+      throw new Error(ERRORMESSAGE)
+    }
 
-  return response.json()
+    return response.json()
+  } catch (e) {
+    console.error(e)
+  }
 }
 
 const requestWithoutJson = async (url, option) => {
-  const response = await fetch(url, option)
-  if (!response.ok) {
-    alert('에러가 발생했습니다.')
-    console.error('에러가 발생했습니다.')
-  }
+  try {
+    const response = await fetch(url, option)
+    if (!response.ok) {
+      alert(ERRORMESSAGE)
+      throw new Error(ERRORMESSAGE)
+    }
 
-  return response
+    return response
+  } catch (e) {
+    console.error(e)
+  }
 }
 
 const MenuApi = {

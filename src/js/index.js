@@ -1,79 +1,61 @@
-const $ = selector => document.querySelector(selector);
+import $ from './utils/common/selector.js';
+import { addMenuName } from './utils/menu/addMenuName.js';
+import { updateMenuName } from './utils/menu/updateMenuName.js';
+import { removeMenuName } from './utils/menu/removeMenuName.js';
+import { render } from './utils/common/render.js';
+import { soldOutMenu } from './utils/menu/soldOutMenu.js';
+import { changeCategory } from './utils/menu/changeCategory.js';
 
-const App = () => {
-  const updateMenuCount = () => {
-    const menuCount = $('#espresso-menu-list').querySelectorAll('li').length;
-    $('.menu-count').innerText = `총 ${menuCount}개`;
+function App() {
+  this.menu = {
+    espresso: [],
+    frappuccino: [],
+    blended: [],
+    teavana: [],
+    desert: [],
   };
 
-  const addMenuName = () => {
-    if (!$('#espresso-menu-name').value) {
-      alert('값을 입력해주세요.');
-      return;
-    }
-
-    const espressoMenuName = $('#espresso-menu-name').value;
-    const menuItemTemplate = espressoMenuName => {
-      return `
-        <li class="menu-list-item d-flex items-center py-2">
-          <span class="w-100 pl-2 menu-name">${espressoMenuName}</span>
-          <button
-            type="button"
-            class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
-          >
-            수정
-          </button>
-          <button
-            type="button"
-            class="bg-gray-50 text-gray-500 text-sm mr-1 menu-remove-button"
-          >
-            삭제
-          </button>
-        </li>`;
-    };
-    $('#espresso-menu-list').insertAdjacentHTML(
-      'beforeend',
-      menuItemTemplate(espressoMenuName),
-    );
-
-    updateMenuCount();
-    $('#espresso-menu-name').value = '';
+  this.init = async () => {
+    this.currentCategory = 'espresso';
+    $('#category-title').innerText = `☕ 에스프레소 메뉴 관리`;
+    await render(this.menu, this.currentCategory);
+    this.initEventListeners();
   };
 
-  const updateMenuName = e => {
-    const $menuName = e.target.closest('li').querySelector('.menu-name');
-    const updatedMenuName = prompt('메뉴명을 수정하세요', $menuName.innerText);
-    $menuName.innerText = updatedMenuName;
+  this.initEventListeners = () => {
+    $('#menu-list').addEventListener('click', e => {
+      if (e.target.classList.contains('menu-edit-button')) {
+        updateMenuName(e, this.menu, this.currentCategory);
+        return;
+      }
+
+      if (e.target.classList.contains('menu-remove-button')) {
+        removeMenuName(e, this.menu, this.currentCategory);
+        return;
+      }
+
+      if (e.target.classList.contains('menu-sold-out-button')) {
+        soldOutMenu(e, this.menu, this.currentCategory);
+        return;
+      }
+    });
+
+    $('#menu-form').addEventListener('submit', e => {
+      e.preventDefault();
+      addMenuName(this.menu, this.currentCategory);
+    });
+
+    $('#menu-submit-button').addEventListener('click', () => {
+      addMenuName(this.menu, this.currentCategory);
+    });
+
+    $('nav').addEventListener('click', e => {
+      if (e.target.classList.contains('cafe-category-name')) {
+        changeCategory(e, this.menu);
+      }
+    });
   };
+}
 
-  const removeMenuName = e => {
-    if (confirm('정말 삭제하시겠습니까?')) {
-      const menu = e.target.closest('li');
-      menu.remove();
-      updateMenuCount();
-    }
-  };
-
-  $('#espresso-menu-list').addEventListener('click', e => {
-    if (e.target.classList.contains('menu-edit-button')) {
-      updateMenuName(e);
-    }
-
-    if (e.target.classList.contains('menu-remove-button')) {
-      removeMenuName(e);
-    }
-  });
-
-  $('#espresso-menu-form').addEventListener('submit', e => {
-    e.preventDefault();
-  });
-
-  $('#espresso-menu-submit-button').addEventListener('click', addMenuName);
-
-  $('#espresso-menu-name').addEventListener('keypress', e => {
-    if (e.key === 'Enter') addMenuName();
-    else return;
-  });
-};
-
-App();
+const app = new App();
+app.init();

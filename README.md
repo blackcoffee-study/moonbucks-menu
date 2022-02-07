@@ -105,12 +105,34 @@
 
 ## 🎯 step3 요구사항 - 서버와의 통신을 통해 메뉴 관리하기
 
-- [ ] [링크](https://github.com/blackcoffee-study/moonbucks-menu-server)에 있는 웹 서버 저장소를 clone하여 로컬에서 웹 서버를 실행시킨다.
-- [ ] 웹 서버를 띄워서 실제 서버에 데이터의 변경을 저장하는 형태로 리팩터링한다.
-  - [ ] localStorage에 저장하는 로직은 지운다.
-  - [ ] fetch 비동기 api를 사용하는 부분을 async await을 사용하여 구현한다.
-  - [ ] API 통신이 실패하는 경우에 대해 사용자가 알 수 있게 [alert](https://developer.mozilla.org/ko/docs/Web/API/Window/alert)으로 예외처리를 진행한다.
-- [ ] 중복되는 메뉴는 추가할 수 없다.
+### TODO 서버 요청
+
+- [x] 웹 서버를 띄운다.
+- [x] 서버에 요청하는 부분은 async await을 사용하여 구현한다.
+- [x] 서버에 새로운 메뉴가 추가될 수 있도록 요청
+- [x] 서버에 카테고리별 메뉴 리스트 불러오기
+- [x] 서버의 메뉴가 수정될 수 있도록 요청
+- [x] 서버의 메뉴 품절 상태가 토글될 수 있도록 요청
+- [x] 서버의 메뉴가 삭제될 수 있도록 요청
+
+### TODO 리팩터링
+
+- [x] localStorage에 저장하는 로직은 지운다.
+
+### TODO 사용자 경험
+
+- [x] API 통신이 실패한 경우에 alert로 예외처리하기
+- [x] 중복되는 메뉴는 추가할 수 없도록 막기
+
+### React처럼 상태관리 해보기
+
+- [x] [Vanilla Javascript로 웹 컴포넌트 만들기](https://junilhwang.github.io/TIL/Javascript/Design/Vanilla-JS-Component/#_1-%E1%84%8F%E1%85%A5%E1%86%B7%E1%84%91%E1%85%A9%E1%84%82%E1%85%A5%E1%86%AB%E1%84%90%E1%85%B3%E1%84%8B%E1%85%AA-%E1%84%89%E1%85%A1%E1%86%BC%E1%84%90%E1%85%A2%E1%84%80%E1%85%AA%E1%86%AB%E1%84%85%E1%85%B5) 읽어보기
+
+- [x] [(Design Pattern) Observer Pattern 이란?](https://medium.com/@su_bak/design-pattern-observer-pattern-%EC%9D%B4%EB%9E%80-ef4b74303359) 읽어보기
+
+- [x] [바닐라 자바스크립트로 Observer Pattern(옵저버 패턴) 흉내내보기](https://stitchcoding.tistory.com/m/39) 읽어보기
+
+- [x] [상태관리(Stage Management)와 옵저버패턴(Observer Pattern)](https://365kim.tistory.com/89) 읽어보기
 
 ## 📝 API
 
@@ -147,8 +169,8 @@
 {
   response: [
     {
-      id: "string",
-      name: "string",
+      id: 'string',
+      name: 'string',
       isSoldOut: Boolean,
     },
   ];

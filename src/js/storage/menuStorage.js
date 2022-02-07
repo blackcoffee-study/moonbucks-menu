@@ -1,55 +1,104 @@
 export default class MenuStorage {
-  constructor(storageKey) {
-    this.storage = window.localStorage;
-    this.key = storageKey;
-    this.fetchAll();
+  baseUrl = "http://localhost:3000";
+
+  constructor(category) {
+    this.category = category;
+    this.datas = [];
   }
 
-  fetchAll = () => {
-    const fetchDatas = JSON.parse(this.storage.getItem(this.key));
-    if (fetchDatas) {
-      this.datas = fetchDatas;
-    } else {
-      this.datas = [];
-    }
-    return this.datas;
+  isAlreadyExistName = (name) => {
+    const resultList = this.datas.filter((menu) => menu.name === name);
+    return resultList.length > 0;
   };
 
-  removeById = (id) => {
-    const updatedDatas = this.datas.filter((menu) => menu.id != id);
-    this.storage.setItem(this.key, JSON.stringify(updatedDatas));
+  getCategory = () => {
+    return this.category;
+  };
+
+  getMenuCount = () => {
+    return this.datas.length;
+  };
+
+  fetchAll = async () => {
+    const url = `${this.baseUrl}/api/category/${this.category}/menu`;
+    const response = await fetch(url);
+    const result = await response.json();
+    this.datas = result;
+    return result;
+  };
+
+  remove = async (id, name) => {
+    const url = `${this.baseUrl}/api/category/${this.category}/menu/${id}`;
+    const response = await fetch(url, {
+      method: "delete",
+      body: JSON.stringify({
+        name: name,
+      }),
+    }).then(this._removeData(id));
+    const result = await response.text();
+    return result;
+  };
+
+  editMenuName = async (id, name) => {
+    const url = `${this.baseUrl}/api/category/${this.category}/menu/${id}`;
+    const response = await fetch(url, {
+      method: "put",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name: name,
+      }),
+    });
+    const result = await response.json();
+    this._editNameData(result);
+    return result;
+  };
+
+  soldOut = async (id, name) => {
+    const url = `${this.baseUrl}/api/category/${this.category}/menu/${id}/soldout`;
+    const response = await fetch(url, {
+      method: "put",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name: name,
+      }),
+    });
+    const result = await response.json();
+    this._soldOutData(result);
+    return result;
+  };
+
+  add = async (name) => {
+    const url = `${this.baseUrl}/api/category/${this.category}/menu`;
+    const response = await fetch(url, {
+      method: "post",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name: name,
+      }),
+    });
+    const result = await response.json();
+    this._addData(result);
+    return result;
+  };
+
+  // Private functions
+  _addData = (addedMenu) => {
+    const updatedDatas = [...this.datas, addedMenu];
     this.datas = updatedDatas;
   };
 
-  soldOutById = (id) => {
-    const menu = this.datas.find((m) => m.id == id);
-    const menuIdx = this.datas.findIndex((m) => m.id == id);
-    if (menu) {
-      menu.soldOut = !menu.soldOut;
-      this.datas[menuIdx] = menu;
-      this.storage.setItem(this.key, JSON.stringify(this.datas));
-    }
+  _editNameData = (menu) => {
+    const menuIdx = this.datas.findIndex((m) => m.id === menu.id);
+    this.datas[menuIdx] = menu;
   };
 
-  editMenuName = (id, name) => {
-    const menu = this.datas.find((m) => m.id == id);
-    const menuIdx = this.datas.findIndex((m) => m.id == id);
-    if (menu) {
-      menu.menuName = name;
-      this.datas[menuIdx] = menu;
-      this.storage.setItem(this.key, JSON.stringify(this.datas));
-    }
-  };
-
-  add(menuName) {
-    const menuData = {
-      id: this.datas.length == 0 ? 0 : this.datas[this.datas.length - 1].id + 1,
-      menuName: menuName,
-      soldOut: false,
-    };
-    const updatedDatas = [...this.datas, menuData];
-    this.storage.setItem(this.key, JSON.stringify(updatedDatas));
+  _removeData = (id) => {
+    const updatedDatas = this.datas.filter((menu) => menu.id !== id);
     this.datas = updatedDatas;
-    return menuData;
-  }
+  };
+
+  _soldOutData = (menu) => {
+    const menuIdx = this.datas.findIndex((m) => m.id === menu.id);
+    this.datas[menuIdx].isSoldOut = menu.isSoldOut;
+  };
 }

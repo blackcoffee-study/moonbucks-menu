@@ -1,4 +1,5 @@
-import { $, menuStore } from "./utils/index.js";
+import { $, stopInitEvents, getIsTargetContainsClass } from "./utils/index.js";
+import { menuApi } from "./api/index.js";
 import { getMenuItemTemplate } from "./utils/Template.js";
 
 function App() {
@@ -12,75 +13,30 @@ function App() {
   };
 
   this.init = () => {
-    if (menuStore.getLocalStorage()) {
-      this.menu = menuStore.getLocalStorage();
-      render();
-      return;
-    }
-    menuStore.setLocalStorage(this.menu);
+    render();
+    initEventListeners();
   };
 
-  const render = () => {
+  const render = async () => {
+    this.menu[this.category] = await menuApi.getMenu(this.category);
+
     const menuItemListTemplate = this.menu[this.category]
-      .map((menu, index) => getMenuItemTemplate(menu, index))
+      .map((menu) => getMenuItemTemplate(menu))
       .join("");
 
     $("#menu-list").innerHTML = menuItemListTemplate;
-    updateMenuCount();
+    changeMenuCount();
   };
 
-  const updateMenuCount = () => {
+  const changeMenuCount = () => {
     const menuCount = this.menu[this.category].length;
     $("#menu-count").innerText = `총 ${menuCount}개`;
   };
 
-  const updateMenuStore = () => {
-    menuStore.setLocalStorage(this.menu);
-    render();
-  };
-
-  const addMenuItem = () => {
-    const menuName = $("#menu-name").value;
-    if (menuName === "") {
-      alert("값을 입력해주세요.");
+  const changeCategory = (e) => {
+    if (!getIsTargetContainsClass(e, "cafe-category-name")) {
       return;
     }
-
-    this.menu[this.category].push({ name: menuName, soldOut: false });
-    updateMenuStore();
-    $("#menu-name").value = "";
-  };
-
-  const updateMenuSoldOut = (e) => {
-    const $menuItemList = e.target.closest("li");
-    const menuId = $menuItemList.dataset.menuId;
-
-    this.menu[this.category][menuId].soldOut =
-      !this.menu[this.category][menuId].soldOut;
-    updateMenuStore();
-  };
-
-  const updateMenuItem = (e) => {
-    const $menuItemList = e.target.closest("li");
-    const menuId = $menuItemList.dataset.menuId;
-    const menuName = $(".menu-name", $menuItemList).innerText;
-    const updatedMenuName = prompt("메뉴명을 수정하세요", menuName);
-
-    this.menu[this.category][menuId].name = updatedMenuName;
-    updateMenuStore();
-  };
-
-  const removeMenuItem = (e) => {
-    if (confirm("정말 삭제하시겠습니까?")) {
-      const $menuItemList = e.target.closest("li");
-      const menuId = $menuItemList.dataset.menuId;
-
-      this.menu[this.category].splice(menuId, 1);
-      updateMenuStore();
-    }
-  };
-
-  const updateCategory = (e) => {
     const $category = e.target;
     const categoryName = $category.dataset.categoryName;
     const categoryTitle = $category.innerText;
@@ -90,36 +46,72 @@ function App() {
     render();
   };
 
-  $("#menu-form").addEventListener("submit", (e) => {
-    e.preventDefault();
-  });
-
-  $("#menu-name").addEventListener("keypress", (e) => {
-    if (e.key !== "Enter") {
+  const addMenuItem = async () => {
+    const menuName = $("#menu-name").value;
+    if (menuName === "") {
+      alert("값을 입력해주세요.");
       return;
     }
-    addMenuItem();
-  });
+    await menuApi.addMenu(this.category, { name: menuName });
+    $("#menu-name").value = "";
+    render();
+  };
 
-  $("#menu-submit-button").addEventListener("click", addMenuItem);
+  const addMenuItemWithKeypress = (e) => {
+    if (e.key === "Enter") {
+      addMenuItem();
+    }
+  };
 
-  $("#menu-list").addEventListener("click", (e) => {
-    if (e.target.classList.contains("menu-sold-out-button")) {
-      updateMenuSoldOut(e);
-    }
-    if (e.target.classList.contains("menu-edit-button")) {
-      updateMenuItem(e);
-    }
-    if (e.target.classList.contains("menu-remove-button")) {
-      removeMenuItem(e);
-    }
-  });
+  const updateMenuSoldOut = async (e) => {
+    const $menuItemList = e.target.closest("li");
+    const menuId = $menuItemList.dataset.menuId;
 
-  $("nav").addEventListener("click", (e) => {
-    if (e.target.classList.contains("cafe-category-name")) {
-      updateCategory(e);
+    await menuApi.updateMenuSoldOut(this.category, menuId);
+    render();
+  };
+
+  const updateMenuName = async (e) => {
+    const $menuItemList = e.target.closest("li");
+    const menuId = $menuItemList.dataset.menuId;
+    const menuName = $(".menu-name", $menuItemList).innerText;
+    const updatedMenuName = prompt("메뉴명을 수정하세요", menuName);
+
+    await menuApi.updateMenuName(this.category, menuId, {
+      name: updatedMenuName,
+    });
+    render();
+  };
+
+  const removeMenuItem = async (e) => {
+    if (confirm("정말 삭제하시겠습니까?")) {
+      const $menuItemList = e.target.closest("li");
+      const menuId = $menuItemList.dataset.menuId;
+
+      await menuApi.removeMenu(this.category, menuId);
+      render();
     }
-  });
+  };
+
+  const initEventListeners = () => {
+    $("nav").addEventListener("click", changeCategory);
+    $("#menu-form").addEventListener("submit", stopInitEvents);
+    $("#menu-submit-button").addEventListener("click", addMenuItem);
+    $("#menu-name").addEventListener("keypress", addMenuItemWithKeypress);
+    $("#menu-list").addEventListener("click", (e) => {
+      switch (true) {
+        case getIsTargetContainsClass(e, "menu-sold-out-button"):
+          updateMenuSoldOut(e);
+          break;
+        case getIsTargetContainsClass(e, "menu-edit-button"):
+          updateMenuName(e);
+          break;
+        case getIsTargetContainsClass(e, "menu-remove-button"):
+          removeMenuItem(e);
+          break;
+      }
+    });
+  };
 }
 
 document.addEventListener("DOMContentLoaded", () => new App().init());

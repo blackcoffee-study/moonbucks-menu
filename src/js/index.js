@@ -1,4 +1,4 @@
-import * as storageAPI from "./storage.js";
+import * as API from "./api.js";
 
 const $nav = document.querySelector("header > nav");
 const $menuForm = document.querySelector("#menu-form");
@@ -9,20 +9,15 @@ const $menuHeading = document.querySelector(".heading > h2");
 
 const CATEGORIES = ["espresso", "frappuccino", "blended", "teavana", "desert"];
 let selectedCategory = "";
+let menus = [];
 
 const moonBucksApp = () => {
-  // 앱 초기화
-  selectedCategory = "espresso";
-  replaceMenuHeader(selectedCategory);
-  initializeMenuElements(selectedCategory);
-  updateMenuCount();
+  selectCategory("espresso");
 
-  // 주요 이벤트 등록
   $nav.addEventListener("click", handleNavigation);
   $menuForm.addEventListener("submit", handleSubmit);
 };
 moonBucksApp();
-
 
 function handleNavigation(e) {
   e.stopPropagation();
@@ -33,10 +28,7 @@ function handleNavigation(e) {
   const newCategoryName = $target.dataset.categoryName;
   if (!CATEGORIES.includes(newCategoryName)) return;
 
-  selectedCategory = newCategoryName;
-  replaceMenuHeader(selectedCategory);
-  initializeMenuElements(selectedCategory);
-  updateMenuCount();
+  selectCategory(newCategoryName);
 }
 
 function handleSubmit(e) {
@@ -45,11 +37,20 @@ function handleSubmit(e) {
   const newMenuName = $nameInput.value;
   if (!isValidMenuName(newMenuName)) return;
 
-  storageAPI.createMenu(selectedCategory, newMenuName);
-  appendMenuElement(newMenuName);
+  API.createMenu(selectedCategory, newMenuName).then((newMenu) => {
+    if (newMenu) {
+      appendMenuItemElement(newMenu.id, newMenu.name, newMenu.isSoldOut);
+      menus.push(newMenu);
+      updateMenuCount();
+    }
+    resetNameInput();
+  });
+}
 
-  updateMenuCount();
-  resetNameInput();
+function selectCategory(categoryName) {
+  selectedCategory = categoryName;
+  replaceMenuHeader(selectedCategory);
+  loadMenus(selectedCategory);
 }
 
 /**
@@ -74,7 +75,7 @@ function isValidMenuName(menuName) {
  * @param {boolean} soldOut 메뉴 품절 여부
  * @returns {HTMLLIElement} 메뉴 아이템 엘리먼트(`li`)
  */
-function createMenuItemElement(menuName, soldOut) {
+function createMenuItemElement(menuId, menuName, soldOut) {
   const template = `<li class="menu-list-item d-flex items-center py-2">
     <span class="w-100 pl-2 menu-name ${
       soldOut ? "sold-out" : ""
@@ -102,6 +103,7 @@ function createMenuItemElement(menuName, soldOut) {
   wrapper.innerHTML = template;
   
   const $menuItem = wrapper.firstElementChild;
+  $menuItem.dataset.menuId = menuId;
   addEventToDeleteButton($menuItem);
   addEventToEditButton($menuItem);
   addEventToSoldOutButton($menuItem);
@@ -119,9 +121,11 @@ function addEventToDeleteButton($menuItem) {
 
   $removeButton.addEventListener("click", (e) => {
     if (confirm("정말 삭제하시겠습니까?")) {
-      storageAPI.deleteMenu(selectedCategory, $menuName.textContent);
-      $menuItem.remove();
-      updateMenuCount();
+      const menuId = $menuItem.dataset.menuId;
+      API.deleteMenu(selectedCategory, menuId).then(() => {
+        $menuItem.remove();
+        updateMenuCount();
+      });
     }
   });
 }
@@ -137,12 +141,16 @@ function addEventToEditButton($menuItem) {
     const $currentName = $menuItem.querySelector(".menu-name");
     const previousName = $currentName.textContent;
     const editedName = prompt("메뉴명을 수정하세요.", previousName);
-    if (!isValidMenuName(editedName)) return;
 
-    $currentName.textContent = editedName;
-    storageAPI.updateMenu(selectedCategory, previousName, {
-      name: editedName,
-    });
+    if (!isValidMenuName(editedName)) return;
+    const menuId = $menuItem.dataset.menuId;
+    API.updateMenuName(selectedCategory, menuId, editedName).then(
+      (updatedMenu) => {
+        if (updatedMenu) {
+          $currentName.textContent = updatedMenu.name;
+        }
+      }
+    );
   });
 }
 
@@ -155,14 +163,12 @@ function addEventToSoldOutButton($menuItem) {
 
   $soldOutButton.addEventListener("click", () => {
     const $menuName = $menuItem.querySelector("span.menu-name");
-    $menuName.classList.toggle("sold-out");
-
-    if ($menuName.classList.contains("sold-out")) {
-      storageAPI.updateMenu(selectedCategory, $menuName.textContent, {
-        name: $menuName.textContent,
-        soldOut: true,
-      });
-    }
+    const menuId = $menuItem.dataset.menuId;
+    API.toggleSoldOut(selectedCategory, menuId).then((menu) => {
+      menu.isSoldOut
+        ? $menuName.classList.add("sold-out")
+        : $menuName.classList.remove("sold-out");
+    });
   });
 }
 
@@ -171,8 +177,8 @@ function addEventToSoldOutButton($menuItem) {
  * @param {string} menuName - 메뉴 이름
  * @param {boolean} soldOut - 메뉴 품절 여부
  */
-function appendMenuElement(menuName, soldOut = false) {
-  const $menuItem = createMenuItemElement(menuName, soldOut);
+function appendMenuItemElement(menuId, menuName, soldOut = false) {
+  const $menuItem = createMenuItemElement(menuId, menuName, soldOut);
   $menuList.appendChild($menuItem);
 }
 
@@ -207,16 +213,17 @@ function removeMenuItemElements() {
  * 전달 받은 카테고리 이름에 해당하는 메뉴들을 찾아 메뉴 리스트에 추가한다.
  * @param {string} categoryName
  */
-function initializeMenuElements(categoryName) {
+function loadMenus(categoryName) {
   removeMenuItemElements();
 
-  const categoryMenus = storageAPI.loadMenuData()[categoryName];
-  if (!categoryMenus) return;
-
-  for (let i = 0; i < categoryMenus.length; i++) {
-    const menu = categoryMenus[i];
-    appendMenuElement(menu.name, menu.soldOut);
-  }
+  API.getMenusByCategory(categoryName).then((data) => {
+    menus = data;
+    for (let i = 0; i < menus.length; i++) {
+      const menu = menus[i];
+      appendMenuItemElement(menu.id, menu.name, menu.isSoldOut);
+    }
+    updateMenuCount();
+  });
 }
 
 /**

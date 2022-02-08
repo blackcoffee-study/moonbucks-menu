@@ -53,6 +53,8 @@ class EspressoMenu {
     this.clearEspressoInputValue();
   }
 
+  // Button Events
+
   espressoMenuEdit(target) {
     const editedItemName = window.prompt('메뉴명을 수정하세요.');
     const span = target.closest('li').children[0];
@@ -71,6 +73,14 @@ class EspressoMenu {
       span.classList.remove('sold-out');
     } else {
       span.classList.add('sold-out');
+    }
+  }
+
+  deleteEspressoListItem(target) {
+    const result = window.confirm('정말 삭제하시겠습니까 ? ');
+
+    if (result) {
+      this.$.ulElement.removeChild(target.parentNode);
     }
   }
 
@@ -95,6 +105,8 @@ class EspressoMenu {
         this.espressoMenuEdit(target);
       } else if (target.classList.contains('menu-sold-out-button')) {
         this.espressoSoldOut(target);
+      } else if (target.classList.contains('menu-remove-button')) {
+        this.deleteEspressoListItem(target);
       } else {
         return;
       }

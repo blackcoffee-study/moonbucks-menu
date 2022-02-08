@@ -1,21 +1,10 @@
-import { MENU } from "./consts/consts.js";
-const store = {
-  currentTab: MENU.EspressoMenu,
-  [MENU.EspressoMenu]: [],
-};
+import { MENU } from "./consts.js";
+import { store } from "./store.js";
+import { isEmpty } from "./utils.js";
 
 const menuForm = document.querySelector("#espresso-menu-form");
 const menuInput = document.querySelector("#espresso-menu-name");
 const menuSubmitBtn = document.querySelector("#espresso-menu-submit-button");
-
-// 인풋창 validation
-const isEmpty = (value) => {
-  if (value.replace(/ /g, "") === "") {
-    return true;
-  }
-
-  return false;
-};
 
 // 메뉴 추가 함수
 const addMenu = (e) => {
@@ -31,6 +20,7 @@ const addMenu = (e) => {
     id: store[MENU.EspressoMenu].length + 1,
     name: menuInput.value,
   };
+
   store[MENU.EspressoMenu] = [...store[MENU.EspressoMenu], menu];
   menuInput.value = "";
 

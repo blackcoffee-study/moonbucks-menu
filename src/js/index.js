@@ -1,17 +1,22 @@
-import { MENU } from "./consts.js";
+import { MENU, BUTTON_TYPE } from "./consts.js";
 import { store } from "./store.js";
 import { isEmpty } from "./utils.js";
 
-const menuForm = document.querySelector("#espresso-menu-form");
+const menuInput = document.querySelector("#espresso-menu-name");
+const menuContainer = document.querySelector("#espresso-menu-list");
 
-// 메뉴 추가 함수
-const addMenu = (e) => {
-  const menuInput = document.querySelector("#espresso-menu-name");
-  e.preventDefault();
+//메뉴 카운트 set
+const setMenuCount = () => {
+  const menuCount = document.querySelector(".menu-count");
+  menuCount.innerHTML = `총${store[MENU.EspressoMenu].length}개`;
+};
 
+//메뉴 추가
+const addMenu = () => {
   if (isEmpty(menuInput.value)) {
     menuInput.value = "";
     alert("값을 입력해 주세요.");
+
     return;
   }
 
@@ -26,15 +31,15 @@ const addMenu = (e) => {
   render();
 };
 
-//메뉴 카운트 set 함수
-const setMenuCount = () => {
-  const menuCount = document.querySelector(".menu-count");
-  menuCount.innerHTML = `총${store[MENU.EspressoMenu].length}개`;
+const onKeyPress = (e) => {
+  if (e.key !== "Enter") {
+    return;
+  }
+  addMenu();
 };
 
 //메뉴 리스트 파싱
 const pasreMenu = () => {
-  const menuContainer = document.querySelector("#espresso-menu-list");
   const template = store[MENU.EspressoMenu]
     .map((menu) => {
       return `<li class="menu-list-item d-flex items-center py-2" data-menu-id="${menu.id}">
@@ -42,14 +47,14 @@ const pasreMenu = () => {
     <button
       type="button"
       class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
-      data-button-type="update"
+      data-button-type="${BUTTON_TYPE.Update}"
     >
       수정
     </button>
     <button
       type="button"
       class="bg-gray-50 text-gray-500 text-sm menu-remove-button"
-      data-button-type="delete"
+      data-button-type="${BUTTON_TYPE.Delete}"
     >
       삭제
     </button>
@@ -60,6 +65,53 @@ const pasreMenu = () => {
   menuContainer.innerHTML = template;
 };
 
+//메뉴 삭제
+const deleteMenu = (target) => {
+  const menuId = target.parentNode.dataset.menuId;
+
+  if (!confirm("정말 삭제하시겠습니까?")) {
+    return;
+  }
+
+  const deletedMenu = store[MENU.EspressoMenu].filter(
+    (menu) => menu.id !== parseInt(menuId)
+  );
+
+  store[MENU.EspressoMenu] = deletedMenu;
+  render();
+};
+
+//메뉴 수정
+const updateMenu = (target) => {
+  const menuId = target.parentNode.dataset.menuId;
+  const updatedText = prompt("메뉴명을 수정하세요.");
+
+  if (isEmpty(updatedText)) {
+    return;
+  }
+
+  const updatedMenu = store[MENU.EspressoMenu].map((menu) => {
+    const { id } = menu;
+    if (id === parseInt(menuId)) return { ...menu, name: updatedText };
+    return menu;
+  });
+
+  store[MENU.EspressoMenu] = updatedMenu;
+  render();
+};
+
+//메뉴 클릭 이벤트 핸들러
+const menuEventHandler = (e) => {
+  const target = e.target;
+  const buttonType = target.dataset.buttonType;
+
+  if (buttonType === BUTTON_TYPE.Update) {
+    updateMenu(target);
+  } else if (buttonType === BUTTON_TYPE.Delete) {
+    deleteMenu(target);
+  }
+};
+
 //렌더
 const render = () => {
   setMenuCount();
@@ -67,11 +119,14 @@ const render = () => {
 };
 
 const init = () => {
+  const menuForm = document.querySelector("#espresso-menu-form");
   const menuSubmitBtn = document.querySelector("#espresso-menu-submit-button");
 
-  // 메뉴 추가 리스너
-  menuForm.addEventListener("submit", addMenu);
+  menuForm.addEventListener("submit", (e) => e.preventDefault());
+  menuInput.addEventListener("keypress", onKeyPress);
   menuSubmitBtn.addEventListener("click", addMenu);
+  menuContainer.addEventListener("click", menuEventHandler);
+
   render();
 };
 

@@ -18,11 +18,36 @@ class EspressoMenu {
     return value;
   }
 
+  clearEspressoInputValue() {
+    let input = this.$.menuInput;
+
+    input.value = '';
+  }
+
+  isValidInput() {
+    let isEmpty = false;
+
+    if (this.$.menuInput.value === '') {
+      window.alert('값을 입력해주세요.');
+      return isEmpty;
+    } else {
+      isEmpty = true;
+    }
+
+    return isEmpty;
+  }
+
   addNewListToUlElement() {
-    this.$.ulElement.insertAdjacentHTML(
-      'afterbegin',
-      newList(this.getEspressoInputValue())
-    );
+    if (this.isValidInput()) {
+      this.$.ulElement.insertAdjacentHTML(
+        'afterbegin',
+        newList(this.getEspressoInputValue())
+      );
+    } else {
+      return;
+    }
+
+    this.clearEspressoInputValue();
   }
 
   bindEventListeners() {

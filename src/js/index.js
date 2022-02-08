@@ -1,3 +1,4 @@
+import { INITIAL_CATEGORY } from "./constants.js";
 import { Store } from "./store.js";
 import {
   getMenuTemplate,
@@ -5,8 +6,8 @@ import {
   editMenuInStore,
   removeMenuInStore,
 } from "./utils.js";
-let currentCategory = "espresso"
-const $menuList = document.getElementById("espresso-menu-list");
+
+let currentCategory = INITIAL_CATEGORY;
 
 window.onload = () => {
   render();
@@ -15,6 +16,8 @@ window.onload = () => {
 
 const render = () => {
   const $menuCount = document.getElementsByClassName("menu-count")[0];
+  const $menuList = document.getElementById("espresso-menu-list");
+
   $menuList.innerHTML = renderMenusByFunction(Store[currentCategory], getMenuTemplate);
   $menuCount.innerHTML = `총 ${Store[currentCategory].length}개`;
 }
@@ -36,7 +39,8 @@ const setEventListener = () => {
   };
   $form.addEventListener("submit", addNewMenu, false);
 
-
+  
+  const $menuList = document.getElementById("espresso-menu-list");
   $menuList.addEventListener("click", (event) => {
     const { target } = event;
     const { parentNode } = target;

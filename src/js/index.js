@@ -54,11 +54,15 @@ class EspressoMenu {
     this.$.menuForm.addEventListener('submit', (e) => {
       e.preventDefault();
     });
-
     this.$.submitBtn.addEventListener(
       'click',
       this.addNewListToUlElement.bind(this)
     );
+    this.$.menuInput.addEventListener('keyup', ({ key }) => {
+      if (key === 'Enter') {
+        this.addNewListToUlElement();
+      }
+    });
   }
 }
 

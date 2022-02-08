@@ -13,3 +13,9 @@ export const MENU = {
   TeavanaMenu: "TeavanaMenu",
   DesertMenu: "DesertMenu",
 };
+
+export const BUTTON_TYPE = {
+  SoldOut: "soldOut",
+  Update: "update",
+  Delete: "delete",
+};

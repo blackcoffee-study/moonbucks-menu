@@ -3,11 +3,10 @@ import { store } from "./store.js";
 import { isEmpty } from "./utils.js";
 
 const menuForm = document.querySelector("#espresso-menu-form");
-const menuInput = document.querySelector("#espresso-menu-name");
-const menuSubmitBtn = document.querySelector("#espresso-menu-submit-button");
 
 // 메뉴 추가 함수
 const addMenu = (e) => {
+  const menuInput = document.querySelector("#espresso-menu-name");
   e.preventDefault();
 
   if (isEmpty(menuInput.value)) {
@@ -68,6 +67,8 @@ const render = () => {
 };
 
 const init = () => {
+  const menuSubmitBtn = document.querySelector("#espresso-menu-submit-button");
+
   // 메뉴 추가 리스너
   menuForm.addEventListener("submit", addMenu);
   menuSubmitBtn.addEventListener("click", addMenu);

@@ -64,6 +64,16 @@ class EspressoMenu {
     }
   }
 
+  espressoSoldOut(target) {
+    const span = target.closest('li').children[0];
+
+    if (span.classList.contains('sold-out')) {
+      span.classList.remove('sold-out');
+    } else {
+      span.classList.add('sold-out');
+    }
+  }
+
   bindEventListeners() {
     this.$.menuForm.addEventListener('submit', (e) => {
       e.preventDefault();
@@ -83,6 +93,8 @@ class EspressoMenu {
     this.$.ulElement.addEventListener('click', ({ target }) => {
       if (target.classList.contains('menu-edit-button')) {
         this.espressoMenuEdit(target);
+      } else if (target.classList.contains('menu-sold-out-button')) {
+        this.espressoSoldOut(target);
       } else {
         return;
       }

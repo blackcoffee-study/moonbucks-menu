@@ -1,3 +1,4 @@
+import { PROMPT, ALERT, CONFIRM } from './constants/constants.js';
 import { newList } from './template.js';
 
 class EspressoMenu {
@@ -32,7 +33,7 @@ class EspressoMenu {
     let isEmpty = false;
 
     if (this.$.menuInput.value === '') {
-      window.alert('값을 입력해주세요.');
+      window.alert(ALERT.EMPTY);
       return isEmpty;
     } else {
       isEmpty = true;
@@ -64,11 +65,11 @@ class EspressoMenu {
   // Button Events
 
   espressoMenuEdit(target) {
-    const editedItemName = window.prompt('메뉴명을 수정하세요.');
+    const editedItemName = window.prompt(PROMPT.RENAME);
     const span = target.closest('li').children[0];
 
     if (!editedItemName) {
-      alert('수정하실 메뉴명을 입력해 주세요.');
+      alert(ALERT.RENAME);
     } else {
       span.innerText = editedItemName;
     }
@@ -85,7 +86,7 @@ class EspressoMenu {
   }
 
   deleteEspressoListItem(target) {
-    const result = window.confirm('정말 삭제하시겠습니까 ? ');
+    const result = window.confirm(CONFIRM.DELETE);
 
     if (result) {
       this.$.ulElement.removeChild(target.parentNode);

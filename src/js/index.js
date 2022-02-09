@@ -1,4 +1,6 @@
-import { $, makeListElement } from "./utils.js";
+import { $ } from "./utils.js";
+import MenuList from "./components/MenuList.js";
+import MenuType from "./components/MenuType.js";
 
 const espressoMenuList = $('#espresso-menu-list');
 const espressoMenuName = $('#espresso-menu-name');
@@ -55,7 +57,7 @@ function MenuListsState() {
         "blended": "🍹 블렌디드",
         "teavana": "🫖 티바나",
         "dessert": "🍰 디저트",
-    }
+    };
 
     this.currentMenuType = "espresso";
     this.menuCountElement = $(".menu-count");
@@ -71,7 +73,7 @@ function MenuListsState() {
     }
 
     this.menuTypeReRender = () => {
-        this.menuTypeElement.innerHTML = `${this.menuEnum[this.currentMenuType]} 메뉴 관리`;
+        MenuType(this.menuTypeElement, this.menuEnum[this.currentMenuType]);
     };
 
     this.addMenuList = (menu) => {
@@ -97,6 +99,6 @@ function MenuListsState() {
     }
 
     this.menuListReRender = () => {
-        espressoMenuList.innerHTML = this.menuLists[this.currentMenuType].map(e => makeListElement(e)).join("");
+        MenuList(espressoMenuList, this.menuLists[this.currentMenuType]);
     }
 };

@@ -1,15 +1,14 @@
-const $ = (selector) => document.querySelector(selector);
+import { $, makeListElement } from "./utils.js";
 
 const espressoMenuList = $('#espresso-menu-list');
 const espressoMenuName = $('#espresso-menu-name');
 const espressoMenuSubmitButton = $('#espresso-menu-submit-button');
-const countState = new CountState();
+const menuListsState = new MenuListsState();
 
 espressoMenuSubmitButton.addEventListener('click', () => {
     if (espressoMenuName.value) {
-        addMenuList(espressoMenuName.value);
+        menuListsState.addMenuList(espressoMenuName.value);
         espressoMenuName.value = null;
-        countState.setCount(countState.getCount() + 1);
     }
 });
 
@@ -17,9 +16,8 @@ espressoMenuSubmitButton.addEventListener('click', () => {
 espressoMenuName.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') {
         if (espressoMenuName.value) {
-            addMenuList(espressoMenuName.value);
+            menuListsState.addMenuList(espressoMenuName.value);
             espressoMenuName.value = null;
-            countState.setCount(countState.getCount() + 1);
         }
 
         e.preventDefault();
@@ -31,51 +29,74 @@ espressoMenuList.addEventListener('click', (e) => {
 
     if (classList.contains('menu-edit-button')) {
         const newMenuName = window.prompt('바꿀 메뉴이름은?');
-        e.target.parentNode.querySelector('.menu-name').textContent = newMenuName;
+        menuListsState.updateMenuList(e.target.parentNode.querySelector('.menu-name').textContent, newMenuName);
     }
 
     if (classList.contains('menu-remove-button')) {
         if (window.confirm('정말 삭제하시겠습니까?')) {
-            espressoMenuList.removeChild(e.target.parentNode);
-            countState.setCount(countState.getCount() - 1);
+            menuListsState.removeMenuList(e.target.parentNode.querySelector('.menu-name').textContent);
         }
     }
 });
 
-const addMenuList = (name) => {
-    espressoMenuList.innerHTML += /*html*/`
-        <li class="menu-list-item d-flex items-center py-2">
-            <span class="w-100 pl-2 menu-name">${name}</span>
-            <button
-                type="button"
-                class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
-            >
-                수정
-            </button>
-            <button
-                type="button"
-                class="bg-gray-50 text-gray-500 text-sm menu-remove-button"
-            >
-                삭제
-            </button>
-        </li>
-    `
-};
 
-function CountState() {
-    this.count = 0;
-    this.targetElement = $(".menu-count");
-    this.getCount = () => {
-        return this.count;
+function MenuListsState() {
+    this.menuLists = {
+        "espresso": [],
+        "frappuccino": [],
+        "blended": [],
+        "teavana": [],
+        "dessert": [],
+    };
+
+    this.menuEnum = {
+        "espresso": "☕ 에스프레소",
+        "frappuccino": "🥤 프라푸치노",
+        "blended": "🍹 블렌디드",
+        "teavana": "🫖 티바나",
+        "dessert": "🍰 디저트",
     }
 
-    this.setCount = (count) => {
-        console.log("hello");
-        this.count = count;
+    this.currentMenuType = "espresso";
+    this.menuCountElement = $(".menu-count");
+    this.menuTypeElement = $(".mt-1");
+
+    this.countReRender = () => {
+        this.menuCountElement.innerHTML = `총 ${this.menuLists[this.currentMenuType].length}개`;
+    }
+
+    this.changeCurrentMenuType = (menu) => {
+        this.currentMenuType = menu;
+        this.menuTypeReRender();
+    }
+
+    this.menuTypeReRender = () => {
+        this.menuTypeElement.innerHTML = `${this.menuEnum[this.currentMenuType]} 메뉴 관리`;
+    };
+
+    this.addMenuList = (menu) => {
+        this.menuLists[this.currentMenuType].push(menu);
+        this.menuListReRender();
         this.countReRender();
     }
 
-    this.countReRender = () => {
-        this.targetElement.innerHTML = `총 ${this.count}개`;
+    this.removeMenuList = (menu) => {
+        this.menuLists[this.currentMenuType] = this.menuLists[this.currentMenuType].filter(e => e !== menu);
+        this.menuListReRender();
+        this.countReRender();
+    }
+
+    this.updateMenuList = (before, after) => {
+        for (let i = 0; this.menuLists[this.currentMenuType].length; i++) {
+            if (this.menuLists[this.currentMenuType][i] === before) {
+                this.menuLists[this.currentMenuType][i] = after;
+                break;
+            }
+        }
+        this.menuListReRender();
+    }
+
+    this.menuListReRender = () => {
+        espressoMenuList.innerHTML = this.menuLists[this.currentMenuType].map(e => makeListElement(e)).join("");
     }
 };

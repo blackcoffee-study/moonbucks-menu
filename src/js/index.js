@@ -10,6 +10,7 @@ class EspressoMenu {
       listElement: document.getElementsByClassName('menu-list-item'),
       spanElement: document.getElementsByClassName('menu-name'),
       menuEditBtn: document.getElementsByClassName('.menu-edit-Button'),
+      menuCount: document.querySelector('.menu-count'),
     };
 
     this.bindEventListeners();
@@ -44,13 +45,20 @@ class EspressoMenu {
     if (this.isValidInput()) {
       this.$.ulElement.insertAdjacentHTML(
         'afterbegin',
-        newList(this.getEspressoInputValue())
+        newList(this.getEspressoInputValue(), this.updateEspressoMenuCount())
       );
     } else {
       return;
     }
 
     this.clearEspressoInputValue();
+    this.updateEspressoMenuCount();
+  }
+
+  updateEspressoMenuCount() {
+    this.$.menuCount.innerText = `총 ${this.$.listElement.length}개`;
+
+    return this.$.listElement.length;
   }
 
   // Button Events

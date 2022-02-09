@@ -68,6 +68,8 @@ class EspressoMenu {
     const span = target.closest('li').children[0];
     let editedItemName = window.prompt(PROMPT.RENAME);
 
+    console.log(editedItemName);
+
     if (!editedItemName) {
       alert(ALERT.RENAME);
       editedItemName = window.prompt(PROMPT.RENAME);
@@ -92,6 +94,8 @@ class EspressoMenu {
     if (result) {
       this.$.ulElement.removeChild(target.parentNode);
     }
+
+    this.updateEspressoMenuCount();
   }
 
   bindEventListeners() {

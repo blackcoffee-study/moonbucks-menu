@@ -1,4 +1,4 @@
-import { MENU, BUTTON_TYPE } from "./consts.js";
+import { MENU, BUTTON_TYPE, TEXT } from "./consts.js";
 import { store } from "./store.js";
 import { isEmpty } from "./utils.js";
 
@@ -8,6 +8,7 @@ const menuContainer = document.querySelector("#espresso-menu-list");
 //메뉴 카운트 set
 const setMenuCount = () => {
   const menuCount = document.querySelector(".menu-count");
+
   menuCount.innerHTML = `총${store[MENU.EspressoMenu].length}개`;
 };
 
@@ -15,7 +16,7 @@ const setMenuCount = () => {
 const addMenu = () => {
   if (isEmpty(menuInput.value)) {
     menuInput.value = "";
-    alert("값을 입력해 주세요.");
+    alert(TEXT.MENU_INPUT_EMPTY);
 
     return;
   }
@@ -31,10 +32,12 @@ const addMenu = () => {
   render();
 };
 
+//메뉴 추가 엔터키 사용 처리
 const onKeyPress = (e) => {
   if (e.key !== "Enter") {
     return;
   }
+
   addMenu();
 };
 
@@ -69,7 +72,7 @@ const pasreMenu = () => {
 const deleteMenu = (target) => {
   const menuId = target.parentNode.dataset.menuId;
 
-  if (!confirm("정말 삭제하시겠습니까?")) {
+  if (!confirm(TEXT.MENU_DELETE)) {
     return;
   }
 
@@ -78,13 +81,14 @@ const deleteMenu = (target) => {
   );
 
   store[MENU.EspressoMenu] = deletedMenu;
+
   render();
 };
 
 //메뉴 수정
 const updateMenu = (target) => {
   const menuId = target.parentNode.dataset.menuId;
-  const updatedText = prompt("메뉴명을 수정하세요.");
+  const updatedText = prompt(TEXT.MENU_UPDATE);
 
   if (isEmpty(updatedText)) {
     return;
@@ -97,6 +101,7 @@ const updateMenu = (target) => {
   });
 
   store[MENU.EspressoMenu] = updatedMenu;
+
   render();
 };
 

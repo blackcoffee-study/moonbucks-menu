@@ -53,7 +53,7 @@ const pasreMenu = () => {
 
 //메뉴 삭제
 const deleteMenu = (target) => {
-  const menuId = target.parentNode.dataset.menuId;
+  const { menuId } = target.parentNode.dataset;
 
   if (!confirm(TEXT.MENU_DELETE)) {
     return;
@@ -70,7 +70,7 @@ const deleteMenu = (target) => {
 
 //메뉴 수정
 const updateMenu = (target) => {
-  const menuId = target.parentNode.dataset.menuId;
+  const { menuId } = target.parentNode.dataset;
   const updatedText = prompt(TEXT.MENU_UPDATE);
 
   if (isEmpty(updatedText)) {
@@ -90,8 +90,8 @@ const updateMenu = (target) => {
 
 //메뉴 클릭 이벤트 핸들러
 const menuEventHandler = (e) => {
-  const target = e.target;
-  const buttonType = target.dataset.buttonType;
+  const { target } = e;
+  const { buttonType } = target.dataset;
 
   if (buttonType === BUTTON_TYPE.Update) {
     updateMenu(target);

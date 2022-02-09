@@ -10,7 +10,7 @@ const menuContainer = document.querySelector("#espresso-menu-list");
 const setMenuCount = () => {
   const menuCount = document.querySelector(".menu-count");
 
-  menuCount.innerHTML = `총${store[MENU.EspressoMenu].length}개`;
+  menuCount.textContent = `총${store[MENU.EspressoMenu].length}개`;
 };
 
 //메뉴 추가

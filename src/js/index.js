@@ -23,6 +23,13 @@ espressoMenuName.addEventListener('keypress', (e) => {
     }
 });
 
+espressoMenuList.addEventListener('click', (e) => {
+    if (e.target.classList.contains('menu-edit-button')) {
+        const newMenuName = window.prompt('바꿀 메뉴이름은?');
+        e.target.parentNode.querySelector('.menu-name').textContent = newMenuName;
+    }
+});
+
 const addMenuList = (name) => {
     espressoMenuList.innerHTML += /*html*/`
         <li class="menu-list-item d-flex items-center py-2">

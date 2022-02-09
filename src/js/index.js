@@ -1,4 +1,5 @@
 import { MENU, BUTTON_TYPE, TEXT } from "./consts.js";
+import { templateMenuItem } from "./template.js";
 import { store } from "./store.js";
 import { isEmpty } from "./utils.js";
 
@@ -44,25 +45,7 @@ const onKeyPress = (e) => {
 //메뉴 리스트 파싱
 const pasreMenu = () => {
   const template = store[MENU.EspressoMenu]
-    .map((menu) => {
-      return `<li class="menu-list-item d-flex items-center py-2" data-menu-id="${menu.id}">
-    <span class="w-100 pl-2 menu-name">${menu.name}</span>
-    <button
-      type="button"
-      class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
-      data-button-type="${BUTTON_TYPE.Update}"
-    >
-      수정
-    </button>
-    <button
-      type="button"
-      class="bg-gray-50 text-gray-500 text-sm menu-remove-button"
-      data-button-type="${BUTTON_TYPE.Delete}"
-    >
-      삭제
-    </button>
-    </li>`;
-    })
+    .map((menu) => templateMenuItem(menu))
     .join("");
 
   menuContainer.innerHTML = template;

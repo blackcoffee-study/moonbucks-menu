@@ -43,7 +43,7 @@ const onKeyPress = (e) => {
 };
 
 //메뉴 리스트 파싱
-const pasreMenu = () => {
+const parseMenu = () => {
   const template = store[MENU.EspressoMenu]
     .map((menu) => MENU_ITEM(menu))
     .join("");
@@ -113,7 +113,7 @@ const eventHandler = () => {
 //렌더 함수
 const render = () => {
   setMenuCount();
-  pasreMenu();
+  parseMenu();
 };
 
 const init = () => {

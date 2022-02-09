@@ -1,10 +1,3 @@
-//  메뉴의 수정 버튼을 눌러 메뉴 이름 수정할 수 있다.
-//  메뉴 수정시 브라우저에서 제공하는 prompt 인터페이스를 활용한다.
-
-//  총 메뉴 갯수를 count하여 상단에 보여준다.
-
-// input이 두개 되는 부분의 변수명 통일하기
-
 function add_newMenu(name) {
   const template = `<li class="menu-list-item d-flex items-center py-2">
     <span class="w-100 pl-2 menu-name">${name}</span>
@@ -22,7 +15,7 @@ function add_newMenu(name) {
     </button>
   </li>`;
 
-  document.getElementById('espresso-menu-list').innerHTML = template;
+  document.getElementById('espresso-menu-list').insertAdjacentHTML('afterbegin', template);
 }
 
 function inputHandler() {
@@ -30,6 +23,8 @@ function inputHandler() {
   press_inputBtn();
 
   control_menuItem();
+
+  count_menuItems();
 }
 
 function press_inputBtn() {
@@ -40,36 +35,52 @@ function press_inputBtn() {
       add_newMenu(submit_btnVal);
       const menuName_input = document.getElementById('espresso-menu-name');
       menuName_input.value = '';
+      count_menuItems();
     }
   });
 }
 
-function press_enter() {
+function press_enter(e) {
   const menuName_input = document.getElementById('espresso-menu-name');
-  menuName_input.addEventListener('keydown', (e) => {
-    if (e.key == 'Enter' && e.target.value != '') {
-      const new_menuName = e.target.value;
-      add_newMenu(new_menuName);
+
+  document.getElementById('espresso-menu-form').addEventListener('keydown', (e) => {
+    if (e.key == 'Enter' && menuName_input.value != '') {
+      e.preventDefault();
+      add_newMenu(menuName_input.value);
       // 값 초기화
       menuName_input.value = '';
+      count_menuItems();
     }
   });
 }
 
+// 아이템 버튼 관리
 function control_menuItem() {
   const menuList = document.getElementById('espresso-menu-list');
   menuList.addEventListener('click', (e) => {
+    // 수정
+    const selectedMenuname = e.target.closest('li').querySelector('span');
     if (e.target.classList.contains('menu-edit-button')) {
-      const modified_menuName = prompt('수정하실 값을 입력해주세요');
-    } else if (e.target.classList.contains('menu-remove-button')) {
+      const modified_menuName = prompt('메뉴명을 수정하세요', selectedMenuname.innerText);
+      if (modified_menuName != null && modified_menuName != '') {
+        selectedMenuname.innerText = modified_menuName;
+      }
+    }
+    // 삭제
+    else if (e.target.classList.contains('menu-remove-button')) {
       if (confirm('메뉴를 삭제하겠습니까?')) {
         e.target.closest('li').remove();
         console.log(e.target.closest('li'));
+        count_menuItems();
       }
     }
   });
-  // menu-edit-button
-  // menu-remove-button
+}
+
+function count_menuItems() {
+  let countedNum = document.getElementById('espresso-menu-list').querySelectorAll('li').length;
+
+  document.querySelector('.menu-count').innerText = `총 ${countedNum}개`;
 }
 
 inputHandler();

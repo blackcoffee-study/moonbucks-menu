@@ -100,13 +100,7 @@ const menuEventHandler = (e) => {
   }
 };
 
-//렌더
-const render = () => {
-  setMenuCount();
-  pasreMenu();
-};
-
-const init = () => {
+const eventHandler = () => {
   const menuForm = document.querySelector("#espresso-menu-form");
   const menuSubmitBtn = document.querySelector("#espresso-menu-submit-button");
 
@@ -114,7 +108,16 @@ const init = () => {
   menuInput.addEventListener("keypress", onKeyPress);
   menuSubmitBtn.addEventListener("click", addMenu);
   menuContainer.addEventListener("click", menuEventHandler);
+};
 
+//렌더 함수
+const render = () => {
+  setMenuCount();
+  pasreMenu();
+};
+
+const init = () => {
+  eventHandler();
   render();
 };
 

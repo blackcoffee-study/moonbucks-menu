@@ -1,6 +1,6 @@
-export const newList = (value) => {
+export const newList = (value, count) => {
   return `
-<li data-name-id="0" class="menu-list-item d-flex items-center py-2" >
+<li data-name-id="${count}" class="menu-list-item d-flex items-center py-2" >
    <span class="w-100 pl-2 menu-name" >${value}</span>
    
    <button type="button" class="bg-gray-50 text-gray-500 text-sm mr-1 menu-sold-out-button">

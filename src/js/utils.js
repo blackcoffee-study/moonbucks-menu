@@ -17,3 +17,5 @@ export const makeListElement = (item) => {
         </li>
     `;
 }
+
+export const $ = (selector) => document.querySelector(selector);

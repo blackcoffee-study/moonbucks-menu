@@ -44,7 +44,7 @@ class EspressoMenu {
   addNewListToUlElement() {
     if (this.isValidInput()) {
       this.$.ulElement.insertAdjacentHTML(
-        'afterbegin',
+        'beforeend',
         newList(this.getEspressoInputValue(), this.updateEspressoMenuCount())
       );
     } else {

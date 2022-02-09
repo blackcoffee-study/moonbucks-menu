@@ -1,4 +1,4 @@
-import { Store } from "./store.js";
+import { INITIAL_CATEGORY } from "./constants.js";
 import {
   getMenuTemplate,
   renderMenusByFunction,
@@ -8,9 +8,7 @@ import {
   setLocalStorage,
   getLocalStorage,
 } from "./utils.js";
-const $menuList = document.getElementById("espresso-menu-list");
-let currentCategory = "espresso";
-let menus = Store;
+let currentCategory = INITIAL_CATEGORY;
 
 window.onload = () => {
   setMenuUseLocalStorage();
@@ -26,10 +24,11 @@ const setMenuUseLocalStorage = () => {
 
 const render = () => {
   const $menuCount = document.getElementsByClassName("menu-count")[0];
-  
-  $menuList.innerHTML = renderMenusByFunction(menus[currentCategory], getMenuTemplate);
-  $menuCount.innerHTML = `총 ${menus[currentCategory].length}개`;
-}
+  const $menuList = document.getElementById("espresso-menu-list");
+
+  $menuList.innerHTML = renderMenusByFunction(Store[currentCategory], getMenuTemplate);
+  $menuCount.innerHTML = `총 ${Store[currentCategory].length}개`;
+} 
 
 const setEventListener = () => {
   const $form = document.getElementById("espresso-menu-form");
@@ -49,7 +48,8 @@ const setEventListener = () => {
   };
   $form.addEventListener("submit", addNewMenu, false);
 
-
+  
+  const $menuList = document.getElementById("espresso-menu-list");
   $menuList.addEventListener("click", (event) => {
     const { target } = event;
     const { parentNode } = target;

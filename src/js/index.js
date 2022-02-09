@@ -1,7 +1,7 @@
 import { MENU, BUTTON_TYPE, TEXT } from "./consts.js";
-import { templateMenuItem } from "./template.js";
+import { MENU_ITEM } from "./components/menuItem.js";
 import { store } from "./store.js";
-import { isEmpty } from "./utils.js";
+import { isEmpty } from "./utils/validation.js";
 
 const menuInput = document.querySelector("#espresso-menu-name");
 const menuContainer = document.querySelector("#espresso-menu-list");
@@ -45,7 +45,7 @@ const onKeyPress = (e) => {
 //메뉴 리스트 파싱
 const pasreMenu = () => {
   const template = store[MENU.EspressoMenu]
-    .map((menu) => templateMenuItem(menu))
+    .map((menu) => MENU_ITEM(menu))
     .join("");
 
   menuContainer.innerHTML = template;

@@ -1,6 +1,6 @@
-import { BUTTON_TYPE } from "./consts.js";
+import { BUTTON_TYPE } from "../consts.js";
 
-export const templateMenuItem = (menu) => {
+export const MENU_ITEM = (menu) => {
   return `<li class="menu-list-item d-flex items-center py-2" data-menu-id="${menu.id}">
 <span class="w-100 pl-2 menu-name">${menu.name}</span>
 <button

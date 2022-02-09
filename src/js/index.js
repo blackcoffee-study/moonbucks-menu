@@ -100,6 +100,7 @@ const menuEventHandler = (e) => {
   }
 };
 
+//이벤트 핸들러
 const eventHandler = () => {
   const menuForm = document.querySelector("#espresso-menu-form");
   const menuSubmitBtn = document.querySelector("#espresso-menu-submit-button");

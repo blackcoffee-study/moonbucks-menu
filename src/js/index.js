@@ -65,11 +65,12 @@ class EspressoMenu {
   // Button Events
 
   espressoMenuEdit(target) {
-    const editedItemName = window.prompt(PROMPT.RENAME);
     const span = target.closest('li').children[0];
+    let editedItemName = window.prompt(PROMPT.RENAME);
 
     if (!editedItemName) {
       alert(ALERT.RENAME);
+      editedItemName = window.prompt(PROMPT.RENAME);
     } else {
       span.innerText = editedItemName;
     }

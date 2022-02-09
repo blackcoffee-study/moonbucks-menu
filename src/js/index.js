@@ -1,10 +1,14 @@
 import { $ } from "./utils.js";
 import MenuList from "./components/MenuList.js";
 import MenuType from "./components/MenuType.js";
+import MenuCount from "./components/MenuCount.js";
 
 const espressoMenuList = $('#espresso-menu-list');
 const espressoMenuName = $('#espresso-menu-name');
 const espressoMenuSubmitButton = $('#espresso-menu-submit-button');
+const menuTypeHeadingElement = $("#menu-type-heading");
+const menuTypeNavElement = $("#menu-type-nav");
+const menuCountElement = $(".menu-count");
 const menuListsState = new MenuListsState();
 
 espressoMenuSubmitButton.addEventListener('click', () => {
@@ -41,6 +45,12 @@ espressoMenuList.addEventListener('click', (e) => {
     }
 });
 
+menuTypeNavElement.addEventListener('click', (e) => {
+    if (e.target.dataset.categoryName) {
+        menuListsState.changeCurrentMenuType(e.target.dataset.categoryName);
+    };
+})
+
 
 function MenuListsState() {
     this.menuLists = {
@@ -60,20 +70,20 @@ function MenuListsState() {
     };
 
     this.currentMenuType = "espresso";
-    this.menuCountElement = $(".menu-count");
-    this.menuTypeElement = $(".mt-1");
 
     this.countReRender = () => {
-        this.menuCountElement.innerHTML = `총 ${this.menuLists[this.currentMenuType].length}개`;
+        MenuCount(menuCountElement, this.menuLists[this.currentMenuType].length);
     }
 
     this.changeCurrentMenuType = (menu) => {
         this.currentMenuType = menu;
         this.menuTypeReRender();
+        this.menuListReRender();
+        this.countReRender();
     }
 
     this.menuTypeReRender = () => {
-        MenuType(this.menuTypeElement, this.menuEnum[this.currentMenuType]);
+        MenuType(menuTypeHeadingElement, this.menuEnum[this.currentMenuType]);
     };
 
     this.addMenuList = (menu) => {

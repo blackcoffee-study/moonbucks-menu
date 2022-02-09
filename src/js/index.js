@@ -2,9 +2,15 @@ const $ = (selector) => document.querySelector(selector);
 
 const espressoMenuList = $('#espresso-menu-list');
 const espressoMenuName = $('#espresso-menu-name');
+const espressoMenuSubmitButton = $('#espresso-menu-submit-button');
 
-console.log(espressoMenuName);
-console.log(espressoMenuList);
+espressoMenuSubmitButton.addEventListener('click', () => {
+    if (espressoMenuName.value) {
+        addMenuList(espressoMenuName.value);
+        espressoMenuName.value = null;
+    }
+});
+
 
 espressoMenuName.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') {

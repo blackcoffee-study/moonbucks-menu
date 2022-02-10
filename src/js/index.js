@@ -12,26 +12,41 @@ function addEspressoMenu(newEspresso) {
   const li = document.createElement("li");
   li.id = newEspresso.id;
   li.className = "menu-list-item d-flex items-center py-2";
+  const span = getSpan(newEspresso);
+  const editButton = getEditButton();
+  const removeButton = getRemoteButton();
+  li.appendChild(span);
+  li.appendChild(editButton);
+  li.appendChild(removeButton);
+  espressoMenuList.append(li);
+  getMenuCount();
+}
+
+function getSpan(newEspresso) {
   const span = document.createElement("span");
   span.className = "w-100 pl-2 menu-name";
   span.innerText = newEspresso.menu;
+  return span;
+}
+
+function getEditButton() {
   const editButton = document.createElement("button");
   editButton.className =
     "bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button";
   editButton.setAttribute("type", "button");
   editButton.innerText = "수정";
   editButton.addEventListener("click", editMenuName);
+  return editButton;
+}
+
+function getRemoteButton() {
   const removeButton = document.createElement("button");
   removeButton.className =
     "bg-gray-50 text-gray-500 text-sm menu-remove-button";
   removeButton.setAttribute("type", "button");
   removeButton.innerText = "삭제";
   removeButton.addEventListener("click", deleteMenu);
-  li.appendChild(span);
-  li.appendChild(editButton);
-  li.appendChild(removeButton);
-  espressoMenuList.append(li);
-  getMenuCount();
+  return removeButton;
 }
 
 function handleToSubmitMenu(event) {

@@ -11,13 +11,15 @@ function addEspressoMenu() {}
 
 function handleToSubmitMenu(event) {
   event.preventDefault();
-  const newEspressoMenu = espressoMenuName.value;
+  const newEspressoMenu = espressoMenuName.value.replace(/^\s*/, "");
   espressoMenuName.value = "";
+  if (!newEspressoMenu) return;
   const newEspressoObj = {
     menu: newEspressoMenu,
     id: Date.now(),
   };
   espressoMenus.push(newEspressoObj);
+  // TODO: console.log 지우기
   console.log(newEspressoObj);
 }
 

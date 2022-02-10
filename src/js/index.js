@@ -69,7 +69,6 @@ class EspressoMenu {
 
     if (!editedItemName) {
       alert(ALERT.RENAME);
-      editedItemName = window.prompt(PROMPT.RENAME);
     } else {
       span.innerText = editedItemName;
     }

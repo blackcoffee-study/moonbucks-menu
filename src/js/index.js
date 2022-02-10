@@ -19,6 +19,7 @@ function addEspressoMenu(newEspresso) {
     "bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button";
   editButton.setAttribute("type", "button");
   editButton.innerText = "수정";
+  editButton.addEventListener("click", editMenuName);
   const removeButton = document.createElement("button");
   removeButton.className =
     "bg-gray-50 text-gray-500 text-sm menu-remove-button";
@@ -45,3 +46,19 @@ function handleToSubmitMenu(event) {
 
 espressoMenuForm.addEventListener("submit", handleToSubmitMenu);
 espressoMenuSubmitButton.addEventListener("click", handleToSubmitMenu);
+
+function editMenuName(event) {
+  const li = event.target.parentElement;
+  let newMenuName = prompt("메뉴명을 수정하세요.");
+  if (newMenuName) {
+    newMenuName.replace(/^\s*/, "");
+  }
+  if (!newMenuName) return;
+  espressoMenus.forEach((espressoMenu) => {
+    if (espressoMenu.id == parseInt(li.id)) {
+      espressoMenu.menu = newMenuName;
+      const span = li.children[0];
+      span.innerText = newMenuName;
+    }
+  });
+}

@@ -12,9 +12,9 @@ function addEspressoMenu(newEspresso) {
   const li = document.createElement("li");
   li.id = newEspresso.id;
   li.className = "menu-list-item d-flex items-center py-2";
-  const span = getSpan(newEspresso);
-  const editButton = getEditButton();
-  const removeButton = getRemoteButton();
+  const span = setSpan(newEspresso);
+  const editButton = setEditButton();
+  const removeButton = setRemoteButton();
   li.appendChild(span);
   li.appendChild(editButton);
   li.appendChild(removeButton);
@@ -22,14 +22,14 @@ function addEspressoMenu(newEspresso) {
   getMenuCount();
 }
 
-function getSpan(newEspresso) {
+function setSpan(newEspresso) {
   const span = document.createElement("span");
   span.className = "w-100 pl-2 menu-name";
   span.innerText = newEspresso.menu;
   return span;
 }
 
-function getEditButton() {
+function setEditButton() {
   const editButton = document.createElement("button");
   editButton.className =
     "bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button";
@@ -39,7 +39,7 @@ function getEditButton() {
   return editButton;
 }
 
-function getRemoteButton() {
+function setRemoteButton() {
   const removeButton = document.createElement("button");
   removeButton.className =
     "bg-gray-50 text-gray-500 text-sm menu-remove-button";
@@ -51,9 +51,12 @@ function getRemoteButton() {
 
 function handleToSubmitMenu(event) {
   event.preventDefault();
-  const newEspressoMenu = espressoMenuName.value;
+  const newEspressoMenu = espressoMenuName.value.replace(/^\s*/, "");
   espressoMenuName.value = "";
-  if (!newEspressoMenu) return;
+  if (!newEspressoMenu) {
+    alert("☕️ 메뉴를 입력해주세요.");
+    return;
+  }
   const newEspressoObj = {
     menu: newEspressoMenu,
     id: Date.now(),

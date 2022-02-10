@@ -33,7 +33,7 @@ function addEspressoMenu(newEspresso) {
 
 function handleToSubmitMenu(event) {
   event.preventDefault();
-  const newEspressoMenu = espressoMenuName.value.replace(/^\s*/, "");
+  const newEspressoMenu = espressoMenuName.value;
   espressoMenuName.value = "";
   if (!newEspressoMenu) return;
   const newEspressoObj = {
@@ -51,7 +51,7 @@ function editMenuName(event) {
   const li = event.target.parentElement;
   let newMenuName = prompt("메뉴명을 수정하세요.");
   if (newMenuName) {
-    newMenuName.replace(/^\s*/, "");
+    newMenuName = newMenuName.replace(/^\s*/, "");
   }
   if (!newMenuName) return;
   espressoMenus.forEach((espressoMenu) => {

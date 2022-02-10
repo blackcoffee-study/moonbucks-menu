@@ -8,7 +8,7 @@ class EspressoMenu {
       submitBtn: document.querySelector('#espresso-menu-submit-button'),
       menuInput: document.querySelector('#espresso-menu-name'),
       ulElement: document.querySelector('#espresso-menu-list'),
-      listElement: document.getElementsByClassName('menu-list-item'),
+      menuListItem: document.getElementsByClassName('menu-list-item'),
       spanElement: document.getElementsByClassName('menu-name'),
       menuEditBtn: document.getElementsByClassName('.menu-edit-Button'),
       menuCount: document.querySelector('.menu-count'),
@@ -17,22 +17,20 @@ class EspressoMenu {
     this.bindEventListeners();
   }
 
-  getEspressoInputValue() {
-    const { value } = this.$.menuInput;
+  getInputValue(input) {
+    const { value } = input;
 
     return value;
   }
 
-  clearEspressoInputValue() {
-    let input = this.$.menuInput;
-
+  clearInputValue(input) {
     input.value = '';
   }
 
-  isValidInput() {
+  isValidInput(input) {
     let isEmpty = false;
 
-    if (this.$.menuInput.value === '') {
+    if (input.value === '') {
       window.alert(ALERT.EMPTY);
       return isEmpty;
     } else {
@@ -43,32 +41,32 @@ class EspressoMenu {
   }
 
   addNewListToUlElement() {
-    if (this.isValidInput()) {
+    if (this.isValidInput(this.$.menuInput)) {
+      console.log(this.$.ulElement);
       this.$.ulElement.insertAdjacentHTML(
         'beforeend',
-        newList(this.getEspressoInputValue(), this.updateEspressoMenuCount())
+        newList(
+          this.getInputValue(this.$.menuInput),
+          this.updateMenuCount(this.$.menuCount, this.$.menuListItem)
+        )
       );
     } else {
       return;
     }
 
-    this.clearEspressoInputValue();
-    this.updateEspressoMenuCount();
+    this.clearInputValue(this.$.menuInput);
+    this.updateMenuCount(this.$.menuCount, this.$.menuListItem);
   }
 
-  updateEspressoMenuCount() {
-    this.$.menuCount.innerText = `총 ${this.$.listElement.length}개`;
+  updateMenuCount(count, menuListItem) {
+    count.innerText = `총 ${menuListItem.length}개`;
 
-    return this.$.listElement.length;
+    return menuListItem.length;
   }
 
-  // Button Events
-
-  espressoMenuEdit(target) {
+  editMenuList(target) {
     const span = target.closest('li').children[0];
     let editedItemName = window.prompt(PROMPT.RENAME);
-
-    console.log(editedItemName);
 
     if (!editedItemName) {
       alert(ALERT.RENAME);
@@ -78,7 +76,7 @@ class EspressoMenu {
     }
   }
 
-  espressoSoldOut(target) {
+  itemSoldOut(target) {
     const span = target.closest('li').children[0];
 
     if (span.classList.contains('sold-out')) {
@@ -88,14 +86,14 @@ class EspressoMenu {
     }
   }
 
-  deleteEspressoListItem(target) {
+  deleteListItem(target) {
     const result = window.confirm(CONFIRM.DELETE);
 
     if (result) {
       this.$.ulElement.removeChild(target.parentNode);
     }
 
-    this.updateEspressoMenuCount();
+    this.updateMenuCount(this.$.menuCount, this.$.menuListItem);
   }
 
   bindEventListeners() {
@@ -116,11 +114,11 @@ class EspressoMenu {
 
     this.$.ulElement.addEventListener('click', ({ target }) => {
       if (target.classList.contains('menu-edit-button')) {
-        this.espressoMenuEdit(target);
+        this.editMenuList(target);
       } else if (target.classList.contains('menu-sold-out-button')) {
-        this.espressoSoldOut(target);
+        this.itemSoldOut(target);
       } else if (target.classList.contains('menu-remove-button')) {
-        this.deleteEspressoListItem(target);
+        this.deleteListItem(target);
       } else {
         return;
       }

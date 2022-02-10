@@ -42,10 +42,6 @@ export default function MoonBucks() {
         menuTypeNavElement.addEventListener('click', changeCurrentMenuType);
     }
 
-    const countReRender = () => {
-        MenuCount(menuCountElement, this.menuLists[this.currentMenuType].length);
-    };
-
     const changeCurrentMenuType = (e) => {
         if (e.target.dataset.categoryName) {
             this.currentMenuType = e.target.dataset.categoryName;
@@ -53,10 +49,6 @@ export default function MoonBucks() {
             menuListReRender();
             countReRender();
         };
-    };
-
-    const menuTypeReRender = () => {
-        MenuType(menuTypeHeadingElement, MENUTYPE[this.currentMenuType]);
     };
 
     const addMenuList = () => {
@@ -87,6 +79,14 @@ export default function MoonBucks() {
     const menuListReRender = () => {
         MenuList(espressoMenuList, this.menuLists[this.currentMenuType]);
     }
+
+    const countReRender = () => {
+        MenuCount(menuCountElement, this.menuLists[this.currentMenuType].length);
+    };
+
+    const menuTypeReRender = () => {
+        MenuType(menuTypeHeadingElement, MENUTYPE[this.currentMenuType]);
+    };
 
     const isEnter = (e) => {
         return e.key === 'Enter' ? addMenuList() : false;

@@ -4,13 +4,13 @@ import MenuType from "./components/MenuType.js";
 import MenuCount from "./components/MenuCount.js";
 
 export default function MoonBucks() {
-    const espressoMenuList = $('#espresso-menu-list');
-    const espressoMenuName = $('#espresso-menu-name');
-    const espressoMenuSubmitButton = $('#espresso-menu-submit-button');
-    const menuForm = $("#espresso-menu-form");
-    const menuTypeHeadingElement = $("#menu-type-heading");
-    const menuTypeNavElement = $("#menu-type-nav");
-    const menuCountElement = $(".menu-count");
+    const $espressoMenuList = $('#espresso-menu-list');
+    const $espressoMenuName = $('#espresso-menu-name');
+    const $espressoMenuSubmitButton = $('#espresso-menu-submit-button');
+    const $menuForm = $("#espresso-menu-form");
+    const $menuTypeHeading = $("#menu-type-heading");
+    const $menuTypeNav = $("#menu-type-nav");
+    const $menuCount = $(".menu-count");
 
     const MENUTYPE = {
         "espresso": "☕ 에스프레소",
@@ -35,11 +35,11 @@ export default function MoonBucks() {
     }
 
     const setEventListener = () => {
-        menuForm.addEventListener('submit', e => e.preventDefault());
-        espressoMenuSubmitButton.addEventListener('click', addMenuList);
-        espressoMenuName.addEventListener('keypress', isEnter);
-        espressoMenuList.addEventListener('click', listHandler);
-        menuTypeNavElement.addEventListener('click', changeCurrentMenuType);
+        $menuForm.addEventListener('submit', e => e.preventDefault());
+        $espressoMenuSubmitButton.addEventListener('click', addMenuList);
+        $espressoMenuName.addEventListener('keypress', isEnter);
+        $espressoMenuList.addEventListener('click', listHandler);
+        $menuTypeNav.addEventListener('click', changeCurrentMenuType);
     }
 
     const changeCurrentMenuType = (e) => {
@@ -52,11 +52,11 @@ export default function MoonBucks() {
     };
 
     const addMenuList = () => {
-        if (espressoMenuName.value) {
-            this.menuLists[this.currentMenuType].push(espressoMenuName.value);
+        if ($espressoMenuName.value) {
+            this.menuLists[this.currentMenuType].push($espressoMenuName.value);
             menuListReRender();
             countReRender();
-            espressoMenuName.value = null;
+            $espressoMenuName.value = null;
         }
     }
 
@@ -77,15 +77,15 @@ export default function MoonBucks() {
     }
 
     const menuListReRender = () => {
-        MenuList(espressoMenuList, this.menuLists[this.currentMenuType]);
+        MenuList($espressoMenuList, this.menuLists[this.currentMenuType]);
     }
 
     const countReRender = () => {
-        MenuCount(menuCountElement, this.menuLists[this.currentMenuType].length);
+        MenuCount($menuCount, this.menuLists[this.currentMenuType].length);
     };
 
     const menuTypeReRender = () => {
-        MenuType(menuTypeHeadingElement, MENUTYPE[this.currentMenuType]);
+        MenuType($menuTypeHeading, MENUTYPE[this.currentMenuType]);
     };
 
     const isEnter = (e) => {

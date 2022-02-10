@@ -17,10 +17,12 @@ function addEspressoMenu(newEspresso) {
   const editButton = document.createElement("button");
   editButton.className =
     "bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button";
+  editButton.setAttribute("type", "button");
   editButton.innerText = "수정";
   const removeButton = document.createElement("button");
   removeButton.className =
     "bg-gray-50 text-gray-500 text-sm menu-remove-button";
+  removeButton.setAttribute("type", "button");
   removeButton.innerText = "삭제";
   li.appendChild(span);
   li.appendChild(editButton);

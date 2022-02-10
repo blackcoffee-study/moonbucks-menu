@@ -4,6 +4,7 @@ const espressoMenuSubmitButton = document.getElementById(
   "espresso-menu-submit-button"
 );
 const espressoMenuList = document.getElementById("espresso-menu-list");
+const menuCount = document.querySelector(".menu-count");
 
 let espressoMenus = [];
 
@@ -30,6 +31,7 @@ function addEspressoMenu(newEspresso) {
   li.appendChild(editButton);
   li.appendChild(removeButton);
   espressoMenuList.append(li);
+  getMenuCount();
 }
 
 function handleToSubmitMenu(event) {
@@ -72,5 +74,10 @@ function deleteMenu(event) {
       (espresso) => espresso.id !== parseInt(li.id)
     );
     li.remove();
+    getMenuCount();
   }
+}
+
+function getMenuCount() {
+  menuCount.innerHTML = `총 ${espressoMenus.length}개`;
 }

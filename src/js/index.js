@@ -1,3 +1,5 @@
+import { isEmpty } from "./utils/validate.js";
+
 const espressoMenuForm = document.getElementById("espresso-menu-form");
 const espressoMenuName = document.getElementById("espresso-menu-name");
 const espressoMenuSubmitButton = document.getElementById(
@@ -7,6 +9,9 @@ const espressoMenuList = document.getElementById("espresso-menu-list");
 const menuCount = document.querySelector(".menu-count");
 
 let espressoMenus = [];
+
+const EDIT_INPUT = "메뉴명을 수정하세요.";
+const DELETE_CHECK = "정말 삭제하시겠습니까?";
 
 function addEspressoMenu(newEspresso) {
   const li = document.createElement("li");
@@ -51,12 +56,9 @@ function setRemoteButton() {
 
 function handleToSubmitMenu(event) {
   event.preventDefault();
-  const newEspressoMenu = espressoMenuName.value.replace(/^\s*/, "");
+  const newEspressoMenu = isEmpty(espressoMenuName.value);
   espressoMenuName.value = "";
-  if (!newEspressoMenu) {
-    alert("☕️ 메뉴를 입력해주세요.");
-    return;
-  }
+  if (!newEspressoMenu) return;
   const newEspressoObj = {
     menu: newEspressoMenu,
     id: Date.now(),
@@ -70,10 +72,8 @@ espressoMenuSubmitButton.addEventListener("click", handleToSubmitMenu);
 
 function editMenuName(event) {
   const li = event.target.parentElement;
-  let newMenuName = prompt("메뉴명을 수정하세요.");
-  if (newMenuName) {
-    newMenuName = newMenuName.replace(/^\s*/, "");
-  }
+  let newMenuName = prompt(EDIT_INPUT);
+  newMenuName = isEmpty(newMenuName);
   if (!newMenuName) return;
   espressoMenus.forEach((espressoMenu) => {
     if (espressoMenu.id == parseInt(li.id)) {
@@ -85,7 +85,7 @@ function editMenuName(event) {
 }
 
 function deleteMenu(event) {
-  const answer = confirm("정말 삭제하시곘습니까?");
+  const answer = confirm(DELETE_CHECK);
   if (answer) {
     const li = event.target.parentElement;
     espressoMenus = espressoMenus.filter(

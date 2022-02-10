@@ -25,6 +25,7 @@ function addEspressoMenu(newEspresso) {
     "bg-gray-50 text-gray-500 text-sm menu-remove-button";
   removeButton.setAttribute("type", "button");
   removeButton.innerText = "삭제";
+  removeButton.addEventListener("click", deleteMenu);
   li.appendChild(span);
   li.appendChild(editButton);
   li.appendChild(removeButton);
@@ -61,4 +62,15 @@ function editMenuName(event) {
       span.innerText = newMenuName;
     }
   });
+}
+
+function deleteMenu(event) {
+  const answer = confirm("정말 삭제하시곘습니까?");
+  if (answer) {
+    const li = event.target.parentElement;
+    espressoMenus = espressoMenus.filter(
+      (espresso) => espresso.id !== parseInt(li.id)
+    );
+    li.remove();
+  }
 }

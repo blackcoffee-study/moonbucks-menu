@@ -25,18 +25,6 @@ function MoonBucks() {
         "dessert": "🍰 디저트",
     };
 
-    this.init = () => {
-        this.setEventListener();
-    }
-
-    this.setEventListener = () => {
-        menuForm.addEventListener('submit', e => e.preventDefault());
-        espressoMenuSubmitButton.addEventListener('click', this.addMenuList);
-        espressoMenuName.addEventListener('keypress', this.isEnter);
-        espressoMenuList.addEventListener('click', this.listHandler);
-        menuTypeNavElement.addEventListener('click', this.changeCurrentMenuType);
-    }
-
     this.menuLists = {
         "espresso": [],
         "frappuccino": [],
@@ -47,67 +35,79 @@ function MoonBucks() {
 
     this.currentMenuType = "espresso";
 
-    this.countReRender = () => {
+    this.init = () => {
+        setEventListener();
+    }
+
+    const setEventListener = () => {
+        menuForm.addEventListener('submit', e => e.preventDefault());
+        espressoMenuSubmitButton.addEventListener('click', addMenuList);
+        espressoMenuName.addEventListener('keypress', isEnter);
+        espressoMenuList.addEventListener('click', listHandler);
+        menuTypeNavElement.addEventListener('click', changeCurrentMenuType);
+    }
+
+    const countReRender = () => {
         MenuCount(menuCountElement, this.menuLists[this.currentMenuType].length);
     };
 
-    this.changeCurrentMenuType = (e) => {
+    const changeCurrentMenuType = (e) => {
         if (e.target.dataset.categoryName) {
             this.currentMenuType = e.target.dataset.categoryName;
-            this.menuTypeReRender();
-            this.menuListReRender();
-            this.countReRender();
+            menuTypeReRender();
+            menuListReRender();
+            countReRender();
         };
     };
 
-    this.menuTypeReRender = () => {
+    const menuTypeReRender = () => {
         MenuType(menuTypeHeadingElement, MENUTYPE[this.currentMenuType]);
     };
 
-    this.addMenuList = () => {
+    const addMenuList = () => {
         if (espressoMenuName.value) {
             this.menuLists[this.currentMenuType].push(espressoMenuName.value);
-            this.menuListReRender();
-            this.countReRender();
+            menuListReRender();
+            countReRender();
             espressoMenuName.value = null;
         }
     }
 
-    this.removeMenuList = (menu) => {
+    const removeMenuList = (menu) => {
         this.menuLists[this.currentMenuType] = this.menuLists[this.currentMenuType].filter(e => e !== menu);
-        this.menuListReRender();
-        this.countReRender();
+        menuListReRender();
+        countReRender();
     }
 
-    this.updateMenuList = (before, after) => {
+    const updateMenuList = (before, after) => {
         for (let i = 0; this.menuLists[this.currentMenuType].length; i++) {
             if (this.menuLists[this.currentMenuType][i] === before) {
                 this.menuLists[this.currentMenuType][i] = after;
                 break;
             }
         }
-        this.menuListReRender();
+        menuListReRender();
     }
 
-    this.menuListReRender = () => {
+    const menuListReRender = () => {
         MenuList(espressoMenuList, this.menuLists[this.currentMenuType]);
     }
 
-    this.isEnter = (e) => {
-        return e.key === 'Enter' ? this.addMenuList() : false;
+    const isEnter = (e) => {
+        return e.key === 'Enter' ? addMenuList() : false;
     }
 
-    this.listHandler = (e) => {
+    const listHandler = (e) => {
         const classList = e.target.classList;
 
         if (classList.contains('menu-edit-button')) {
             const newMenuName = window.prompt(TEXT.UPDATE);
-            this.updateMenuList(e.target.parentNode.querySelector('.menu-name').textContent, newMenuName);
+            updateMenuList(e.target.parentNode.querySelector('.menu-name').textContent, newMenuName);
         }
     
         if (classList.contains('menu-remove-button')) {
             if (window.confirm(TEXT.REMOVE)) {
-                this.removeMenuList(e.target.parentNode.querySelector('.menu-name').textContent);
+                removeMenuList(e.target.parentNode.querySelector('.menu-name').textContent);
             }
         }
     };

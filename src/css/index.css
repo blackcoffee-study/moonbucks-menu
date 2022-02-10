@@ -72,6 +72,7 @@ ul li button:hover {
   position: fixed;
   margin: 0 auto;
   z-index: 5;
+  transition: all 1s;
 }
 .warning-modal-white {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
@@ -116,4 +117,6 @@ ul li button:hover {
 .menu-desc-put-btn {
 }
 .menu-desc-delete-btn {
+}
+.menu-desc-title {
 }

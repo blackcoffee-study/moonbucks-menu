@@ -42,7 +42,6 @@ class EspressoMenu {
 
   addNewListToUlElement() {
     if (this.isValidInput(this.$.menuInput)) {
-      console.log(this.$.ulElement);
       this.$.ulElement.insertAdjacentHTML(
         'beforeend',
         newList(

@@ -1,7 +1,17 @@
 export class MenuApp {
     constructor() {
         let menuItems = [];
-        let menuList = new MenuList();
+        let menuList = new MenuList({
+            onUpdate(index, contents) {
+                const newMenuItem = new MenuItems(contents);
+                menuItems[index] = newMenuItem;
+                setState(menuItems);
+            },
+            onDelete(index) {
+                menuItems.splice(index, 1);
+                setState(menuItems);
+            }
+        });
 
         const setState = (updatedItems) => {
             this.menuItems = updatedItems;
@@ -22,13 +32,12 @@ class MenuItems {
     constructor(contents) {
         this.name = contents;
     }
-    
+
     getName() {
         return this.name;
     }
 }
 
-// 입력 받는 컴포넌트
 class MenuInput {
     constructor({ onAdd }) {
         const $menuInput = document.getElementById('espresso-menu-name');
@@ -63,9 +72,8 @@ class MenuInput {
     }
 }
 
-// menuList 보여주는 컴포넌트
 class MenuList {
-    constructor() {
+    constructor({ onUpdate, onDelete }) {
         const $menuList = document.getElementById('espresso-menu-list');
 
         let menuItems = [];
@@ -76,16 +84,42 @@ class MenuList {
         };
 
         this.render = (items) => {
-            const template = items.map((x) => menuItemTemplate(x.getName()));
+            const template = items.map((x, index) => menuItemTemplate(index, x.getName()));
             $menuList.innerHTML = template.join('');
+
+            const $menusEdits = document.querySelectorAll('.menu-edit-button');
+            const $menusRemoves = document.querySelectorAll('.menu-remove-button');
+
+            for(let $menuItem of $menusEdits) {
+                $menuItem.addEventListener('click', function() {
+                    const $menuListItem = this.closest('.menu-list-item');
+                    const $menuItemSpan = $menuListItem.querySelector('.menu-name');
+
+                    let itemName = prompt('메뉴명을 수정하세요', $menuItemSpan.innerHTML);
+
+                    onUpdate($menuListItem.dataset.menuId, itemName);
+                });
+            }
+
+            for(let $menuItem of $menusRemoves) {
+                $menuItem.addEventListener('click', function() {
+                    const $menuListItem = this.closest('.menu-list-item');
+
+                    let isConfirm = confirm('정말 삭제하시겠습니까?');
+
+                    if(isConfirm) {
+                        onDelete($menuListItem.dataset.menuId);
+                    }
+                });
+            }
         };
     }
 }
 
-const menuItemTemplate = function (name) {
+const menuItemTemplate = function (index, name) {
     return `
-        <li class="menu-list-item d-flex items-center py-2">
-            <span class="w-100 pl-2 menu-name">${name}</span>
+        <li data-menu-id=${ index } class="menu-list-item d-flex items-center py-2">
+            <span class="w-100 pl-2 menu-name">${ name }</span>
             <button type="button" class="bg-gray-50 text-gray-500 text-sm mr-1 menu-sold-out-button">품절</button>
             <button type="button" class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button">수정</button>
             <button type="button" class="bg-gray-50 text-gray-500 text-sm menu-remove-button">삭제</button>

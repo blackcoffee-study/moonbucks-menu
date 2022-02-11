@@ -71,6 +71,8 @@
 </li>
 ```
 
+////////////////////STEP 1. 완료////////////////////////........
+
 ## 🎯 step2 요구사항 - 상태 관리로 메뉴 관리하기
 
 - [ ] [localStorage](https://developer.mozilla.org/ko/docs/Web/API/Window/localStorage)에 데이터를 저장하여 새로고침해도 데이터가 남아있게 한다.
@@ -147,8 +149,8 @@
 {
   response: [
     {
-      id: "string",
-      name: "string",
+      id: 'string',
+      name: 'string',
       isSoldOut: Boolean,
     },
   ];

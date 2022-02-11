@@ -17,4 +17,10 @@ menuForm.addEventListener("submit", (e) => {
   btnDelete.className +=
     "bg-gray-50 text-gray-500 text-sm menu-remove-button";
   newList.className += "menu-list-item d-flex items-center py-2";
+
+  menuSpan.append(menuName);
+	btnEdit.append("수정");
+	btnDelete.append("삭제");
+	newList.append(menuSpan, btnEdit, btnDelete);
+	menuList.append(newList);
 });

@@ -4,12 +4,14 @@ import View from './View.js';
 class EspressoView extends View {
   constructor() {
     super(qs('#app'));
+    this.espressoMenuList = [];
 
     this.template = new Template();
 
     this.espressoForm = qs('#espresso-menu-form');
-    this.espressoSubmitText = qs('.input-field');
+    this.espressoInput = qs('.input-field');
     this.espressoSubmitButton = qs('.input-submit');
+    this.espressoMeueList = qs('#espresso-menu-list');
 
     this.bindEvent();
   }
@@ -23,33 +25,39 @@ class EspressoView extends View {
 
   addEspressoMenu(event) {
     event.preventDefault();
-    if (this.espressoSubmitText.value !== '') {
-      console.log(this.espressoSubmitText.value);
+    if (this.espressoInput.value !== '') {
+      this.espressoMenuList.push(this.espressoInput.value);
+      this.espressoMeueList.append(
+        this.template.menuAddTemplate(this.espressoInput.value)
+      );
     }
-    this.espressoSubmitText.value = '';
+    this.espressoInput.value = '';
   }
 }
 
 export default EspressoView;
 
 class Template {
-  menuAddTemplate() {
-    return `
-    <li class="menu-list-item d-flex items-center py-2">
-      <span class="w-100 pl-2 menu-name">${name}</span>
-      <button
-        type="button"
-        class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
-      >
-        수정
-      </button>
-      <button
-        type="button"
-        class="bg-gray-50 text-gray-500 text-sm menu-remove-button"
-      >
-        삭제
-      </button>
-    </li>
-  `;
+  menuAddTemplate(menuName) {
+    const fragment = document.createElement('div');
+    fragment.innerHTML = `
+      <li class="menu-list-item d-flex items-center py-2">
+        <span class="w-100 pl-2 menu-name">${menuName}</span>
+        <button
+          type="button"
+          class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
+        >
+          수정
+        </button>
+        <button
+          type="button"
+          class="bg-gray-50 text-gray-500 text-sm menu-remove-button"
+        >
+          삭제
+        </button>
+      </li>
+    `;
+
+    return fragment;
   }
 }

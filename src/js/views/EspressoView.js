@@ -43,14 +43,20 @@ class EspressoView extends View {
 
   handleEspressoMenuEvent(event) {
     if (event.target.classList.contains('menu-edit-button')) {
-      this.editEspressoMenu();
+      this.editEspressoMenu(event);
     } else if (event.target.classList.contains('menu-remove-button')) {
       this.removeEspressoMenu(event);
     }
   }
 
   removeEspressoMenu(event) {
-    event.target.closest('li').remove();
+    if (confirm('삭제하시겠습니까?')) {
+      event.target.closest('li').remove();
+    }
+  }
+
+  editEspressoMenu(event) {
+    console.log(event);
   }
 }
 

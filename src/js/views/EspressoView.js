@@ -12,29 +12,29 @@ class EspressoView extends View {
     this.espressoInput = qs('.input-field');
     this.espressoSubmitButton = qs('.input-submit');
     this.espressoMeueList = qs('#espresso-menu-list');
+    this.espressoMenuCountText = qs('.menu-count');
 
     this.bindEvent();
   }
 
   bindEvent() {
     on(this.espressoForm, 'submit', (event) => this.addEspressoMenu(event));
-    on(this.espressoSubmitButton, 'click', (event) =>
-      this.addEspressoMenu(event)
-    );
-    on(this.espressoMeueList, 'click', ({ target }) =>
-      this.handleEspressoMenuEvent(target)
-    );
+    on(this.espressoSubmitButton, 'click', (event) => this.addEspressoMenu(event));
+    on(this.espressoMeueList, 'click', ({ target }) => this.handleEspressoMenuEvent(target));
   }
 
   addEspressoMenu(event) {
     event.preventDefault();
     if (this.espressoInput.value !== '') {
       this.espressoMenuList.push(this.espressoInput.value);
-      this.espressoMeueList.append(
-        this.template.menuAddTemplate(this.espressoInput.value)
-      );
+      this.espressoMeueList.append(this.template.menuAddTemplate(this.espressoInput.value));
+      this.espressoMenuCount();
     }
     this.espressoInput.value = '';
+  }
+
+  espressoMenuCount() {
+    this.espressoMenuCountText.textContent = `총 ${this.espressoMenuList.length}개`;
   }
 
   handleEspressoMenuEvent(target) {
@@ -48,6 +48,9 @@ class EspressoView extends View {
   removeEspressoMenu(target) {
     if (confirm('삭제하시겠습니까?')) {
       target.closest('li').remove();
+      this.espressoMenuList = this.espressoMenuList
+        .filter((espressoMenu) => espressoMenu !== target.previousElementSibling.previousElementSibling.textContent);
+      this.espressoMenuCount();
     }
   }
 

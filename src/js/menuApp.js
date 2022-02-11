@@ -1,5 +1,7 @@
 export class MenuApp {
     constructor() {
+        const $menuCountSpan = document.getElementById('menu-count');
+
         let menuItems = [];
         let menuList = new MenuList({
             onUpdate(index, contents) {
@@ -9,6 +11,7 @@ export class MenuApp {
             },
             onDelete(index) {
                 menuItems.splice(index, 1);
+                $menuCountSpan.innerHTML = `총 ${ menuItems.length }개`;
                 setState(menuItems);
             }
         });
@@ -22,6 +25,7 @@ export class MenuApp {
             onAdd(contents) {
                 const newMenuItem = new MenuItems(contents);
                 menuItems.push(newMenuItem);
+                $menuCountSpan.innerHTML = `총 ${ menuItems.length }개`;
                 setState(menuItems);
             },
         });

@@ -23,6 +23,11 @@ const createListItem = (menuName) => {
   </li>`;
 };
 
+const countMenus = () => {
+    const menuCount = $("#espresso-menu-list").childElementCount;
+    $(".menu-count").innerText = `총 ${menuCount}개`;
+};
+
 const addMenuName = () => {
     const menuNameInput = $("#espresso-menu-name");
 
@@ -34,6 +39,7 @@ const addMenuName = () => {
     );
 
     menuNameInput.value = "";
+    countMenus();
 };
 
 const isEventTargetCotains = (eventTaget, className) => {
@@ -46,18 +52,19 @@ const updateMenuName = (menuEditBtn) => {
     const curMenuName = parentEl.querySelector(".menu-name");
     const newMenuName = prompt(
         "새로운 메뉴 이름을 입력하세요.",
-        curMenuName.innerHTML
+        curMenuName.innerText
     );
 
     if (!newMenuName) return;
-    curMenuName.innerHTML = newMenuName;
+    curMenuName.innerText = newMenuName;
 };
 
 const removeMenu = (menuRemoveBtn) => {
     const curListItem = menuRemoveBtn.parentElement;
-    const curMenuName = curListItem.querySelector("span").innerHTML;
+    const curMenuName = curListItem.querySelector("span").innerText;
     if (confirm(`선택한 메뉴("${curMenuName}")를 삭제하시겠습니까?`)) {
         $("#espresso-menu-list").removeChild(curListItem);
+        countMenus();
     }
 };
 

@@ -56,6 +56,12 @@ class EspressoView extends View {
 
   editEspressoMenu(target) {
     const editEspressoMenuName = prompt('메뉴 이름을 입력해주세요');
+    this.espressoMenuList
+      .find((espressoMenu, index) => {
+        espressoMenu === target.previousElementSibling.textContent 
+        ? this.espressoMenuList[index] = editEspressoMenuName 
+        : null
+      });
     target.previousElementSibling.textContent = editEspressoMenuName;
   }
 }

@@ -5,6 +5,15 @@ function App() {
     menuCount = document.querySelector(".menu-count"),
     menuSubmitButton = document.querySelector("#espresso-menu-submit-button");
 
+    // 수정버튼 이벤트핸들링 처리
+    menuList.addEventListener("click", (e) => {
+        if(e.target.classList.contains("menu-edit-button")) {
+            const reMenuName = e.target.closest("li").querySelector(".menu-name"),
+            updatedMenu = prompt("메뉴명을 수정하세요", reMenuName.innerText);
+            reMenuName.innerText = updatedMenu;
+        }
+    })
+
     // form 태그가 자동으로 전송되는 것을 방지
     menuForm.addEventListener("submit", (e) => {
         e.preventDefault();
@@ -14,7 +23,7 @@ function App() {
     const addMenu = () => {
         const espressoMenuName = menuName.value;
         if(espressoMenuName === "") {
-            alert("값을 입력해주세요.");
+            alert("값을 입력해주세요");
             return;
         }
         menuList.insertAdjacentHTML(

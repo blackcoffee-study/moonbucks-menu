@@ -1,6 +1,6 @@
-export const getMenuTemplate = ({ name, status }) => {
+export const getMenuTemplate = ({ id, name, status }) => {
   return `
-    <li class="menu-list-item d-flex items-center py-2" data-menu-name="${name}">
+    <li class="menu-list-item d-flex items-center py-2" data-menu-name="${name}" data-menu-id="${id}">
       <span class="w-100 pl-2 menu-name ${status === 'soldOut' ? 'sold-out' : ''}">${name}</span>
       <button
         type="button"
@@ -24,39 +24,33 @@ export const getMenuTemplate = ({ name, status }) => {
   `;
 };
 
-export const renderMenusByFunction = (menus, generateFunction) => {
-  let result = "";
-  menus.forEach((el) => (result += generateFunction(el)));
-  return result;
+export const renderMenusByFunction = (menus, generateTemplate) => {
+  return menus.map((menu) => generateTemplate(menu)).join("");
 };
 
-export const soldOutMenuInStore = (Store, currentCategory, menuName) => {
-  const originIndex = Store[currentCategory].findIndex(
-    (el) => el.name === menuName
-  );
-  Store[currentCategory] = Store[currentCategory].map((el, index) => {
-    if (index === originIndex) {
+export const soldOutMenuInStore = (Store, currentCategory, menuId) => {
+  Store[currentCategory] = Store[currentCategory].map((el) => {
+    if (el.id === menuId) {
       el.status = el.status === "soldOut" ? "onSale" : "soldOut";
     }
     return el;
   });
 };
 
-export const editMenuInStore = (Store, currentCategory, originName) => {
+export const editMenuInStore = (Store, currentCategory, menuId, originName) => {
   const newName = prompt("메뉴명을 수정하세요", originName)
-  const originIndex = Store[currentCategory].findIndex(el => el.name === originName);
-  Store[currentCategory] = Store[currentCategory].map((el, index) => {
-    if (index === originIndex) {
+  Store[currentCategory] = Store[currentCategory].map((el) => {
+    if (el.id === menuId) {
       el.name = newName;
     }
     return el;
   })
 };
 
-export const removeMenuInStore = (Store, currentCategory, menuName) => {
+export const removeMenuInStore = (Store, currentCategory, menuId) => {
   const selectResult = confirm("정말 삭제하시겠습니까?");
   if (selectResult) {
-    Store[currentCategory] = Store[currentCategory].filter((el) => el.name !== menuName);
+    Store[currentCategory] = Store[currentCategory].filter((el) => el.id !== menuId);
   }
 };
 

@@ -1,4 +1,5 @@
 import { INITIAL_CATEGORY } from "./constants.js";
+import { Store } from './store.js';
 import {
   getMenuTemplate,
   renderMenusByFunction,
@@ -9,6 +10,7 @@ import {
   getLocalStorage,
 } from "./utils.js";
 let currentCategory = INITIAL_CATEGORY;
+let menus;
 
 window.onload = () => {
   setMenuUseLocalStorage();
@@ -17,30 +19,35 @@ window.onload = () => {
 };
 
 const setMenuUseLocalStorage = () => {
-  if (getLocalStorage("menus")) {
-    menus = getLocalStorage("menus");
+  if (!getLocalStorage("menus")) {
+    setLocalStorage("menus", Store);
   }
+
+  menus = getLocalStorage("menus");
 }
 
 const render = () => {
-  const $menuCount = document.getElementsByClassName("menu-count")[0];
-  const $menuList = document.getElementById("espresso-menu-list");
+  const $menuCount = document.querySelector(".menu-count");
+  const $menuList = document.querySelector("#espresso-menu-list");
 
-  $menuList.innerHTML = renderMenusByFunction(Store[currentCategory], getMenuTemplate);
-  $menuCount.innerHTML = `총 ${Store[currentCategory].length}개`;
-} 
+  $menuList.innerHTML = renderMenusByFunction(menus[currentCategory], getMenuTemplate);
+  $menuCount.textContent = `총 ${menus[currentCategory].length}개`;
+}
 
 const setEventListener = () => {
-  const $form = document.getElementById("espresso-menu-form");
+  const $form = document.querySelector("#espresso-menu-form");
   const addNewMenu = (event) => {
     event.preventDefault();
     const $input = event.target["espressoMenuName"];
-    const newMenu = $input.value;
+    const { value: newMenu } = $input; 
+    const id = new Date().toISOString();
+    
     if (newMenu === "") {
       alert("값을 입력해주세요");
       return;
     }
-    menus[currentCategory].push({ name: newMenu, status: "onSale" });
+    
+    menus[currentCategory].push({ id, name: newMenu, status: "onSale" });
     $input.value = "";
 
     setLocalStorage("menus", menus);
@@ -49,44 +56,46 @@ const setEventListener = () => {
   $form.addEventListener("submit", addNewMenu, false);
 
   
-  const $menuList = document.getElementById("espresso-menu-list");
+  const $menuList = document.querySelector("#espresso-menu-list");
   $menuList.addEventListener("click", (event) => {
     const { target } = event;
     const { parentNode } = target;
-    const { menuName } = parentNode.dataset;
+    const { menuId, menuName } = parentNode.dataset;
     const classList = target.classList;
 
     if (classList.contains("menu-sold-out-button")) {
-      soldOutMenuInStore(menus, currentCategory, menuName);
+      soldOutMenuInStore(menus, currentCategory, menuId);
       setLocalStorage("menus", menus)
       render();
       return;
     }
 
     if (classList.contains("menu-edit-button")) {
-      editMenuInStore(menus, currentCategory, menuName);
+      editMenuInStore(menus, currentCategory, menuId, menuName);
       setLocalStorage("menus", menus);
       render();
       return;
     }
 
     if (classList.contains("menu-remove-button")) {
-      removeMenuInStore(menus, currentCategory, menuName);
+      removeMenuInStore(menus, currentCategory, menuId);
       setLocalStorage("menus", menus);
       render();
       return;
     }
+
+    return;
   });
 
 
-  const categoryHeader = document.querySelectorAll("main > .wrapper > .heading >  h2")[0];
-  const navButtons = document.getElementsByClassName("cafe-category-name");
+  const categoryHeader = document.querySelector("main > .wrapper > .heading >  h2");
+  const navButtons = document.querySelectorAll(".cafe-category-name");
   Array.prototype.forEach.call(navButtons, (button) => {
     button.addEventListener("click", (event) => {
       const { target } = event;
       const { dataset: { categoryName }, innerText } = target;
       currentCategory = categoryName;
-      categoryHeader.innerText = `${innerText} 메뉴 관리`;
+      categoryHeader.textContent = `${innerText} 메뉴 관리`;
 
       render();
     });

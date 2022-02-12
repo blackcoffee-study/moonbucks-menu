@@ -25,21 +25,23 @@ const createListItem = (menuName) => {
 
 const init = () => {
     $("#espresso-menu-submit-button").addEventListener("click", () => {
-        const menuName = $("#espresso-menu-name").value;
+        const menuNameInput = $("#espresso-menu-name");
 
         if (isEmpty($("#espresso-menu-name"))) return;
 
         $("#espresso-menu-list").insertAdjacentHTML(
             "beforeend",
-            createListItem(menuName)
+            createListItem(menuNameInput.value)
         );
+
+        menuNameInput.value = "";
 
         $(".menu-edit-button").addEventListener("click", (e) => {
             const parentEl = e.target.parentElement;
-            const menuName = parentEl.querySelector(".menu-name");
+            const curMenuName = parentEl.querySelector(".menu-name");
             const newMenuName = prompt("새로운 메뉴 이름을 입력하세요.");
 
-            if (newMenuName) menuName.innerHTML = newMenuName;
+            if (newMenuName) curMenuName.innerHTML = newMenuName;
         });
     });
 };

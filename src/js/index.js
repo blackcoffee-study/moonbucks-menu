@@ -62,12 +62,14 @@ function App() {
         menuName.innerText
       );
 
-      if (newMenuName === menuName.innerText)
+      if (newMenuName === menuName.innerText) {
         alert("기존과 동일한 메뉴명입니다.");
-      else if (newMenuName === null) alert("");
-      e.target
-        .closest("li")
-        .querySelector(".menu-name").innerText = newMenuName;
+      } else if (newMenuName === "") {
+        alert("값을 입력해주세요.");
+        return;
+      } else if (newMenuName !== null) {
+        menuName.innerText = newMenuName;
+      }
     }
 
     // remove menu item

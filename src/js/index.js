@@ -36,8 +36,8 @@ const addMenuName = () => {
     menuNameInput.value = "";
 };
 
-const isBtn = (btnClassName, eventTaget) => {
-    if (eventTaget.classList.contains(btnClassName)) return true;
+const isEventTargetCotains = (eventTaget, className) => {
+    if (eventTaget.classList.contains(className)) return true;
     return false;
 };
 
@@ -64,8 +64,9 @@ const init = () => {
     $("#espresso-menu-submit-button").addEventListener("click", addMenuName);
 
     $("#espresso-menu-list").addEventListener("click", (e) => {
-        if (isBtn("menu-edit-button", e.target)) {
+        if (isEventTargetCotains(e.target, "menu-edit-button")) {
             updateMenuName(e.target);
+            return;
         }
     });
 };

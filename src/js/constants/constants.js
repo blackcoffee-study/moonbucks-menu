@@ -9,3 +9,7 @@ export const ALERT = {
 export const CONFIRM = {
   DELETE: '정말 삭제하시겠습니까 ?',
 };
+
+export const KEY = {
+  ENTER: 'Enter',
+};

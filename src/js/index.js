@@ -1,4 +1,4 @@
-import { PROMPT, ALERT, CONFIRM } from './constants/constants.js';
+import { PROMPT, ALERT, CONFIRM, KEY } from './constants/constants.js';
 import { newList } from './template.js';
 
 class EspressoMenu {
@@ -49,8 +49,6 @@ class EspressoMenu {
           this.updateMenuCount(this.$.menuCount, this.$.menuListItem)
         )
       );
-    } else {
-      return;
     }
 
     this.clearInputValue(this.$.menuInput);
@@ -105,7 +103,7 @@ class EspressoMenu {
     );
 
     this.$.menuInput.addEventListener('keyup', ({ key }) => {
-      if (key === 'Enter') {
+      if (key === KEY.ENTER) {
         this.addNewListToUlElement();
       }
     });

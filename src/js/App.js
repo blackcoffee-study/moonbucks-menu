@@ -1,4 +1,6 @@
-import { $, TEXT } from "./utils.js";
+import { $, TEXT } from "./utils/utils.js";
+import CustomSet from "./utils/Set.js";
+
 import MenuList from "./components/MenuList.js";
 import MenuType from "./components/MenuType.js";
 import MenuCount from "./components/MenuCount.js";
@@ -20,11 +22,11 @@ export default function MoonBucks() {
     };
 
     this.menuLists = {
-        "espresso": [],
-        "frappuccino": [],
-        "blended": [],
-        "teavana": [],
-        "dessert": [],
+        "espresso": new CustomSet(),
+        "frappuccino": new CustomSet(),
+        "blended": new CustomSet(),
+        "teavana": new CustomSet(),
+        "dessert": new CustomSet(),
     };
 
     this.currentMenuType = "espresso";
@@ -53,7 +55,7 @@ export default function MoonBucks() {
 
     const addMenuList = () => {
         if ($espressoMenuName.value) {
-            this.menuLists[this.currentMenuType].push($espressoMenuName.value);
+            this.menuLists[this.currentMenuType].add($espressoMenuName.value);
             menuListReRender();
             countReRender();
             $espressoMenuName.value = null;
@@ -61,27 +63,23 @@ export default function MoonBucks() {
     }
 
     const removeMenuList = (menu) => {
-        this.menuLists[this.currentMenuType] = this.menuLists[this.currentMenuType].filter(e => e !== menu);
+        this.menuLists[this.currentMenuType].delete(menu);
         menuListReRender();
         countReRender();
     }
 
     const updateMenuList = (before, after) => {
-        for (let i = 0; i < this.menuLists[this.currentMenuType].length; i++) {
-            if (this.menuLists[this.currentMenuType][i] === before) {
-                this.menuLists[this.currentMenuType][i] = after;
-                break;
-            }
-        }
+        this.menuLists[this.currentMenuType].delete(before);
+        this.menuLists[this.currentMenuType].add(after);
         menuListReRender();
     }
 
     const menuListReRender = () => {
-        MenuList($espressoMenuList, this.menuLists[this.currentMenuType]);
+        MenuList($espressoMenuList, this.menuLists[this.currentMenuType].getData());
     }
 
     const countReRender = () => {
-        MenuCount($menuCount, this.menuLists[this.currentMenuType].length);
+        MenuCount($menuCount, this.menuLists[this.currentMenuType].size());
     };
 
     const menuTypeReRender = () => {

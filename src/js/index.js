@@ -1,4 +1,5 @@
 const $ = (selector) => document.querySelector(selector);
+
 const isEmpty = (input) => {
     if (input.value.length) return false;
     return true;
@@ -25,13 +26,21 @@ const createListItem = (menuName) => {
 const init = () => {
     $("#espresso-menu-submit-button").addEventListener("click", () => {
         const menuName = $("#espresso-menu-name").value;
-        if (!isEmpty($("#espresso-menu-name"))) {
-            console.log(menuName);
-            $("#espresso-menu-list").insertAdjacentHTML(
-                "beforeend",
-                createListItem(menuName)
-            );
-        }
+
+        if (isEmpty($("#espresso-menu-name"))) return;
+
+        $("#espresso-menu-list").insertAdjacentHTML(
+            "beforeend",
+            createListItem(menuName)
+        );
+
+        $(".menu-edit-button").addEventListener("click", (e) => {
+            const parentEl = e.target.parentElement;
+            const menuName = parentEl.querySelector(".menu-name");
+            const newMenuName = prompt("새로운 메뉴 이름을 입력하세요.");
+
+            if (newMenuName) menuName.innerHTML = newMenuName;
+        });
     });
 };
 

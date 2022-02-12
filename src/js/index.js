@@ -30,4 +30,5 @@ menuForm.addEventListener("submit", (e) => {
   e.preventDefault();
   addMenu();
   menuInput.value = "";
+  menuCount.innerText = `총 ${menuList.childElementCount}개`;
 });

@@ -5,7 +5,7 @@ const isEmpty = (input) => {
     return true;
 };
 
-const createListItem = (menuName) => {
+const createMenuListItem = (menuName) => {
     return `<li class="menu-list-item d-flex items-center py-2">
     <span class="w-100 pl-2 menu-name">${menuName}</span>
     <button
@@ -23,6 +23,10 @@ const createListItem = (menuName) => {
   </li>`;
 };
 
+const clearInputValue = (input) => {
+    input.value = "";
+};
+
 const updateMenuCount = () => {
     const menuCount = $("#espresso-menu-list").childElementCount;
     $(".menu-count").innerText = `총 ${menuCount}개`;
@@ -33,12 +37,10 @@ const addMenuName = () => {
 
     if (isEmpty($("#espresso-menu-name"))) return;
 
-    $("#espresso-menu-list").insertAdjacentHTML(
-        "beforeend",
-        createListItem(menuNameInput.value)
-    );
+    const menuListItem = createMenuListItem(menuNameInput.value);
+    $("#espresso-menu-list").insertAdjacentHTML("beforeend", menuListItem);
 
-    menuNameInput.value = "";
+    clearInputValue(menuNameInput);
     updateMenuCount();
 };
 
@@ -64,13 +66,10 @@ const removeMenuName = (menuRemoveBtn) => {
 };
 
 const initEventListeners = () => {
-    $("#espresso-menu-form").addEventListener("submit", (e) =>
-        e.preventDefault()
-    );
-    $("#espresso-menu-name").addEventListener("keydown", (e) => {
-        if (e.key === "Enter") addMenuName();
+    $("#espresso-menu-form").addEventListener("submit", (e) => {
+        e.preventDefault();
+        addMenuName();
     });
-    $("#espresso-menu-submit-button").addEventListener("click", addMenuName);
 
     $("#espresso-menu-list").addEventListener("click", (e) => {
         if (e.target.classList.contains("menu-edit-button")) {

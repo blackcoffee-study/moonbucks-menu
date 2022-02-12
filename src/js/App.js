@@ -1,7 +1,5 @@
 import Component from './core/Component.js';
-import MenuHeader from './components/MenuHeader.js';
-import MenuForm from './components/MenuForm.js';
-import MenuList from './components/MenuList.js';
+import { MenuHeader, MenuForm, MenuList } from './components/index.js';
 import { $, generateID } from './utils/index.js';
 
 export default class App extends Component {

@@ -1,4 +1,5 @@
 import Component from '../core/Component.js';
+import { MESSAGE } from '../constants/Message.js';
 
 export default class MenuList extends Component {
   template() {
@@ -35,14 +36,11 @@ export default class MenuList extends Component {
       if (!isUpdateButton && !isDeleteButton) return;
 
       if (isUpdateButton) {
-        const newMenuName = prompt(
-          '메뉴명을 수정하세요.',
-          target.previousElementSibling.textContent
-        );
+        const newMenuName = prompt(MESSAGE.UPDATE, target.previousElementSibling.textContent);
 
         updateMenu(newMenuName, Number(target.closest('[data-id]').dataset.id));
       } else {
-        const isCheck = confirm('정말 삭제하시겠습니까?');
+        const isCheck = confirm(MESSAGE.DELETE);
 
         if (isCheck) deleteMenu(Number(target.closest('[data-id]').dataset.id));
       }

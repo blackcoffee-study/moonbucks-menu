@@ -26,11 +26,15 @@ const addMenu = () => {
   if (menuInput.value.trim()) createMenuItem(menuInput.value);
 };
 
+const countMenu = () => {
+  menuCount.innerText = `총 ${menuList.childElementCount}개`;
+};
+
 menuForm.addEventListener("submit", (e) => {
   e.preventDefault();
   addMenu();
   menuInput.value = "";
-  menuCount.innerText = `총 ${menuList.childElementCount}개`;
+  countMenu();
 });
 
 menuList.addEventListener("click", (e) => {
@@ -43,4 +47,5 @@ menuList.addEventListener("click", (e) => {
       e.target.previousSibling.previousSibling.innerText
     );
   }
+  countMenu();
 });

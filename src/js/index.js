@@ -23,6 +23,19 @@ const createListItem = (menuName) => {
   </li>`;
 };
 
+const addMenuName = () => {
+    const menuNameInput = $("#espresso-menu-name");
+
+    if (isEmpty($("#espresso-menu-name"))) return;
+
+    $("#espresso-menu-list").insertAdjacentHTML(
+        "beforeend",
+        createListItem(menuNameInput.value)
+    );
+
+    menuNameInput.value = "";
+};
+
 const isBtn = (btnClassName, eventTaget) => {
     if (eventTaget.classList.contains(btnClassName)) return true;
     return false;
@@ -42,22 +55,13 @@ const updateMenuName = (menuEditBtn) => {
 };
 
 const init = () => {
-    // $("#espresso-menu-submit-button").addEventListener("keydown", () => {
-    //     // click과 같은 이벤트 발생
-    // });
-
-    $("#espresso-menu-submit-button").addEventListener("click", () => {
-        const menuNameInput = $("#espresso-menu-name");
-
-        if (isEmpty($("#espresso-menu-name"))) return;
-
-        $("#espresso-menu-list").insertAdjacentHTML(
-            "beforeend",
-            createListItem(menuNameInput.value)
-        );
-
-        menuNameInput.value = "";
+    $("#espresso-menu-form").addEventListener("submit", (e) =>
+        e.preventDefault()
+    );
+    $("#espresso-menu-name").addEventListener("keydown", (e) => {
+        if (e.key === "Enter") addMenuName();
     });
+    $("#espresso-menu-submit-button").addEventListener("click", addMenuName);
 
     $("#espresso-menu-list").addEventListener("click", (e) => {
         if (isBtn("menu-edit-button", e.target)) {

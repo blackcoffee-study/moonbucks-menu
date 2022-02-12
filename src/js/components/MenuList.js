@@ -2,8 +2,50 @@ import Component from '../core/Component.js';
 
 export default class MenuList extends Component {
   template() {
-    return `
+    const { menuItems } = this.props;
+    return menuItems
+      .map(
+        ({ id, menuName }) => `
+      <li class="menu-list-item d-flex items-center py-2" data-id="${id}">
+        <span class="w-100 pl-2 menu-name">${menuName}</span>
+        <button
+          type="button"
+          class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
+        >
+          수정
+        </button>
+        <button
+          type="button"
+          class="bg-gray-50 text-gray-500 text-sm menu-remove-button"
+        >
+          삭제
+        </button>
+      </li>`
+      )
+      .join('');
+  }
 
-        `;
+  setEvent() {
+    const { updateMenu, deleteMenu } = this.props;
+
+    this.domNode.addEventListener('click', ({ target }) => {
+      const isUpdateButton = target.classList.contains('menu-edit-button');
+      const isDeleteButton = target.classList.contains('menu-remove-button');
+
+      if (!isUpdateButton && !isDeleteButton) return;
+
+      if (isUpdateButton) {
+        const newMenuName = prompt(
+          '메뉴명을 수정하세요.',
+          target.previousElementSibling.textContent
+        );
+
+        updateMenu(newMenuName, Number(target.closest('[data-id]').dataset.id));
+      } else {
+        const isCheck = confirm('정말 삭제하시겠습니까?');
+
+        if (isCheck) deleteMenu(Number(target.closest('[data-id]').dataset.id));
+      }
+    });
   }
 }

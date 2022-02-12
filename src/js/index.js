@@ -23,7 +23,7 @@ const createMenuItem = (name) => {
 };
 
 const addMenu = () => {
-  if (menuInput.value.trim()) createMenuItem(menuInput.value);
+  createMenuItem(menuInput.value);
 };
 
 const countMenu = () => {
@@ -32,7 +32,7 @@ const countMenu = () => {
 
 menuForm.addEventListener("submit", (e) => {
   e.preventDefault();
-  addMenu();
+  if (menuInput.value.trim()) addMenu();
   menuInput.value = "";
   countMenu();
 });

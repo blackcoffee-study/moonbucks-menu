@@ -1,3 +1,10 @@
+export const isEmpty = (value) => {
+  if (!value || value.trim() === "") {
+    return true;
+  }
+  return false;
+}
+
 export const getMenuTemplate = ({ id, name, status }) => {
   return `
     <li class="menu-list-item d-flex items-center py-2" data-menu-name="${name}" data-menu-id="${id}">

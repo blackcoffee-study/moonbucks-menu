@@ -1,6 +1,7 @@
 import { INITIAL_CATEGORY } from "./constants.js";
 import { Store } from './store.js';
 import {
+  isEmpty,
   getMenuTemplate,
   renderMenusByFunction,
   soldOutMenuInStore,
@@ -35,18 +36,25 @@ const render = () => {
 }
 
 const setEventListener = () => {
+  formHandler();
+  menuListHandler();
+  categoryHeaderHandler();
+}
+
+
+const formHandler = () => {
   const $form = document.querySelector("#espresso-menu-form");
   const addNewMenu = (event) => {
     event.preventDefault();
     const $input = event.target["espressoMenuName"];
-    const { value: newMenu } = $input; 
+    const { value: newMenu } = $input;
     const id = new Date().toISOString();
-    
-    if (newMenu === "") {
+
+    if (isEmpty(newMenu)) {
       alert("값을 입력해주세요");
       return;
     }
-    
+
     menus[currentCategory].push({ id, name: newMenu, status: "onSale" });
     $input.value = "";
 
@@ -54,8 +62,9 @@ const setEventListener = () => {
     render();
   };
   $form.addEventListener("submit", addNewMenu, false);
+};
 
-  
+const menuListHandler = () => {
   const $menuList = document.querySelector("#espresso-menu-list");
   $menuList.addEventListener("click", (event) => {
     const { target } = event;
@@ -65,7 +74,7 @@ const setEventListener = () => {
 
     if (classList.contains("menu-sold-out-button")) {
       soldOutMenuInStore(menus, currentCategory, menuId);
-      setLocalStorage("menus", menus)
+      setLocalStorage("menus", menus);
       render();
       return;
     }
@@ -86,14 +95,20 @@ const setEventListener = () => {
 
     return;
   });
+}
 
-
-  const categoryHeader = document.querySelector("main > .wrapper > .heading >  h2");
+const categoryHeaderHandler = () => {
+  const categoryHeader = document.querySelector(
+    "main > .wrapper > .heading >  h2"
+  );
   const navButtons = document.querySelectorAll(".cafe-category-name");
   Array.prototype.forEach.call(navButtons, (button) => {
     button.addEventListener("click", (event) => {
       const { target } = event;
-      const { dataset: { categoryName }, innerText } = target;
+      const {
+        dataset: { categoryName },
+        innerText,
+      } = target;
       currentCategory = categoryName;
       categoryHeader.textContent = `${innerText} 메뉴 관리`;
 

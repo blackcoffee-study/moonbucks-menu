@@ -32,3 +32,15 @@ menuForm.addEventListener("submit", (e) => {
   menuInput.value = "";
   menuCount.innerText = `총 ${menuList.childElementCount}개`;
 });
+
+menuList.addEventListener("click", (e) => {
+  if (e.target.classList.contains("menu-remove-button")) {
+    if (window.confirm("메뉴를 삭제하시겠습니까?"))
+      e.target.parentNode.remove();
+  } else {
+    e.target.previousSibling.previousSibling.innerText = window.prompt(
+      "메뉴를 수정해주세요",
+      e.target.previousSibling.previousSibling.innerText
+    );
+  }
+});

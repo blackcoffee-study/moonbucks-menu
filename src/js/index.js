@@ -5,12 +5,19 @@ function App() {
     menuCount = document.querySelector(".menu-count"),
     menuSubmitButton = document.querySelector("#espresso-menu-submit-button");
 
-    // 수정버튼 이벤트핸들링 처리
+    // 수정, 삭제버튼 이벤트핸들링 처리
     menuList.addEventListener("click", (e) => {
         if(e.target.classList.contains("menu-edit-button")) {
             const reMenuName = e.target.closest("li").querySelector(".menu-name"),
             updatedMenu = prompt("메뉴명을 수정하세요", reMenuName.innerText);
             reMenuName.innerText = updatedMenu;
+        }
+
+        if(e.target.classList.contains("menu-remove-button")) {
+            if(confirm("정말 삭제하시겠습니까?")) {
+                e.target.closest("li").remove();
+                countMenu();
+            }
         }
     })
 
@@ -30,9 +37,14 @@ function App() {
             "beforeend", 
             menuItemTemplate(espressoMenuName)
         );
+        countMenu();
+        menuName.value = "";
+    }
+
+    // 갯수 카운팅 함수
+    const countMenu = () => {
         const menuCnt = menuList.querySelectorAll("li").length;
         menuCount.innerText = `총 ${menuCnt} 개`;
-        menuName.value = "";
     }
 
     // 확인 버튼에 대한 이벤트 핸들링

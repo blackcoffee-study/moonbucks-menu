@@ -23,7 +23,29 @@ const createListItem = (menuName) => {
   </li>`;
 };
 
+const isBtn = (btnClassName, eventTaget) => {
+    if (eventTaget.classList.contains(btnClassName)) return true;
+    return false;
+};
+
+const updateMenuName = (menuEditBtn) => {
+    // const menuEditBtn = clickEvent.target;
+    const parentEl = menuEditBtn.parentElement;
+    const curMenuName = parentEl.querySelector(".menu-name");
+    const newMenuName = prompt(
+        "새로운 메뉴 이름을 입력하세요.",
+        curMenuName.innerHTML
+    );
+
+    if (!newMenuName) return;
+    curMenuName.innerHTML = newMenuName;
+};
+
 const init = () => {
+    // $("#espresso-menu-submit-button").addEventListener("keydown", () => {
+    //     // click과 같은 이벤트 발생
+    // });
+
     $("#espresso-menu-submit-button").addEventListener("click", () => {
         const menuNameInput = $("#espresso-menu-name");
 
@@ -35,14 +57,12 @@ const init = () => {
         );
 
         menuNameInput.value = "";
+    });
 
-        $(".menu-edit-button").addEventListener("click", (e) => {
-            const parentEl = e.target.parentElement;
-            const curMenuName = parentEl.querySelector(".menu-name");
-            const newMenuName = prompt("새로운 메뉴 이름을 입력하세요.");
-
-            if (newMenuName) curMenuName.innerHTML = newMenuName;
-        });
+    $("#espresso-menu-list").addEventListener("click", (e) => {
+        if (isBtn("menu-edit-button", e.target)) {
+            updateMenuName(e.target);
+        }
     });
 };
 

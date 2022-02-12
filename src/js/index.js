@@ -29,4 +29,5 @@ const addMenu = () => {
 menuForm.addEventListener("submit", (e) => {
   e.preventDefault();
   addMenu();
+  menuInput.value = "";
 });

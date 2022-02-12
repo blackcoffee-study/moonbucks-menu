@@ -23,7 +23,7 @@ const createMenuItem = (name) => {
 };
 
 const addMenu = () => {
-  createMenuItem(menuInput.value);
+  if (menuInput.value.trim()) createMenuItem(menuInput.value);
 };
 
 menuForm.addEventListener("submit", (e) => {

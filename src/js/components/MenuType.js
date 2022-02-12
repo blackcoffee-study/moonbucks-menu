@@ -1,3 +1,3 @@
 export default (target, menu) => {
-    target.innerHTML = `${menu} 메뉴 관리`;
+    target.textContent = `${menu} 메뉴 관리`;
 };

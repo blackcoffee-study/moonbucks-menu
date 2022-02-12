@@ -1,3 +1,3 @@
 export default (target, count) => {
-    target.innerHTML = `총 ${count}개`;
+    target.textContent = `총 ${count}개`;
 };

@@ -19,7 +19,7 @@ function addEspressoMenu(newEspresso) {
   li.className = "menu-list-item d-flex items-center py-2";
   const span = setSpan(newEspresso);
   const editButton = setEditButton();
-  const removeButton = setRemoteButton();
+  const removeButton = setRemoveButton();
   li.appendChild(span);
   li.appendChild(editButton);
   li.appendChild(removeButton);
@@ -44,7 +44,7 @@ function setEditButton() {
   return editButton;
 }
 
-function setRemoteButton() {
+function setRemoveButton() {
   const removeButton = document.createElement("button");
   removeButton.className =
     "bg-gray-50 text-gray-500 text-sm menu-remove-button";

@@ -2,7 +2,7 @@ import Component from './core/Component.js';
 import MenuHeader from './components/MenuHeader.js';
 import MenuForm from './components/MenuForm.js';
 import MenuList from './components/MenuList.js';
-import { $ } from './utils/dom.js';
+import { $, generateID } from './utils/index.js';
 
 export default class App extends Component {
   init() {
@@ -19,16 +19,63 @@ export default class App extends Component {
       `;
   }
 
-  // 렌더가 된 이후에 여기서 호출해서 보내줌
   componentDidMount() {
+    const { menuItems, addMenu, updateMenu, deleteMenu } = this;
     const $menuHeader = $('[data-component="menu-header"]');
     const $menuForm = $('[data-component="menu-form"]');
     const $menuList = $('[data-component="menu-list"]');
 
-    new MenuHeader($menuHeader, this.state.menuItems);
-    new MenuForm($menuForm);
-    new MenuList($menuList);
+    new MenuHeader($menuHeader, { menuItems });
+    new MenuForm($menuForm, { addMenu: addMenu.bind(this) });
+    new MenuList($menuList, {
+      menuItems,
+      updateMenu: updateMenu.bind(this),
+      deleteMenu: deleteMenu.bind(this),
+    });
   }
 
-  // 이벤트들을 설정해서 내려주어야함
+  get menuItems() {
+    return this.state.menuItems;
+  }
+
+  addMenu(menuName) {
+    if (menuName.trim() === '') return;
+
+    this.setState({
+      ...this.state,
+      ...{
+        menuItems: [
+          ...this.menuItems,
+          {
+            id: generateID(this.menuItems),
+            menuName,
+          },
+        ],
+      },
+    });
+  }
+
+  updateMenu(newMenuName, targetID) {
+    const updatedMenuItems = this.menuItems.map(menuItem =>
+      menuItem.id === targetID ? { ...menuItem, menuName: newMenuName } : menuItem
+    );
+
+    this.setState({
+      ...this.state,
+      ...{
+        menuItems: updatedMenuItems,
+      },
+    });
+  }
+
+  deleteMenu(targetID) {
+    const deletedMenuItems = this.menuItems.filter(({ id }) => id !== targetID);
+
+    this.setState({
+      ...this.state,
+      ...{
+        menuItems: deletedMenuItems,
+      },
+    });
+  }
 }

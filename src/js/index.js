@@ -44,9 +44,7 @@ const onKeyPress = (e) => {
 
 //메뉴 리스트 파싱
 const parseMenu = () => {
-  const template = store[MENU.EspressoMenu]
-    .map((menu) => MENU_ITEM(menu))
-    .join("");
+  const template = store[MENU.EspressoMenu].map(MENU_ITEM).join("");
 
   menuContainer.innerHTML = template;
 };

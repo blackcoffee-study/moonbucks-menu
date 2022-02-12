@@ -67,7 +67,7 @@ export default function MoonBucks() {
     }
 
     const updateMenuList = (before, after) => {
-        for (let i = 0; this.menuLists[this.currentMenuType].length; i++) {
+        for (let i = 0; i < this.menuLists[this.currentMenuType].length; i++) {
             if (this.menuLists[this.currentMenuType][i] === before) {
                 this.menuLists[this.currentMenuType][i] = after;
                 break;

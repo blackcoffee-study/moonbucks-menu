@@ -6,7 +6,6 @@ import MenuCount from "./components/MenuCount.js";
 export default function MoonBucks() {
     const $espressoMenuList = $('#espresso-menu-list');
     const $espressoMenuName = $('#espresso-menu-name');
-    const $espressoMenuSubmitButton = $('#espresso-menu-submit-button');
     const $menuForm = $("#espresso-menu-form");
     const $menuTypeHeading = $("#menu-type-heading");
     const $menuTypeNav = $("#menu-type-nav");
@@ -35,9 +34,10 @@ export default function MoonBucks() {
     }
 
     const setEventListener = () => {
-        $menuForm.addEventListener('submit', e => e.preventDefault());
-        $espressoMenuSubmitButton.addEventListener('click', addMenuList);
-        $espressoMenuName.addEventListener('keypress', isEnter);
+        $menuForm.addEventListener('submit', e => {
+            e.preventDefault();
+            addMenuList();
+        });
         $espressoMenuList.addEventListener('click', listHandler);
         $menuTypeNav.addEventListener('click', changeCurrentMenuType);
     }

@@ -72,13 +72,13 @@ espressoMenuSubmitButton.addEventListener("click", handleToSubmitMenu);
 
 function editMenuName(event) {
   const li = event.target.parentElement;
-  let newMenuName = prompt(EDIT_INPUT);
+  const span = li.children[0];
+  let newMenuName = prompt(EDIT_INPUT, span.innerText);
   newMenuName = isEmpty(newMenuName);
   if (!newMenuName) return;
   espressoMenus.forEach((espressoMenu) => {
     if (espressoMenu.id == parseInt(li.id)) {
       espressoMenu.menu = newMenuName;
-      const span = li.children[0];
       span.innerText = newMenuName;
     }
   });

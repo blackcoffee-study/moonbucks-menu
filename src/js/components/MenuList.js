@@ -40,7 +40,7 @@ export default function MenuList({ initialState, editMenu, removeMenu }) {
       // Event delegate
       if (e.target.classList.contains('menu-edit-button')) {
         const editedMenu = prompt('수정할 메뉴 이름을 입력해주세요.');
-        if (editedMenu !== null) {
+        if (editedMenu !== null && editedMenu !== '') {
           editMenu(e.target.closest('li').getAttribute('index'), editedMenu);
         }
       }

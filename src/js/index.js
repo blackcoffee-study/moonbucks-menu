@@ -48,7 +48,7 @@ function App() {
             </button>
         </li>`;
 
-    $list.innerHTML += $menuItemTemplate;
+    $list.insertAdjacentHTML("beforeend", $menuItemTemplate);
     $input.value = "";
 
     updateMenuCount();
@@ -60,16 +60,16 @@ function App() {
     const $menuName = $listItem.querySelector(".menu-name");
     const newMenuName = prompt(
       "수정할 메뉴명을 적어주세요.",
-      $menuName.innerText
+      $menuName.textContent
     );
 
-    if (newMenuName === $menuName.innerText) {
+    if (newMenuName === $menuName.textContent) {
       alert("기존과 동일한 메뉴명입니다.");
     } else if (newMenuName === "") {
       alert("값을 입력해주세요.");
       return;
     } else if (newMenuName !== null) {
-      $menuName.innerText = newMenuName;
+      $menuName.textContent = newMenuName;
     }
   }
 
@@ -83,7 +83,7 @@ function App() {
 
   function updateMenuCount() {
     const menuCount = $list.querySelectorAll("li").length;
-    $counter.innerText = `총 ${menuCount} 개`;
+    $counter.textContent = `총 ${menuCount} 개`;
   }
 }
 

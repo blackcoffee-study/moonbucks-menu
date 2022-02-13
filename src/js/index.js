@@ -4,6 +4,13 @@ const btnSubmit= document.querySelector("#espresso-menu-submit-button");
 const menuList = document.querySelector("#espresso-menu-list");
 const btnDelete = document.querySelector('.menu-remove-button');
 const btnEdit = document.querySelector('.menu-edit-button');
+const numberOfMenu = document.querySelector('.menu-count');
+
+function countMenu(){
+	let count = menuList.childElementCount
+	numberOfMenu.innerHTML=`총 ${count}개`
+}
+
 
 function createNewMenu(name){
 	menuList.innerHTML += `<li class="menu-list-item d-flex items-center py-2">
@@ -21,6 +28,7 @@ function createNewMenu(name){
     삭제
   </button>
 </li>`;
+	countMenu()
 }
 
 btnSubmit.addEventListener("click", (e) => {

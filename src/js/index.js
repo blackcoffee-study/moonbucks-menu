@@ -1,7 +1,7 @@
 import { MENU, BUTTON_TYPE, TEXT } from "./consts.js";
 import { MENU_ITEM } from "./components/menuItem.js";
 import { store } from "./store.js";
-import { isEmpty } from "./utils/validation.js";
+import { inputValidator } from "./utils/utils.js";
 
 const menuContainer = document.querySelector("#espresso-menu-list");
 
@@ -16,15 +16,12 @@ const setMenuCount = () => {
 const addMenu = () => {
   const menuInput = document.querySelector("#espresso-menu-name");
 
-  if (isEmpty(menuInput.value)) {
+  if (inputValidator(store[MENU.EspressoMenu], menuInput.value)) {
     menuInput.value = "";
     menuInput.focus();
-    alert(TEXT.MENU_INPUT_EMPTY);
 
     return;
   }
-
-  // if(isExist())
 
   const menu = {
     id: store[MENU.EspressoMenu].length + 1,
@@ -67,7 +64,7 @@ const updateMenu = (target) => {
   const { menuId } = target.parentNode.dataset;
   const updatedText = prompt(TEXT.MENU_UPDATE);
 
-  if (isEmpty(updatedText)) {
+  if (inputValidator(store[MENU.EspressoMenu], updatedText)) {
     return;
   }
 

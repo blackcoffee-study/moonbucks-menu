@@ -22,6 +22,7 @@ export const BUTTON_TYPE = {
 
 export const TEXT = {
   MENU_INPUT_EMPTY: "값을 입력해 주세요.",
+  MENU_EXIST: "해당 메뉴는 이미 존재합니다.",
   MENU_UPDATE: "메뉴명을 수정하세요.",
   MENU_DELETE: "정말 삭제하시겠습니까?",
 };

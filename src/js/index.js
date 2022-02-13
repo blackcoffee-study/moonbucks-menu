@@ -17,6 +17,7 @@ const setMenuCount = () => {
 const addMenu = () => {
   if (isEmpty(menuInput.value)) {
     menuInput.value = "";
+    menuInput.focus();
     alert(TEXT.MENU_INPUT_EMPTY);
 
     return;
@@ -29,17 +30,9 @@ const addMenu = () => {
 
   store[MENU.EspressoMenu] = [...store[MENU.EspressoMenu], menu];
   menuInput.value = "";
+  menuInput.focus();
 
   render();
-};
-
-//메뉴 추가 엔터키 사용 처리
-const onKeyPress = (e) => {
-  if (e.key !== "Enter") {
-    return;
-  }
-
-  addMenu();
 };
 
 //메뉴 리스트 파싱
@@ -86,6 +79,12 @@ const updateMenu = (target) => {
   render();
 };
 
+// 메뉴 추가 폼 이벤트 핸들러
+const formEventHandler = (e) => {
+  e.preventDefault();
+  addMenu();
+};
+
 //메뉴 클릭 이벤트 핸들러
 const menuEventHandler = (e) => {
   const { target } = e;
@@ -103,8 +102,7 @@ const eventHandler = () => {
   const menuForm = document.querySelector("#espresso-menu-form");
   const menuSubmitBtn = document.querySelector("#espresso-menu-submit-button");
 
-  menuForm.addEventListener("submit", (e) => e.preventDefault());
-  menuInput.addEventListener("keypress", onKeyPress);
+  menuForm.addEventListener("submit", formEventHandler);
   menuSubmitBtn.addEventListener("click", addMenu);
   menuContainer.addEventListener("click", menuEventHandler);
 };

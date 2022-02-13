@@ -44,12 +44,13 @@ function deleteMenu(e){
 
 function editMenu(e){
   const menuName = (e.target.previousElementSibling)
-  menuName.innerHTML =  prompt('어떤 이름으로 바꾸시겠습니까?')
+  const newName = prompt('어떤 이름으로 바꾸시겠습니까?')
+  newName.trim() && (menuName.innerHTML = newName)
 }
 
 btnSubmit.addEventListener("click", (e) => {
 	e.preventDefault();
-	check();
+	checkInput();
 });
 
 menuForm.addEventListener("submit", (e) => {

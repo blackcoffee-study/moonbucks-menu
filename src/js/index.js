@@ -7,7 +7,7 @@ const submitBtn = $("#espresso-menu-submit-button");
 const menuCount = $(".menu-count");
 
 const createMenuItem = (name) => {
-  menuList.innerHTML += `<li class="menu-list-item d-flex items-center py-2">
+  const menuItemTemplate = `<li class="menu-list-item d-flex items-center py-2">
       <span class="w-100 pl-2 menu-name">${name}</span>
       <button
         type="button"
@@ -22,6 +22,7 @@ const createMenuItem = (name) => {
         삭제
       </button>
     </li >`;
+  menuList.innerHTML += menuItemTemplate;
 };
 
 const addMenu = () => {

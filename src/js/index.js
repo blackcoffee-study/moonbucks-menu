@@ -56,16 +56,16 @@ function setRemoveButton() {
 }
 
 function handleToSubmitMenu(event) {
-
-  const newEspressoMenu = isEmpty($espressoMenuName.value);
+  const newEspressoMenu = $espressoMenuName.value;
   $espressoMenuName.value = "";
-  if (!newEspressoMenu) return;
-  const newEspressoObj = {
-    menu: newEspressoMenu,
-    id: Date.now(),
-  };
-  espressoMenus.push(newEspressoObj);
-  addEspressoMenu(newEspressoObj);
+  if (isEmpty(newEspressoMenu)) {
+    const newEspressoObj = {
+      menu: newEspressoMenu,
+      id: Date.now(),
+    };
+    espressoMenus.push(newEspressoObj);
+    addEspressoMenu(newEspressoObj);
+  }
 }
 
 function handleToSubmitWithEnter(event) {
@@ -89,14 +89,16 @@ function editMenuName(target) {
   const li = target.parentElement;
   const span = li.querySelector(".menu-name");
   let newMenuName = prompt(EDIT_INPUT, span.textContent);
-  newMenuName = isEmpty(newMenuName);
-  if (!newMenuName) return;
-  espressoMenus.forEach((espressoMenu) => {
-    if (espressoMenu.id == parseInt(li.id)) {
-      espressoMenu.menu = newMenuName;
-      span.textContent = newMenuName;
+  if (newMenuName) {
+    if (isEmpty(newMenuName)) {
+      espressoMenus.forEach((espressoMenu) => {
+        if (espressoMenu.id == parseInt(li.id)) {
+          espressoMenu.menu = newMenuName;
+          span.textContent = newMenuName;
+        }
+      });
     }
-  });
+  }
 }
 
 function deleteMenu(target) {

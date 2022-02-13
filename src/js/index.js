@@ -55,8 +55,8 @@ function setRemoveButton() {
   return removeButton;
 }
 
-function handleToSubmitMenu(event) {
-  const newEspressoMenu = $espressoMenuName.value;
+function handleToSubmitMenu() {
+  const newEspressoMenu = $espressoMenuName.value.trim();
   $espressoMenuName.value = "";
   if (isEmpty(newEspressoMenu)) {
     const newEspressoObj = {
@@ -90,11 +90,13 @@ function editMenuName(target) {
   const span = li.querySelector(".menu-name");
   let newMenuName = prompt(EDIT_INPUT, span.textContent);
   if (newMenuName) {
+    newMenuName = newMenuName.trim();
     if (isEmpty(newMenuName)) {
       espressoMenus.forEach((espressoMenu) => {
         if (espressoMenu.id == parseInt(li.id)) {
           espressoMenu.menu = newMenuName;
           span.textContent = newMenuName;
+          console.log(newMenuName, newMenuName.length);
         }
       });
     }
@@ -115,4 +117,11 @@ function deleteMenu(target) {
 
 function getMenuCount() {
   $menuCount.textContent = `총 ${espressoMenus.length}개`;
+}
+
+// trim polyfill
+if (!String.prototype.trim) {
+  String.prototype.trim = function () {
+    return this.replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g, "");
+  };
 }

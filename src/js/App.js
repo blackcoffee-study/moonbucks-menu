@@ -23,5 +23,8 @@ export default function App($app) {
       nextMenu.splice(index, 1, editedMenu);
       this.setState(nextMenu);
     },
+    removeMenu: (currentIndex) => {
+      this.setState(this.state.filter((_, index) => index !== currentIndex));
+    },
   });
 }

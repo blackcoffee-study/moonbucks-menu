@@ -56,7 +56,7 @@ function setRemoveButton() {
 }
 
 function handleToSubmitMenu(event) {
-  event.preventDefault();
+
   const newEspressoMenu = isEmpty($espressoMenuName.value);
   $espressoMenuName.value = "";
   if (!newEspressoMenu) return;
@@ -68,17 +68,26 @@ function handleToSubmitMenu(event) {
   addEspressoMenu(newEspressoObj);
 }
 
-$espressoMenuForm.addEventListener("submit", handleToSubmitMenu);
+function handleToSubmitWithEnter(event) {
+  if (event.keyCode === 13) {
+    event.preventDefault();
+    $espressoMenuSubmitButton.click();
+  }
+}
+
+$espressoMenuForm.addEventListener("submit", (event) => event.preventDefault());
+$espressoMenuName.addEventListener("keyup", handleToSubmitWithEnter);
 $espressoMenuSubmitButton.addEventListener("click", handleToSubmitMenu);
 
 function updateMenuItem({ target }) {
-  if (target.classList.contains("menu-edit-button")) editMenuName(target);
-  if (target.classList.contains("menu-remove-button")) deleteMenu(target);
+  const { classList } = target;
+  if (classList.contains("menu-edit-button")) editMenuName(target);
+  if (classList.contains("menu-remove-button")) deleteMenu(target);
 }
 
 function editMenuName(target) {
   const li = target.parentElement;
-  const span = li.children[0];
+  const span = li.querySelector(".menu-name");
   let newMenuName = prompt(EDIT_INPUT, span.textContent);
   newMenuName = isEmpty(newMenuName);
   if (!newMenuName) return;

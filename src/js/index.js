@@ -2,8 +2,6 @@ const menuForm = document.querySelector("#espresso-menu-form");
 const menuInput = document.querySelector("#espresso-menu-name");
 const btnSubmit= document.querySelector("#espresso-menu-submit-button");
 const menuList = document.querySelector("#espresso-menu-list");
-const btnDelete = document.querySelector('.menu-remove-button');
-const btnEdit = document.querySelector('.menu-edit-button');
 const numberOfMenu = document.querySelector('.menu-count');
 
 function countMenu(){
@@ -42,3 +40,13 @@ menuForm.addEventListener("submit", (e) => {
 	menuInput.value.trim() && createNewMenu(menuInput.value)
 	menuInput.value=''
 });
+
+menuList.addEventListener('click', e => {
+  if(e.target.classList.contains('menu-remove-button')){
+    const menuLi = e.target.closest('li')
+    if (confirm('정말로 삭제하시겠습니까?')){
+      menuList.removeChild(menuLi)
+      countMenu()
+    }
+  }
+})

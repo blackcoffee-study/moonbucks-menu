@@ -1,6 +1,6 @@
-import MenuCount from "./MenuCount.js";
-import MenuInput from "./MenuInput.js";
-import MenuList from "./MenuList.js";
+import MenuCount from './MenuCount.js';
+import MenuInput from './MenuInput.js';
+import MenuList from './MenuList.js';
 
 export default function App($app) {
   this.$target = $app;

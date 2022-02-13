@@ -15,5 +15,13 @@ export default function App($app) {
       this.setState([...this.state, newMenu]);
     },
   });
-  const menuList = new MenuList({ initalState: this.state });
+
+  const menuList = new MenuList({
+    initalState: this.state,
+    editMenu: (index, editedMenu) => {
+      const nextMenu = [...this.state];
+      nextMenu.splice(index, 1, editedMenu);
+      this.setState(nextMenu);
+    },
+  });
 }

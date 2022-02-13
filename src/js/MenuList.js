@@ -1,4 +1,4 @@
-export default function MenuList(initialState) {
+export default function MenuList({ initialState, editMenu }) {
   this.$menuList = document.querySelector("#espresso-menu-list");
 
   this.state = initialState;
@@ -9,7 +9,6 @@ export default function MenuList(initialState) {
   };
 
   this.render = () => {
-    console.log(this.state);
     this.$menuList.innerHTML = Array.isArray(this.state)
       ? `${this.state
           .map(
@@ -36,5 +35,20 @@ export default function MenuList(initialState) {
       : "";
   };
 
+  this.setEvent = () => {
+    this.$menuList.addEventListener("click", (e) => {
+      // Event delegate
+      if (e.target.classList.contains("menu-edit-button")) {
+        const editedMenu = prompt("수정할 메뉴 이름을 입력해주세요.");
+        editMenu(e.target.closest("li").getAttribute("index"), editedMenu);
+        // 수정 prompt
+      }
+      if (e.target.classList.contains("menu-remove-button")) {
+        // 삭제 confirm
+      }
+    });
+  };
+
   this.render();
+  this.setEvent();
 }

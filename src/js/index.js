@@ -18,6 +18,7 @@ function addEspressoMenu(newEspresso) {
   const span = setSpan(newEspresso);
   const editButton = setEditButton();
   const removeButton = setRemoveButton();
+  li.addEventListener("click", updateMenuItem);
   li.append(span, editButton, removeButton);
   $espressoMenuList.append(li);
   getMenuCount();
@@ -42,7 +43,6 @@ function setEditButton() {
     "bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button";
   editButton.setAttribute("type", "button");
   editButton.textContent = "수정";
-  editButton.addEventListener("click", editMenuName);
   return editButton;
 }
 
@@ -52,7 +52,6 @@ function setRemoveButton() {
     "bg-gray-50 text-gray-500 text-sm menu-remove-button";
   removeButton.setAttribute("type", "button");
   removeButton.textContent = "삭제";
-  removeButton.addEventListener("click", deleteMenu);
   return removeButton;
 }
 
@@ -72,8 +71,13 @@ function handleToSubmitMenu(event) {
 $espressoMenuForm.addEventListener("submit", handleToSubmitMenu);
 $espressoMenuSubmitButton.addEventListener("click", handleToSubmitMenu);
 
-function editMenuName(event) {
-  const li = event.target.parentElement;
+function updateMenuItem({ target }) {
+  if (target.classList.contains("menu-edit-button")) editMenuName(target);
+  if (target.classList.contains("menu-remove-button")) deleteMenu(target);
+}
+
+function editMenuName(target) {
+  const li = target.parentElement;
   const span = li.children[0];
   let newMenuName = prompt(EDIT_INPUT, span.textContent);
   newMenuName = isEmpty(newMenuName);
@@ -86,10 +90,10 @@ function editMenuName(event) {
   });
 }
 
-function deleteMenu(event) {
+function deleteMenu(target) {
   const answer = confirm(DELETE_CHECK);
   if (answer) {
-    const li = event.target.parentElement;
+    const li = target.parentElement;
     espressoMenus = espressoMenus.filter(
       (espresso) => espresso.id !== parseInt(li.id)
     );

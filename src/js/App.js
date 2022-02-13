@@ -1,3 +1,4 @@
+import MenuCount from "./MenuCount.js";
 import MenuInput from "./MenuInput.js";
 import MenuList from "./MenuList.js";
 
@@ -8,7 +9,12 @@ export default function App($app) {
   this.setState = (nextState) => {
     this.state = nextState;
     menuList.setState(nextState);
+    menuCount.setState(nextState);
   };
+
+  const menuCount = new MenuCount({
+    initialState: this.state,
+  });
 
   const menuInput = new MenuInput({
     addMenu: (newMenu) => {

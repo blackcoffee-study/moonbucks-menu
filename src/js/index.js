@@ -26,29 +26,39 @@ function createNewMenu(name){
     삭제
   </button>
 </li>`;
-	countMenu()
+	countMenu();
+}
+
+function checkInput(){
+  menuInput.value.trim() && createNewMenu(menuInput.value);
+	menuInput.value = "";
+}
+
+function deleteMenu(e){
+  const menuLi = e.target.closest('li');
+    if (confirm('정말로 삭제하시겠습니까?')){
+      menuList.removeChild(menuLi);
+      countMenu();
+    }
+}
+
+function editMenu(e){
+  const menuName = (e.target.previousElementSibling)
+  menuName.innerHTML =  prompt('어떤 이름으로 바꾸시겠습니까?')
 }
 
 btnSubmit.addEventListener("click", (e) => {
 	e.preventDefault();
-	menuInput.value.trim() && createNewMenu(menuInput.value);
-	menuInput.value = "";
+	check();
 });
 
 menuForm.addEventListener("submit", (e) => {
 	e.preventDefault();
-	menuInput.value.trim() && createNewMenu(menuInput.value)
-	menuInput.value=''
+	checkInput();
 });
 
-function deleteMenu(e){
-  const menuLi = e.target.closest('li')
-    if (confirm('정말로 삭제하시겠습니까?')){
-      menuList.removeChild(menuLi)
-      countMenu()
-    }
-}
 
 menuList.addEventListener('click', e => {
-  if(e.target.classList.contains('menu-remove-button')) return deleteMenu(e)
+  if(e.target.classList.contains('menu-remove-button')) return deleteMenu(e);
+  if(e.target.classList.contains('menu-edit-button')) return editMenu(e);
 })

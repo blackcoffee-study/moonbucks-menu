@@ -41,12 +41,14 @@ menuForm.addEventListener("submit", (e) => {
 	menuInput.value=''
 });
 
-menuList.addEventListener('click', e => {
-  if(e.target.classList.contains('menu-remove-button')){
-    const menuLi = e.target.closest('li')
+function deleteMenu(e){
+  const menuLi = e.target.closest('li')
     if (confirm('정말로 삭제하시겠습니까?')){
       menuList.removeChild(menuLi)
       countMenu()
     }
-  }
+}
+
+menuList.addEventListener('click', e => {
+  if(e.target.classList.contains('menu-remove-button')) return deleteMenu(e)
 })

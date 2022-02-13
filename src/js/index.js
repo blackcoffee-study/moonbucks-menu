@@ -1,8 +1,10 @@
-const menuForm = document.getElementById("espresso-menu-form");
-const menuInput = document.getElementById("espresso-menu-name");
-const menuList = document.getElementById("espresso-menu-list");
-const submitBtn = document.getElementById("espresso-menu-submit-button");
-const menuCount = document.querySelector(".menu-count");
+const $ = (selector) => document.querySelector(selector);
+
+const menuForm = $("#espresso-menu-form");
+const menuInput = $("#espresso-menu-name");
+const menuList = $("#espresso-menu-list");
+const submitBtn = $("#espresso-menu-submit-button");
+const menuCount = $(".menu-count");
 
 const createMenuItem = (name) => {
   menuList.innerHTML += `<li class="menu-list-item d-flex items-center py-2">

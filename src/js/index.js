@@ -22,7 +22,7 @@ const createMenuItem = (name) => {
         삭제
       </button>
     </li >`;
-  menuList.innerHTML += menuItemTemplate;
+  menuList.insertAdjacentHTML("afterbegin", menuItemTemplate);
 };
 
 const addMenu = () => {
@@ -52,3 +52,7 @@ menuList.addEventListener("click", (e) => {
   }
   countMenu();
 });
+
+// insertAdjacentHtml, closest
+// updateMenu, removeMenu 함수 생성
+// 모듈 분리

@@ -36,7 +36,7 @@ const addMenu = () => {
 };
 
 //메뉴 리스트 파싱
-const parseMenu = () => {
+const menuListRender = () => {
   const template = store[MENU.EspressoMenu].map(MENU_ITEM).join("");
 
   menuContainer.innerHTML = template;
@@ -110,7 +110,7 @@ const eventHandler = () => {
 //렌더 함수
 const render = () => {
   setMenuCount();
-  parseMenu();
+  menuListRender();
 };
 
 const init = () => {

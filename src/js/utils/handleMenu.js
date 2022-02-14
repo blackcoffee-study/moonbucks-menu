@@ -1,6 +1,6 @@
 import Menu from '../data/menu.js';
 import { getmenulistElement } from './elements.js';
-import { $ } from './utils/common.js';
+import { $ } from './common.js';
 
 /*TODO : 메뉴 카테고리화 적용*/
 

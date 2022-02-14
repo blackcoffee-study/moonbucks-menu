@@ -12,7 +12,7 @@ const menuCountTag = $('.menu-count');
 function addMenu() {
 	let menuName = menuNameTag.value;
 	if(menuName && menuName !== '') {
-    menuListUlTag.innerHTML += getmenulistElement(menuName);
+    menuListUlTag.insertAdjacentHTML('beforeend', getmenulistElement(menuName));
     document.querySelector('#espresso-menu-name').value = '';
     Menu.push(menuName);
     //커피 개수 증가

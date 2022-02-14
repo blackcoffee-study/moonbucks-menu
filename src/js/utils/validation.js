@@ -3,11 +3,7 @@ export const isEmpty = (value) => {
   // 공백 정규식
   const regExp = / /g;
 
-  if (!value || value.replace(regExp, "") === "") {
-    return true;
-  }
-
-  return false;
+  return !value || value.replace(regExp, "") === "";
 };
 
 // 중복 validation
@@ -17,7 +13,7 @@ export const isDuplicated = (items, value) => {
   const replaced = (str) => str.replace(regExp, "");
 
   const result = items.find((item) => {
-    if (replaced(item.name) === replaced(value)) return true;
+    return replaced(item.name) === replaced(value);
   });
 
   return result;

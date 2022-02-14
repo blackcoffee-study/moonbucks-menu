@@ -7,7 +7,9 @@ export const inputValidator = (items, value) => {
     alert(TEXT.MENU_INPUT_EMPTY);
 
     return true;
-  } else if (isDuplicated(items, value)) {
+  }
+
+  if (isDuplicated(items, value)) {
     alert(TEXT.MENU_EXIST);
 
     return true;

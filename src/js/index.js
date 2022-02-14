@@ -43,9 +43,4 @@ const render = () => {
   });
 };
 
-// setInterval(() => {
-//   state.menuList.push({ id: "c-01", category: "coffee", name: "아메리카노" });
-//   render();
-// }, 5000);
-
 render();

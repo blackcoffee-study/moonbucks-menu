@@ -33,6 +33,16 @@ const countMenu = () => {
   menuCount.innerText = `총 ${menuList.childElementCount}개`;
 };
 
+const editMenu = () => {
+  e.target.previousSibling.previousSibling.innerText = window.prompt(
+    "메뉴를 수정해주세요",
+    e.target.previousSibling.previousSibling.innerText
+  );
+};
+const removeMenu = (e) => {
+  if (window.confirm("메뉴를 삭제하시겠습니까?")) e.target.parentNode.remove();
+};
+
 menuForm.addEventListener("submit", (e) => {
   e.preventDefault();
   if (menuInput.value.trim()) addMenu();
@@ -42,17 +52,13 @@ menuForm.addEventListener("submit", (e) => {
 
 menuList.addEventListener("click", (e) => {
   if (e.target.classList.contains("menu-remove-button")) {
-    if (window.confirm("메뉴를 삭제하시겠습니까?"))
-      e.target.parentNode.remove();
-  } else {
-    e.target.previousSibling.previousSibling.innerText = window.prompt(
-      "메뉴를 수정해주세요",
-      e.target.previousSibling.previousSibling.innerText
-    );
+    removeMenu(e);
+  }
+  if (e.target.classList.contains("menu-edit-button")) {
+    editMenu(e);
   }
   countMenu();
 });
 
-// insertAdjacentHtml, closest
-// updateMenu, removeMenu 함수 생성
+// closest
 // 모듈 분리

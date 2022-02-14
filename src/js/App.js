@@ -40,7 +40,7 @@ export default function MoonBucks() {
             e.preventDefault();
             addMenuList();
         });
-        $espressoMenuList.addEventListener('click', listHandler);
+        $espressoMenuList.addEventListener('click', menuListHandler);
         $menuTypeNav.addEventListener('click', changeCurrentMenuType);
     }
 

@@ -11,7 +11,7 @@ export const isEmpty = (value) => {
 };
 
 // 중복 validation
-export const isExist = (items, value) => {
+export const isDuplicated = (items, value) => {
   // 특수문자 공백 정규식
   const regExp = /[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"\s]/g;
   const replaced = (str) => str.replace(regExp, "");

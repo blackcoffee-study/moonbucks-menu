@@ -12,9 +12,7 @@ export const isDuplicated = (items, value) => {
   const regExp = /[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"\s]/g;
   const replaced = (str) => str.replace(regExp, "");
 
-  const result = items.find((item) => {
+  return items.find((item) => {
     return replaced(item.name) === replaced(value);
   });
-
-  return result;
 };

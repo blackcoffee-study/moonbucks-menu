@@ -37,19 +37,17 @@ export default class App extends Component {
   }
 
   addMenu(menuName) {
-    if (menuName.trim() === '') return;
+    if (!menuName.trim()) return;
 
     this.setState({
       ...this.state,
-      ...{
-        menuItems: [
-          ...this.menuItems,
-          {
-            id: generateID(this.menuItems),
-            menuName,
-          },
-        ],
-      },
+      menuItems: [
+        ...this.menuItems,
+        {
+          id: generateID(this.menuItems),
+          menuName,
+        },
+      ],
     });
   }
 
@@ -60,9 +58,7 @@ export default class App extends Component {
 
     this.setState({
       ...this.state,
-      ...{
-        menuItems: updatedMenuItems,
-      },
+      menuItems: updatedMenuItems,
     });
   }
 
@@ -71,9 +67,7 @@ export default class App extends Component {
 
     this.setState({
       ...this.state,
-      ...{
-        menuItems: deletedMenuItems,
-      },
+      menuItems: deletedMenuItems,
     });
   }
 }

@@ -1,8 +1,7 @@
 const $ = (selector) => document.querySelector(selector);
 
 const isEmpty = (input) => {
-    if (input.value.length) return false;
-    return true;
+    return Boolean(!input.value.length);
 };
 
 const createMenuListItem = (menuName) => {

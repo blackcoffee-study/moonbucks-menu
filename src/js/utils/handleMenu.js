@@ -1,11 +1,12 @@
-import Menu from '../data/menu.js'
+import Menu from '../data/menu.js';
 import { getmenulistElement } from './elements.js';
+import { $ } from './utils/common.js';
 
 /*TODO : 메뉴 카테고리화 적용*/
 
-const menuNameTag = document.querySelector('#espresso-menu-name');
-const menuListUlTag = document.querySelector('#espresso-menu-list');
-const menuCountTag = document.querySelector('.menu-count');
+const menuNameTag = $('#espresso-menu-name');
+const menuListUlTag = $('#espresso-menu-list');
+const menuCountTag = $('.menu-count');
 
 //메뉴 추가
 function addMenu() {
@@ -13,9 +14,9 @@ function addMenu() {
 	if(menuName && menuName !== '') {
     menuListUlTag.innerHTML += getmenulistElement(menuName);
     document.querySelector('#espresso-menu-name').value = '';
-    Menu.push(menuName)
+    Menu.push(menuName);
     //커피 개수 증가
-    changeCountMenu()
+    changeCountMenu();
   }
 }
 
@@ -34,13 +35,13 @@ function removeMenu(menuListLiTag) {
   const message = '해당 메뉴를 삭제하시겠습니까?';
 
   if(confirm(message)) {
-    menuListUlTag.removeChild(menuListLiTag)
+    menuListUlTag.removeChild(menuListLiTag);
   }
-  changeCountMenu()
+  changeCountMenu();
 }
 
 function changeCountMenu() {
   menuCountTag.innerHTML = `총 ${Menu.length}개`
 }
 
-export {addMenu, editMenu, removeMenu} 
+export { addMenu, editMenu, removeMenu };

@@ -24,8 +24,6 @@ const renderWrapper = (component) => {
 
       const component = child($target, state, events);
 
-      component.classList.add("test");
-
       $target.replaceWith(component);
     });
 

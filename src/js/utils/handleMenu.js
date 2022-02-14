@@ -29,7 +29,6 @@ function editMenu(menuListLiTag) {
   }
 }
 
-/*TODO : menu 개수 관련 로직 추가 */
 //메뉴 삭제
 function removeMenu(menuListLiTag) {
   const message = '해당 메뉴를 삭제하시겠습니까?';
@@ -41,7 +40,8 @@ function removeMenu(menuListLiTag) {
 }
 
 function changeCountMenu() {
-  menuCountTag.innerHTML = `총 ${Menu.length}개`
+  const menuCount = $('#espresso-menu-list').querySelectorAll('li').length;
+  menuCountTag.innerHTML = `총 ${menuCount}개`;
 }
 
 export { addMenu, editMenu, removeMenu };

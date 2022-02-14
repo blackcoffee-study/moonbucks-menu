@@ -1,8 +1,10 @@
 export class MenuApp {
     constructor() {
-        const $menuCountSpan = document.getElementById('menu-count');
-
+        const MIN_SPLICE = 1;
         let menuItems = [];
+
+        let menuTitle = new MenuTitle();
+
         let menuList = new MenuList({
             onUpdate(index, contents) {
                 const newMenuItem = new MenuItems(contents);
@@ -10,25 +12,24 @@ export class MenuApp {
                 setState(menuItems);
             },
             onDelete(index) {
-                menuItems.splice(index, 1);
-                $menuCountSpan.innerHTML = `총 ${ menuItems.length }개`;
+                menuItems.splice(index, MIN_SPLICE);
                 setState(menuItems);
             }
         });
-
-        const setState = (updatedItems) => {
-            this.menuItems = updatedItems;
-            menuList.setState(menuItems);
-        };
 
         new MenuInput({
             onAdd(contents) {
                 const newMenuItem = new MenuItems(contents);
                 menuItems.push(newMenuItem);
-                $menuCountSpan.innerHTML = `총 ${ menuItems.length }개`;
                 setState(menuItems);
             },
         });
+
+        const setState = (updatedItems) => {
+            this.menuItems = updatedItems;
+            menuTitle.setState(menuItems);
+            menuList.setState(menuItems);
+        };
     }
 }
 
@@ -39,6 +40,22 @@ class MenuItems {
 
     getName() {
         return this.name;
+    }
+}
+
+class MenuTitle {
+    constructor() {
+        const $menuCountSpan = document.getElementById('menu-count');
+        let itemCount = 0;
+
+        this.setState = (updatedItems) => {
+            itemCount = updatedItems.length;
+            this.render(itemCount);
+        };
+
+        this.render = (itemCount) => {
+            $menuCountSpan.innerHTML = `총 ${ itemCount }개`;
+        };
     }
 }
 
@@ -91,8 +108,12 @@ class MenuList {
             const template = items.map((x, index) => menuItemTemplate(index, x.getName()));
             $menuList.innerHTML = template.join('');
 
+            this.addMenuListEditEventListener();
+            this.addMenuListRemoveEventListener();
+        };
+
+        this.addMenuListEditEventListener = () => {
             const $menusEdits = document.querySelectorAll('.menu-edit-button');
-            const $menusRemoves = document.querySelectorAll('.menu-remove-button');
 
             for(let $menuItem of $menusEdits) {
                 $menuItem.addEventListener('click', function() {
@@ -101,9 +122,15 @@ class MenuList {
 
                     let itemName = prompt('메뉴명을 수정하세요', $menuItemSpan.innerHTML);
 
-                    onUpdate($menuListItem.dataset.menuId, itemName);
+                    if(itemName) {
+                        onUpdate($menuListItem.dataset.menuId, itemName);
+                    }                    
                 });
             }
+        };
+
+        this.addMenuListRemoveEventListener = () => {
+            const $menusRemoves = document.querySelectorAll('.menu-remove-button');
 
             for(let $menuItem of $menusRemoves) {
                 $menuItem.addEventListener('click', function() {

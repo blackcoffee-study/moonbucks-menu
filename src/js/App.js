@@ -86,7 +86,7 @@ export default function MoonBucks() {
         MenuType($menuTypeHeading, MENUTYPE[this.currentMenuType]);
     };
 
-    const listHandler = (e) => {
+    const menuListHandler = (e) => {
         const classList = e.target.classList;
 
         if (classList.contains('menu-edit-button')) {

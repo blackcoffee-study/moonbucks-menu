@@ -4,36 +4,35 @@ const $ = (selector) => {
 
 function App() {
   // init Variables
-  const $form = $("#espresso-menu-form");
-  const $list = $("#espresso-menu-list");
-  const $input = $("#espresso-menu-name");
-  const $btn = $("#espresso-menu-submit-button");
+  const $menuForm = $("#espresso-menu-form");
+  const $menuList = $("#espresso-menu-list");
+  const $menuNameInput = $("#espresso-menu-name");
+  const $submitButton = $("#espresso-menu-submit-button");
   const $counter = $(".menu-count");
 
   // Event Handlers
-  $form.addEventListener("submit", (e) => {
+  $menuForm.addEventListener("submit", (e) => {
     e.preventDefault();
   });
 
-  $input.addEventListener("keypress", (e) => {
-    if (e.key === "Enter" && $input.value !== "") addMenuItem();
+  $menuNameInput.addEventListener("keypress", (e) => {
+    if (e.key === "Enter" && $menuNameInput.value !== "") addMenuItem();
   });
 
-  $btn.addEventListener("click", () => {
-    if ($input.value === "") alert("값을 입력해주세요.");
+  $submitButton.addEventListener("click", () => {
+    if ($menuNameInput.value === "") alert("값을 입력해주세요.");
     else addMenuItem();
   });
 
-  $list.addEventListener("click", (e) => {
-    if (e.target.classList.contains("menu-edit-button")) updateMenuItem(e);
-    else if (e.target.classList.contains("menu-remove-button"))
-      removeMenuItem(e);
+  $menuList.addEventListener("click", (e) => {
+    if (isContainedClass("menu-edit-button", e)) modifyMenuItem(e);
+    else if (isContainedClass("menu-remove-button", e)) removeMenuItem(e);
   });
 
   // Functions
   function addMenuItem() {
     const $menuItemTemplate = `<li class="menu-list-item d-flex items-center py-2">
-            <span class="w-100 pl-2 menu-name">${$input.value}</span>
+            <span class="w-100 pl-2 menu-name">${$menuNameInput.value}</span>
             <button
             type="button"
             class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
@@ -48,14 +47,14 @@ function App() {
             </button>
         </li>`;
 
-    $list.insertAdjacentHTML("beforeend", $menuItemTemplate);
-    $input.value = "";
+    $menuList.insertAdjacentHTML("beforeend", $menuItemTemplate);
+    $menuNameInput.value = "";
 
     updateMenuCount();
-    $input.focus(); // auto focusing
+    $menuNameInput.focus(); // auto focusing
   }
 
-  function updateMenuItem(e) {
+  function modifyMenuItem(e) {
     const $listItem = e.target.closest("li");
     const $menuName = $listItem.querySelector(".menu-name");
     const newMenuName = prompt(
@@ -67,7 +66,6 @@ function App() {
       alert("기존과 동일한 메뉴명입니다.");
     } else if (newMenuName === "") {
       alert("값을 입력해주세요.");
-      return;
     } else if (newMenuName !== null) {
       $menuName.textContent = newMenuName;
     }
@@ -76,14 +74,19 @@ function App() {
   function removeMenuItem(e) {
     const $listItem = e.target.closest("li");
     if (confirm("해당 메뉴를 삭제하시겠습니까?")) {
-      $list.removeChild($listItem);
+      $menuList.removeChild($listItem);
       updateMenuCount();
     }
   }
 
   function updateMenuCount() {
-    const menuCount = $list.querySelectorAll("li").length;
+    const menuCount = $menuList.querySelectorAll("li").length;
     $counter.textContent = `총 ${menuCount} 개`;
+  }
+
+  function isContainedClass(className, e) {
+    if (e.target.classList.contains(className)) return true;
+    else return false;
   }
 }
 

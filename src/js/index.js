@@ -1,17 +1,16 @@
 import { PROMPT, ALERT, CONFIRM, KEY } from './constants/constants.js';
-import { newList } from './template.js';
+import { $ } from './DOM.js';
+import { menuListTemplate } from './template.js';
 
-class EspressoMenu {
+class CafeApp {
   constructor() {
     this.$ = {
-      menuForm: document.querySelector('#espresso-menu-form'),
-      submitBtn: document.querySelector('#espresso-menu-submit-button'),
-      menuInput: document.querySelector('#espresso-menu-name'),
-      ulElement: document.querySelector('#espresso-menu-list'),
+      menuForm: $('#espresso-menu-form'),
+      submitBtn: $('#espresso-menu-submit-button'),
+      menuInput: $('#espresso-menu-name'),
+      menuListUlElement: $('#espresso-menu-list'),
+      menuCount: $('.menu-count'),
       menuListItem: document.getElementsByClassName('menu-list-item'),
-      spanElement: document.getElementsByClassName('menu-name'),
-      menuEditBtn: document.getElementsByClassName('.menu-edit-Button'),
-      menuCount: document.querySelector('.menu-count'),
     };
 
     this.bindEventListeners();
@@ -28,23 +27,19 @@ class EspressoMenu {
   }
 
   isValidInput(input) {
-    let isEmpty = false;
-
-    if (input.value === '') {
+    if (!input.value) {
       window.alert(ALERT.EMPTY);
-      return isEmpty;
-    } else {
-      isEmpty = true;
+      return;
     }
 
-    return isEmpty;
+    return true;
   }
 
   addNewListToUlElement() {
     if (this.isValidInput(this.$.menuInput)) {
-      this.$.ulElement.insertAdjacentHTML(
+      this.$.menuListUlElement.insertAdjacentHTML(
         'beforeend',
-        newList(
+        menuListTemplate(
           this.getInputValue(this.$.menuInput),
           this.updateMenuCount(this.$.menuCount, this.$.menuListItem)
         )
@@ -62,23 +57,25 @@ class EspressoMenu {
   }
 
   editMenuList(target) {
-    const span = target.closest('li').children[0];
+    const menuItem = target.closest('li').children[0];
     let editedItemName = window.prompt(PROMPT.RENAME);
+
+    if (editedItemName) {
+      menuItem.textContent = editedItemName;
+    }
 
     if (!editedItemName) {
       alert(ALERT.RENAME);
-    } else {
-      span.innerText = editedItemName;
     }
   }
 
   itemSoldOut(target) {
-    const span = target.closest('li').children[0];
+    const menuItem = target.closest('li').children[0];
 
-    if (span.classList.contains('sold-out')) {
-      span.classList.remove('sold-out');
+    if (menuItem.classList.contains('sold-out')) {
+      menuItem.classList.remove('sold-out');
     } else {
-      span.classList.add('sold-out');
+      menuItem.classList.add('sold-out');
     }
   }
 
@@ -86,7 +83,7 @@ class EspressoMenu {
     const result = window.confirm(CONFIRM.DELETE);
 
     if (result) {
-      this.$.ulElement.removeChild(target.parentNode);
+      this.$.menuListUlElement.removeChild(target.parentNode);
     }
 
     this.updateMenuCount(this.$.menuCount, this.$.menuListItem);
@@ -108,18 +105,18 @@ class EspressoMenu {
       }
     });
 
-    this.$.ulElement.addEventListener('click', ({ target }) => {
+    this.$.menuListUlElement.addEventListener('click', ({ target }) => {
       if (target.classList.contains('menu-edit-button')) {
         this.editMenuList(target);
-      } else if (target.classList.contains('menu-sold-out-button')) {
+      }
+      if (target.classList.contains('menu-sold-out-button')) {
         this.itemSoldOut(target);
-      } else if (target.classList.contains('menu-remove-button')) {
+      }
+      if (target.classList.contains('menu-remove-button')) {
         this.deleteListItem(target);
-      } else {
-        return;
       }
     });
   }
 }
 
-new EspressoMenu();
+new CafeApp();

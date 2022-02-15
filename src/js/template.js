@@ -1,4 +1,4 @@
-export const newList = (value, count) => {
+export const menuListTemplate = (value, count) => {
   return `
 <li data-name-id="${count}" class="menu-list-item d-flex items-center py-2" >
    <span class="w-100 pl-2 menu-name" >${value}</span>

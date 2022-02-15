@@ -5,9 +5,9 @@ export class MenuApp {
 
         let menuTitle = new MenuTitle();
 
-        let menuList = new MenuList({
-            onUpdate(index, contents) {
-                const newMenuItem = new MenuItems(contents);
+        let menuList = new MenuList(document.getElementById('espresso-menu-list'), {
+            onUpdate(index, menuName) {
+                const newMenuItem = new MenuItems(menuName);
                 menuItems[index] = newMenuItem;
                 setState(menuItems);
             },
@@ -18,8 +18,8 @@ export class MenuApp {
         });
 
         new MenuInput({
-            onAdd(contents) {
-                const newMenuItem = new MenuItems(contents);
+            onAdd(menuName) {
+                const newMenuItem = new MenuItems(menuName);
                 menuItems.push(newMenuItem);
                 setState(menuItems);
             },
@@ -34,8 +34,8 @@ export class MenuApp {
 }
 
 class MenuItems {    
-    constructor(contents) {
-        this.name = contents;
+    constructor(menuName) {
+        this.name = menuName;
     }
 
     getName() {
@@ -75,12 +75,12 @@ class MenuInput {
         };
 
         const isValid = (event, value) => {
-            const ENTER_CODE = 13;
+            const ENTER_KEY = 'Enter';
             const CLICK_TYPE = 'click';
 
-            const eventType = event.keyCode || event.type;
+            const eventType = event.key || event.type;
 
-            if (eventType === ENTER_CODE || eventType === CLICK_TYPE) {
+            if (eventType === ENTER_KEY || eventType === CLICK_TYPE) {
                 event.preventDefault();
 
                 if (value) {
@@ -94,10 +94,9 @@ class MenuInput {
 }
 
 class MenuList {
-    constructor({ onUpdate, onDelete }) {
-        const $menuList = document.getElementById('espresso-menu-list');
-
+    constructor(elem, { onUpdate, onDelete }) {
         let menuItems = [];
+        this._elem = elem;
 
         this.setState = (updatedMenuItems) => {
             menuItems = updatedMenuItems;
@@ -106,44 +105,36 @@ class MenuList {
 
         this.render = (items) => {
             const template = items.map((x, index) => menuItemTemplate(index, x.getName()));
-            $menuList.innerHTML = template.join('');
-
-            this.addMenuListEditEventListener();
-            this.addMenuListRemoveEventListener();
+            this._elem.innerHTML = template.join('');
         };
 
-        this.addMenuListEditEventListener = () => {
-            const $menusEdits = document.querySelectorAll('.menu-edit-button');
+        this._elem.addEventListener('click', e => {
+            const target = e.target;
 
-            for(let $menuItem of $menusEdits) {
-                $menuItem.addEventListener('click', function() {
-                    const $menuListItem = this.closest('.menu-list-item');
-                    const $menuItemSpan = $menuListItem.querySelector('.menu-name');
-
-                    let itemName = prompt('메뉴명을 수정하세요', $menuItemSpan.innerHTML);
-
-                    if(itemName) {
-                        onUpdate($menuListItem.dataset.menuId, itemName);
-                    }                    
-                });
+            if(target && target.dataset.action) {
+                this[target.dataset.action](target);
             }
-        };
+        });
 
-        this.addMenuListRemoveEventListener = () => {
-            const $menusRemoves = document.querySelectorAll('.menu-remove-button');
-
-            for(let $menuItem of $menusRemoves) {
-                $menuItem.addEventListener('click', function() {
-                    const $menuListItem = this.closest('.menu-list-item');
-
-                    let isConfirm = confirm('정말 삭제하시겠습니까?');
-
-                    if(isConfirm) {
-                        onDelete($menuListItem.dataset.menuId);
-                    }
-                });
+        this.update = ($el) => {
+            const $menuListItem = $el.closest('.menu-list-item');
+            const $menuItemSpan = $menuListItem.querySelector('.menu-name');
+    
+            let itemName = prompt('메뉴명을 수정하세요', $menuItemSpan.innerHTML);
+    
+            if(itemName) {
+                onUpdate($menuListItem.dataset.menuId, itemName);
             }
-        };
+        }
+
+        this.delete = ($el) => {
+            const $menuListItem = $el.closest('.menu-list-item');
+            let isConfirm = confirm('정말 삭제하시겠습니까?');
+    
+            if(isConfirm) {
+                onDelete($menuListItem.dataset.menuId);
+            }
+        }
     }
 }
 
@@ -151,9 +142,9 @@ const menuItemTemplate = function (index, name) {
     return `
         <li data-menu-id=${ index } class="menu-list-item d-flex items-center py-2">
             <span class="w-100 pl-2 menu-name">${ name }</span>
-            <button type="button" class="bg-gray-50 text-gray-500 text-sm mr-1 menu-sold-out-button">품절</button>
-            <button type="button" class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button">수정</button>
-            <button type="button" class="bg-gray-50 text-gray-500 text-sm menu-remove-button">삭제</button>
+            <button type="button" data-action="soldOut" class="bg-gray-50 text-gray-500 text-sm mr-1 menu-sold-out-button">품절</button>
+            <button type="button" data-action="update" class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button">수정</button>
+            <button type="button" data-action="delete" class="bg-gray-50 text-gray-500 text-sm menu-remove-button">삭제</button>
         </li>
         `;
 };

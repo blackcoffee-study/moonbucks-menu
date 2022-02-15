@@ -1,9 +1,13 @@
 const $ = (selector) => document.querySelector(selector);
+const REQUIRED_TEXT = '값을 입력하세요';
+const UPDATE_NAME_INPUT_TEXT = '수정할 메뉴이름 입력';
+const DELETE_TEXT = '삭제 하시겠습니까?';
+
 function App() {
   const addMenuItem = () => {
     const menuName = $('#espresso-menu-name').value;
-    if (menuName === '') {
-      alert('값을 입력하세요');
+    if (!menuName) {
+      alert(REQUIRED_TEXT);
       return;
     }
     const menuItemTemplate = (menuName) => {
@@ -31,17 +35,26 @@ function App() {
 
   const updateCount = () => {
     const menuCount = $('#espresso-menu-list').querySelectorAll('li').length;
-    $('.menu-count').innerHTML = `총 ${menuCount}개`;
+    $('.menu-count').textContent = `총 ${menuCount}개`;
   };
 
   const setMenuName = ($menuItem) => {
     const $menuName = $menuItem.querySelector('.menu-name');
-    const setMenuName = window.prompt('수정할 메뉴이름 입력', $menuName.innerText);
-    $menuName.innerText = setMenuName;
+    const updatedMenuName = window.prompt(UPDATE_NAME_INPUT_TEXT, $menuName.innerText);
+
+    if (updatedMenuName === '') {
+      alert(REQUIRED_TEXT);
+      setMenuName($menuItem);
+      return;
+    }
+
+    if (!updatedMenuName) return;
+
+    $menuName.textContent = updatedMenuName;
   };
 
   const removeMenuItem = ($menuItem) => {
-    if (window.confirm('삭제 하시겠습니까?')) {
+    if (window.confirm(DELETE_TEXT)) {
       $menuItem.remove();
       updateCount();
     }
@@ -64,9 +77,11 @@ function App() {
     const $menuItem = e.target.closest('li');
     if (e.target.classList.contains('menu-edit-button')) {
       setMenuName($menuItem);
+      return;
     }
     if (e.target.classList.contains('menu-remove-button')) {
       removeMenuItem($menuItem);
+      return;
     }
   });
 }

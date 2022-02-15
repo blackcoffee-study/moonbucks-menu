@@ -9,6 +9,7 @@ function App() {
   const $menuNameInput = $("#espresso-menu-name");
   const $submitButton = $("#espresso-menu-submit-button");
   const $counter = $(".menu-count");
+  let newMenuItems = [];
 
   // Event Handlers
   $menuForm.addEventListener("submit", (e) => {
@@ -47,6 +48,13 @@ function App() {
             </button>
         </li>`;
 
+    const menuItemInfo = {
+      menuName: $menuNameInput.value, // data-category-name
+      category: {},
+      status: "normal", // || sold-out
+    };
+    newMenuItems.push(menuItemInfo);
+    localStorage.setItem("menu", JSON.stringify(newMenuItems));
     $menuList.insertAdjacentHTML("beforeend", $menuItemTemplate);
     $menuNameInput.value = "";
 

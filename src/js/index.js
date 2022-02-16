@@ -10,15 +10,15 @@ const $menuCount = $("menu-count");
 
 $menuList.addEventListener("click", updateMenuItem);
 
-let menuLists = [];
+let menuList = [];
 
 const EDIT_INPUT = "메뉴명을 수정하세요.";
 const DELETE_CHECK = "정말 삭제하시겠습니까?";
 
-function addEspressoMenu(menuName) {
+function addEspressoMenu({ id, menu }) {
   const menuTemplate = `
-    <li class="menu-list-item d-flex items-center py-2" id=${menuName.id}>
-    <span class="w-100 pl-2 menu-name">${menuName.menu}</span>
+    <li class="menu-list-item d-flex items-center py-2" id=${id}>
+    <span class="w-100 pl-2 menu-name">${menu}</span>
     <button
       type="button"
       class="bg-gray-50 text-gray-500 text-sm mr-1 menu-sold-out-button"
@@ -52,7 +52,7 @@ function handleToSubmitMenu() {
       menu: newMenu,
       id: Date.now(),
     };
-    menuLists.push(newMenuObj);
+    menuList.push(newMenuObj);
     addEspressoMenu(newMenuObj);
   }
 }
@@ -70,19 +70,24 @@ $MenuSubmitButton.addEventListener("click", handleToSubmitMenu);
 
 function updateMenuItem({ target }) {
   const { classList } = target;
-  if (classList.contains("menu-edit-button")) editMenuName(target);
-  if (classList.contains("menu-remove-button")) deleteMenu(target);
+  const $li = target.parentElement;
+  if (classList.contains("menu-sold-out-button")) soldOutMenu($li);
+  if (classList.contains("menu-edit-button")) editMenuName($li);
+  if (classList.contains("menu-remove-button")) deleteMenu($li);
 }
 
-function editMenuName(target) {
-  const $li = target.parentElement;
+function soldOutMenu($li) {
+  $li.classList.toggle("sold-out");
+}
+
+function editMenuName($li) {
   const $span = $li.getElementsByClassName("menu-name")[0];
   let modifiedMenu = prompt(EDIT_INPUT, $span.textContent);
   if (modifiedMenu) {
     modifiedMenu = modifiedMenu.trim();
   }
   isEmpty(modifiedMenu) &&
-    menuLists.forEach((menu) => {
+    menuList.forEach((menu) => {
       if (menu.id == parseInt($li.id)) {
         menu.menu = modifiedMenu;
         $span.textContent = modifiedMenu;
@@ -90,18 +95,17 @@ function editMenuName(target) {
     });
 }
 
-function deleteMenu(target) {
+function deleteMenu($li) {
   const answer = confirm(DELETE_CHECK);
   if (answer) {
-    const $li = target.parentElement;
-    menuLists = menuLists.filter((menu) => menu.id !== parseInt(li.id));
+    menuList = menuList.filter((menu) => menu.id !== parseInt($li.id));
     $li.remove();
     getMenuCount();
   }
 }
 
 function getMenuCount() {
-  $menuCount.textContent = `총 ${menuLists.length}개`;
+  $menuCount.textContent = `총 ${menuList.length}개`;
 }
 
 // trim polyfill

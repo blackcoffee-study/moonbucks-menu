@@ -8,51 +8,32 @@ const $espressoMenuSubmitButton = document.getElementById(
 const $espressoMenuList = document.getElementById("espresso-menu-list");
 const $menuCount = document.querySelector(".menu-count");
 
+$espressoMenuList.addEventListener("click", updateMenuItem);
+
 let espressoMenus = [];
 
 const EDIT_INPUT = "메뉴명을 수정하세요.";
 const DELETE_CHECK = "정말 삭제하시겠습니까?";
 
 function addEspressoMenu(newEspresso) {
-  const li = setLi(newEspresso);
-  const span = setSpan(newEspresso);
-  const editButton = setEditButton();
-  const removeButton = setRemoveButton();
-  li.addEventListener("click", updateMenuItem);
-  li.append(span, editButton, removeButton);
-  $espressoMenuList.append(li);
+  const menuTemplate = `<li class="menu-list-item d-flex items-center py-2">
+            <span class="w-100 pl-2 menu-name">${newEspresso.menu}</span>
+            <button
+            type="button"
+            class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
+            >
+            수정
+            </button>
+            <button
+            type="button"
+            class="bg-gray-50 text-gray-500 text-sm menu-remove-button"
+            >
+            삭제
+            </button>
+        </li>`;
+
+  $espressoMenuList.innerHTML += menuTemplate;
   getMenuCount();
-}
-
-function setLi(newEspresso) {
-  const li = document.createElement("li");
-  li.id = newEspresso.id;
-  li.className = "menu-list-item d-flex items-center py-2";
-  return li;
-}
-function setSpan(newEspresso) {
-  const span = document.createElement("span");
-  span.className = "w-100 pl-2 menu-name";
-  span.textContent = newEspresso.menu;
-  return span;
-}
-
-function setEditButton() {
-  const editButton = document.createElement("button");
-  editButton.className =
-    "bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button";
-  editButton.setAttribute("type", "button");
-  editButton.textContent = "수정";
-  return editButton;
-}
-
-function setRemoveButton() {
-  const removeButton = document.createElement("button");
-  removeButton.className =
-    "bg-gray-50 text-gray-500 text-sm menu-remove-button";
-  removeButton.setAttribute("type", "button");
-  removeButton.textContent = "삭제";
-  return removeButton;
 }
 
 function handleToSubmitMenu() {
@@ -71,7 +52,7 @@ function handleToSubmitMenu() {
 function handleToSubmitWithEnter(event) {
   if (event.keyCode === 13) {
     event.preventDefault();
-    $espressoMenuSubmitButton.click();
+    handleToSubmitMenu();
   }
 }
 

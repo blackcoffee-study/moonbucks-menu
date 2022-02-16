@@ -1,51 +1,59 @@
 import { isEmpty } from "./utils/validate.js";
 
-const $espressoMenuForm = document.getElementById("espresso-menu-form");
-const $espressoMenuName = document.getElementById("espresso-menu-name");
-const $espressoMenuSubmitButton = document.getElementById(
-  "espresso-menu-submit-button"
-);
-const $espressoMenuList = document.getElementById("espresso-menu-list");
-const $menuCount = document.querySelector(".menu-count");
+const $ = (elementId) => document.getElementById(elementId);
 
-$espressoMenuList.addEventListener("click", updateMenuItem);
+const $menuForm = $("espresso-menu-form");
+const $menuName = $("espresso-menu-name");
+const $MenuSubmitButton = $("espresso-menu-submit-button");
+const $menuList = $("espresso-menu-list");
+const $menuCount = $("menu-count");
 
-let espressoMenus = [];
+$menuList.addEventListener("click", updateMenuItem);
+
+let menuLists = [];
 
 const EDIT_INPUT = "메뉴명을 수정하세요.";
 const DELETE_CHECK = "정말 삭제하시겠습니까?";
 
-function addEspressoMenu(newEspresso) {
-  const menuTemplate = `<li class="menu-list-item d-flex items-center py-2">
-            <span class="w-100 pl-2 menu-name">${newEspresso.menu}</span>
-            <button
-            type="button"
-            class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
-            >
-            수정
-            </button>
-            <button
-            type="button"
-            class="bg-gray-50 text-gray-500 text-sm menu-remove-button"
-            >
-            삭제
-            </button>
-        </li>`;
+function addEspressoMenu(menuName) {
+  const menuTemplate = `
+    <li class="menu-list-item d-flex items-center py-2" id=${menuName.id}>
+    <span class="w-100 pl-2 menu-name">${menuName.menu}</span>
+    <button
+      type="button"
+      class="bg-gray-50 text-gray-500 text-sm mr-1 menu-sold-out-button"
+    >
+      품절
+    </button>
+    <button
+      type="button"
+      class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
+    >
+      수정
+    </button>
+    <button
+      type="button"
+      class="bg-gray-50 text-gray-500 text-sm menu-remove-button"
+    >
+      삭제
+    </button>
+  </li>
+  `;
 
-  $espressoMenuList.innerHTML += menuTemplate;
+  $menuList.innerHTML += menuTemplate;
   getMenuCount();
 }
 
 function handleToSubmitMenu() {
-  const newEspressoMenu = $espressoMenuName.value.trim();
-  $espressoMenuName.value = "";
-  if (isEmpty(newEspressoMenu)) {
-    const newEspressoObj = {
-      menu: newEspressoMenu,
+  const newMenu = $menuName.value.trim();
+  $menuName.value = "";
+  if (isEmpty(newMenu)) {
+    const newMenuObj = {
+      menu: newMenu,
       id: Date.now(),
     };
-    espressoMenus.push(newEspressoObj);
-    addEspressoMenu(newEspressoObj);
+    menuLists.push(newMenuObj);
+    addEspressoMenu(newMenuObj);
   }
 }
 
@@ -56,9 +64,9 @@ function handleToSubmitWithEnter(event) {
   }
 }
 
-$espressoMenuForm.addEventListener("submit", (event) => event.preventDefault());
-$espressoMenuName.addEventListener("keyup", handleToSubmitWithEnter);
-$espressoMenuSubmitButton.addEventListener("click", handleToSubmitMenu);
+$menuForm.addEventListener("submit", (event) => event.preventDefault());
+$menuName.addEventListener("keyup", handleToSubmitWithEnter);
+$MenuSubmitButton.addEventListener("click", handleToSubmitMenu);
 
 function updateMenuItem({ target }) {
   const { classList } = target;
@@ -67,37 +75,33 @@ function updateMenuItem({ target }) {
 }
 
 function editMenuName(target) {
-  const li = target.parentElement;
-  const span = li.querySelector(".menu-name");
-  let newMenuName = prompt(EDIT_INPUT, span.textContent);
-  if (newMenuName) {
-    newMenuName = newMenuName.trim();
-    if (isEmpty(newMenuName)) {
-      espressoMenus.forEach((espressoMenu) => {
-        if (espressoMenu.id == parseInt(li.id)) {
-          espressoMenu.menu = newMenuName;
-          span.textContent = newMenuName;
-          console.log(newMenuName, newMenuName.length);
-        }
-      });
-    }
+  const $li = target.parentElement;
+  const $span = $li.getElementsByClassName("menu-name")[0];
+  let modifiedMenu = prompt(EDIT_INPUT, $span.textContent);
+  if (modifiedMenu) {
+    modifiedMenu = modifiedMenu.trim();
   }
+  isEmpty(modifiedMenu) &&
+    menuLists.forEach((menu) => {
+      if (menu.id == parseInt($li.id)) {
+        menu.menu = modifiedMenu;
+        $span.textContent = modifiedMenu;
+      }
+    });
 }
 
 function deleteMenu(target) {
   const answer = confirm(DELETE_CHECK);
   if (answer) {
-    const li = target.parentElement;
-    espressoMenus = espressoMenus.filter(
-      (espresso) => espresso.id !== parseInt(li.id)
-    );
-    li.remove();
+    const $li = target.parentElement;
+    menuLists = menuLists.filter((menu) => menu.id !== parseInt(li.id));
+    $li.remove();
     getMenuCount();
   }
 }
 
 function getMenuCount() {
-  $menuCount.textContent = `총 ${espressoMenus.length}개`;
+  $menuCount.textContent = `총 ${menuLists.length}개`;
 }
 
 // trim polyfill

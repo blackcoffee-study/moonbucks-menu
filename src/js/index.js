@@ -31,6 +31,14 @@ const updateMenuCount = () => {
     $(".menu-count").innerText = `총 ${menuCount}개`;
 };
 
+const setLocalStorage = (category, newMenu) => {
+    let items = [];
+    if (localStorage.getItem(category)) {
+        items = JSON.parse(localStorage.getItem(category));
+    }
+    localStorage.setItem(category, JSON.stringify([...items, newMenu]));
+};
+
 const addMenuName = () => {
     const menuNameInput = $("#espresso-menu-name");
 
@@ -39,6 +47,7 @@ const addMenuName = () => {
     const menuListItem = createMenuListItem(menuNameInput.value);
     $("#espresso-menu-list").insertAdjacentHTML("beforeend", menuListItem);
 
+    addMenu("espresso", menuNameInput.value);
     clearInputValue(menuNameInput);
     updateMenuCount();
 };

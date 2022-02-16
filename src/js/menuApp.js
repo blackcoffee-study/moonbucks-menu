@@ -5,10 +5,13 @@ export class MenuApp {
 
         let menuTitle = new MenuTitle();
 
-        let menuList = new MenuList(document.getElementById('espresso-menu-list'), {
+        let menuList = new MenuList(document.getElementById('menu-list'), {
+            onSoldOut(index) {
+                menuItems[index].changeStatus();
+                setState(menuItems);
+            },
             onUpdate(index, menuName) {
-                const newMenuItem = new MenuItems(menuName);
-                menuItems[index] = newMenuItem;
+                menuItems[index].setName(menuName);
                 setState(menuItems);
             },
             onDelete(index) {
@@ -33,13 +36,29 @@ export class MenuApp {
     }
 }
 
-class MenuItems {    
-    constructor(menuName) {
-        this.name = menuName;
+class MenuItems {
+    #name;
+    #sellStatus;
+
+    constructor(name, status = true) {
+        this.#name = name;
+        this.#sellStatus = status;
     }
 
     getName() {
-        return this.name;
+        return this.#name;
+    }
+
+    setName(name) {
+        this.#name = name;
+    }
+
+    changeStatus() {
+        this.#sellStatus = !this.#sellStatus;
+    }
+
+    getStatus() {
+        return this.#sellStatus;
     }
 }
 
@@ -61,8 +80,8 @@ class MenuTitle {
 
 class MenuInput {
     constructor({ onAdd }) {
-        const $menuInput = document.getElementById('espresso-menu-name');
-        const $menuAddButton = document.getElementById('espresso-menu-submit-button');
+        const $menuInput = document.getElementById('menu-name');
+        const $menuAddButton = document.getElementById('menu-submit-button');
 
         $menuInput.addEventListener('keydown', (event) => this.addMenuItem(event));
         $menuAddButton.addEventListener('click', (event) => this.addMenuItem(event));
@@ -94,7 +113,7 @@ class MenuInput {
 }
 
 class MenuList {
-    constructor(elem, { onUpdate, onDelete }) {
+    constructor(elem, { onSoldOut, onUpdate, onDelete }) {
         let menuItems = [];
         this._elem = elem;
 
@@ -104,7 +123,7 @@ class MenuList {
         };
 
         this.render = (items) => {
-            const template = items.map((x, index) => menuItemTemplate(index, x.getName()));
+            const template = items.map((x, index) => menuItemTemplate(index, x));
             this._elem.innerHTML = template.join('');
         };
 
@@ -115,6 +134,11 @@ class MenuList {
                 this[target.dataset.action](target);
             }
         });
+
+        this.soldOut = ($el) => {
+            const $menuListItem = $el.closest('.menu-list-item');
+            onSoldOut($menuListItem.dataset.menuId);
+        }
 
         this.update = ($el) => {
             const $menuListItem = $el.closest('.menu-list-item');
@@ -138,10 +162,10 @@ class MenuList {
     }
 }
 
-const menuItemTemplate = function (index, name) {
+const menuItemTemplate = function (index, items) {
     return `
         <li data-menu-id=${ index } class="menu-list-item d-flex items-center py-2">
-            <span class="w-100 pl-2 menu-name">${ name }</span>
+            <span class="w-100 pl-2 menu-name ${ items.getStatus() ? '' : 'sold-out'}">${ items.getName() }</span>
             <button type="button" data-action="soldOut" class="bg-gray-50 text-gray-500 text-sm mr-1 menu-sold-out-button">품절</button>
             <button type="button" data-action="update" class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button">수정</button>
             <button type="button" data-action="delete" class="bg-gray-50 text-gray-500 text-sm menu-remove-button">삭제</button>

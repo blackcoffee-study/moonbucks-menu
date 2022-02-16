@@ -5,7 +5,7 @@ export class MenuApp {
     constructor() {
         let menuTitle = new MenuTitle();
 
-        let menuList = new MenuList(document.getElementById('menu-list'), {
+        let menuList = new MenuList({
             onSoldOut: (index) => {
                 this.#menuItems[index].changeStatus();
                 setState(this.#menuItems);
@@ -30,8 +30,8 @@ export class MenuApp {
 
         const setState = (updatedItems) => {
             this.#menuItems = updatedItems;
-            menuTitle.setState(this.#menuItems);
-            menuList.setState(this.#menuItems);
+            menuTitle.updateCount(this.#menuItems);
+            menuList.updateItems(this.#menuItems);
         };
     }
 }
@@ -63,82 +63,64 @@ class MenuItems {
 }
 
 class MenuTitle {
-    #itemCount;
+    #itemCount = 0;
 
     constructor() {
-        this.#itemCount = 0;
+    }
 
-        this.setState = (updatedItems) => {
-            this.#itemCount = updatedItems.length;
-            this.render(this.#itemCount);
-        };
+    updateCount(updatedItems) {
+        this.#itemCount = updatedItems.length;
+        this.#render(this.#itemCount);
+    };
 
-        this.render = (itemCount) => {
-            const $menuCountSpan = document.getElementById('menu-count');
-            $menuCountSpan.innerHTML = `총 ${ itemCount }개`;
-        };
+    #render(itemCount) {
+        const $menuCountSpan = document.getElementById('menu-count');
+        $menuCountSpan.innerHTML = `총 ${ itemCount }개`;
     }
 }
 
 class MenuInput {
+    #ENTER_KEY = 'Enter';
+    #CLICK_TYPE = 'click';
+    
     constructor({ onAdd }) {
         const $menuInput = document.getElementById('menu-name');
         const $menuAddButton = document.getElementById('menu-submit-button');
 
-        $menuInput.addEventListener('keydown', (event) => this.addMenuItem(event));
-        $menuAddButton.addEventListener('click', (event) => this.addMenuItem(event));
+        $menuInput.addEventListener('keydown', (event) => this.#addMenuItem(event, onAdd));
+        $menuAddButton.addEventListener('click', (event) => this.#addMenuItem(event, onAdd));
+    }
 
-        this.addMenuItem = (event) => {
-            if (isValid(event, $menuInput.value)) {
-                onAdd($menuInput.value);
-                $menuInput.value = '';
+    #addMenuItem(event, onAdd) {
+        const $menuInput = document.getElementById('menu-name');
+        
+        if (this.#isValid(event, $menuInput.value)) {
+            onAdd($menuInput.value);
+            $menuInput.value = '';
+        }
+    };
+
+    #isValid(event, value) {
+        const eventType = event.key || event.type;
+
+        if (eventType === this.#ENTER_KEY || eventType === this.#CLICK_TYPE) {
+            event.preventDefault();
+
+            if (value) {
+                return true;
             }
-        };
+        }
 
-        const isValid = (event, value) => {
-            const ENTER_KEY = 'Enter';
-            const CLICK_TYPE = 'click';
-
-            const eventType = event.key || event.type;
-
-            if (eventType === ENTER_KEY || eventType === CLICK_TYPE) {
-                event.preventDefault();
-
-                if (value) {
-                    return true;
-                }
-            }
-
-            return false;
-        };
+        return false;
     }
 }
 
 class MenuList {
-    #menuItems;
-    #_elem;
+    #menuItems = [];
+    #$menuList = document.getElementById('menu-list');
 
-    constructor(elem, { onSoldOut, onUpdate, onDelete }) {
-        this.#menuItems = [];
-        this.#_elem = elem;
-
-        this.setState = (updatedMenuItems) => {
-            this.#menuItems = updatedMenuItems;
-            this.render(this.#menuItems);
-        };
-
-        this.render = (items) => {
-            const template = items.map((x, index) => menuItemTemplate(index, x)).join('');
-            this.#_elem.innerHTML = template;
-        };
-
-        this.#_elem.addEventListener('click', e => {
-            const target = e.target;
-
-            if(target && target.dataset.action) {
-                this[target.dataset.action](target);
-            }
-        });
+    constructor({ onSoldOut, onUpdate, onDelete }) {        
+        this.#$menuList.addEventListener('click', e => this.#delegateEvent(e));
 
         this.soldOut = ($el) => {
             const $menuListItem = $el.closest('.menu-list-item');
@@ -163,6 +145,24 @@ class MenuList {
             if(isConfirm) {
                 onDelete($menuListItem.dataset.menuId);
             }
+        }
+    }
+
+    updateItems(updatedMenuItems) {
+        this.#menuItems = updatedMenuItems;
+        this.#render(this.#menuItems);
+    };
+
+    #render(items) {
+        const template = items.map((x, index) => menuItemTemplate(index, x)).join('');
+        this.#$menuList.innerHTML = template;
+    };
+
+    #delegateEvent(event) {
+        const target = event.target;
+
+        if(target && target.dataset.action) {
+            this[target.dataset.action](target);
         }
     }
 }

@@ -1,24 +1,33 @@
+import { CATEGORY } from "./const/index.js";
 import { isEmpty } from "./utils/validate.js";
 
 const $ = (elementId) => document.getElementById(elementId);
 
 const $menuForm = $("espresso-menu-form");
 const $menuName = $("espresso-menu-name");
-const $MenuSubmitButton = $("espresso-menu-submit-button");
+const $menuSubmitButton = $("espresso-menu-submit-button");
 const $menuList = $("espresso-menu-list");
 const $menuCount = $("menu-count");
+const $categoryManagement = $("category-management");
 
 $menuList.addEventListener("click", updateMenuItem);
 
-let menuList = [];
+let menuList = {
+  espresso: [],
+  frappuccino: [],
+  blended: [],
+  teavana: [],
+  desert: [],
+};
 
+const title = "menu";
+const category = "espresso";
 const EDIT_INPUT = "메뉴명을 수정하세요.";
 const DELETE_CHECK = "정말 삭제하시겠습니까?";
 
-function addEspressoMenu({ id, menu }) {
-  const menuTemplate = `
+const menuTemplate = (id, name) => `
     <li class="menu-list-item d-flex items-center py-2" id=${id}>
-    <span class="w-100 pl-2 menu-name">${menu}</span>
+    <span class="w-100 pl-2 menu-name">${name}</span>
     <button
       type="button"
       class="bg-gray-50 text-gray-500 text-sm mr-1 menu-sold-out-button"
@@ -40,7 +49,9 @@ function addEspressoMenu({ id, menu }) {
   </li>
   `;
 
-  $menuList.innerHTML += menuTemplate;
+function addMenuInList({ id, name }) {
+  const menuItem = menuTemplate(id, name);
+  $menuList.innerHTML += menuItem;
   getMenuCount();
 }
 
@@ -49,11 +60,13 @@ function handleToSubmitMenu() {
   $menuName.value = "";
   if (isEmpty(newMenu)) {
     const newMenuObj = {
-      menu: newMenu,
+      name: newMenu,
       id: Date.now(),
+      soldOut: false,
     };
-    menuList.push(newMenuObj);
-    addEspressoMenu(newMenuObj);
+    menuList[category].push(newMenuObj);
+    addMenuInList(newMenuObj);
+    saveMenuLust();
   }
 }
 
@@ -66,7 +79,7 @@ function handleToSubmitWithEnter(event) {
 
 $menuForm.addEventListener("submit", (event) => event.preventDefault());
 $menuName.addEventListener("keyup", handleToSubmitWithEnter);
-$MenuSubmitButton.addEventListener("click", handleToSubmitMenu);
+$menuSubmitButton.addEventListener("click", handleToSubmitMenu);
 
 function updateMenuItem({ target }) {
   const { classList } = target;
@@ -77,35 +90,54 @@ function updateMenuItem({ target }) {
 }
 
 function soldOutMenu($li) {
-  $li.classList.toggle("sold-out");
+  const $state = $li.querySelector(".menu-name");
+  menuList[category].forEach((menu) => {
+    if (menu.id == parseInt($li.id)) {
+      menu.soldOut = !menu.soldOut;
+      if (menu.soldOut) {
+        $state.classList.add("sold-out");
+      } else {
+        $state.classList.remove("sold-out");
+      }
+    }
+  });
+  saveMenuLust();
 }
 
 function editMenuName($li) {
-  const $span = $li.getElementsByClassName("menu-name")[0];
+  const $span = $li.querySelector(".menu-name");
   let modifiedMenu = prompt(EDIT_INPUT, $span.textContent);
   if (modifiedMenu) {
     modifiedMenu = modifiedMenu.trim();
   }
   isEmpty(modifiedMenu) &&
-    menuList.forEach((menu) => {
+    menuList[category].forEach((menu) => {
       if (menu.id == parseInt($li.id)) {
-        menu.menu = modifiedMenu;
+        menu.name = modifiedMenu;
         $span.textContent = modifiedMenu;
       }
     });
+  saveMenuLust();
 }
 
 function deleteMenu($li) {
   const answer = confirm(DELETE_CHECK);
   if (answer) {
-    menuList = menuList.filter((menu) => menu.id !== parseInt($li.id));
+    menuList = menuList[category].filter(
+      (menu) => menu.id !== parseInt($li.id)
+    );
     $li.remove();
     getMenuCount();
+    saveMenuLust();
   }
 }
 
+function saveMenuLust() {
+  localStorage.setItem(title, JSON.stringify(menuList));
+}
+
 function getMenuCount() {
-  $menuCount.textContent = `총 ${menuList.length}개`;
+  $menuCount.textContent = `총 ${menuList[category].length}개`;
 }
 
 // trim polyfill

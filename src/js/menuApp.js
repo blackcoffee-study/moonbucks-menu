@@ -1,37 +1,37 @@
 export class MenuApp {
-    constructor() {
-        const MIN_SPLICE = 1;
-        let menuItems = [];
+    #MIN_SPLICE = 1;
+    #menuItems = [];
 
+    constructor() {
         let menuTitle = new MenuTitle();
 
         let menuList = new MenuList(document.getElementById('menu-list'), {
-            onSoldOut(index) {
-                menuItems[index].changeStatus();
-                setState(menuItems);
+            onSoldOut: (index) => {
+                this.#menuItems[index].changeStatus();
+                setState(this.#menuItems);
             },
-            onUpdate(index, menuName) {
-                menuItems[index].setName(menuName);
-                setState(menuItems);
+            onUpdate: (index, menuName) => {
+                this.#menuItems[index].setName(menuName);
+                setState(this.#menuItems);
             },
-            onDelete(index) {
-                menuItems.splice(index, MIN_SPLICE);
-                setState(menuItems);
+            onDelete: (index) => {
+                this.#menuItems.splice(index, this.#MIN_SPLICE);
+                setState(this.#menuItems);
             }
         });
 
         new MenuInput({
-            onAdd(menuName) {
+            onAdd: (menuName) => {
                 const newMenuItem = new MenuItems(menuName);
-                menuItems.push(newMenuItem);
-                setState(menuItems);
-            },
+                this.#menuItems.push(newMenuItem);
+                setState(this.#menuItems);
+            }
         });
 
         const setState = (updatedItems) => {
-            this.menuItems = updatedItems;
-            menuTitle.setState(menuItems);
-            menuList.setState(menuItems);
+            this.#menuItems = updatedItems;
+            menuTitle.setState(this.#menuItems);
+            menuList.setState(this.#menuItems);
         };
     }
 }
@@ -63,16 +63,18 @@ class MenuItems {
 }
 
 class MenuTitle {
+    #itemCount;
+
     constructor() {
-        const $menuCountSpan = document.getElementById('menu-count');
-        let itemCount = 0;
+        this.#itemCount = 0;
 
         this.setState = (updatedItems) => {
-            itemCount = updatedItems.length;
-            this.render(itemCount);
+            this.#itemCount = updatedItems.length;
+            this.render(this.#itemCount);
         };
 
         this.render = (itemCount) => {
+            const $menuCountSpan = document.getElementById('menu-count');
             $menuCountSpan.innerHTML = `총 ${ itemCount }개`;
         };
     }
@@ -113,21 +115,24 @@ class MenuInput {
 }
 
 class MenuList {
+    #menuItems;
+    #_elem;
+
     constructor(elem, { onSoldOut, onUpdate, onDelete }) {
-        let menuItems = [];
-        this._elem = elem;
+        this.#menuItems = [];
+        this.#_elem = elem;
 
         this.setState = (updatedMenuItems) => {
-            menuItems = updatedMenuItems;
-            this.render(menuItems);
+            this.#menuItems = updatedMenuItems;
+            this.render(this.#menuItems);
         };
 
         this.render = (items) => {
-            const template = items.map((x, index) => menuItemTemplate(index, x));
-            this._elem.innerHTML = template.join('');
+            const template = items.map((x, index) => menuItemTemplate(index, x)).join('');
+            this.#_elem.innerHTML = template;
         };
 
-        this._elem.addEventListener('click', e => {
+        this.#_elem.addEventListener('click', e => {
             const target = e.target;
 
             if(target && target.dataset.action) {

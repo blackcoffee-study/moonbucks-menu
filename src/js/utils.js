@@ -1,27 +1,11 @@
 import store, { ADD_ESPRESSO_MENU, UPDATE_ESPRESSO_MENU, DELETE_ESPRESSO_MENU } from './reducer.js';
 
+import MenuList from './components/MenuList.js';
+
 const $menuForm = document.querySelector('#espresso-menu-form');
 const $menuInput = $menuForm.querySelector('input');
 const $menuList = document.querySelector('#espresso-menu-list');
 const $menuCount = document.querySelector('.menu-count');
-
-export const getButtonTemplate = ({ type, className }) => {
-  return `<button
-    type="button"
-    class="bg-gray-50 text-gray-500 text-sm ${className}"
-    data-type=${type}
-  >
-    ${type === 'edit' ? '수정' : '삭제'}
-  </button>`;
-};
-
-export const getMenuListTemplate = ({ id, name }) => {
-  return `<li class="menu-list-item d-flex items-center py-2" data-id="${id}">
-    <span class="w-100 pl-2 menu-name">${name}</span>
-    ${getButtonTemplate({ type: 'edit', className: 'mr-1 menu-edit-button' })}
-    ${getButtonTemplate({ type: 'remove', className: 'menu-remove-button' })}
-  </li>`;
-};
 
 export const addMenu = (e) => {
   e.preventDefault();
@@ -61,6 +45,6 @@ export const render = () => {
   const { menuList } = store.getState();
   $menuCount.innerText = `총 ${menuList.length}개`;
 
-  const template = menuList.map((menu) => getMenuListTemplate(menu)).join('');
+  const template = menuList.map((menu) => MenuList(menu)).join('');
   $menuList.innerHTML = template;
 };

@@ -24,6 +24,6 @@ export default class CustomSet {
     }
 
     getData() {
-        return Object.keys(this.data);
+        return Object.values(this.data);
     }
 }

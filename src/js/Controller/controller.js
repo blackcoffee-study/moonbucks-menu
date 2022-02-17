@@ -1,4 +1,4 @@
-import { PROMPT, ALERT, CONFIRM } from '../constants/constants.js';
+import { PROMPT, ALERT, CONFIRM, KEY } from '../constants/constants.js';
 import { $ } from '../common/DOM.js';
 import { getLocalStorage, setLocalStroage } from '../common/localStorage.js';
 
@@ -47,7 +47,6 @@ export default class Controller {
     const name = target.parentNode.children[0].textContent;
     const index = storage[category].indexOf(name);
 
-    // update menu array
     this.Model.menu = storage;
 
     if (window.confirm(CONFIRM.DELETE)) {
@@ -104,6 +103,16 @@ export default class Controller {
       e.preventDefault();
     });
 
+    this.$.menuInput.addEventListener('keyup', ({ key }) => {
+      if (key === KEY.ENTER) {
+        this.updateStorage(this.currentCategory);
+
+        if (this.$.menuList.dataset.categoryName === this.currentCategory) {
+          this.View.render(this.currentCategory);
+        }
+      }
+    });
+
     this.$.nav.addEventListener('click', ({ target }) => {
       if (target.classList.contains('cafe-category-name')) {
         this.currentCategory = target.dataset.categoryName;
@@ -116,7 +125,7 @@ export default class Controller {
       }
     });
 
-    this.$.submitBtn.addEventListener('click', ({ target }) => {
+    this.$.submitBtn.addEventListener('click', () => {
       this.updateStorage(this.currentCategory);
 
       if (this.$.menuList.dataset.categoryName === this.currentCategory) {

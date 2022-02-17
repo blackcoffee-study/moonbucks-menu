@@ -8,14 +8,13 @@ export default function Header($target) {
   const setCurrnetMenuType = CustomUseRecoilSetState('CURRENT_MENUTYPE');
 
   const render = () => {
-    $target.innerHTML = /*html*/
-      `
-        <a href="/" class="text-black">
-          <h1 class="text-center font-bold">🌝 문벅스 메뉴 관리</h1>
-        </a>
-        <nav id="menu-type-nav" class="d-flex justify-center flex-wrap">
-        </nav>
-      `;
+    $target.innerHTML = /*html*/`
+      <a href="/" class="text-black">
+        <h1 class="text-center font-bold">🌝 문벅스 메뉴 관리</h1>
+      </a>
+      <nav id="menu-type-nav" class="d-flex justify-center flex-wrap">
+      </nav>
+    `;
   }
 
   const mountChildren = () => {

@@ -9,6 +9,9 @@ body {
   font-weight: normal;
   line-height: 1.5;
   background-color: #f1f5f9;
+  font-family: 'Noto Sans KR',
+  'Apple SD Gothic Neo',
+  Sans-serif;
 }
 
 #app {

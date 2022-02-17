@@ -1,4 +1,3 @@
-import { $ } from '../common/DOM.js';
 import { getLocalStorage } from '../common/localStorage.js';
 
 export default class Model {
@@ -9,11 +8,6 @@ export default class Model {
       blended: [],
       teavana: [],
       desert: [],
-    };
-
-    this.$ = {
-      menuInput: $('#menu-name'),
-      menuManange: $('ul'),
     };
   }
 

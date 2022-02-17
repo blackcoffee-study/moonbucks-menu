@@ -16,7 +16,6 @@ export default class Controller {
       menuList: $('#menu-list'),
       menuCount: $('.menu-count'),
       menuInput: $('#menu-name'),
-      menuManange: $('ul'),
     };
 
     this.currentCategory = 'espresso';

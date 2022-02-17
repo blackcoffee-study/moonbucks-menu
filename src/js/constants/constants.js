@@ -4,6 +4,8 @@ export const PROMPT = {
 export const ALERT = {
   EMPTY: '값을 입력해주세요.',
   RENAME: '수정하실 메뉴명을 입력해 주세요.',
+  DUPLICATED: '동일한 메뉴명은 입력하실 수 없습니다.',
+  BLANK: '공백만으로는 메뉴명을 구성할 수 없습니다.',
 };
 
 export const CONFIRM = {
@@ -40,4 +42,8 @@ export const CATEGORIES = {
     KR: '디저트',
     EN: 'desert',
   },
+};
+
+export const LOCALSTORAGE = {
+  ITEM: 'menu',
 };

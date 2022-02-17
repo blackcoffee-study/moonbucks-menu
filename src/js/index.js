@@ -9,6 +9,7 @@ function App() {
   const $menuNameInput = $("#espresso-menu-name");
   const $submitButton = $("#espresso-menu-submit-button");
   const $counter = $(".menu-count");
+  const $categoryNav = $("#cafe-category-nav");
 
   this.init = () => {
     this.currentCategory = $(".cafe-category-name").getAttribute(
@@ -29,9 +30,10 @@ function App() {
   };
 
   const render = () => {
-    $menuList.innerHTML = this.menuItems
-      .map((item, index) => {
-        return `<li data-id="${index}" class="menu-list-item d-flex items-center py-2">
+    if (this.menuItems) {
+      $menuList.innerHTML = this.menuItems
+        .map((item, index) => {
+          return `<li data-id="${index}" class="menu-list-item d-flex items-center py-2">
       <span class="w-100 pl-2 menu-name">${item.menuName}</span>
       <button
       type="button"
@@ -46,23 +48,24 @@ function App() {
       삭제
       </button>
   </li>`;
-      })
-      .join("");
+        })
+        .join("");
+      updateMenuCount();
+      $menuNameInput.focus(); // auto focusing
+    }
   };
 
   // Functions
   const addMenuItem = () => {
     const menuItemInfo = {
       menuName: $menuNameInput.value,
+      category: this.currentCategory,
       status: "normal", // || sold-out
     };
     this.menuItems.push(menuItemInfo);
     setState(this.menuItems);
     localStorage.setItem(this.currentCategory, JSON.stringify(this.menuItems));
     $menuNameInput.value = "";
-
-    updateMenuCount();
-    $menuNameInput.focus(); // auto focusing
   };
 
   const modifyMenuItem = (e) => {
@@ -96,7 +99,6 @@ function App() {
         JSON.stringify(this.menuItems)
       );
       setState(this.menuItems);
-      updateMenuCount();
     }
   };
 
@@ -127,6 +129,20 @@ function App() {
     $menuList.addEventListener("click", (e) => {
       if (isContainedClass("menu-edit-button", e)) modifyMenuItem(e);
       else if (isContainedClass("menu-remove-button", e)) removeMenuItem(e);
+    });
+
+    $categoryNav.addEventListener("click", (e) => {
+      if (isContainedClass("cafe-category-name", e)) {
+        this.currentCategory = e.target.dataset.categoryName;
+        if (this.menuItems) {
+          this.menuItems = JSON.parse(
+            localStorage.getItem(this.currentCategory)
+          );
+          if (!this.menuItems) this.menuItems = [];
+
+          setState(this.menuItems);
+        }
+      }
     });
   };
 }

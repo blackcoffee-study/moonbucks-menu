@@ -10,6 +10,7 @@ function App() {
   const $submitButton = $("#espresso-menu-submit-button");
   const $counter = $(".menu-count");
   const $categoryNav = $("#cafe-category-nav");
+  const $menuTitle = $(".mt-1");
 
   this.init = () => {
     this.currentCategory = $(".cafe-category-name").getAttribute(
@@ -33,8 +34,14 @@ function App() {
     if (this.menuItems) {
       $menuList.innerHTML = this.menuItems
         .map((item, index) => {
-          return `<li data-id="${index}" class="menu-list-item d-flex items-center py-2">
-      <span class="w-100 pl-2 menu-name">${item.menuName}</span>
+          return `<li data-id="${index}" class=" menu-list-item  d-flex items-center py-2">
+      <span class="${item.status} w-100 pl-2 menu-name">${item.menuName}</span>
+      <button
+    type="button"
+    class="bg-gray-50 text-gray-500 text-sm mr-1 menu-sold-out-button"
+  >
+    품절
+  </button>
       <button
       type="button"
       class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
@@ -129,11 +136,24 @@ function App() {
     $menuList.addEventListener("click", (e) => {
       if (isContainedClass("menu-edit-button", e)) modifyMenuItem(e);
       else if (isContainedClass("menu-remove-button", e)) removeMenuItem(e);
+      else if (isContainedClass("menu-sold-out-button", e)) {
+        const $listItem = e.target.closest("li");
+        let status = this.menuItems[$listItem.dataset.id].status;
+        status = status == "normal" ? "sold-out" : "normal";
+        this.menuItems[$listItem.dataset.id].status = status;
+        setState(this.menuItems);
+        localStorage.setItem(
+          this.currentCategory,
+          JSON.stringify(this.menuItems)
+        );
+      }
     });
 
     $categoryNav.addEventListener("click", (e) => {
       if (isContainedClass("cafe-category-name", e)) {
         this.currentCategory = e.target.dataset.categoryName;
+        $menuTitle.innerHTML = e.target.textContent + " 메뉴 관리";
+        $menuNameInput.placeholder = e.target.innerText + " 메뉴 이름";
         if (this.menuItems) {
           this.menuItems = JSON.parse(
             localStorage.getItem(this.currentCategory)

@@ -5,7 +5,7 @@ import {
   isEmpty,
   getMenuTemplate,
   renderMenusByFunction,
-  soldOutMenuInStore,
+  toggleMenuStatusInStore,
   editMenuInStore,
   removeMenuInStore,
   setLocalStorage,
@@ -80,7 +80,7 @@ const menuListHandler = () => {
     const classList = target.classList;
 
     if (classList.contains("menu-sold-out-button")) {
-      soldOutMenuInStore(menus, currentCategory, menuId);
+      toggleMenuStatusInStore(menus, currentCategory, menuId);
       setLocalStorage("menus", menus);
       menuRender();
       return;

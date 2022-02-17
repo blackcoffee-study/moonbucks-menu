@@ -1,7 +1,7 @@
-import { $ } from './dom.js';
-import { isEmpty } from './validation.js';
-import { setLocalStorage, getLocalStorage } from './localStorage.js';
-import { soldOutMenuInStore, editMenuInStore, removeMenuInStore } from './storeHandler.js';
+export * from './dom.js';
+export * from './validation.js';
+export * from './localStorage.js';
+export * from "./storeHandler.js";
 
 const getMenuTemplate = ({ id, name, status }) => {
   return `
@@ -33,15 +33,7 @@ const renderMenusByFunction = (menus, generateTemplate) => {
   return menus.map((menu) => generateTemplate(menu)).join("");
 };
 
-
 export {
-  $,
-  isEmpty,
-  setLocalStorage,
-  getLocalStorage,
   getMenuTemplate,
   renderMenusByFunction,
-  soldOutMenuInStore,
-  editMenuInStore,
-  removeMenuInStore,
 };

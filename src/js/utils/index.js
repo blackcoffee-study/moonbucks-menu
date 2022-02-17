@@ -33,13 +33,6 @@ const renderMenusByFunction = (menus, generateTemplate) => {
   return menus.map((menu) => generateTemplate(menu)).join("");
 };
 
-const formPreventSubmit = () => {
-  const $form = $("#espresso-menu-form");
-  $form.addEventListener("submit", (event) => {
-    event.preventDefault();
-  });
-};
-
 
 export {
   $,
@@ -48,7 +41,6 @@ export {
   getLocalStorage,
   getMenuTemplate,
   renderMenusByFunction,
-  formPreventSubmit,
   soldOutMenuInStore,
   editMenuInStore,
   removeMenuInStore,

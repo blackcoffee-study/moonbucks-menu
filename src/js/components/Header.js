@@ -29,12 +29,6 @@ export default function Header($target) {
     $menuTypeNav.addEventListener('click', changeCurrentMenuType);
   }
 
-  const changeCurrentMenuType = (e) => {
-    if (e.target.dataset.categoryName) {
-      setCurrnetMenuType(e.target.dataset.categoryName);
-    };
-  };
-
   const init = () => {
     render();
     mountChildren();
@@ -42,5 +36,11 @@ export default function Header($target) {
   }
 
   init();
+
+  const changeCurrentMenuType = (e) => {
+    if (e.target.dataset.categoryName) {
+      setCurrnetMenuType(e.target.dataset.categoryName);
+    };
+  };
 
 }

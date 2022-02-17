@@ -62,6 +62,14 @@ export default function Main($target) {
     $espressoMenuList.addEventListener('click', menuListHandler);
   }
 
+  const init = () => {
+    render();
+    mountChildren();
+    setEvent();
+  }
+
+  init();
+
   const addMenuList = () => {
     const $espressoMenuName = $('#espresso-menu-name');
 
@@ -116,12 +124,4 @@ export default function Main($target) {
     }
 
   };
-
-  const init = () => {
-    render();
-    mountChildren();
-    setEvent();
-  }
-
-  init();
 }

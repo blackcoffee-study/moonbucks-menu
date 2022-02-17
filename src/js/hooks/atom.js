@@ -1,6 +1,6 @@
-import CustomMenuSet from '../utils/CustomMenuSet.js'
+import CustomMenuSet from '../utils/custom-menu-set.js'
 export default {
-  'menuLists': {
+  'MENULISTS': {
     "espresso": new CustomMenuSet(),
     "frappuccino": new CustomMenuSet(),
     "blended": new CustomMenuSet(),
@@ -8,5 +8,5 @@ export default {
     "dessert": new CustomMenuSet(),
   },
 
-  'menuType': 'espresso'
+  'CURRENT_MENUTYPE': 'espresso'
 }

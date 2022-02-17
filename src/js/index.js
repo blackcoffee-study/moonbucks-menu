@@ -27,6 +27,7 @@ function App() {
     }
     render();
   };
+
   const render = () => {
     $menuList.innerHTML = this.menuItems
       .map((item, index) => {
@@ -77,7 +78,12 @@ function App() {
     } else if (newMenuName === "") {
       alert("값을 입력해주세요.");
     } else if (newMenuName !== null) {
-      $menuName.textContent = newMenuName;
+      this.menuItems[$listItem.dataset.id].menuName = newMenuName;
+      setState(this.menuItems);
+      localStorage.setItem(
+        this.currentCategory,
+        JSON.stringify(this.menuItems)
+      );
     }
   };
 

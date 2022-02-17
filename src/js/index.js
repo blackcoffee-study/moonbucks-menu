@@ -1,13 +1,17 @@
-import { addMenu, updateMenu, removeMenu, render } from './utils.js';
-import store from './reducer.js';
+import { addMenu, updateMenu, removeMenu, menuRender, updateMenuCategory, getLocalStorage, soldoutMenu } from './utils.js';
+import store, { LOAD_MENU_ITEM } from './reducer.js';
 
-const $menuForm = document.querySelector('#espresso-menu-form');
-const $menuList = document.querySelector('#espresso-menu-list');
+const $categoryList = document.querySelectorAll('.cafe-category-name');
+const $menuForm = document.querySelector('#menu-form');
+const $menuList = document.querySelector('#menu-list');
 
 (() => {
-  store.subscribe(render);
+  store.subscribe(menuRender);
 
   $menuForm.addEventListener('submit', addMenu);
+
+  $categoryList.forEach(($category) => $category.addEventListener('click', updateMenuCategory));
+  
   $menuList.addEventListener('click', ({ target }) => {
     const { type } = target.dataset;
     if (type === 'edit') {
@@ -16,7 +20,15 @@ const $menuList = document.querySelector('#espresso-menu-list');
     if (type === 'remove') {
       removeMenu(target);
     }
+    if (type === 'soldout') {
+      soldoutMenu(target);
+    }
   })
-  render();
+  const menuList = getLocalStorage('espresso');
+  store.dispatch({
+    type: LOAD_MENU_ITEM,
+    data: menuList,
+  })
+  menuRender();
 })();
 

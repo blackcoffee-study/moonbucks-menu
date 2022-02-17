@@ -1,0 +1,45 @@
+import { $ } from '../common/DOM.js';
+import { getLocalStorage } from '../common/localStorage.js';
+
+export default class Model {
+  constructor() {
+    this.menu = {
+      espresso: [],
+      frappuccino: [],
+      blended: [],
+      teavana: [],
+      desert: [],
+    };
+
+    this.$ = {
+      menuInput: $('#menu-name'),
+      menuManange: $('ul'),
+    };
+  }
+
+  getInputValue(input) {
+    const { value } = input;
+
+    return value;
+  }
+
+  clearInputValue(input) {
+    input.value = '';
+  }
+
+  updateMenuCount(target, category) {
+    const storage = getLocalStorage('menu');
+
+    target.textContent = `총 ${storage[category].length}개`;
+  }
+
+  itemSoldOut(target) {
+    const menuItem = target.closest('li').children[0];
+
+    if (menuItem.classList.contains('sold-out')) {
+      menuItem.classList.remove('sold-out');
+    } else {
+      menuItem.classList.add('sold-out');
+    }
+  }
+}

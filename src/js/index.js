@@ -90,7 +90,12 @@ function App() {
   const removeMenuItem = (e) => {
     const $listItem = e.target.closest("li");
     if (confirm("해당 메뉴를 삭제하시겠습니까?")) {
-      $menuList.removeChild($listItem);
+      this.menuItems.splice($listItem.dataset.id, 1);
+      localStorage.setItem(
+        this.currentCategory,
+        JSON.stringify(this.menuItems)
+      );
+      setState(this.menuItems);
       updateMenuCount();
     }
   };

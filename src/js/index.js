@@ -1,3 +1,5 @@
 import MoonBucks from "./App.js";
+import { $ } from "./utils/utils.js";
 
-MoonBucks();
+const $app = $('#app');
+MoonBucks($app);

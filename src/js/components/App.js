@@ -1,6 +1,6 @@
-import { $ } from "./utils/utils.js";
-import Header from './components/Header.js';
-import Main from './components/Main.js';
+import { $ } from "../utils/utils.js";
+import Header from './Header.js';
+import Main from './Main.js';
 
 export default function MoonBucks($target) {
     const render = () => {

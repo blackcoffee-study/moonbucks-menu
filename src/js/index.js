@@ -1,4 +1,4 @@
-import MoonBucks from "./App.js";
+import MoonBucks from "./components/App.js";
 import { $ } from "./utils/utils.js";
 
 const $app = $('#app');

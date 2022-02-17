@@ -9,7 +9,7 @@ function App() {
   const $menuNameInput = $("#espresso-menu-name");
   const $submitButton = $("#espresso-menu-submit-button");
   const $counter = $(".menu-count");
-  const $categoryNav = $("#cafe-category-nav");
+  const $categoryNav = $("#cafe-category-nav"); // TODO : localStorage 카테고리 별 배열 초기화
   const $menuTitle = $(".mt-1");
 
   this.init = () => {
@@ -69,6 +69,8 @@ function App() {
       category: this.currentCategory,
       status: "normal", // || sold-out
     };
+
+    // TODO : 중복, 띄어쓰기 메뉴입력 제어
     this.menuItems.push(menuItemInfo);
     setState(this.menuItems);
     localStorage.setItem(this.currentCategory, JSON.stringify(this.menuItems));
@@ -153,7 +155,6 @@ function App() {
       if (isContainedClass("cafe-category-name", e)) {
         this.currentCategory = e.target.dataset.categoryName;
         $menuTitle.innerHTML = e.target.textContent + " 메뉴 관리";
-        $menuNameInput.placeholder = e.target.innerText + " 메뉴 이름";
         if (this.menuItems) {
           this.menuItems = JSON.parse(
             localStorage.getItem(this.currentCategory)

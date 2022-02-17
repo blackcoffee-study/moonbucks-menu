@@ -1,81 +1,108 @@
+import store from './store/store.js'
+
 export class MenuApp {
     #MIN_SPLICE = 1;
-    #menuItems = [];
+    #menu = {
+        espresso: [],
+        frappuccino: [],
+        blended: [],
+        teavana: [],
+        desert: []
+    };
+
+    #categoryTitle = '';
+    #currentMenu = '';
+    
+    #menuTitle;
+    #menuList;
 
     constructor() {
-        let menuTitle = new MenuTitle();
+        this.#init();
+    }
 
-        let menuList = new MenuList({
+    #init() {
+        const menu = store.getStorage();
+
+        if(menu) {
+            this.#menu = menu;
+        }
+
+        this.#menuTitle = new MenuTitle();
+
+        this.#menuList = new MenuList({
             onSoldOut: (index) => {
-                this.#menuItems[index].changeStatus();
-                setState(this.#menuItems);
+                let currentItem = this.#menu[this.#currentMenu][index];
+
+                currentItem.salesStatus = !currentItem.salesStatus;
+                this.emit();
             },
-            onUpdate: (index, menuName) => {
-                this.#menuItems[index].setName(menuName);
-                setState(this.#menuItems);
+            onUpdate: (index, itemName) => {
+                this.#menu[this.#currentMenu][index].name = itemName;
+                this.emit();
             },
             onDelete: (index) => {
-                this.#menuItems.splice(index, this.#MIN_SPLICE);
-                setState(this.#menuItems);
+                this.#menu[this.#currentMenu].splice(index, this.#MIN_SPLICE);
+                this.emit();
             }
         });
 
         new MenuInput({
-            onAdd: (menuName) => {
-                const newMenuItem = new MenuItems(menuName);
-                this.#menuItems.push(newMenuItem);
-                setState(this.#menuItems);
+            onAdd: (itemName, status = true) => {
+                let currentMenu = this.#menu[this.#currentMenu];
+                const newMenuItem = {
+                    name: itemName,
+                    salesStatus: status
+                };
+
+                currentMenu.push(newMenuItem);
+                this.emit();
             }
         });
 
-        const setState = (updatedItems) => {
-            this.#menuItems = updatedItems;
-            menuTitle.updateCount(this.#menuItems);
-            menuList.updateItems(this.#menuItems);
-        };
-    }
-}
+        const $menuNav = document.querySelector('nav');       
+        $menuNav.addEventListener('click', e => {
+            const target = e.target;
 
-class MenuItems {
-    #name;
-    #sellStatus;
+            if(target.tagName === 'BUTTON' && target.dataset) {
+                this.#categoryTitle = target.innerText;
+                this.#currentMenu = target.dataset.categoryName;
+                this.emit();
+            }
+        });
 
-    constructor(name, status = true) {
-        this.#name = name;
-        this.#sellStatus = status;
-    }
+        const $menuBtn = $menuNav.children[0];
+        this.#currentMenu = $menuBtn.dataset.categoryName;
+        this.#categoryTitle = $menuBtn.innerText;
 
-    getName() {
-        return this.#name;
+        this.emit();
     }
 
-    setName(name) {
-        this.#name = name;
-    }
+    emit() {
+        const currentMenu = this.#menu[this.#currentMenu];
 
-    changeStatus() {
-        this.#sellStatus = !this.#sellStatus;
-    }
+        this.#menuTitle.updateStatus(this.#categoryTitle, currentMenu.length);
+        this.#menuList.updateItems(currentMenu);
 
-    getStatus() {
-        return this.#sellStatus;
-    }
+        store.setStorage(this.#menu);
+    };
 }
 
 class MenuTitle {
+    #title;
     #itemCount = 0;
 
     constructor() {
     }
 
-    updateCount(updatedItems) {
-        this.#itemCount = updatedItems.length;
-        this.#render(this.#itemCount);
+    updateStatus(title, itemCount) {
+        this.#title = title;
+        this.#itemCount = itemCount;
+        this.#render();
     };
 
-    #render(itemCount) {
-        const $menuCountSpan = document.getElementById('menu-count');
-        $menuCountSpan.innerHTML = `총 ${ itemCount }개`;
+    #render() {
+        document.getElementById('menu-title').innerText = `${ this.#title } 메뉴 관리`;
+        document.getElementById('menu-count').innerText = `총 ${ this.#itemCount }개`;
     }
 }
 
@@ -87,7 +114,7 @@ class MenuInput {
         const $menuInput = document.getElementById('menu-name');
         const $menuAddButton = document.getElementById('menu-submit-button');
 
-        $menuInput.addEventListener('keydown', (event) => this.#addMenuItem(event, onAdd));
+        $menuInput.addEventListener('keypress', (event) => this.#addMenuItem(event, onAdd));
         $menuAddButton.addEventListener('click', (event) => this.#addMenuItem(event, onAdd));
     }
 
@@ -161,16 +188,16 @@ class MenuList {
     #delegateEvent(event) {
         const target = event.target;
 
-        if(target && target.dataset.action) {
+        if(target.tagName === 'BUTTON' && target.dataset) {
             this[target.dataset.action](target);
         }
     }
 }
 
-const menuItemTemplate = function (index, items) {
+const menuItemTemplate = function (index, item) {
     return `
         <li data-menu-id=${ index } class="menu-list-item d-flex items-center py-2">
-            <span class="w-100 pl-2 menu-name ${ items.getStatus() ? '' : 'sold-out'}">${ items.getName() }</span>
+            <span class="w-100 pl-2 menu-name ${ item.salesStatus ? '' : 'sold-out'}">${ item.name }</span>
             <button type="button" data-action="soldOut" class="bg-gray-50 text-gray-500 text-sm mr-1 menu-sold-out-button">품절</button>
             <button type="button" data-action="update" class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button">수정</button>
             <button type="button" data-action="delete" class="bg-gray-50 text-gray-500 text-sm menu-remove-button">삭제</button>

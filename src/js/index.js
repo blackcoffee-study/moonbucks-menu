@@ -1,10 +1,16 @@
-import View from './view.js';
-import Model from './model.js';
+import View from './View/view.js';
+import Model from './Model/model.js';
+import Controller from './Controller/controller.js';
 
-class MenuApp {
+export class cafeAPP {
   constructor() {
-    this.view = new View();
+    const view = new View();
+    const model = new Model();
+    const controller = new Controller(model, view);
+
+    view.initApp();
+    controller.bindEvent();
   }
 }
 
-new MenuApp();
+new cafeAPP();

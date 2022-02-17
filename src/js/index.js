@@ -117,7 +117,7 @@ function App() {
       e.preventDefault();
     });
 
-    $menuNameInput.addEventListener("keydown", (e) => {
+    $menuNameInput.addEventListener("keyup", (e) => {
       if (e.key === "Enter" && $menuNameInput.value !== "") addMenuItem();
     });
 

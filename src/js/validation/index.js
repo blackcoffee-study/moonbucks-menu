@@ -12,8 +12,11 @@ const validation = (events) => {
   });
 
   const error = () => {
-    alert(errors);
-    errors = '';
+    return new Promise(() => {
+      alert(errors);
+    }).then(() => {
+      errors = '';
+    });
   }
 
   const check = (value) => {

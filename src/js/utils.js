@@ -15,8 +15,9 @@ export const addMenu = (e) => {
 
   const name = $menuInput.value;
   if (!check(name)) {
-    error();
-    $menuInput.focus();
+    error().then(() => {
+      $menuInput.focus();
+    });
     return
   }
 
@@ -35,8 +36,9 @@ export const updateMenu = (target) => {
   const newName = prompt('메뉴를 입력해주세요.');
 
   if (!check(newName)) {
-    error();
-    $menuInput.focus();
+    error().then(() => {
+      $menuInput.focus();
+    });
     return
   }
   store.dispatch({

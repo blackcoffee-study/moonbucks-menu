@@ -8,8 +8,8 @@ import { $, MENUTYPE, TEXT } from '../utils/utils.js';
 import MenuList from './MenuList.js';
 
 export default function Main($target) {
-  const currentMenuType = CustomUseRecoilValue('MENULISTS', Main, $target);
-  const [menuLists, setMenuList] = useState(atom.menuLists, Main, $target);
+  const currentMenuType = CustomUseRecoilValue('CURRENT_MENUTYPE', Main, $target);
+  const [menuLists, setMenuList] = useState(atom.MENULISTS, Main, $target);
 
   const render = () => {
     $target.innerHTML = /*html*/`

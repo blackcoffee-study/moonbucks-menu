@@ -1,5 +1,5 @@
 import { $, TEXT } from "./utils/utils.js";
-import CustomSet from "./utils/CustomSet.js";
+import CustomMenuSet from './utils/CustomMenuSet.js';
 
 import MenuList from "./components/MenuList.js";
 import MenuType from "./components/MenuType.js";
@@ -22,11 +22,11 @@ export default function MoonBucks() {
     };
 
     this.menuLists = {
-        "espresso": new CustomSet(),
-        "frappuccino": new CustomSet(),
-        "blended": new CustomSet(),
-        "teavana": new CustomSet(),
-        "dessert": new CustomSet(),
+        "espresso": new CustomMenuSet(),
+        "frappuccino": new CustomMenuSet(),
+        "blended": new CustomMenuSet(),
+        "teavana": new CustomMenuSet(),
+        "dessert": new CustomMenuSet(),
     };
 
     this.currentMenuType = "espresso";
@@ -68,9 +68,9 @@ export default function MoonBucks() {
         countReRender();
     }
 
-    const updateMenuList = (before, after) => {
+    const updateMenuList = (before, after, isSoldOut) => {
         this.menuLists[this.currentMenuType].delete(before);
-        this.menuLists[this.currentMenuType].add(after);
+        this.menuLists[this.currentMenuType].add(after, { isSoldOut: isSoldOut });
         menuListReRender();
     }
 
@@ -90,8 +90,12 @@ export default function MoonBucks() {
         const classList = e.target.classList;
 
         if (classList.contains('menu-edit-button')) {
+            const $targetMenu = e.target.parentNode.querySelector('.menu-name');
+            const isSoldOut = $targetMenu.classList.contains("sold-out");
+
             const newMenuName = window.prompt(TEXT.UPDATE);
-            updateMenuList(e.target.parentNode.querySelector('.menu-name').textContent, newMenuName);
+
+            updateMenuList($targetMenu.textContent, newMenuName, isSoldOut);
         }
 
         if (classList.contains('menu-remove-button')) {
@@ -99,5 +103,14 @@ export default function MoonBucks() {
                 removeMenuList(e.target.parentNode.querySelector('.menu-name').textContent);
             }
         }
+
+        if (classList.contains('menu-sold-out-button')) {
+            const $targetMenu = e.target.parentNode.querySelector('.menu-name');
+            const isSoldOut = $targetMenu.classList.contains("sold-out");
+            const targetMenuName = $targetMenu.textContent;
+
+            updateMenuList(targetMenuName, targetMenuName, !isSoldOut);
+        }
+
     };
 };

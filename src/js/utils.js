@@ -1,5 +1,6 @@
 import store, { ADD_ESPRESSO_MENU, UPDATE_ESPRESSO_MENU, DELETE_ESPRESSO_MENU } from './reducer.js';
 
+import validation, { isEmpty } from './validation/index.js';
 import MenuList from './components/MenuList.js';
 
 const $menuForm = document.querySelector('#espresso-menu-form');
@@ -7,12 +8,20 @@ const $menuInput = $menuForm.querySelector('input');
 const $menuList = document.querySelector('#espresso-menu-list');
 const $menuCount = document.querySelector('.menu-count');
 
+const { check, error } = validation([isEmpty('메뉴를 입력해주세요.')]);
+
 export const addMenu = (e) => {
   e.preventDefault();
 
+  const name = $menuInput.value;
+  if (!check(name)) {
+    error();
+    $menuInput.focus();
+    return
+  }
+
   // random id 생성
   const id = Math.floor(new Date().valueOf() * Math.random()).toString();
-  const name = $menuInput.value;
 
   store.dispatch({
     type: ADD_ESPRESSO_MENU,
@@ -24,6 +33,12 @@ export const addMenu = (e) => {
 export const updateMenu = (target) => {
   const { id } = target.parentNode.dataset;
   const newName = prompt('메뉴를 입력해주세요.');
+
+  if (!check(newName)) {
+    error();
+    $menuInput.focus();
+    return
+  }
   store.dispatch({
     type: UPDATE_ESPRESSO_MENU,
     data: { id, name: newName },

@@ -23,7 +23,11 @@ export default class CustomSet {
         return Object.keys(this.data).length;
     }
 
-    getData() {
+    getValues() {
         return Object.values(this.data);
+    }
+
+    getData() {
+        return this.data;
     }
 }

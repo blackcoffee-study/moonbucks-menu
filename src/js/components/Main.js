@@ -47,9 +47,6 @@ export default function Main($target) {
 
   const mountChildren = () => {
     const $espressoMenuList = $('#espresso-menu-list');
-    console.log(currentMenuType);
-    console.log(menuLists);
-    console.log(menuLists[currentMenuType]);
 
     MenuList($espressoMenuList, menuLists[currentMenuType].getValues());
   }

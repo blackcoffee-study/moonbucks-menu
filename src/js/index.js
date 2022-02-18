@@ -1,59 +1,121 @@
-// step1 - 돔 조작과 이벤트 핸들링으로 메뉴 관리하기.
-// 요구사항1) 메뉴추가
+//   🎯 step2 요구사항 - 상태 관리로 메뉴 관리하기
+// localStorage read & write
+//[x]  localStorage에 데이터를 저장한다.
+//  [x]  메뉴를 추가할때
+//  [x]  메뉴를 수정할때
+//  [x]  메뉴를 삭제할때
+//[x]  localStorage에 있는 데이터를 읽어온다.
+
+// 종류별 메뉴판 관리
+//[]  에스프레소 메뉴판관리
+//[]  프라푸치노 메뉴판관리
+//[]  블렌디드 메뉴판관리
+//[]  티바나 메뉴판관리
+//[]  디저트 메뉴판관리
+
+// 페이지 접근시 최초 데이터 Read & Rendering
+//[]  페이지에 최초로 접근할 때 localStorage에서 에스프레소 메뉴 데이터를 가져온다.
+//[]  에스프레소 메뉴를 페이지에 보이게 한다.
+
+// 품절상태관리
+//[] 품절 버튼을 추가한다.
+//[] 품절 버튼 클릭시, 클릭한 버튼의 부모노드 하위의 span태그를 찾아 sold-out class를 추가한다.
+//[] 품절 버튼 클릭시, localStorage에 상태값이 저장된다.
+
 
 //DOM요소 선택 함수
 const $ = (selector) => document.querySelector(selector);
+
+const store = {
+    setLocalStorage(menu) {
+        localStorage.setItem("menu", JSON.stringify(menu));
+    },
+    getLocalStorage() {
+        return JSON.parse(localStorage.getItem("menu"));
+    }
+}
+
+let menu = [];
+
+//페이지 처음 진입시 호출하는 함수
+const init = () => {
+    if (store.getLocalStorage().length > 1) {
+        menu = store.getLocalStorage();
+    }
+    render();
+}
 
 //Enter키 입력시 새로고침 방지
 const espressoMenuForm = $('#espresso-menu-form');
 espressoMenuForm.setAttribute('onsubmit', "return false;");
 
-const espressoMenuName = $('#espresso-menu-name');
-const espressoMenuList = $('#espresso-menu-list');
+//메뉴 리스트 렌더링 함수
+const render = () => {
+    const template = menu.map((menuItem, index) => {
+        return `
+        <li data-menu-id="${index}" class="menu-list-item d-flex items-center py-2">
+            <span class="w-100 pl-2 menu-name">${menuItem.name}</span>
+            <button type="button" class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button">수정</button>
+            <button type="button" class="bg-gray-50 text-gray-500 text-sm menu-remove-button">삭제</button>
+        </li>`
+    }).join(''); //li태그의 배열을 join을 통해 하나의 문자열로 합친다.
 
-//신규메뉴 추가시 메뉴아이템에 들어갈 html코드 반환 함수
-const espressoMenuItem = (espressoMenuName_value) => {
-    return `<li class="menu-list-item d-flex items-center py-2">
-                <span class="w-100 pl-2 menu-name">${espressoMenuName_value}</span>
-                <button type="button" class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button">수정</button>
-                <button type="button" class="bg-gray-50 text-gray-500 text-sm menu-remove-button">삭제</button>
-            </li>`
+    $('#espresso-menu-list').innerHTML = template;
+    $('.menu-count').textContent = `총 ${$('#espresso-menu-list').childElementCount}개`;
 }
+
+//페이지 초기세팅
+init();
 
 //신규메뉴 추가 함수
 const addEspressoMenuName = () => { //
-    if (espressoMenuName.value.trim() === "") {//요구사항 1-2) 사용자 입력값이 빈값이라면 추가되지 않는다. (공백이 들어올경우를 고려함)
+    if ($('#espresso-menu-name').value.trim() === "") {
         alert('값을 입력해주세요');
         return;
     }
-    espressoMenuList.insertAdjacentHTML("beforeend", espressoMenuItem(espressoMenuName.value));
-    espressoMenuName.value = "";//요구사항 1-1) 메뉴가 추가되고나면 input은 빈 값으로 초기화한다.
-    $('.menu-count').textContent = `총 ${espressoMenuList.childElementCount}개`;// 요구사항4) 총 메뉴 갯수를 count하여 상단에 보여준다.
+    menu.push({ name: $('#espresso-menu-name').value });
+    store.setLocalStorage(menu);
+    render();
+    $('#espresso-menu-name').value = "";
 }
 
 //메뉴이름을 입력받고, 엔터를 눌렀을때 메뉴추가
-espressoMenuName.addEventListener('keydown', (event) => { //요구사항 1) 에스프레소 메뉴에 새로운 메뉴를 엔터키입력으로 추가한다.
+$('#espresso-menu-name').addEventListener('keydown', (event) => {
     if (event.key !== 'Enter') return;
-    if (event.isComposing !== true) addEspressoMenuName();  // keydown이벤트 발생시, 한국어 중복입력되는 이슈를 방지하기 위함.
+    if (event.isComposing !== true) addEspressoMenuName();
 })
 
 //메뉴이름을 입력받고, 확인버튼을 클릭하면 메뉴가 추가된다.
 const espressoMenuSubmitBtn = $('#espresso-menu-submit-button');
-espressoMenuSubmitBtn.addEventListener('click', () => {//요구사항 1) 에스프레소 메뉴에 새로운 메뉴를 확인버튼으로 추가한다.
+espressoMenuSubmitBtn.addEventListener('click', () => {
     addEspressoMenuName();
 });
 
+const updateMenu = (e) => {
+    const menuId = e.target.parentNode.dataset.menuId;
+    const menuName = e.target.parentNode.querySelector('.menu-name');
+    menuName.textContent = window.prompt('메뉴명을 수정하세요', menuName.textContent);
+    menu[menuId].name = menuName.textContent;
+    store.setLocalStorage(menu);
+}
 
-// 요구사항2) 메뉴 수정 <-이벤트위임(Delegation) 사용
-espressoMenuList.addEventListener('click', (e) => {
+const removeMenu = (e) => {
+    const deleteMenu = e.target.parentNode;
+    const menuId = deleteMenu.dataset.menuId;
+    const result = window.confirm('정말 삭제하시겠습니까?');
+    if (result === true) {
+        deleteMenu.remove();
+        menu.splice(menuId, 1);
+        store.setLocalStorage(menu);
+    }
+}
+
+// 메뉴 수정,삭제 <-이벤트위임(Delegation) 사용
+$('#espresso-menu-list').addEventListener('click', (e) => {
     const parentNode = e.target.parentNode;
     if (e.target.classList.contains('menu-edit-button')) {
-        const menuName = parentNode.querySelector('.menu-name');
-        menuName.textContent = window.prompt('메뉴명을 수정하세요', menuName.textContent);// 요구사항2-1)메뉴별 수정 버튼클릭 이벤트를 받으면, 메뉴명에 들어갈 텍스트를 입력하는 prompt창이 뜨고, 확인버튼을 누르면 메뉴명이 수정된다.
+        updateMenu(e);
     } else if (e.target.classList.contains('menu-remove-button')) {
-        // 요구사항3) 메뉴 식제
-        const menu = parentNode;
-        const result = window.confirm('정말 삭제하시겠습니까?');// 요구사항 3-1) 메뉴 삭제 버튼클릭 이벤트를 받으면, 메뉴를 삭제하겠냐는 confirm 인터페이스가 나타나고, 확인을 누르면 메뉴가삭제된다.
-        if (result === true) menu.remove();
+        removeMenu(e);
     }
 });

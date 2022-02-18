@@ -26,7 +26,7 @@ const addEspressoMenuName = () => { //
         alert('값을 입력해주세요');
         return;
     }
-    espressoMenuList.insertAdjacentHTML("afterbegin", espressoMenuItem(espressoMenuName.value));
+    espressoMenuList.insertAdjacentHTML("beforeend", espressoMenuItem(espressoMenuName.value));
     espressoMenuName.value = "";//요구사항 1-1) 메뉴가 추가되고나면 input은 빈 값으로 초기화한다.
     $('.menu-count').textContent = `총 ${espressoMenuList.childElementCount}개`;// 요구사항4) 총 메뉴 갯수를 count하여 상단에 보여준다.
 }
@@ -34,7 +34,7 @@ const addEspressoMenuName = () => { //
 //메뉴이름을 입력받고, 엔터를 눌렀을때 메뉴추가
 espressoMenuName.addEventListener('keydown', (event) => { //요구사항 1) 에스프레소 메뉴에 새로운 메뉴를 엔터키입력으로 추가한다.
     if (event.key !== 'Enter') return;
-    if (event.isComposing !== true) { addEspressoMenuName(); } // keydown이벤트 발생시, 한국어 중복입력되는 이슈를 방지하기 위함.
+    if (event.isComposing !== true) addEspressoMenuName();  // keydown이벤트 발생시, 한국어 중복입력되는 이슈를 방지하기 위함.
 })
 
 //메뉴이름을 입력받고, 확인버튼을 클릭하면 메뉴가 추가된다.
@@ -54,13 +54,6 @@ espressoMenuList.addEventListener('click', (e) => {
         // 요구사항3) 메뉴 식제
         const menu = parentNode;
         const result = window.confirm('정말 삭제하시겠습니까?');// 요구사항 3-1) 메뉴 삭제 버튼클릭 이벤트를 받으면, 메뉴를 삭제하겠냐는 confirm 인터페이스가 나타나고, 확인을 누르면 메뉴가삭제된다.
-        if (result === true) { menu.remove(); }
+        if (result === true) menu.remove();
     }
 });
-
-
-
-
-
-
-

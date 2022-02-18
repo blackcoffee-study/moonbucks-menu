@@ -12,6 +12,9 @@ const validation = (events) => {
   });
 
   const error = () => {
+    if (!errors) {
+      return
+    }
     return new Promise(() => {
       alert(errors);
     }).then(() => {
@@ -20,6 +23,7 @@ const validation = (events) => {
   }
 
   const check = (value) => {
+    if (value === null) return
     try {
       checkEvents.forEach((event) => {
         const result = event(value);

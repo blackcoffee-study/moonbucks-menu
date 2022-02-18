@@ -1,28 +1,22 @@
 import createStore from './store/config.js';
+import { ADD_MENU_ITEM, DELETE_MENU_ITEM, LOAD_MENU_LIST, UPDATE_CATEGORY, UPDATE_MENU_ITEM, UPDATE_MENU_SOLDOUT } from './common/constants.js';
+import { categoryRender, menuRender } from './common/utils/render.js';
+import { updateLocalStorage } from './common/utils/localStorage.js';
 
 const initialState = {
   category: 'espresso',
   menuList: [],
 };
 
-export const UPDATE_CAFE_CATEGORY = 'UPDATE_CAFE_CATEGORY';
-
-export const LOAD_MENU_ITEM = 'LOAD_MENU_ITEM';
-export const ADD_MENU_ITEM = 'ADD_MENU_ITEM';
-export const UPDATE_MENU_ITEM = 'UPDATE_MENU_ITEM';
-export const DELETE_MENU_ITEM = 'DELETE_MENU_ITEM';
-
-export const UPDATE_MENU_SOLDOUT = 'UPDATE_MENU_SOLDOUT';
-
 const reducer = (state = initialState, action) => {
   switch (action.type) {
-    case UPDATE_CAFE_CATEGORY:
+    case UPDATE_CATEGORY:
       return {
         ...state,
         category: action.data.categoryName,
         menuList: action.data.menuList || [],
       };
-    case LOAD_MENU_ITEM:
+    case LOAD_MENU_LIST:
       return {
         ...state,
         menuList: action.data,
@@ -53,5 +47,8 @@ const reducer = (state = initialState, action) => {
 }
 
 const store = createStore(initialState, (reducer));
+
+store.subscribe(updateLocalStorage);
+store.subscribe(menuRender);
 
 export default store;

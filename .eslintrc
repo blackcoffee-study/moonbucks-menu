@@ -1,0 +1,20 @@
+{ 
+    "plugins": [
+    "prettier"
+  ],
+    "env": {
+      "node": true,
+      "es6": true,
+      "browser": true
+    },
+    "extends": "airbnb-base",
+    "rules": {
+      "import/extensions": "off",
+      "no-underscore-dangle": ["error", { "allow": ["_id"] }],
+      "prettier/prettier": "error"
+    },
+    "parserOptions": {
+      "sourceType": "module"
+    },
+    "parser": "babel-eslint"
+}

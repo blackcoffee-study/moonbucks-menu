@@ -1,62 +1,124 @@
-import { INITIAL_CATEGORY } from "./constants.js";
-import { Store } from "./store.js";
+import { INITIAL_CATEGORY } from "./constants/index.js";
+import { Store } from './store/index.js';
+import { $ } from './utils/dom.js';
 import {
+  isEmpty,
   getMenuTemplate,
   renderMenusByFunction,
+  toggleMenuStatusInStore,
   editMenuInStore,
   removeMenuInStore,
-} from "./utils.js";
-
+  setLocalStorage,
+  getLocalStorage,
+} from "./utils/index.js";
 let currentCategory = INITIAL_CATEGORY;
+let menus;
 
 window.onload = () => {
-  render();
-  setEventListener();
+  setMenuUseLocalStorage();
+  menuRender();
+  preventSubmitInForm();
+  setDocumentHandlers();
 };
 
-const render = () => {
-  const $menuCount = document.getElementsByClassName("menu-count")[0];
-  const $menuList = document.getElementById("espresso-menu-list");
+const setMenuUseLocalStorage = () => {
+  if (!getLocalStorage("menus")) {
+    setLocalStorage("menus", Store);
+  }
 
-  $menuList.innerHTML = renderMenusByFunction(Store[currentCategory], getMenuTemplate);
-  $menuCount.innerHTML = `총 ${Store[currentCategory].length}개`;
+  menus = getLocalStorage("menus");
 }
 
-const setEventListener = () => {
-  const $form = document.getElementById("espresso-menu-form");
-  const addNewMenu = (event) => {
+const menuRender = () => {
+  const $menuCount = $(".menu-count");
+  const $menuList = $("#espresso-menu-list");
+
+  $menuList.innerHTML = renderMenusByFunction(menus[currentCategory], getMenuTemplate);
+  $menuCount.textContent = `총 ${menus[currentCategory].length}개`;
+}
+
+const preventSubmitInForm = () => {
+  const $form = $("#espresso-menu-form");
+  $form.addEventListener("submit", (event) => {
     event.preventDefault();
+  });
+};
+
+const setDocumentHandlers = () => { 
+  formHandler();
+  menuListHandler();
+  categoryHeaderHandler();
+}
+
+const formHandler = () => {
+  const $form = $("#espresso-menu-form");
+  const addNewMenu = (event) => {
     const $input = event.target["espressoMenuName"];
-    const newMenu = $input.value;
-    if (newMenu === "") {
+    const { value: newMenu } = $input;
+    const id = new Date().toISOString();
+
+    if (isEmpty(newMenu)) {
       alert("값을 입력해주세요");
       return;
     }
-    Store[currentCategory].push(newMenu);
+
+    menus[currentCategory].push({ id, name: newMenu, status: "onSale" });
     $input.value = "";
 
-    render();
+    setLocalStorage("menus", menus);
+    menuRender();
   };
   $form.addEventListener("submit", addNewMenu, false);
+};
 
-  
-  const $menuList = document.getElementById("espresso-menu-list");
+const menuListHandler = () => {
+  const $menuList = $("#espresso-menu-list");
   $menuList.addEventListener("click", (event) => {
     const { target } = event;
     const { parentNode } = target;
-    const { menuName } = parentNode.dataset;
+    const { menuId, menuName } = parentNode.dataset;
     const classList = target.classList;
 
+    if (classList.contains("menu-sold-out-button")) {
+      toggleMenuStatusInStore(menus, currentCategory, menuId);
+      setLocalStorage("menus", menus);
+      menuRender();
+      return;
+    }
+
     if (classList.contains("menu-edit-button")) {
-      editMenuInStore(Store, currentCategory, menuName);
-      render();
+      editMenuInStore(menus, currentCategory, menuId, menuName);
+      setLocalStorage("menus", menus);
+      menuRender();
       return;
     }
 
     if (classList.contains("menu-remove-button")) {
-      removeMenuInStore(Store, currentCategory, menuName);
-      render();
+      removeMenuInStore(menus, currentCategory, menuId);
+      setLocalStorage("menus", menus);
+      menuRender();
       return;
     }
+
+    return;
   });
+}
+
+const categoryHeaderHandler = () => {
+  const categoryHeader = $("main > .wrapper > .heading >  h2");
+  const navigationContainer = $("#espresso-menu-nav")
+  navigationContainer.addEventListener("click", (event) => {
+    const { target } = event;
+    const { tagName } = target;
+    if (tagName === "BUTTON") {
+      const {
+        dataset: { categoryName },
+        innerText,
+      } = target;
+      currentCategory = categoryName;
+      categoryHeader.textContent = `${innerText} 메뉴 관리`;
+
+      menuRender();
+    } 
+  })
 }

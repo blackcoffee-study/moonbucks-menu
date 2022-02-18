@@ -10,12 +10,11 @@ function App() {
   const $submitButton = $("#espresso-menu-submit-button");
   const $counter = $(".menu-count");
   const $categoryNav = $("#cafe-category-nav"); // TODO : localStorage 카테고리 별 배열 초기화
+  const $categoryName = $(".cafe-category-name");
   const $menuTitle = $(".mt-1");
 
   this.init = () => {
-    this.currentCategory = $(".cafe-category-name").getAttribute(
-      "data-category-name"
-    ); // first category
+    this.currentCategory = $categoryName.dataset.categoryName;
     this.menuItems = JSON.parse(localStorage.getItem(this.currentCategory));
     if (!this.menuItems) this.menuItems = [];
 
@@ -58,23 +57,33 @@ function App() {
         })
         .join("");
       updateMenuCount();
-      $menuNameInput.focus(); // auto focusing
+      $menuNameInput.value = "";
+      $menuNameInput.focus();
     }
   };
 
   // Functions
   const addMenuItem = () => {
+    if (isDuplicatedMenuName($menuNameInput.value)) {
+      alert("이미 동일한 메뉴명이 있습니다.");
+      $menuNameInput.value = "";
+      $menuNameInput.focus();
+      return;
+    }
+    if ($menuNameInput.value.trim() === "") {
+      alert("공백 값을 입력하셨습니다.");
+      $menuNameInput.value = "";
+      $menuNameInput.focus();
+      return;
+    }
     const menuItemInfo = {
       menuName: $menuNameInput.value,
       category: this.currentCategory,
       status: "normal", // || sold-out
     };
-
-    // TODO : 중복, 띄어쓰기 메뉴입력 제어
     this.menuItems.push(menuItemInfo);
     setState(this.menuItems);
     localStorage.setItem(this.currentCategory, JSON.stringify(this.menuItems));
-    $menuNameInput.value = "";
   };
 
   const modifyMenuItem = (e) => {
@@ -103,11 +112,11 @@ function App() {
     const $listItem = e.target.closest("li");
     if (confirm("해당 메뉴를 삭제하시겠습니까?")) {
       this.menuItems.splice($listItem.dataset.id, 1);
+      setState(this.menuItems);
       localStorage.setItem(
         this.currentCategory,
         JSON.stringify(this.menuItems)
       );
-      setState(this.menuItems);
     }
   };
 
@@ -119,6 +128,14 @@ function App() {
   const isContainedClass = (className, e) => {
     if (e.target.classList.contains(className)) return true;
     else return false;
+  };
+
+  const isDuplicatedMenuName = (newMenuName) => {
+    const duplicatedMenuItem = this.menuItems.find((item) => {
+      if (item.menuName == newMenuName) return item;
+    });
+    if (duplicatedMenuItem) return true;
+    return false;
   };
 
   const initEventHandlers = () => {
@@ -154,13 +171,12 @@ function App() {
     $categoryNav.addEventListener("click", (e) => {
       if (isContainedClass("cafe-category-name", e)) {
         this.currentCategory = e.target.dataset.categoryName;
-        $menuTitle.innerHTML = e.target.textContent + " 메뉴 관리";
+        $menuTitle.innerHTML = `${e.target.textContent} 메뉴 관리`;
         if (this.menuItems) {
           this.menuItems = JSON.parse(
             localStorage.getItem(this.currentCategory)
           );
           if (!this.menuItems) this.menuItems = [];
-
           setState(this.menuItems);
         }
       }

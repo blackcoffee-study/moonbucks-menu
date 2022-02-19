@@ -14,16 +14,8 @@ export const CATEGORY_NAME = {
   [CATEGORY.desert]: "디저트",
 };
 
-export const MENU = {
-  [CATEGORY.espresso]: "EspressoMenu",
-  [CATEGORY.frappuccino]: "FrappuccinoMenu",
-  [CATEGORY.blended]: "BlendedMenu",
-  [CATEGORY.teavana]: "TeavanaMenu",
-  [CATEGORY.desert]: "DesertMenu",
-};
-
 export const BUTTON_TYPE = {
-  SoldOut: "soldOut",
+  SoldOut: "sold-out",
   Update: "update",
   Delete: "delete",
 };

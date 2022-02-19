@@ -1,4 +1,5 @@
 import CustomMenuSet from '../utils/custom-menu-set.js'
+
 export default {
   'MENULISTS': {
     "espresso": new CustomMenuSet(),

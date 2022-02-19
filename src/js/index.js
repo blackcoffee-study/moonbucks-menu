@@ -5,7 +5,6 @@ import { inputValidator, findMenu } from "./utils/utils.js";
 import { getMenu, postMenu, putMenu, deleteMenuById } from "./api/index.js";
 
 const menuContainer = document.querySelector("#espresso-menu-list");
-const menuTitle = document.querySelector("#menu-title");
 const menuInput = document.querySelector("#espresso-menu-name");
 
 //메뉴 카운트 set
@@ -90,6 +89,7 @@ const updateMenu = (target) => {
 
 // 카테고리 이벤트 핸들러
 const categoryEventHandler = (e) => {
+  const menuTitle = document.querySelector("#menu-title");
   const { categoryName } = e.target.dataset;
   const categoryText = e.target.textContent;
 

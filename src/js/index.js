@@ -50,7 +50,7 @@ const updateMenuCount = () => {
 };
 
 const renderMenus = (category) => {
-    console.log(category);
+    console.log(category, "renderMenus");
     let menuList = menu[category].reduce(
         (prev, cur) => createMenuListItem(cur) + prev,
         ""
@@ -116,6 +116,7 @@ const initEventListeners = () => {
         $("#form-title").innerText = `${title[curCategory]} 메뉴 관리`;
         // 리스트 현재 카테고리에 맞게 표시
         renderMenus(curCategory);
+        console.log(curCategory);
     });
 
     $("#menu-form").addEventListener("submit", (e) => {
@@ -138,11 +139,23 @@ const initEventListeners = () => {
 
 const init = () => {
     initEventListeners();
+    const categories = [
+        "espresso",
+        "frappuccino",
+        "blended",
+        "teavana",
+        "dessert",
+    ];
+
+    // LocalStroage에서 카테고리에 해당하는 메뉴들 가져오기
+    categories.forEach((category) => {
+        if (!getLocalStorage(category)) return;
+        menu[category] = getLocalStorage(category);
+    });
     // 초기화면은 espresso
     curCategory = "espresso";
     if (!getLocalStorage(curCategory)) return;
-    menu[curCategory] = getLocalStorage(curCategory);
-    renderMenus(menu[curCategory]);
+    renderMenus(curCategory);
     updateMenuCount();
 };
 

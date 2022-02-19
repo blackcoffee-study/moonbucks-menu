@@ -17,7 +17,7 @@ export default class MenuForm extends Component {
             autocomplete="off"
           />
           <button
-            type="button"
+            type="submit"
             name="submit"
             id="espresso-menu-submit-button"
             class="input-submit bg-green-600 ml-2"
@@ -33,16 +33,7 @@ export default class MenuForm extends Component {
 
     this.domNode.addEventListener('submit', e => {
       e.preventDefault();
-    });
-
-    $('#espresso-menu-name').addEventListener('keyup', ({ key, target }) => {
-      if (key !== 'Enter') return;
-
-      addMenu(target.value);
-    });
-
-    $('#espresso-menu-submit-button').addEventListener('click', ({ target }) => {
-      addMenu(target.previousElementSibling.value);
+      addMenu($('#espresso-menu-name').value);
     });
   }
 }

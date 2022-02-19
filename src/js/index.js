@@ -1,27 +1,3 @@
-//   🎯 step2 요구사항 - 상태 관리로 메뉴 관리하기
-// localStorage read & write
-//[x]  localStorage에 데이터를 저장한다.
-//  [x]  메뉴를 추가할때
-//  [x]  메뉴를 수정할때
-//  [x]  메뉴를 삭제할때
-//[x]  localStorage에 있는 데이터를 읽어온다.
-
-// 종류별 메뉴판 관리
-//[x]  에스프레소 메뉴판관리
-//[x]  프라푸치노 메뉴판관리
-//[x]  블렌디드 메뉴판관리
-//[x]  티바나 메뉴판관리
-//[x]  디저트 메뉴판관리
-
-// 페이지 접근시 최초 데이터 Read & Rendering
-//[x]  페이지에 최초로 접근할 때 localStorage에서 에스프레소 메뉴 데이터를 가져온다.
-//[x]  에스프레소 메뉴를 페이지에 보이게 한다.
-
-// 품절상태관리
-//[x] 품절 버튼을 추가한다.
-//[x] 품절 버튼 클릭시, 클릭한 버튼의 부모노드 하위의 span태그를 찾아 sold-out class를 추가한다.
-//[x] 품절 버튼 클릭시, localStorage에 상태값이 저장된다.
-
 import { $ } from "./utils/dom.js";
 import store from "./store/index.js";
 

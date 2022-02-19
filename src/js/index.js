@@ -3,7 +3,7 @@ const store = {
         localStorage.setItem("menu", JSON.stringify(menu));
     },
     getLocalStorage() {
-        localStorage.getItem("menu");
+        return JSON.parse(localStorage.getItem("menu"));
     }
 }
 
@@ -15,6 +15,12 @@ function App() {
     menuSubmitButton = document.querySelector("#espresso-menu-submit-button");
     // 상태는 변하는 데이터, 이 앱에서 변하는 것이 무엇인가 - 메뉴명
     let menu = [];
+    this.init = () => {
+        if(store.getLocalStorage().length > 1) {
+            menu = store.getLocalStorage();
+        }
+        render();
+    }
     
     // 수정, 삭제버튼 이벤트핸들링 처리
     menuList.addEventListener("click", (e) => {
@@ -54,6 +60,11 @@ function App() {
         const espressoMenuName = menuName.value;
         menu.push({ name: espressoMenuName })
         store.setLocalStorage(menu);
+        render();
+        menuName.value = "";
+    }
+
+    const render = () => {
         const template = menu.map((item, idx) => {
             return `
                 <li data-menu-id="${idx}" class="menu-list-item d-flex items-center py-2">
@@ -75,7 +86,6 @@ function App() {
         .join("");
         menuList.innerHTML = template;
         countMenu();
-        menuName.value = "";
     }
 
     // 갯수 카운팅 함수
@@ -96,4 +106,5 @@ function App() {
     });
 }
 
-App();
+const app = new App();
+app.init();

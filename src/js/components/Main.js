@@ -71,7 +71,7 @@ export default function Main($target) {
 
   init();
 
-  const addMenuList = () => {
+  function addMenuList() {
     const $espressoMenuName = $('#espresso-menu-name');
 
     if ($espressoMenuName.value) {
@@ -83,7 +83,7 @@ export default function Main($target) {
     }
   }
 
-  const removeMenuList = (menu) => {
+  function removeMenuList(menu) {
     const newMenuList = { ...menuLists };
     newMenuList[currentMenuType] = new CustomMenuSet(menuLists[currentMenuType].getData());
     newMenuList[currentMenuType].delete(menu);
@@ -91,7 +91,7 @@ export default function Main($target) {
     setMenuList(newMenuList);
   }
 
-  const updateMenuList = (before, after, isSoldOut) => {
+  function updateMenuList(before, after, isSoldOut) {
     const newMenuList = { ...menuLists };
     newMenuList[currentMenuType] = new CustomMenuSet(menuLists[currentMenuType].getData());
     newMenuList[currentMenuType].update(before, after, { isSoldOut: isSoldOut });
@@ -99,7 +99,7 @@ export default function Main($target) {
     setMenuList(newMenuList);
   }
 
-  const menuListHandler = (e) => {
+  function menuListHandler(e) {
     const classList = e.target.classList;
 
     if (classList.contains('menu-edit-button')) {

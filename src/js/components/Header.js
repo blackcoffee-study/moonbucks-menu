@@ -39,7 +39,7 @@ export default function Header($target) {
 
   init();
 
-  const changeCurrentMenuType = (e) => {
+  function changeCurrentMenuType(e) {
     if (e.target.dataset.categoryName) {
       setCurrnetMenuType(e.target.dataset.categoryName);
     };

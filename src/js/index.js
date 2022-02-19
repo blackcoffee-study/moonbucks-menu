@@ -81,7 +81,7 @@ const updateMenu = (target) => {
 
   const { isSoldOut } = findMenu(Number(menuId));
 
-  putMenu({ id: Number(menuId), name: updatedName, isSoldOut: isSoldOut });
+  putMenu({ id: Number(menuId), name: updatedName, isSoldOut });
 
   render();
 };

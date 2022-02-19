@@ -1,7 +1,7 @@
 import Atom from './atom.js';
 
-let _state = {};
-let _index = {};
+const _state = {};
+const _index = {};
 const subscribers = {};
 const targets = {};
 

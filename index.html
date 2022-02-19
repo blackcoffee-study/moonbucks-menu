@@ -16,8 +16,8 @@
             <a href="/" class="text-black">
               <h1 class="text-center font-bold">🌝 문벅스 메뉴 관리</h1>
             </a>
-            <nav class="d-flex justify-center flex-wrap">
-              <button data-category-name="espresso" class="cafe-category-name btn bg-white shadow mx-1">
+            <nav class="d-flex justify-center flex-wrap" data-component="categories">
+              <!-- <button data-category-name="espresso" class="cafe-category-name btn bg-white shadow mx-1">
                 ☕ 에스프레소
               </button>
               <button data-category-name="frappuccino" class="cafe-category-name btn bg-white shadow mx-1">
@@ -27,14 +27,14 @@
                 🍹 블렌디드
               </button>
               <button data-category-name="teavana" class="cafe-category-name btn bg-white shadow mx-1">🫖 티바나</button>
-              <button data-category-name="desert" class="cafe-category-name btn bg-white shadow mx-1">🍰 디저트</button>
+              <button data-category-name="desert" class="cafe-category-name btn bg-white shadow mx-1">🍰 디저트</button> -->
             </nav>
           </header>
           <main class="mt-10 d-flex justify-center">
             <div class="wrapper bg-white p-10">
-              <div class="heading d-flex justify-between">
+              <div class="heading d-flex justify-between" data-component="header">
                 <h2 class="mt-1">☕ 에스프레소 메뉴 관리</h2>
-                <span class="mr-2 mt-4 menu-count" data-component="menu-count">총 0개</span>
+                <span class="mr-2 mt-4 menu-count">총 0개</span>
               </div>
               <form id="espresso-menu-form" data-component="menu-form">
                 <div class="d-flex w-100">

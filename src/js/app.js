@@ -43,7 +43,7 @@ const App = () => {
   };
 
   const handleClick = (event, trigger) => {
-    const target = targetElementWrapper(event);
+    const target = targetElementWrapper(event.target);
     const mode = target.dataset('mode');
     mode && trigger[mode](target.closest(SELECTOR.MENU_ITEM));
   };

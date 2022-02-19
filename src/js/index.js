@@ -27,8 +27,16 @@ const clearInputValue = (input) => {
 };
 
 const updateMenuCount = () => {
-    const menuCount = $("#espresso-menu-list").childElementCount;
+    const menusList = $("#espresso-menu-list").childElementCount;
     $(".menu-count").innerText = `총 ${menuCount}개`;
+};
+
+const renderMenus = (menus) => {
+    let menuList = menus.reduce(
+        (prev, cur) => createMenuListItem(cur) + prev,
+        ""
+    );
+    $("#espresso-menu-list").insertAdjacentHTML("beforeend", menuList);
 };
 
 const setLocalStorage = (category, newMenu) => {
@@ -37,6 +45,14 @@ const setLocalStorage = (category, newMenu) => {
         items = JSON.parse(localStorage.getItem(category));
     }
     localStorage.setItem(category, JSON.stringify([...items, newMenu]));
+};
+
+const getLocalStorage = (category) => {
+    if (!localStorage.getItem(category)) return;
+
+    let items = JSON.parse(localStorage.getItem(category));
+    if (!items.length) return;
+    renderMenus(items);
 };
 
 const addMenuName = () => {
@@ -94,6 +110,8 @@ const initEventListeners = () => {
 
 const init = () => {
     initEventListeners();
+    // 초기화면(espresso)의 메뉴들을 가져옴
+    getLocalStorage("espresso");
 };
 
 init();

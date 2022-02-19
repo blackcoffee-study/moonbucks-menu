@@ -39,9 +39,21 @@ function removeMenu(menuListLiTag) {
   changeCountMenu();
 }
 
+//메뉴 품절 관리
+function setSoldOutMenu(menuListLiTag) {
+  const soldOutTag = menuListLiTag.querySelector('.menu-sold-out-button');
+  if(!soldOutTag) return;
+  
+  if(soldOutTag.classList.contains('sold-out')) {
+    soldOutTag.classList.remove('sold-out');
+  } else {
+    soldOutTag.classList.add('sold-out');
+  }
+}
+
 function changeCountMenu() {
   const menuCount = $('#espresso-menu-list').querySelectorAll('li').length;
   menuCountTag.innerHTML = `총 ${menuCount}개`;
 }
 
-export { addMenu, editMenu, removeMenu };
+export { addMenu, editMenu, removeMenu, setSoldOutMenu };

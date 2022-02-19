@@ -15,5 +15,7 @@ menuListTag.addEventListener('click', e => {
     menuHandler.editMenu(closestliTag);
   } else if (e.target.classList.contains('menu-remove-button')) {
     menuHandler.removeMenu(closestliTag);
+  } else if (e.target.classList.contains('menu-sold-out-button')) {
+    menuHandler.setSoldOutMenu(closestliTag);
   }
 });

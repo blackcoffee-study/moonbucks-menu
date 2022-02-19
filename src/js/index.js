@@ -55,6 +55,8 @@ const soldOutMenu = (target) => {
   menuName.classList.toggle("sold-out");
 
   putMenu({ id: Number(menuId), name, isSoldOut: !isSoldOut });
+
+  render();
 };
 
 //메뉴 삭제

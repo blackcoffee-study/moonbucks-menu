@@ -53,6 +53,15 @@ function App() {
                 countMenu();
             }
         }
+
+        // 품절
+        if(e.target.classList.contains("menu-sold-out-button")) {
+            const menuId = e.target.closest("li").dataset.menuId;
+            menu[this.currentCategory][menuId].soldOut = 
+                !menu[this.currentCategory][menuId].soldOut;
+            store.setLocalStorage(menu);
+            render();
+        }
     })
 
     // form 태그가 자동으로 전송되는 것을 방지
@@ -77,7 +86,13 @@ function App() {
         const template = menu[this.currentCategory].map((item, idx) => {
             return `
                 <li data-menu-id="${idx}" class="menu-list-item d-flex items-center py-2">
-                    <span class="w-100 pl-2 menu-name">${item.name}</span>
+                    <span class="w-100 pl-2 menu-name ${item.soldOut ? 'sold-out' : ''}">${item.name}</span>
+                    <button
+                    type="button"
+                    class="bg-gray-50 text-gray-500 text-sm mr-1 menu-sold-out-button"
+                    >
+                        품절
+                    </button>
                     <button
                         type="button"
                         class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"

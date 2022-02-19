@@ -26,6 +26,12 @@ const createMenuListItem = (menuName) => {
     return `<li class="menu-list-item d-flex items-center py-2">
     <span class="w-100 pl-2 menu-name">${menuName}</span>
     <button
+    type="button"
+    class="bg-gray-50 text-gray-500 text-sm mr-1 menu-sold-out-button"
+  >
+    품절
+  </button>
+    <button
       type="button"
       class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
     >
@@ -50,9 +56,8 @@ const updateMenuCount = () => {
 };
 
 const renderMenus = (category) => {
-    console.log(category, "renderMenus");
     let menuList = menu[category].reduce(
-        (prev, cur) => createMenuListItem(cur) + prev,
+        (prev, cur) => prev + createMenuListItem(cur),
         ""
     );
     $("#menu-list").innerHTML = menuList;
@@ -72,28 +77,27 @@ const getLocalStorage = (category) => {
 
 const addMenuName = () => {
     const menuNameInput = $("#menu-name");
+    if (isEmpty(menuNameInput)) return;
+    const menuName = menuNameInput.value;
 
-    if (isEmpty($("#menu-name"))) return;
-
-    const menuListItem = createMenuListItem(menuNameInput.value);
-    $("#menu-list").insertAdjacentHTML("beforeend", menuListItem);
-    menu[curCategory].push(menuNameInput.value);
-
+    menu[curCategory].push(menuName);
     setLocalStorage(curCategory, menu[curCategory]);
     clearInputValue(menuNameInput);
+    renderMenus(curCategory);
     updateMenuCount();
 };
 
 const updateMenuName = (menuEditBtn) => {
     const parentEl = menuEditBtn.parentElement;
-    const curMenuName = parentEl.querySelector(".menu-name");
-    const newMenuName = prompt(
-        "새로운 메뉴 이름을 입력하세요.",
-        curMenuName.innerText
-    );
+    const curMenuName = parentEl.querySelector(".menu-name").innerText;
+    const newMenuName = prompt("새로운 메뉴 이름을 입력하세요.", curMenuName);
 
     if (!newMenuName) return;
-    curMenuName.innerText = newMenuName;
+    console.log(menu[curCategory]);
+    menu[curCategory][menu[curCategory].indexOf(curMenuName)] = newMenuName;
+    console.log(menu[curCategory]);
+    setLocalStorage(curCategory, menu[curCategory]);
+    renderMenus(curCategory);
 };
 
 const removeMenuName = (menuRemoveBtn) => {
@@ -103,7 +107,7 @@ const removeMenuName = (menuRemoveBtn) => {
         menu[curCategory].splice(menu[curCategory].indexOf(curMenuName), 1);
 
         setLocalStorage(curCategory, menu[curCategory]);
-        renderMenus(menu[curCategory]);
+        renderMenus(curCategory);
         updateMenuCount();
     }
 };
@@ -116,7 +120,6 @@ const initEventListeners = () => {
         $("#form-title").innerText = `${title[curCategory]} 메뉴 관리`;
         // 리스트 현재 카테고리에 맞게 표시
         renderMenus(curCategory);
-        console.log(curCategory);
     });
 
     $("#menu-form").addEventListener("submit", (e) => {

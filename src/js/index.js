@@ -23,7 +23,7 @@ menuListTag.addEventListener('click', e => {
   } else if (e.target.classList.contains('menu-remove-button')) {
     menuHandler.removeMenu(currentMenuType,closestliTag);
   } else if (e.target.classList.contains('menu-sold-out-button')) {
-    menuHandler.setSoldOutMenu(closestliTag);
+    menuHandler.setSoldOutMenu(currentMenuType, closestliTag);
   }
 });
 

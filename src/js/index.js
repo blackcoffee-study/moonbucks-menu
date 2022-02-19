@@ -16,10 +16,12 @@ menuInputTag.addEventListener('submit', e => {
 
 menuListTag.addEventListener('click', e => {
   const closestliTag = e.target.closest('li');
+  const currentMenuType = localStorage.getItem('currentMenuType');
+
   if(e.target.classList.contains('menu-edit-button')) {
-    menuHandler.editMenu(closestliTag);
+    menuHandler.editMenu(currentMenuType, closestliTag);
   } else if (e.target.classList.contains('menu-remove-button')) {
-    menuHandler.removeMenu(closestliTag);
+    menuHandler.removeMenu(currentMenuType,closestliTag);
   } else if (e.target.classList.contains('menu-sold-out-button')) {
     menuHandler.setSoldOutMenu(closestliTag);
   }
@@ -27,8 +29,10 @@ menuListTag.addEventListener('click', e => {
 
 cafeCategoryButtonTags.forEach(cafeCategoryButtonTag => {
   cafeCategoryButtonTag.addEventListener('click', e => {
-    const mentCategoryName = e.target.dataset.categoryName;
-    localStorage.setItem('currentMenuType', mentCategoryName);
-    menuListRender(mentCategoryName);
+    const menuCategoryName = e.target.dataset.categoryName;
+
+    localStorage.setItem('currentMenuType', menuCategoryName);
+    menuListRender(menuCategoryName);
+    menuHandler.changeMenuListHeader(menuCategoryName);
   })
 });

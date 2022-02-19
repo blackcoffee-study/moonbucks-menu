@@ -1,10 +1,21 @@
+const store = {
+    setLocalStorage(menu) {
+        localStorage.setItem("menu", JSON.stringify(menu));
+    },
+    getLocalStorage() {
+        localStorage.getItem("menu");
+    }
+}
+
 function App() {
     const menuName = document.querySelector("#espresso-menu-name"),
     menuForm = document.querySelector("#espresso-menu-form"),
     menuList = document.querySelector("#espresso-menu-list"),
     menuCount = document.querySelector(".menu-count"),
     menuSubmitButton = document.querySelector("#espresso-menu-submit-button");
-
+    // 상태는 변하는 데이터, 이 앱에서 변하는 것이 무엇인가 - 메뉴명
+    let menu = [];
+    
     // 수정, 삭제버튼 이벤트핸들링 처리
     menuList.addEventListener("click", (e) => {
         if(e.target.classList.contains("menu-edit-button")) {
@@ -12,7 +23,7 @@ function App() {
             updatedMenu = prompt("메뉴명을 수정하세요", reMenuName.innerText);
             reMenuName.innerText = updatedMenu;
         }
-
+        
         if(e.target.classList.contains("menu-remove-button")) {
             if(confirm("정말 삭제하시겠습니까?")) {
                 e.target.closest("li").remove();
@@ -20,23 +31,41 @@ function App() {
             }
         }
     })
-
+    
     // form 태그가 자동으로 전송되는 것을 방지
     menuForm.addEventListener("submit", (e) => {
         e.preventDefault();
     });
-
+    
     // 메뉴 추가함수
     const addMenu = () => {
-        const espressoMenuName = menuName.value;
-        if(espressoMenuName === "") {
+        if(menuName === "") {
             alert("값을 입력해주세요");
             return;
         }
-        menuList.insertAdjacentHTML(
-            "beforeend", 
-            menuItemTemplate(espressoMenuName)
-        );
+        const espressoMenuName = menuName.value;
+        menu.push({ name: espressoMenuName })
+        store.setLocalStorage(menu);
+        const template = menu.map((item) => {
+            return `
+                <li class="menu-list-item d-flex items-center py-2">
+                    <span class="w-100 pl-2 menu-name">${item.name}</span>
+                    <button
+                        type="button"
+                        class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
+                    >
+                        수정
+                    </button>
+                    <button
+                        type="button"
+                        class="bg-gray-50 text-gray-500 text-sm menu-remove-button"
+                    >
+                        삭제
+                    </button>
+                </li>`;
+        })
+        .join("");
+        menuList.innerHTML = template;
         countMenu();
         menuName.value = "";
     }
@@ -57,25 +86,6 @@ function App() {
         if(e.key !== "Enter") return;
         addMenu();
     });
-
-    // 메뉴아이템 템플릿함수
-    const menuItemTemplate = (espressoMenuName) => {
-        return `<li class="menu-list-item d-flex items-center py-2">
-            <span class="w-100 pl-2 menu-name">${espressoMenuName}</span>
-            <button
-                type="button"
-                class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
-            >
-                수정
-            </button>
-            <button
-                type="button"
-                class="bg-gray-50 text-gray-500 text-sm menu-remove-button"
-            >
-                삭제
-            </button>
-        </li>`;
-    }
 }
 
 App();

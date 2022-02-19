@@ -6,3 +6,11 @@ export function isNotBlank(menuName) {
   }
   return true;
 }
+
+export function isReduplicated(arr, menuName, id) {
+  const reduplication = arr.find(
+    (item, idx) => item.name === menuName && idx !== parseInt(id)
+  );
+  if (reduplication) alert("이미 동일한 메뉴가 있습니다.");
+  return !!reduplication;
+}

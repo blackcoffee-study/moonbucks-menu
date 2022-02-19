@@ -1,5 +1,4 @@
-// import { CATEGORY } from "./const/index.js";
-import { isNotBlank } from "./utils/validate.js";
+import { isNotBlank, isReduplicated } from "./utils/validate.js";
 
 const $ = (selector) => document.querySelector(selector);
 
@@ -25,7 +24,7 @@ function App() {
   this.menu = [];
 
   this.init = () => {
-    if (store.getLocalStorage().length > 1) {
+    if (store.getLocalStorage()) {
       this.menu = store.getLocalStorage();
     }
     render();
@@ -68,7 +67,6 @@ function App() {
     if (!isNotBlank(newMenuName)) return;
     const newMenuObj = {
       name: newMenuName,
-      id: Date.now(),
     };
     this.menu.push(newMenuObj);
     store.setLocalStorage(this.menu);
@@ -78,18 +76,19 @@ function App() {
   const editMenuName = ($li) => {
     const $span = $li.querySelector(".menu-name");
     let editedMenuName = prompt(EDIT_INPUT, $span.textContent);
+    const menuId = $li.dataset.menuId;
     if (editedMenuName) {
       editedMenuName = editedMenuName.trim();
     }
     if (!isNotBlank(editedMenuName)) return;
-    const menuId = $li.dataset.menuId;
+    if (isReduplicated(this.menu, editedMenuName, menuId)) return;
     this.menu[menuId].name = editedMenuName;
     store.setLocalStorage(this.menu);
     $span.textContent = editedMenuName;
   };
 
   const removeMenuName = ($li) => {
-    if (confirm("정말 삭제하시겠습니까?")) {
+    if (confirm(DELETE_CHECK)) {
       const menuId = $li.dataset.menuId;
       this.menu.splice(menuId, 1);
       store.setLocalStorage(this.menu);
@@ -108,9 +107,7 @@ function App() {
 
   $menuList.addEventListener("click", updateMenuList);
 
-  $("#espresso-menu-form").addEventListener("submit", (e) =>
-    e.preventDefault()
-  );
+  $menuForm.addEventListener("submit", (e) => e.preventDefault());
 
   $menuSubmitButton.addEventListener("click", addMenuName);
 

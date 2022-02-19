@@ -1,4 +1,4 @@
-import { isNotBlank, isReduplicated } from "./utils/validate.js";
+import {isBlank, isReduplicated } from "./utils/validate.js";
 
 const $ = (selector) => document.querySelector(selector);
 
@@ -64,7 +64,8 @@ function App() {
   const addMenuName = () => {
     const newMenuName = $menuName.value.trim();
     $menuName.value = "";
-    if (!isNotBlank(newMenuName)) return;
+    if (isBlank(newMenuName)) return;
+    if (isReduplicated(this.menu, newMenuName)) return;
     const newMenuObj = {
       name: newMenuName,
     };
@@ -80,7 +81,7 @@ function App() {
     if (editedMenuName) {
       editedMenuName = editedMenuName.trim();
     }
-    if (!isNotBlank(editedMenuName)) return;
+    if (isBlank(editedMenuName)) return;
     if (isReduplicated(this.menu, editedMenuName, menuId)) return;
     this.menu[menuId].name = editedMenuName;
     store.setLocalStorage(this.menu);

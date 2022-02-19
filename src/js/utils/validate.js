@@ -1,13 +1,13 @@
 const MENU_WHITE_SPACE_INPUT = "메뉴를 입력해주세요.";
-export function isNotBlank(menuName) {
+export function isBlank(menuName) {
   if (!menuName) {
     alert(MENU_WHITE_SPACE_INPUT);
-    return false;
+    return true;
   }
-  return true;
+  return false;
 }
 
-export function isReduplicated(arr, menuName, id) {
+export function isReduplicated(arr, menuName, id = null) {
   const reduplication = arr.find(
     (item, idx) => item.name === menuName && idx !== parseInt(id)
   );

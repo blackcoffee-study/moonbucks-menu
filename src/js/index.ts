@@ -1,9 +1,6 @@
-function $<T extends HTMLElement = HTMLDivElement>(selector: string) {
-  const element = document.querySelector(selector);
-  return element as T;
-}
+import { $ } from "./share/dom.js";
 
-class EspressoMenu {
+class CafeMenu {
   menuForm: HTMLFormElement;
   menuInput: HTMLInputElement;
   submitBtn: HTMLButtonElement;
@@ -14,10 +11,10 @@ class EspressoMenu {
   menuCountText: HTMLSpanElement;
 
   constructor() {
-    this.menuForm = $<HTMLFormElement>("#espresso-menu-form");
-    this.menuInput = $<HTMLInputElement>("#espresso-menu-name");
-    this.submitBtn = $<HTMLButtonElement>("#espresso-menu-submit-button");
-    this.menuList = $<HTMLUListElement>("#espresso-menu-list");
+    this.menuForm = $<HTMLFormElement>("#menu-form");
+    this.menuInput = $<HTMLInputElement>("#menu-name");
+    this.submitBtn = $<HTMLButtonElement>("#menu-submit-button");
+    this.menuList = $<HTMLUListElement>("#menu-list");
     this.menuItem = $<HTMLLIElement>(".menu-list-item");
     this.menuName = $<HTMLSpanElement>(".menu-name");
     this.menuCount = 0;
@@ -60,11 +57,11 @@ class EspressoMenu {
 
   createMenuHTML(name: string) {
     return `
-    <li class="menu-list-item d-flex items-center py-2">
-      <span class="w-100 pl-2 menu-name">${name}</span>
-      <button type="button" class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button">수정</button>
-      <button type="button" class="bg-gray-50 text-gray-500 text-sm menu-remove-button">삭제</button>
-    </li>`;
+      <li class="menu-list-item d-flex items-center py-2">
+        <span class="w-100 pl-2 menu-name">${name}</span>
+        <button type="button" class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button">수정</button>
+        <button type="button" class="bg-gray-50 text-gray-500 text-sm menu-remove-button">삭제</button>
+      </li>`;
   }
 
   addNewMenu() {
@@ -95,4 +92,4 @@ class EspressoMenu {
   }
 }
 
-new EspressoMenu();
+new CafeMenu();

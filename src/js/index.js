@@ -2,7 +2,21 @@ const $ = (selector) => document.querySelector(selector);
 
 const menu = {
     espresso: [],
+    frappuccino: [],
+    blended: [],
+    teavana: [],
+    dessert: [],
 };
+
+const title = {
+    espresso: "☕ 에스프레소",
+    frappuccino: "🥤 프라푸치노",
+    blended: "🍹 블렌디드",
+    teavana: "🫖 티바나",
+    dessert: "🍰 디저트",
+};
+
+let curCategory = "";
 
 const isEmpty = (input) => {
     return Boolean(!input.value.length);
@@ -31,7 +45,7 @@ const clearInputValue = (input) => {
 };
 
 const updateMenuCount = () => {
-    const menuCount = $("#espresso-menu-list").childElementCount;
+    const menuCount = $("#menu-list").childElementCount;
     $(".menu-count").innerText = `총 ${menuCount}개`;
 };
 
@@ -40,7 +54,7 @@ const renderMenus = (category) => {
         (prev, cur) => createMenuListItem(cur) + prev,
         ""
     );
-    $("#espresso-menu-list").innerHTML = menuList;
+    $("#menu-list").innerHTML = menuList;
 };
 
 const setLocalStorage = (category, newMenus) => {
@@ -56,12 +70,12 @@ const getLocalStorage = (category) => {
 };
 
 const addMenuName = () => {
-    const menuNameInput = $("#espresso-menu-name");
+    const menuNameInput = $("#menu-name");
 
-    if (isEmpty($("#espresso-menu-name"))) return;
+    if (isEmpty($("#menu-name"))) return;
 
     const menuListItem = createMenuListItem(menuNameInput.value);
-    $("#espresso-menu-list").insertAdjacentHTML("beforeend", menuListItem);
+    $("#menu-list").insertAdjacentHTML("beforeend", menuListItem);
     menu["espresso"].push(menuNameInput.value);
 
     setLocalStorage("espresso", menu["espresso"]);
@@ -94,12 +108,19 @@ const removeMenuName = (menuRemoveBtn) => {
 };
 
 const initEventListeners = () => {
-    $("#espresso-menu-form").addEventListener("submit", (e) => {
+    $("nav").addEventListener("click", ({ target }) => {
+        if (!target.getAttribute("data-category-name")) return;
+        curCategory = target.getAttribute("data-category-name");
+        // 폼 제목 현재 카테고리에 맞게 변경
+        $("#form-title").innerText = `${title[curCategory]} 메뉴 관리`;
+    });
+
+    $("#menu-form").addEventListener("submit", (e) => {
         e.preventDefault();
         addMenuName();
     });
 
-    $("#espresso-menu-list").addEventListener("click", (e) => {
+    $("#menu-list").addEventListener("click", (e) => {
         if (e.target.classList.contains("menu-edit-button")) {
             updateMenuName(e.target);
             return;
@@ -114,10 +135,11 @@ const initEventListeners = () => {
 
 const init = () => {
     initEventListeners();
-    // 초기화면(espresso)의 메뉴들을 가져옴
-    if (!getLocalStorage("espresso")) return;
-    menu["espresso"] = getLocalStorage("espresso");
-    renderMenus(menu["espresso"]);
+    // 초기화면은 espresso
+    curCategory = "espresso";
+    if (!getLocalStorage(curCategory)) return;
+    menu[curCategory] = getLocalStorage(curCategory);
+    renderMenus(menu[curCategory]);
     updateMenuCount();
 };
 

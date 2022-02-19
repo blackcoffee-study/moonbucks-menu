@@ -2,11 +2,12 @@ import { isBlank, isReduplicated } from "./utils/validate.js";
 
 const $ = (selector) => document.querySelector(selector);
 
-const $menuForm = $("#espresso-menu-form");
-const $menuName = $("#espresso-menu-name");
-const $menuSubmitButton = $("#espresso-menu-submit-button");
-const $menuList = $("#espresso-menu-list");
+const $menuForm = $("#menu-form");
+const $menuName = $("#menu-name");
+const $menuSubmitButton = $("#menu-submit-button");
+const $menuList = $("#menu-list");
 const $menuCount = $(".menu-count");
+const $categoryTitle = $("#category-title");
 
 const store = {
   setLocalStorage(menu) {
@@ -21,7 +22,14 @@ const EDIT_INPUT = "메뉴명을 수정하세요.";
 const DELETE_CHECK = "정말 삭제하시겠습니까?";
 
 function App() {
-  this.menu = [];
+  this.currentCategory = "espresso";
+  this.menu = {
+    espresso: [],
+    frappuccino: [],
+    blended: [],
+    teavana: [],
+    desert: [],
+  };
 
   this.init = () => {
     if (store.getLocalStorage()) {
@@ -49,7 +57,7 @@ function App() {
   };
 
   const render = () => {
-    const template = this.menu
+    const template = this.menu[this.currentCategory]
       .map((item, idx) => menuItemTemplate(item, idx))
       .join("");
     $menuList.innerHTML = template;
@@ -65,12 +73,12 @@ function App() {
     const newMenuName = $menuName.value.trim();
     $menuName.value = "";
     if (isBlank(newMenuName)) return;
-    if (isReduplicated(this.menu, newMenuName)) return;
+    if (isReduplicated(this.menu[this.currentCategory], newMenuName)) return;
     const newMenuObj = {
       name: newMenuName,
       id: Date.now(),
     };
-    this.menu.push(newMenuObj);
+    this.menu[this.currentCategory].push(newMenuObj);
     store.setLocalStorage(this.menu);
     render();
   };
@@ -83,8 +91,9 @@ function App() {
       editedMenuName = editedMenuName.trim();
     }
     if (isBlank(editedMenuName)) return;
-    if (isReduplicated(this.menu, editedMenuName, menuId)) return;
-    this.menu.forEach((item) => {
+    if (isReduplicated(this.menu[this.currentCategory], editedMenuName, menuId))
+      return;
+    this.menu[this.currentCategory].forEach((item) => {
       if (item.id === parseInt(menuId)) {
         item.name = editedMenuName;
       }
@@ -96,20 +105,22 @@ function App() {
   const removeMenuName = ($li) => {
     if (confirm(DELETE_CHECK)) {
       const menuId = $li.dataset.menuId;
-      this.menu = this.menu.filter((item) => item.id !== parseInt(menuId));
+      this.menu[this.currentCategory] = this.menu[this.currentCategory].filter(
+        (item) => item.id !== parseInt(menuId)
+      );
       store.setLocalStorage(this.menu);
       $li.remove();
       getMenuCount();
     }
   };
 
-  function updateMenuList({ target }) {
+  const updateMenuList = ({ target }) => {
     const { classList } = target;
     const $li = target.parentElement;
     // if (classList.contains("menu-sold-out-button")) soldOutMenu($li);
     if (classList.contains("menu-edit-button")) editMenuName($li);
     if (classList.contains("menu-remove-button")) removeMenuName($li);
-  }
+  };
 
   $menuList.addEventListener("click", updateMenuList);
 
@@ -122,6 +133,16 @@ function App() {
       return;
     }
     addMenuName();
+  });
+
+  $("nav").addEventListener("click", (e) => {
+    const isCategoryButton = e.target.classList.contains("cafe-category-name");
+    if (!isCategoryButton) return;
+    isCategoryButton;
+    this.currentCategory = e.target.dataset.categoryName;
+    $categoryTitle.textContent = `${e.target.textContent} 메뉴 관리 `;
+    $menuName.placeholder = `${e.target.textContent.trim().slice(3)} 메뉴 이름`;
+    render();
   });
 }
 

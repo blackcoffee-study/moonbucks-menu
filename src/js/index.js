@@ -12,12 +12,12 @@ const menuInput = document.querySelector("#espresso-menu-name");
 const setMenuCount = () => {
   const menuCount = document.querySelector(".menu-count");
 
-  menuCount.textContent = `총${store.menu.length}개`;
+  menuCount.textContent = `총${store.items.length}개`;
 };
 
 //메뉴 추가
 const addMenu = () => {
-  if (inputValidator(store.menu, menuInput.value)) {
+  if (inputValidator(store.items, menuInput.value)) {
     menuInput.value = "";
     menuInput.focus();
 
@@ -40,8 +40,8 @@ const addMenu = () => {
 
 //메뉴 리스트 파싱
 const menuListRender = () => {
-  store.menu = getMenu(store.currentTab);
-  const template = store.menu.map(MENU_ITEM).join("");
+  store.items = getMenu(store.currentTab);
+  const template = store.items.map(MENU_ITEM).join("");
   menuContainer.innerHTML = template;
 };
 
@@ -75,7 +75,7 @@ const updateMenu = (target) => {
   const { menuId } = target.parentNode.dataset;
   const updatedName = prompt(TEXT.MENU_UPDATE);
 
-  if (inputValidator(store.menu, updatedName)) {
+  if (inputValidator(store.items, updatedName)) {
     return;
   }
 

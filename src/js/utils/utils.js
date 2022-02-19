@@ -20,5 +20,5 @@ export const inputValidator = (items, value) => {
 };
 
 export const findMenu = (menuId) => {
-  return store.menu.find((menu) => menu.id === menuId);
+  return store.items.find((menu) => menu.id === menuId);
 };

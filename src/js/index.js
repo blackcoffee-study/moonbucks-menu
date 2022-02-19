@@ -30,6 +30,11 @@ const isEmpty = (input) => {
     return Boolean(!input.value.length);
 };
 
+const isSoldOut = (menuName) => {
+    if (soldOut[curCategory].indexOf(menuName) === -1) return false;
+    return true;
+};
+
 const createMenuListItem = (menuName) => {
     const curItemSoldOut =
         soldOut[curCategory].indexOf(menuName) !== -1 ? true : false;
@@ -110,7 +115,6 @@ const addMenuName = () => {
     updateMenuCount();
 };
 
-// TODO: 업데이트시에 soldOut 정보도 함께 업데이트
 const updateMenuName = (menuEditBtn) => {
     const parentEl = menuEditBtn.parentElement;
     const curMenuName = parentEl.querySelector(".menu-name").innerText;
@@ -119,16 +123,28 @@ const updateMenuName = (menuEditBtn) => {
     if (!newMenuName) return;
     if (!isVaildName(newMenuName)) return;
     menu[curCategory][menu[curCategory].indexOf(curMenuName)] = newMenuName;
+
+    if (isSoldOut(curMenuName)) {
+        soldOut[curCategory][soldOut[curCategory].indexOf(curMenuName)] =
+            newMenuName;
+        setLocalStorage("soldOut", soldOut);
+    }
     setLocalStorage(curCategory, menu[curCategory]);
     renderMenus(curCategory);
 };
 
-// TODO: 삭제시에 soldOut정보도 함께 삭제
 const removeMenuName = (menuRemoveBtn) => {
     const curListItem = menuRemoveBtn.parentElement;
     const curMenuName = curListItem.querySelector(".menu-name").innerText;
     if (!confirm(`선택한 메뉴("${curMenuName}")를 삭제하시겠습니까?`)) return;
     menu[curCategory].splice(menu[curCategory].indexOf(curMenuName), 1);
+    if (isSoldOut(curMenuName)) {
+        soldOut[curCategory].splice(
+            soldOut[curCategory].indexOf(curMenuName),
+            1
+        );
+        setLocalStorage("soldOut", soldOut);
+    }
 
     setLocalStorage(curCategory, menu[curCategory]);
     renderMenus(curCategory);

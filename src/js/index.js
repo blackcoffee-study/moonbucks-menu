@@ -45,7 +45,7 @@ const menuListRender = () => {
   menuContainer.innerHTML = template;
 };
 
-//메뉴 품절 -
+//메뉴 품절
 const soldOutMenu = (target) => {
   const menuItem = target.parentNode;
   const menuName = menuItem.querySelector(".menu-name");

@@ -42,6 +42,12 @@ const menuListRender = () => {
   menuContainer.innerHTML = template;
 };
 
+//메뉴 품절
+const soldOutMenu = (target) => {
+  const menu = target.parentNode;
+  menu.classList.toggle("sold-out");
+};
+
 //메뉴 삭제
 const deleteMenu = (target) => {
   const { menuId } = target.parentNode.dataset;
@@ -90,7 +96,9 @@ const menuEventHandler = (e) => {
   const { target } = e;
   const { buttonType } = target.dataset;
 
-  if (buttonType === BUTTON_TYPE.Update) {
+  if (buttonType === BUTTON_TYPE.SoldOut) {
+    soldOutMenu(target);
+  } else if (buttonType === BUTTON_TYPE.Update) {
     updateMenu(target);
   } else if (buttonType === BUTTON_TYPE.Delete) {
     deleteMenu(target);

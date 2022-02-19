@@ -1,12 +1,17 @@
 import * as menuHandler from './utils/handleMenu.js';
-import { $ } from './utils/common.js';
+import {menuListRender} from './utils/elements.js'
+import { $, $All } from './utils/common.js';
 
 const menuInputTag = $('#espresso-menu-form');
 const menuListTag = $('#espresso-menu-list');
+const cafeCategoryButtonTags = $All('.cafe-category-name');
+
+localStorage.setItem('currentMenuType', 'espresso');
 
 menuInputTag.addEventListener('submit', e => {
   e.preventDefault();
-  menuHandler.addMenu();
+  const currentMenuType = localStorage.getItem('currentMenuType');
+  menuHandler.addMenu(currentMenuType);
 });
 
 menuListTag.addEventListener('click', e => {
@@ -18,4 +23,12 @@ menuListTag.addEventListener('click', e => {
   } else if (e.target.classList.contains('menu-sold-out-button')) {
     menuHandler.setSoldOutMenu(closestliTag);
   }
+});
+
+cafeCategoryButtonTags.forEach(cafeCategoryButtonTag => {
+  cafeCategoryButtonTag.addEventListener('click', e => {
+    const mentCategoryName = e.target.dataset.categoryName;
+    localStorage.setItem('currentMenuType', mentCategoryName);
+    menuListRender(mentCategoryName);
+  })
 });

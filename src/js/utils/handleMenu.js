@@ -1,20 +1,20 @@
-import Menu from '../data/menu.js';
-import { getmenulistElement } from './elements.js';
+import { menuListRender } from './elements.js';
 import { $ } from './common.js';
-
-/*TODO : 메뉴 카테고리화 적용*/
 
 const menuNameTag = $('#espresso-menu-name');
 const menuListUlTag = $('#espresso-menu-list');
 const menuCountTag = $('.menu-count');
 
 //메뉴 추가
-function addMenu() {
+function addMenu(currentMenuType) {
 	let menuName = menuNameTag.value;
+  let menuList = JSON.parse(localStorage.getItem(currentMenuType)) || [];
+
 	if(menuName && menuName !== '') {
-    menuListUlTag.insertAdjacentHTML('beforeend', getmenulistElement(menuName));
     document.querySelector('#espresso-menu-name').value = '';
-    Menu.push(menuName);
+    menuList.push({'name': menuName, 'isSoldOut' : false});
+    localStorage.setItem(currentMenuType, JSON.stringify(menuList));
+    menuListRender(currentMenuType);
     //커피 개수 증가
     changeCountMenu();
   }

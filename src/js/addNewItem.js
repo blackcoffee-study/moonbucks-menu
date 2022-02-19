@@ -1,10 +1,18 @@
-import renderItem from './renderItem.js';
-import { inputTag } from './app.js';
+import { menuList, userInputTag , beverageCategory, currentCategory } from './app.js';
+import countMenuItems from './countMenuItems.js';
+import localStorageHandler from './localHandle.js';
 
-const addNewItem = (name) => {
-  if (name.trim() != '') {
-    const template = `<li class="menu-list-item d-flex items-center py-2">
-    <span class="w-100 pl-2 menu-name">${name}</span>
+const addNewItem = () => {
+
+    const template = beverageCategory[currentCategory].map((menuName, index) => {
+    return `<li data-idx=${index} class="menu-list-item d-flex items-center py-2">
+    <span class="w-100 pl-2 menu-name">${menuName}</span>
+    <button
+      type="button"
+      class="bg-gray-50 text-gray-500 text-sm mr-1 menu-sold-out-button"
+    >
+      품절
+    </button>
     <button
       type="button"
       class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
@@ -18,10 +26,14 @@ const addNewItem = (name) => {
       삭제
     </button>
   </li>`;
+    }).join('')
 
-    renderItem(template);
-    inputTag.value = '';
-  }
+
+    menuList.innerHTML = template
+    userInputTag.value = '';
+    countMenuItems();
+
+    localStorageHandler.saveLocalStorage(beverageCategory)
 };
 
 export default addNewItem;

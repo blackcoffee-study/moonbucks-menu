@@ -1,11 +1,16 @@
-import { inputForm, inputTag } from './app.js';
+import { menuInputForm, beverageCategory, currentCategory } from './app.js';
 import addNewItem from './addNewItem.js';
 
 const inputEventHandler = () => {
-  inputForm.addEventListener('submit', (e) => {
+  menuInputForm.addEventListener('submit', (e) => {
     const newItemName = e.target.querySelector('input').value;
     e.preventDefault();
-    addNewItem(newItemName);
+
+
+    if( newItemName.trim() != ''){
+      beverageCategory[currentCategory].push(newItemName)
+      addNewItem();
+    }
   });
 };
 

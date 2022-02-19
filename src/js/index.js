@@ -114,13 +114,19 @@ const updateMenuName = (menuEditBtn) => {
 
 const removeMenuName = (menuRemoveBtn) => {
     const curListItem = menuRemoveBtn.parentElement;
-    const curMenuName = curListItem.querySelector("span").innerText;
+    const curMenuName = curListItem.querySelector(".menu-name").innerText;
     if (!confirm(`선택한 메뉴("${curMenuName}")를 삭제하시겠습니까?`)) return;
     menu[curCategory].splice(menu[curCategory].indexOf(curMenuName), 1);
 
     setLocalStorage(curCategory, menu[curCategory]);
     renderMenus(curCategory);
     updateMenuCount();
+};
+
+const soldOutMenu = (menuSoldOutBtn) => {
+    const curListItem = menuSoldOutBtn.parentElement;
+    const curMenuName = curListItem.querySelector(".menu-name");
+    curMenuName.classList.toggle("sold-out");
 };
 
 const initEventListeners = () => {
@@ -138,14 +144,19 @@ const initEventListeners = () => {
         addMenuName();
     });
 
-    $("#menu-list").addEventListener("click", (e) => {
-        if (e.target.classList.contains("menu-edit-button")) {
-            updateMenuName(e.target);
+    $("#menu-list").addEventListener("click", ({ target }) => {
+        if (target.classList.contains("menu-edit-button")) {
+            updateMenuName(target);
             return;
         }
 
-        if (e.target.classList.contains("menu-remove-button")) {
-            removeMenuName(e.target);
+        if (target.classList.contains("menu-remove-button")) {
+            removeMenuName(target);
+            return;
+        }
+
+        if (target.classList.contains("menu-sold-out-button")) {
+            soldOutMenu(target);
             return;
         }
     });

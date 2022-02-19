@@ -1,3 +1,4 @@
+
 const store = {
     setLocalStorage(menu) {
         localStorage.setItem("menu", JSON.stringify(menu));
@@ -23,7 +24,7 @@ function App() {
             updatedMenu = prompt("메뉴명을 수정하세요", reMenuName.innerText);
             reMenuName.innerText = updatedMenu;
         }
-        
+
         if(e.target.classList.contains("menu-remove-button")) {
             if(confirm("정말 삭제하시겠습니까?")) {
                 e.target.closest("li").remove();
@@ -31,7 +32,7 @@ function App() {
             }
         }
     })
-    
+
     // form 태그가 자동으로 전송되는 것을 방지
     menuForm.addEventListener("submit", (e) => {
         e.preventDefault();

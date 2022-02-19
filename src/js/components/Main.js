@@ -1,6 +1,6 @@
 import atom from '../hooks/atom.js';
 import useState from '../hooks/custom-use-state.js';
-import { CustomUseRecoilValue } from '../hooks/custom-use-recoil.js';
+import { customUseRecoilValue } from '../hooks/custom-use-recoil.js';
 
 import CustomMenuSet from '../utils/custom-menu-set.js';
 import { $, MENUTYPE, TEXT } from '../utils/utils.js';
@@ -8,7 +8,7 @@ import { $, MENUTYPE, TEXT } from '../utils/utils.js';
 import MenuList from './MenuList.js';
 
 export default function Main($target) {
-  const currentMenuType = CustomUseRecoilValue('CURRENT_MENUTYPE', Main, $target);
+  const currentMenuType = customUseRecoilValue('CURRENT_MENUTYPE', Main, $target);
   const [menuLists, setMenuList] = useState(atom.MENULISTS, Main, $target);
 
   const render = () => {

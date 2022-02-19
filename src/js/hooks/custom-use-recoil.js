@@ -32,7 +32,7 @@ export function customUseRecoilState(key, component, target) {
   return [state, setRecoilState];
 }
 
-export function CustomUseRecoilValue(key, component, target) {
+export function customUseRecoilValue(key, component, target) {
   const state = _state[key] || Atom[key];
 
   if (!_index[key]) _index[key] = 0;
@@ -47,7 +47,7 @@ export function CustomUseRecoilValue(key, component, target) {
   return state;
 }
 
-export function CustomUseRecoilSetState(key) {
+export function customUseRecoilSetState(key) {
   const setRecoilState = (newState) => {
     _state[key] = newState;
     _index[key] = 0;

@@ -8,6 +8,14 @@ const menu = {
     dessert: [],
 };
 
+const soldOut = {
+    espresso: [],
+    frappuccino: [],
+    blended: [],
+    teavana: [],
+    dessert: [],
+};
+
 const title = {
     espresso: "☕ 에스프레소",
     frappuccino: "🥤 프라푸치노",
@@ -23,8 +31,12 @@ const isEmpty = (input) => {
 };
 
 const createMenuListItem = (menuName) => {
+    const curItemSoldOut =
+        soldOut[curCategory].indexOf(menuName) !== -1 ? true : false;
     return `<li class="menu-list-item d-flex items-center py-2">
-    <span class="w-100 pl-2 menu-name">${menuName}</span>
+    <span class="w-100 pl-2 menu-name${
+        curItemSoldOut ? " sold-out" : ""
+    }">${menuName}</span>
     <button
     type="button"
     class="bg-gray-50 text-gray-500 text-sm mr-1 menu-sold-out-button"
@@ -63,15 +75,14 @@ const renderMenus = (category) => {
     $("#menu-list").innerHTML = menuList;
 };
 
-const setLocalStorage = (category, newMenus) => {
-    localStorage.setItem(category, JSON.stringify(newMenus));
+const setLocalStorage = (key, value) => {
+    localStorage.setItem(key, JSON.stringify(value));
 };
 
-const getLocalStorage = (category) => {
-    if (!localStorage.getItem(category)) return;
+const getLocalStorage = (key) => {
+    if (!localStorage.getItem(key)) return;
 
-    let items = JSON.parse(localStorage.getItem(category));
-    if (!items.length) return;
+    let items = JSON.parse(localStorage.getItem(key));
     return items;
 };
 
@@ -99,6 +110,7 @@ const addMenuName = () => {
     updateMenuCount();
 };
 
+// TODO: 업데이트시에 soldOut 정보도 함께 업데이트
 const updateMenuName = (menuEditBtn) => {
     const parentEl = menuEditBtn.parentElement;
     const curMenuName = parentEl.querySelector(".menu-name").innerText;
@@ -106,12 +118,12 @@ const updateMenuName = (menuEditBtn) => {
 
     if (!newMenuName) return;
     if (!isVaildName(newMenuName)) return;
-
     menu[curCategory][menu[curCategory].indexOf(curMenuName)] = newMenuName;
     setLocalStorage(curCategory, menu[curCategory]);
     renderMenus(curCategory);
 };
 
+// TODO: 삭제시에 soldOut정보도 함께 삭제
 const removeMenuName = (menuRemoveBtn) => {
     const curListItem = menuRemoveBtn.parentElement;
     const curMenuName = curListItem.querySelector(".menu-name").innerText;
@@ -125,8 +137,27 @@ const removeMenuName = (menuRemoveBtn) => {
 
 const soldOutMenu = (menuSoldOutBtn) => {
     const curListItem = menuSoldOutBtn.parentElement;
-    const curMenuName = curListItem.querySelector(".menu-name");
-    curMenuName.classList.toggle("sold-out");
+    const curMenuEl = curListItem.querySelector(".menu-name");
+    const curMenuName = curMenuEl.innerText;
+    const curItemSoldOut =
+        soldOut[curCategory].indexOf(curMenuName) !== -1 ? true : false;
+    if (!curItemSoldOut) {
+        curMenuEl.classList.add("sold-out");
+        soldOut[curCategory].push(curMenuName);
+        setLocalStorage("soldOut", soldOut);
+        renderMenus(curCategory);
+        return;
+    }
+    if (curItemSoldOut) {
+        curMenuEl.classList.remove("sold-out");
+        soldOut[curCategory].splice(
+            soldOut[curCategory].indexOf(curMenuName),
+            1
+        );
+        setLocalStorage("soldOut", soldOut);
+        renderMenus(curCategory);
+        return;
+    }
 };
 
 const initEventListeners = () => {
@@ -172,14 +203,24 @@ const init = () => {
         "dessert",
     ];
 
-    // LocalStroage에서 카테고리에 해당하는 메뉴들 가져오기
     categories.forEach((category) => {
-        if (!getLocalStorage(category)) return;
-        menu[category] = getLocalStorage(category);
+        // LocalStroage에서 카테고리에 해당하는 메뉴들 가져오기
+        if (getLocalStorage(category))
+            menu[category] = getLocalStorage(category);
     });
     // 초기화면은 espresso
     curCategory = "espresso";
-    if (!getLocalStorage(curCategory)) return;
+
+    // LocalStorage에서 soldOut 정보 가져오기
+    if (getLocalStorage("soldOut")) {
+        const soldOutInfo = getLocalStorage("soldOut");
+        categories.forEach((category) => {
+            soldOut[category] = soldOutInfo[category]
+                ? soldOutInfo[category]
+                : [];
+        });
+    }
+
     renderMenus(curCategory);
     updateMenuCount();
 };

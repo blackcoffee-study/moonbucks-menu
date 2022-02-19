@@ -13,12 +13,12 @@ function App() {
   const $menuTitle = $(".mt-1");
 
   this.init = () => {
+    this.menuItems = [];
     this.currentCategory = $categoryNames[0].dataset.categoryName;
     const categoryArray = [...$categoryNames].map(
       (item) => item.dataset.categoryName
     );
-    this.menuItems = [];
-    categoryArray.map((item, index) => {
+    categoryArray.map((item) => {
       this.menuItems[item] = [];
     });
     initCurCategoryMenuItems();

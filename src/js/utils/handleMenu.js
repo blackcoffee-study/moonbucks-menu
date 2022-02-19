@@ -53,13 +53,22 @@ function removeMenu(currentMenuType, menuListLiTag) {
 }
 
 //메뉴 품절 관리
-function setSoldOutMenu(menuListLiTag) {
+function setSoldOutMenu(currentMenuType, menuListLiTag) {
+  const menuNameTag = menuListLiTag.querySelector('.menu-name');
   const soldOutTag = menuListLiTag.querySelector('.menu-sold-out-button');
+  let menuList = JSON.parse(localStorage.getItem(currentMenuType));
+  let selectedMenuName = menuNameTag.innerText;
+  let selectedMenuNameIndex = menuList.findIndex(menu => menu.name === selectedMenuName);
+  
   if(!soldOutTag) return;
   
   if(soldOutTag.classList.contains('sold-out')) {
+    menuList[selectedMenuNameIndex].isSoldOut = false;
+    localStorage.setItem(currentMenuType, JSON.stringify(menuList));
     soldOutTag.classList.remove('sold-out');
   } else {
+    menuList[selectedMenuNameIndex].isSoldOut = true;
+    localStorage.setItem(currentMenuType, JSON.stringify(menuList));
     soldOutTag.classList.add('sold-out');
   }
 }

@@ -9,25 +9,21 @@ function App() {
   const $submitButton = $("#espresso-menu-submit-button");
   const $counter = $(".menu-count");
   const $categoryNav = $("#cafe-category-nav");
-  const $categoryName = $(".cafe-category-name");
+  const $categoryNames = document.getElementsByClassName("cafe-category-name");
   const $menuTitle = $(".mt-1");
 
   this.init = () => {
-    this.currentCategory = $categoryName.dataset.categoryName;
-    this.menuItems = {
-      espresso: [],
-      frappuccino: [],
-      blended: [],
-      teavana: [],
-      dessert: [],
-    };
-    this.menuItems[this.currentCategory] = JSON.parse(
-      localStorage.getItem(this.currentCategory)
+    this.currentCategory = $categoryNames[0].dataset.categoryName;
+    const categoryArray = [...$categoryNames].map(
+      (item) => item.dataset.categoryName
     );
+    this.menuItems = [];
+    categoryArray.map((item, index) => {
+      this.menuItems[item] = [];
+    });
     this.menuItems[this.currentCategory] = this.menuItems[this.currentCategory]
-      ? this.menuItems[this.currentCategory]
+      ? JSON.parse(localStorage.getItem(this.currentCategory))
       : [];
-
     initEventHandlers();
     render();
   };
@@ -37,7 +33,7 @@ function App() {
       e.preventDefault();
     });
 
-    $menuNameInput.addEventListener("keyup", (e) => {
+    $menuNameInput.addEventListener("keydown", (e) => {
       if (e.key === "Enter" && $menuNameInput.value !== "") addMenuItem();
     });
 
@@ -82,9 +78,8 @@ function App() {
   };
 
   const setState = (menuItems) => {
-    if (this.menuItems[this.currentCategory] !== menuItems) {
+    if (this.menuItems[this.currentCategory] !== menuItems)
       this.menuItems[this.currentCategory] = menuItems;
-    }
     render();
   };
 
@@ -116,9 +111,13 @@ function App() {
         })
         .join("");
       updateMenuCount();
-      $menuNameInput.value = "";
-      $menuNameInput.focus();
+      initMenuNameInput();
     }
+  };
+
+  const initMenuNameInput = () => {
+    $menuNameInput.value = "";
+    $menuNameInput.focus();
   };
 
   const isContainedClass = (className, e) => {
@@ -144,14 +143,12 @@ function App() {
   const addMenuItem = () => {
     if (isDuplicatedMenuName($menuNameInput.value)) {
       alert("이미 동일한 메뉴명이 있습니다.");
-      $menuNameInput.value = "";
-      $menuNameInput.focus();
+      initMenuNameInput();
       return;
     }
     if ($menuNameInput.value.trim() === "") {
       alert("공백 값을 입력하셨습니다.");
-      $menuNameInput.value = "";
-      $menuNameInput.focus();
+      initMenuNameInput();
       return;
     }
     const menuItemInfo = {

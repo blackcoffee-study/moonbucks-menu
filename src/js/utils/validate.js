@@ -9,7 +9,7 @@ export function isBlank(menuName) {
 
 export function isReduplicated(arr, menuName, id = null) {
   const reduplication = arr.find(
-    (item, idx) => item.name === menuName && idx !== parseInt(id)
+    (item) => item.name === menuName && item.id !== parseInt(id)
   );
   if (reduplication) alert("이미 동일한 메뉴가 있습니다.");
   return !!reduplication;

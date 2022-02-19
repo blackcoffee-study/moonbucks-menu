@@ -1,4 +1,4 @@
-import {isBlank, isReduplicated } from "./utils/validate.js";
+import { isBlank, isReduplicated } from "./utils/validate.js";
 
 const $ = (selector) => document.querySelector(selector);
 
@@ -31,7 +31,7 @@ function App() {
   };
   const menuItemTemplate = (item, idx) => {
     return `
-        <li class="menu-list-item d-flex items-center py-2" data-menu-id=${idx}>
+        <li class="menu-list-item d-flex items-center py-2" data-menu-id=${item.id}>
           <span class="w-100 pl-2 menu-name">${item.name}</span>
           <button
             type="button"
@@ -68,6 +68,7 @@ function App() {
     if (isReduplicated(this.menu, newMenuName)) return;
     const newMenuObj = {
       name: newMenuName,
+      id: Date.now(),
     };
     this.menu.push(newMenuObj);
     store.setLocalStorage(this.menu);
@@ -83,7 +84,11 @@ function App() {
     }
     if (isBlank(editedMenuName)) return;
     if (isReduplicated(this.menu, editedMenuName, menuId)) return;
-    this.menu[menuId].name = editedMenuName;
+    this.menu.forEach((item) => {
+      if (item.id === parseInt(menuId)) {
+        item.name = editedMenuName;
+      }
+    });
     store.setLocalStorage(this.menu);
     $span.textContent = editedMenuName;
   };
@@ -91,7 +96,7 @@ function App() {
   const removeMenuName = ($li) => {
     if (confirm(DELETE_CHECK)) {
       const menuId = $li.dataset.menuId;
-      this.menu.splice(menuId, 1);
+      this.menu = this.menu.filter((item) => item.id !== parseInt(menuId));
       store.setLocalStorage(this.menu);
       $li.remove();
       getMenuCount();

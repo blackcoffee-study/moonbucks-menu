@@ -4,11 +4,18 @@ import { MESSAGE } from '../constants/Message.js';
 export default class MenuList extends Component {
   template() {
     const { menuItems } = this.props;
+    // 다 팔린거면 sold-out 클래스를 넣어주어야함!
     return menuItems
       .map(
         ({ id, menuName }) => `
       <li class="menu-list-item d-flex items-center py-2" data-id="${id}">
         <span class="w-100 pl-2 menu-name">${menuName}</span>
+        <button
+          type="button"
+          class="bg-gray-50 text-gray-500 text-sm mr-1 menu-sold-out-button"
+        >
+          품절
+        </button>
         <button
           type="button"
           class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
@@ -21,7 +28,8 @@ export default class MenuList extends Component {
         >
           삭제
         </button>
-      </li>`
+      </li>
+      `
       )
       .join('');
   }
@@ -36,7 +44,7 @@ export default class MenuList extends Component {
       if (!isUpdateButton && !isDeleteButton) return;
 
       if (isUpdateButton) {
-        const newMenuName = prompt(MESSAGE.UPDATE, target.previousElementSibling.textContent);
+        const newMenuName = prompt(MESSAGE.UPDATE, target.parentNode.firstElementChild.textContent);
 
         updateMenu(newMenuName, Number(target.closest('[data-id]').dataset.id));
       } else {

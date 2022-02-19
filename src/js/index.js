@@ -31,6 +31,9 @@ function App() {
         // 삭제
         if(e.target.classList.contains("menu-remove-button")) {
             if(confirm("정말 삭제하시겠습니까?")) {
+                const menuId = e.target.closest("li").dataset.menuId;
+                menu.splice(menuId, 1);
+                store.setLocalStorage(menu);
                 e.target.closest("li").remove();
                 countMenu();
             }

@@ -1,4 +1,3 @@
-
 const store = {
     setLocalStorage(menu) {
         localStorage.setItem("menu", JSON.stringify(menu));
@@ -19,12 +18,17 @@ function App() {
     
     // 수정, 삭제버튼 이벤트핸들링 처리
     menuList.addEventListener("click", (e) => {
+        // 수정
         if(e.target.classList.contains("menu-edit-button")) {
+            const menuId = e.target.closest("li").dataset.menuId;
             const reMenuName = e.target.closest("li").querySelector(".menu-name"),
             updatedMenu = prompt("메뉴명을 수정하세요", reMenuName.innerText);
+            menu[menuId].name = updatedMenu;
+            store.setLocalStorage(menu);
             reMenuName.innerText = updatedMenu;
         }
 
+        // 삭제
         if(e.target.classList.contains("menu-remove-button")) {
             if(confirm("정말 삭제하시겠습니까?")) {
                 e.target.closest("li").remove();
@@ -47,9 +51,9 @@ function App() {
         const espressoMenuName = menuName.value;
         menu.push({ name: espressoMenuName })
         store.setLocalStorage(menu);
-        const template = menu.map((item) => {
+        const template = menu.map((item, idx) => {
             return `
-                <li class="menu-list-item d-flex items-center py-2">
+                <li data-menu-id="${idx}" class="menu-list-item d-flex items-center py-2">
                     <span class="w-100 pl-2 menu-name">${item.name}</span>
                     <button
                         type="button"

@@ -47,7 +47,7 @@ const addMenuName = () => {
     const menuListItem = createMenuListItem(menuNameInput.value);
     $("#espresso-menu-list").insertAdjacentHTML("beforeend", menuListItem);
 
-    addMenu("espresso", menuNameInput.value);
+    setLocalStorage("espresso", menuNameInput.value);
     clearInputValue(menuNameInput);
     updateMenuCount();
 };

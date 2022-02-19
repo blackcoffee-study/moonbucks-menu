@@ -44,5 +44,4 @@ export default function Header($target) {
       setCurrnetMenuType(e.target.dataset.categoryName);
     };
   };
-
 }

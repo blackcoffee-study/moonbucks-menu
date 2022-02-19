@@ -36,11 +36,9 @@ const isSoldOut = (menuName) => {
 };
 
 const createMenuListItem = (menuName) => {
-    const curItemSoldOut =
-        soldOut[curCategory].indexOf(menuName) !== -1 ? true : false;
     return `<li class="menu-list-item d-flex items-center py-2">
     <span class="w-100 pl-2 menu-name${
-        curItemSoldOut ? " sold-out" : ""
+        isSoldOut(menuName) ? " sold-out" : ""
     }">${menuName}</span>
     <button
     type="button"
@@ -155,16 +153,14 @@ const soldOutMenu = (menuSoldOutBtn) => {
     const curListItem = menuSoldOutBtn.parentElement;
     const curMenuEl = curListItem.querySelector(".menu-name");
     const curMenuName = curMenuEl.innerText;
-    const curItemSoldOut =
-        soldOut[curCategory].indexOf(curMenuName) !== -1 ? true : false;
-    if (!curItemSoldOut) {
+    if (!isSoldOut(curMenuName)) {
         curMenuEl.classList.add("sold-out");
         soldOut[curCategory].push(curMenuName);
         setLocalStorage("soldOut", soldOut);
         renderMenus(curCategory);
         return;
     }
-    if (curItemSoldOut) {
+    if (isSoldOut(curMenuName)) {
         curMenuEl.classList.remove("sold-out");
         soldOut[curCategory].splice(
             soldOut[curCategory].indexOf(curMenuName),

@@ -50,7 +50,8 @@ const updateMenuCount = () => {
 };
 
 const renderMenus = (category) => {
-    let menuList = category.reduce(
+    console.log(category);
+    let menuList = menu[category].reduce(
         (prev, cur) => createMenuListItem(cur) + prev,
         ""
     );
@@ -76,9 +77,9 @@ const addMenuName = () => {
 
     const menuListItem = createMenuListItem(menuNameInput.value);
     $("#menu-list").insertAdjacentHTML("beforeend", menuListItem);
-    menu["espresso"].push(menuNameInput.value);
+    menu[curCategory].push(menuNameInput.value);
 
-    setLocalStorage("espresso", menu["espresso"]);
+    setLocalStorage(curCategory, menu[curCategory]);
     clearInputValue(menuNameInput);
     updateMenuCount();
 };
@@ -99,10 +100,10 @@ const removeMenuName = (menuRemoveBtn) => {
     const curListItem = menuRemoveBtn.parentElement;
     const curMenuName = curListItem.querySelector("span").innerText;
     if (confirm(`선택한 메뉴("${curMenuName}")를 삭제하시겠습니까?`)) {
-        menu["espresso"].splice(menu["espresso"].indexOf(curMenuName), 1);
+        menu[curCategory].splice(menu[curCategory].indexOf(curMenuName), 1);
 
-        setLocalStorage("espresso", menu["espresso"]);
-        renderMenus(menu["espresso"]);
+        setLocalStorage(curCategory, menu[curCategory]);
+        renderMenus(menu[curCategory]);
         updateMenuCount();
     }
 };
@@ -113,6 +114,8 @@ const initEventListeners = () => {
         curCategory = target.getAttribute("data-category-name");
         // 폼 제목 현재 카테고리에 맞게 변경
         $("#form-title").innerText = `${title[curCategory]} 메뉴 관리`;
+        // 리스트 현재 카테고리에 맞게 표시
+        renderMenus(curCategory);
     });
 
     $("#menu-form").addEventListener("submit", (e) => {

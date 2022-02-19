@@ -8,12 +8,13 @@ const store = {
 }
 
 function App() {
-    const menuName = document.querySelector("#espresso-menu-name"),
-    menuForm = document.querySelector("#espresso-menu-form"),
-    menuList = document.querySelector("#espresso-menu-list"),
+    const menuName = document.querySelector("#menu-name"),
+    menuForm = document.querySelector("#menu-form"),
+    menuList = document.querySelector("#menu-list"),
     menuCount = document.querySelector(".menu-count"),
-    menuSubmitButton = document.querySelector("#espresso-menu-submit-button"),
-    nav = document.querySelector("nav");
+    menuSubmitButton = document.querySelector("#menu-submit-button"),
+    nav = document.querySelector("nav"),
+    categoryTitle = document.querySelector("#category-title");
     // 상태는 변하는 데이터, 이 앱에서 변하는 것이 무엇인가 - 메뉴명
     let menu = {
         espresso: [],
@@ -37,7 +38,7 @@ function App() {
             const menuId = e.target.closest("li").dataset.menuId;
             const reMenuName = e.target.closest("li").querySelector(".menu-name"),
             updatedMenu = prompt("메뉴명을 수정하세요", reMenuName.innerText);
-            menu[menuId].name = updatedMenu;
+            menu[this.currentCategory][menuId].name = updatedMenu;
             store.setLocalStorage(menu);
             reMenuName.innerText = updatedMenu;
         }
@@ -46,7 +47,7 @@ function App() {
         if(e.target.classList.contains("menu-remove-button")) {
             if(confirm("정말 삭제하시겠습니까?")) {
                 const menuId = e.target.closest("li").dataset.menuId;
-                menu.splice(menuId, 1);
+                menu[this.currentCategory].splice(menuId, 1);
                 store.setLocalStorage(menu);
                 e.target.closest("li").remove();
                 countMenu();
@@ -65,8 +66,8 @@ function App() {
             alert("값을 입력해주세요");
             return;
         }
-        const espressoMenuName = menuName.value;
-        menu[this.currentCategory].push({ name: espressoMenuName });
+        const MenuName = menuName.value;
+        menu[this.currentCategory].push({ name: MenuName });
         store.setLocalStorage(menu);
         render();
         menuName.value = "";
@@ -117,7 +118,9 @@ function App() {
         const isCategoryBtn = e.target.classList.contains("cafe-category-name")
         if(isCategoryBtn) {
             const categoryName = e.target.dataset.categoryName;
-            console.log(categoryName)
+            this.currentCategory = categoryName;
+            categoryTitle.innerText = `${e.target.innerText} 메뉴 관리`;
+            render();
         }
     })
 }

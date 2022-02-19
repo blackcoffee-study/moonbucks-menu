@@ -27,7 +27,7 @@ const clearInputValue = (input) => {
 };
 
 const updateMenuCount = () => {
-    const menusList = $("#espresso-menu-list").childElementCount;
+    const menuCount = $("#espresso-menu-list").childElementCount;
     $(".menu-count").innerText = `총 ${menuCount}개`;
 };
 
@@ -53,6 +53,7 @@ const getLocalStorage = (category) => {
     let items = JSON.parse(localStorage.getItem(category));
     if (!items.length) return;
     renderMenus(items);
+    updateMenuCount();
 };
 
 const addMenuName = () => {
@@ -80,6 +81,7 @@ const updateMenuName = (menuEditBtn) => {
     curMenuName.innerText = newMenuName;
 };
 
+// TODO: 삭제시에도 localStorage에 반영
 const removeMenuName = (menuRemoveBtn) => {
     const curListItem = menuRemoveBtn.parentElement;
     const curMenuName = curListItem.querySelector("span").innerText;

@@ -39,21 +39,33 @@ function App() {
   };
   const menuItemTemplate = (item, idx) => {
     return `
-        <li class="menu-list-item d-flex items-center py-2" data-menu-id=${item.id}>
-          <span class="w-100 pl-2 menu-name">${item.name}</span>
-          <button
-            type="button"
-            class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
-          >
-            수정
-          </button>
-          <button
-            type="button"
-            class="bg-gray-50 text-gray-500 text-sm menu-remove-button"
-          >
-            삭제
-          </button>
-        </li>`;
+    <li 
+      class="menu-list-item d-flex items-center py-2" data-menu-id=${
+        item.id
+      } id=${idx}>
+      <span class="${item.soldOut ? "sold-out" : ""}  w-100 pl-2 menu-name">${
+      item.name
+    }</span>
+      <button
+        type="button"
+        class="bg-gray-50 text-gray-500 text-sm mr-1 menu-sold-out-button"
+      >
+        품절
+      </button>
+      <button
+        type="button"
+        class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
+      >
+        수정
+      </button>
+      <button
+        type="button"
+        class="bg-gray-50 text-gray-500 text-sm menu-remove-button"
+      >
+        삭제
+      </button>
+    </li>
+        `;
   };
 
   const render = () => {
@@ -77,8 +89,17 @@ function App() {
     const newMenuObj = {
       name: newMenuName,
       id: Date.now(),
+      soldOut: false,
     };
     this.menu[this.currentCategory].push(newMenuObj);
+    store.setLocalStorage(this.menu);
+    render();
+  };
+
+  const soldOutMenu = ($li) => {
+    const menuId = $li.id;
+    this.menu[this.currentCategory][menuId].soldOut =
+      !this.menu[this.currentCategory][menuId].soldOut;
     store.setLocalStorage(this.menu);
     render();
   };
@@ -93,13 +114,9 @@ function App() {
     if (isBlank(editedMenuName)) return;
     if (isReduplicated(this.menu[this.currentCategory], editedMenuName, menuId))
       return;
-    this.menu[this.currentCategory].forEach((item) => {
-      if (item.id === parseInt(menuId)) {
-        item.name = editedMenuName;
-      }
-    });
+    this.menu[this.currentCategory][$li.id].name = editedMenuName;
     store.setLocalStorage(this.menu);
-    $span.textContent = editedMenuName;
+    render();
   };
 
   const removeMenuName = ($li) => {
@@ -109,17 +126,16 @@ function App() {
         (item) => item.id !== parseInt(menuId)
       );
       store.setLocalStorage(this.menu);
-      $li.remove();
-      getMenuCount();
+      render();
     }
   };
 
   const updateMenuList = ({ target }) => {
     const { classList } = target;
     const $li = target.parentElement;
-    // if (classList.contains("menu-sold-out-button")) soldOutMenu($li);
-    if (classList.contains("menu-edit-button")) editMenuName($li);
-    if (classList.contains("menu-remove-button")) removeMenuName($li);
+    if (classList.contains("menu-sold-out-button")) soldOutMenu($li);
+    else if (classList.contains("menu-edit-button")) editMenuName($li);
+    else if (classList.contains("menu-remove-button")) removeMenuName($li);
   };
 
   $menuList.addEventListener("click", updateMenuList);

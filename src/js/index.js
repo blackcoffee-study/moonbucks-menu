@@ -1,22 +1,22 @@
-import { MENU, BUTTON_TYPE, TEXT } from "./consts.js";
+import { CATEGORY, CATEGORY_NAME, MENU, BUTTON_TYPE, TEXT } from "./consts.js";
 import { MENU_ITEM } from "./components/menuItem.js";
 import { store } from "./store.js";
 import { inputValidator } from "./utils/utils.js";
 
 const menuContainer = document.querySelector("#espresso-menu-list");
+const menuTitle = document.querySelector("#menu-title");
+const menuInput = document.querySelector("#espresso-menu-name");
 
 //메뉴 카운트 set
 const setMenuCount = () => {
   const menuCount = document.querySelector(".menu-count");
 
-  menuCount.textContent = `총${store[MENU.EspressoMenu].length}개`;
+  menuCount.textContent = `총${store[MENU[CATEGORY.espresso]].length}개`;
 };
 
 //메뉴 추가
 const addMenu = () => {
-  const menuInput = document.querySelector("#espresso-menu-name");
-
-  if (inputValidator(store[MENU.EspressoMenu], menuInput.value)) {
+  if (inputValidator(store[MENU[CATEGORY.espresso]], menuInput.value)) {
     menuInput.value = "";
     menuInput.focus();
 
@@ -24,11 +24,11 @@ const addMenu = () => {
   }
 
   const menu = {
-    id: store[MENU.EspressoMenu].length + 1,
+    id: store[MENU[CATEGORY.espresso]].length + 1,
     name: menuInput.value,
   };
 
-  store[MENU.EspressoMenu] = [...store[MENU.EspressoMenu], menu];
+  store[MENU[CATEGORY.espresso]] = [...store[MENU[CATEGORY.espresso]], menu];
   menuInput.value = "";
   menuInput.focus();
 
@@ -37,7 +37,7 @@ const addMenu = () => {
 
 //메뉴 리스트 파싱
 const menuListRender = () => {
-  const template = store[MENU.EspressoMenu].map(MENU_ITEM).join("");
+  const template = store[MENU[CATEGORY.espresso]].map(MENU_ITEM).join("");
 
   menuContainer.innerHTML = template;
 };
@@ -56,11 +56,11 @@ const deleteMenu = (target) => {
     return;
   }
 
-  const deletedMenu = store[MENU.EspressoMenu].filter(
+  const deletedMenu = store[MENU[CATEGORY.espresso]].filter(
     (menu) => menu.id !== parseInt(menuId)
   );
 
-  store[MENU.EspressoMenu] = deletedMenu;
+  store[MENU[CATEGORY.espresso]] = deletedMenu;
 
   render();
 };
@@ -70,19 +70,35 @@ const updateMenu = (target) => {
   const { menuId } = target.parentNode.dataset;
   const updatedText = prompt(TEXT.MENU_UPDATE);
 
-  if (inputValidator(store[MENU.EspressoMenu], updatedText)) {
+  if (inputValidator(store[MENU[CATEGORY.espresso]], updatedText)) {
     return;
   }
 
-  const updatedMenu = store[MENU.EspressoMenu].map((menu) => {
+  const updatedMenu = store[MENU[CATEGORY.espresso]].map((menu) => {
     const { id } = menu;
     if (id === parseInt(menuId)) return { ...menu, name: updatedText };
     return menu;
   });
 
-  store[MENU.EspressoMenu] = updatedMenu;
+  store[MENU[CATEGORY.espresso]] = updatedMenu;
 
   render();
+};
+
+// 카테고리 이벤트 핸들러
+const categoryEventHandler = (e) => {
+  const { categoryName } = e.target.dataset;
+  const categoryText = e.target.textContent;
+
+  if (categoryName in CATEGORY) {
+    menuTitle.textContent = `${categoryText} 메뉴 관리`;
+    menuInput.setAttribute(
+      "placeholder",
+      `${CATEGORY_NAME[categoryName]} 메뉴 이름`
+    );
+
+    render();
+  }
 };
 
 // 메뉴 추가 폼 이벤트 핸들러
@@ -107,9 +123,11 @@ const menuEventHandler = (e) => {
 
 //이벤트 핸들러
 const eventHandler = () => {
+  const categoryContainer = document.querySelector("#cafe-category-list");
   const menuForm = document.querySelector("#espresso-menu-form");
   const menuSubmitBtn = document.querySelector("#espresso-menu-submit-button");
 
+  categoryContainer.addEventListener("click", categoryEventHandler);
   menuForm.addEventListener("submit", formEventHandler);
   menuSubmitBtn.addEventListener("click", addMenu);
   menuContainer.addEventListener("click", menuEventHandler);

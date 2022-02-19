@@ -1,5 +1,9 @@
 const $ = (selector) => document.querySelector(selector);
 
+const menu = {
+    espresso: [],
+};
+
 const isEmpty = (input) => {
     return Boolean(!input.value.length);
 };
@@ -31,20 +35,16 @@ const updateMenuCount = () => {
     $(".menu-count").innerText = `총 ${menuCount}개`;
 };
 
-const renderMenus = (menus) => {
-    let menuList = menus.reduce(
+const renderMenus = (category) => {
+    let menuList = category.reduce(
         (prev, cur) => createMenuListItem(cur) + prev,
         ""
     );
-    $("#espresso-menu-list").insertAdjacentHTML("beforeend", menuList);
+    $("#espresso-menu-list").innerHTML = menuList;
 };
 
-const setLocalStorage = (category, newMenu) => {
-    let items = [];
-    if (localStorage.getItem(category)) {
-        items = JSON.parse(localStorage.getItem(category));
-    }
-    localStorage.setItem(category, JSON.stringify([...items, newMenu]));
+const setLocalStorage = (category, newMenus) => {
+    localStorage.setItem(category, JSON.stringify(newMenus));
 };
 
 const getLocalStorage = (category) => {
@@ -52,8 +52,7 @@ const getLocalStorage = (category) => {
 
     let items = JSON.parse(localStorage.getItem(category));
     if (!items.length) return;
-    renderMenus(items);
-    updateMenuCount();
+    return items;
 };
 
 const addMenuName = () => {
@@ -63,8 +62,9 @@ const addMenuName = () => {
 
     const menuListItem = createMenuListItem(menuNameInput.value);
     $("#espresso-menu-list").insertAdjacentHTML("beforeend", menuListItem);
+    menu["espresso"].push(menuNameInput.value);
 
-    setLocalStorage("espresso", menuNameInput.value);
+    setLocalStorage("espresso", menu["espresso"]);
     clearInputValue(menuNameInput);
     updateMenuCount();
 };
@@ -81,12 +81,14 @@ const updateMenuName = (menuEditBtn) => {
     curMenuName.innerText = newMenuName;
 };
 
-// TODO: 삭제시에도 localStorage에 반영
 const removeMenuName = (menuRemoveBtn) => {
     const curListItem = menuRemoveBtn.parentElement;
     const curMenuName = curListItem.querySelector("span").innerText;
     if (confirm(`선택한 메뉴("${curMenuName}")를 삭제하시겠습니까?`)) {
-        $("#espresso-menu-list").removeChild(curListItem);
+        menu["espresso"].splice(menu["espresso"].indexOf(curMenuName), 1);
+
+        setLocalStorage("espresso", menu["espresso"]);
+        renderMenus(menu["espresso"]);
         updateMenuCount();
     }
 };
@@ -113,7 +115,10 @@ const initEventListeners = () => {
 const init = () => {
     initEventListeners();
     // 초기화면(espresso)의 메뉴들을 가져옴
-    getLocalStorage("espresso");
+    if (!getLocalStorage("espresso")) return;
+    menu["espresso"] = getLocalStorage("espresso");
+    renderMenus(menu["espresso"]);
+    updateMenuCount();
 };
 
 init();

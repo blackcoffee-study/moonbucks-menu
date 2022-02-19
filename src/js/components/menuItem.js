@@ -6,6 +6,13 @@ export const MENU_ITEM = (menu) => {
 <button
   type="button"
   class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
+  data-button-type="${BUTTON_TYPE.SoldOut}"
+>
+  품절
+</button>
+<button
+  type="button"
+  class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
   data-button-type="${BUTTON_TYPE.Update}"
 >
   수정

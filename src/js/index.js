@@ -21,11 +21,17 @@ function App() {
     categoryArray.map((item, index) => {
       this.menuItems[item] = [];
     });
-    this.menuItems[this.currentCategory] = this.menuItems[this.currentCategory]
-      ? JSON.parse(localStorage.getItem(this.currentCategory))
-      : [];
+    initCurCategoryMenuItems();
     initEventHandlers();
     render();
+  };
+
+  const initCurCategoryMenuItems = () => {
+    this.menuItems[this.currentCategory] = JSON.parse(
+      localStorage.getItem(this.currentCategory)
+    )
+      ? JSON.parse(localStorage.getItem(this.currentCategory))
+      : [];
   };
 
   const initEventHandlers = () => {
@@ -53,11 +59,11 @@ function App() {
         this.menuItems[this.currentCategory][
           $listItem.dataset.id
         ].status = status;
-        setState(this.menuItems[this.currentCategory]);
         localStorage.setItem(
           this.currentCategory,
           JSON.stringify(this.menuItems[this.currentCategory])
         );
+        render();
       }
     });
 
@@ -65,22 +71,10 @@ function App() {
       if (isContainedClass("cafe-category-name", e)) {
         this.currentCategory = e.target.dataset.categoryName;
         $menuTitle.innerHTML = `${e.target.textContent} 메뉴 관리`;
-        if (this.menuItems[this.currentCategory]) {
-          this.menuItems[this.currentCategory] = JSON.parse(
-            localStorage.getItem(this.currentCategory)
-          );
-          if (!this.menuItems[this.currentCategory])
-            this.menuItems[this.currentCategory] = [];
-          setState(this.menuItems[this.currentCategory]);
-        }
+        initCurCategoryMenuItems();
+        render();
       }
     });
-  };
-
-  const setState = (menuItems) => {
-    if (this.menuItems[this.currentCategory] !== menuItems)
-      this.menuItems[this.currentCategory] = menuItems;
-    render();
   };
 
   const render = () => {
@@ -157,11 +151,11 @@ function App() {
       status: "normal", // || sold-out
     };
     this.menuItems[this.currentCategory].push(menuItemInfo);
-    setState(this.menuItems[this.currentCategory]);
     localStorage.setItem(
       this.currentCategory,
       JSON.stringify(this.menuItems[this.currentCategory])
     );
+    render();
   };
 
   const modifyMenuItem = (e) => {
@@ -180,11 +174,11 @@ function App() {
       this.menuItems[this.currentCategory][
         $listItem.dataset.id
       ].menuName = newMenuName;
-      setState(this.menuItems[this.currentCategory]);
       localStorage.setItem(
         this.currentCategory,
         JSON.stringify(this.menuItems[this.currentCategory])
       );
+      render();
     }
   };
 
@@ -192,11 +186,11 @@ function App() {
     const $listItem = e.target.closest("li");
     if (confirm("해당 메뉴를 삭제하시겠습니까?")) {
       this.menuItems[this.currentCategory].splice($listItem.dataset.id, 1);
-      setState(this.menuItems[this.currentCategory]);
       localStorage.setItem(
         this.currentCategory,
         JSON.stringify(this.menuItems[this.currentCategory])
       );
+      render();
     }
   };
 }

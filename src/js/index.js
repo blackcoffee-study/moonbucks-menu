@@ -27,10 +27,8 @@ function App() {
   };
 
   const initCurCategoryMenuItems = () => {
-    this.menuItems[this.currentCategory] = JSON.parse(
-      localStorage.getItem(this.currentCategory)
-    )
-      ? JSON.parse(localStorage.getItem(this.currentCategory))
+    this.menuItems[this.currentCategory] = JSON.parse(getLocalStorage())
+      ? JSON.parse(getLocalStorage())
       : [];
   };
 
@@ -59,11 +57,7 @@ function App() {
         this.menuItems[this.currentCategory][
           $listItem.dataset.id
         ].status = status;
-        localStorage.setItem(
-          this.currentCategory,
-          JSON.stringify(this.menuItems[this.currentCategory])
-        );
-        render();
+        setLocalStorage();
       }
     });
 
@@ -75,6 +69,18 @@ function App() {
         render();
       }
     });
+  };
+
+  const getLocalStorage = () => {
+    return localStorage.getItem(this.currentCategory);
+  };
+
+  const setLocalStorage = () => {
+    localStorage.setItem(
+      this.currentCategory,
+      JSON.stringify(this.menuItems[this.currentCategory])
+    );
+    render();
   };
 
   const render = () => {
@@ -151,11 +157,7 @@ function App() {
       status: "normal", // || sold-out
     };
     this.menuItems[this.currentCategory].push(menuItemInfo);
-    localStorage.setItem(
-      this.currentCategory,
-      JSON.stringify(this.menuItems[this.currentCategory])
-    );
-    render();
+    setLocalStorage();
   };
 
   const modifyMenuItem = (e) => {
@@ -174,11 +176,7 @@ function App() {
       this.menuItems[this.currentCategory][
         $listItem.dataset.id
       ].menuName = newMenuName;
-      localStorage.setItem(
-        this.currentCategory,
-        JSON.stringify(this.menuItems[this.currentCategory])
-      );
-      render();
+      setLocalStorage();
     }
   };
 
@@ -186,11 +184,7 @@ function App() {
     const $listItem = e.target.closest("li");
     if (confirm("해당 메뉴를 삭제하시겠습니까?")) {
       this.menuItems[this.currentCategory].splice($listItem.dataset.id, 1);
-      localStorage.setItem(
-        this.currentCategory,
-        JSON.stringify(this.menuItems[this.currentCategory])
-      );
-      render();
+      setLocalStorage();
     }
   };
 }

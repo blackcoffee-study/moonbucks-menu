@@ -29,9 +29,10 @@ function App() {
             menu = store.getLocalStorage();
         }
         render();
+        initEventListeners();
     }
     
-    // 수정, 삭제버튼 이벤트핸들링 처리
+    // 수정, 삭제, 품절버튼 이벤트핸들링 처리
     menuList.addEventListener("click", (e) => {
         // 수정
         if(e.target.classList.contains("menu-edit-button")) {
@@ -40,7 +41,7 @@ function App() {
             updatedMenu = prompt("메뉴명을 수정하세요", reMenuName.innerText);
             menu[this.currentCategory][menuId].name = updatedMenu;
             store.setLocalStorage(menu);
-            reMenuName.innerText = updatedMenu;
+            render();
         }
 
         // 삭제
@@ -49,8 +50,7 @@ function App() {
                 const menuId = e.target.closest("li").dataset.menuId;
                 menu[this.currentCategory].splice(menuId, 1);
                 store.setLocalStorage(menu);
-                e.target.closest("li").remove();
-                countMenu();
+                render();
             }
         }
 
@@ -114,30 +114,32 @@ function App() {
 
     // 갯수 카운팅 함수
     const countMenu = () => {
-        const menuCnt = menuList.querySelectorAll("li").length;
+        const menuCnt = menu[this.currentCategory].length;
         menuCount.innerText = `총 ${menuCnt} 개`;
     }
 
-    // 확인 버튼에 대한 이벤트 핸들링
-    menuSubmitButton.addEventListener("click", () => {
-        addMenu();
-    });
-
-    // 메뉴 입력받기
-    menuName.addEventListener("keypress", (e) => {
-        if(e.key !== "Enter") return;
-        addMenu();
-    });
-
-    nav.addEventListener("click", (e) => {
-        const isCategoryBtn = e.target.classList.contains("cafe-category-name")
-        if(isCategoryBtn) {
-            const categoryName = e.target.dataset.categoryName;
-            this.currentCategory = categoryName;
-            categoryTitle.innerText = `${e.target.innerText} 메뉴 관리`;
-            render();
-        }
-    })
+    const initEventListeners = () => {
+        // 확인 버튼에 대한 이벤트 핸들링
+        menuSubmitButton.addEventListener("click", () => {
+            addMenu();
+        });
+    
+        // 메뉴 입력받기
+        menuName.addEventListener("keypress", (e) => {
+            if(e.key !== "Enter") return;
+            addMenu();
+        });
+    
+        nav.addEventListener("click", (e) => {
+            const isCategoryBtn = e.target.classList.contains("cafe-category-name")
+            if(isCategoryBtn) {
+                const categoryName = e.target.dataset.categoryName;
+                this.currentCategory = categoryName;
+                categoryTitle.innerText = `${e.target.innerText} 메뉴 관리`;
+                render();
+            }
+        })
+    }
 }
 
 

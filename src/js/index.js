@@ -66,7 +66,6 @@ const render = () => {
 
     $main.replaceWith($newMain);
 
-    // 여기가 문제
     // applyDiff(document.body, $main, $newMain);
   });
 };

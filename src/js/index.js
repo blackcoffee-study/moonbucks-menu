@@ -1,41 +1,18 @@
 import { isBlank, isReduplicated } from "./utils/validate.js";
-
-const $ = (selector) => document.querySelector(selector);
-
-const $menuForm = $("#menu-form");
-const $menuName = $("#menu-name");
-const $menuSubmitButton = $("#menu-submit-button");
-const $menuList = $("#menu-list");
-const $menuCount = $(".menu-count");
-const $categoryTitle = $("#category-title");
-
-const store = {
-  setLocalStorage(menu) {
-    localStorage.setItem("menu", JSON.stringify(menu));
-  },
-  getLocalStorage() {
-    return JSON.parse(localStorage.getItem("menu"));
-  },
-};
-
-const EDIT_INPUT = "메뉴명을 수정하세요.";
-const DELETE_CHECK = "정말 삭제하시겠습니까?";
+import { $ } from "./utils/dom.js";
+import { MESSAGE, CATEGORY } from "./const/index.js";
+import store from "./store/index.js";
 
 function App() {
   this.currentCategory = "espresso";
-  this.menu = {
-    espresso: [],
-    frappuccino: [],
-    blended: [],
-    teavana: [],
-    desert: [],
-  };
-
+  this.menu = {};
   this.init = () => {
+    Object.values(CATEGORY).forEach((category) => (this.menu[category] = []));
     if (store.getLocalStorage()) {
       this.menu = store.getLocalStorage();
     }
     render();
+    initEventListener();
   };
   const menuItemTemplate = (item, idx) => {
     return `
@@ -72,18 +49,19 @@ function App() {
     const template = this.menu[this.currentCategory]
       .map((item, idx) => menuItemTemplate(item, idx))
       .join("");
-    $menuList.innerHTML = template;
+    $("#menu-list").innerHTML = template;
     getMenuCount();
   };
 
   const getMenuCount = () => {
-    const menuCount = $menuList.querySelectorAll("li").length;
-    $menuCount.innerText = `총 ${menuCount} 개`;
+    $(".menu-count").innerText = `총 ${
+      this.menu[this.currentCategory].length
+    } 개`;
   };
 
   const addMenuName = () => {
-    const newMenuName = $menuName.value.trim();
-    $menuName.value = "";
+    const newMenuName = $("#menu-name").value.trim();
+    $("#menu-name").value = "";
     if (isBlank(newMenuName)) return;
     if (isReduplicated(this.menu[this.currentCategory], newMenuName)) return;
     const newMenuObj = {
@@ -98,15 +76,15 @@ function App() {
 
   const soldOutMenu = ($li) => {
     const menuId = $li.id;
-    this.menu[this.currentCategory][menuId].soldOut =
-      !this.menu[this.currentCategory][menuId].soldOut;
+    let soldOut = this.menu[this.currentCategory][menuId].soldOut;
+    this.menu[this.currentCategory][menuId].soldOut = !soldOut;
     store.setLocalStorage(this.menu);
     render();
   };
 
   const editMenuName = ($li) => {
-    const $span = $li.querySelector(".menu-name");
-    let editedMenuName = prompt(EDIT_INPUT, $span.textContent);
+    const $menuName = $li.querySelector(".menu-name");
+    let editedMenuName = prompt(MESSAGE.EDIT_MENU, $menuName.textContent);
     const menuId = $li.dataset.menuId;
     if (editedMenuName) {
       editedMenuName = editedMenuName.trim();
@@ -120,7 +98,7 @@ function App() {
   };
 
   const removeMenuName = ($li) => {
-    if (confirm(DELETE_CHECK)) {
+    if (confirm(MESSAGE.CHECK_DELETE)) {
       const menuId = $li.dataset.menuId;
       this.menu[this.currentCategory] = this.menu[this.currentCategory].filter(
         (item) => item.id !== parseInt(menuId)
@@ -138,29 +116,38 @@ function App() {
     else if (classList.contains("menu-remove-button")) removeMenuName($li);
   };
 
-  $menuList.addEventListener("click", updateMenuList);
+  const initEventListener = () => {
+    $("#menu-list").addEventListener("click", updateMenuList);
 
-  $menuForm.addEventListener("submit", (e) => e.preventDefault());
+    $("#menu-form").addEventListener("submit", (e) => e.preventDefault());
 
-  $menuSubmitButton.addEventListener("click", addMenuName);
+    $("#menu-submit-button").addEventListener("click", addMenuName);
 
-  $menuName.addEventListener("keypress", (e) => {
-    if (e.key !== "Enter") {
-      return;
-    }
-    addMenuName();
-  });
+    $("#menu-name").addEventListener("keypress", (e) => {
+      if (e.key !== "Enter") return;
+      addMenuName();
+    });
 
-  $("nav").addEventListener("click", (e) => {
-    const isCategoryButton = e.target.classList.contains("cafe-category-name");
-    if (!isCategoryButton) return;
-    isCategoryButton;
-    this.currentCategory = e.target.dataset.categoryName;
-    $categoryTitle.textContent = `${e.target.textContent} 메뉴 관리 `;
-    $menuName.placeholder = `${e.target.textContent.trim().slice(3)} 메뉴 이름`;
-    render();
-  });
+    $("nav").addEventListener("click", (e) => {
+      const isCategoryButton =
+        e.target.classList.contains("cafe-category-name");
+      if (!isCategoryButton) return;
+      this.currentCategory = e.target.dataset.categoryName;
+      $("#category-title").textContent = `${e.target.textContent} 메뉴 관리 `;
+      $("#menu-name").placeholder = `${e.target.textContent
+        .trim()
+        .slice(3)} 메뉴 이름`;
+      render();
+    });
+  };
 }
 
 const app = new App();
 app.init();
+
+// trim polyfill
+if (!String.prototype.trim) {
+  String.prototype.trim = function () {
+    return this.replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g, "");
+  };
+}

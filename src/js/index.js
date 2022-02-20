@@ -13,13 +13,13 @@ function App() {
   const $menuTitle = $(".mt-1");
 
   this.init = () => {
-    this.menuItems = [];
+    this.menuItemInfoList = {};
     this.currentCategory = $categoryNames[0].dataset.categoryName;
     const categoryArray = [...$categoryNames].map(
       (item) => item.dataset.categoryName
     );
     categoryArray.map((item) => {
-      this.menuItems[item] = [];
+      this.menuItemInfoList[item] = [];
     });
     initCurCategoryMenuItems();
     initEventHandlers();
@@ -27,7 +27,7 @@ function App() {
   };
 
   const initCurCategoryMenuItems = () => {
-    this.menuItems[this.currentCategory] = JSON.parse(getLocalStorage())
+    this.menuItemInfoList[this.currentCategory] = JSON.parse(getLocalStorage())
       ? JSON.parse(getLocalStorage())
       : [];
   };
@@ -41,22 +41,17 @@ function App() {
       if (e.key === "Enter" && $menuNameInput.value !== "") addMenuItem();
     });
 
-    $submitButton.addEventListener("click", () => {
-      if ($menuNameInput.value === "") alert("값을 입력해주세요.");
-      else addMenuItem();
-    });
+    $submitButton.addEventListener("click", () => addMenuItem());
 
     $menuList.addEventListener("click", (e) => {
       if (isContainedClass("menu-edit-button", e)) modifyMenuItem(e);
       else if (isContainedClass("menu-remove-button", e)) removeMenuItem(e);
       else if (isContainedClass("menu-sold-out-button", e)) {
         const $listItem = e.target.closest("li");
-        let status = this.menuItems[this.currentCategory][$listItem.dataset.id]
-          .status;
-        status = status == "normal" ? "sold-out" : "normal";
-        this.menuItems[this.currentCategory][
-          $listItem.dataset.id
-        ].status = status;
+        const menuId = $listItem.dataset.id;
+        let soldOut = this.menuItemInfoList[this.currentCategory][menuId]
+          .soldOut;
+        this.menuItemInfoList[this.currentCategory][menuId].soldOut = !soldOut;
         setLocalStorage();
       }
     });
@@ -64,7 +59,7 @@ function App() {
     $categoryNav.addEventListener("click", (e) => {
       if (isContainedClass("cafe-category-name", e)) {
         this.currentCategory = e.target.dataset.categoryName;
-        $menuTitle.innerHTML = `${e.target.textContent} 메뉴 관리`;
+        $menuTitle.innerText = `${e.target.innerText} 메뉴 관리`;
         initCurCategoryMenuItems();
         render();
       }
@@ -78,17 +73,19 @@ function App() {
   const setLocalStorage = () => {
     localStorage.setItem(
       this.currentCategory,
-      JSON.stringify(this.menuItems[this.currentCategory])
+      JSON.stringify(this.menuItemInfoList[this.currentCategory])
     );
     render();
   };
 
   const render = () => {
-    if (this.menuItems[this.currentCategory]) {
-      $menuList.innerHTML = this.menuItems[this.currentCategory]
+    if (this.menuItemInfoList[this.currentCategory]) {
+      $menuList.innerHTML = this.menuItemInfoList[this.currentCategory]
         .map((item, index) => {
-          return `<li data-id="${index}" class=" menu-list-item  d-flex items-center py-2">
-                  <span class="${item.status} w-100 pl-2 menu-name">${item.menuName}</span>
+          return `<li data-id="${index}" class="menu-list-item  d-flex items-center py-2">
+                  <span class="${
+                    item.soldOut ? "sold-out" : ""
+                  } w-100 pl-2 menu-name">${item.menuName}</span>
                   <button
                 type="button"
                 class="bg-gray-50 text-gray-500 text-sm mr-1 menu-sold-out-button"
@@ -122,41 +119,40 @@ function App() {
 
   const isContainedClass = (className, e) => {
     if (e.target.classList.contains(className)) return true;
-    else return false;
+    return false;
   };
 
-  const isDuplicatedMenuName = (newMenuName) => {
-    const duplicatedMenuItem = this.menuItems[this.currentCategory].find(
-      (item) => {
-        if (item.menuName == newMenuName) return item;
-      }
-    );
-    if (duplicatedMenuItem) return true;
+  const isReduplicatedMenuName = (newMenuName) => {
+    const reduplicatedMenuItem = this.menuItemInfoList[
+      this.currentCategory
+    ].find((item) => item.menuName === newMenuName);
+
+    if (reduplicatedMenuItem) return true;
     return false;
   };
 
   const updateMenuCount = () => {
-    const menuCount = this.menuItems[this.currentCategory].length;
+    const menuCount = this.menuItemInfoList[this.currentCategory].length;
     $counter.textContent = `총 ${menuCount} 개`;
   };
 
   const addMenuItem = () => {
-    if (isDuplicatedMenuName($menuNameInput.value)) {
+    if (isReduplicatedMenuName($menuNameInput.value)) {
       alert("이미 동일한 메뉴명이 있습니다.");
       initMenuNameInput();
       return;
     }
     if ($menuNameInput.value.trim() === "") {
-      alert("공백 값을 입력하셨습니다.");
+      alert("메뉴명을 입력해주세요.");
       initMenuNameInput();
       return;
     }
     const menuItemInfo = {
       menuName: $menuNameInput.value,
       category: this.currentCategory,
-      status: "normal", // || sold-out
+      soldOut: false,
     };
-    this.menuItems[this.currentCategory].push(menuItemInfo);
+    this.menuItemInfoList[this.currentCategory].push(menuItemInfo);
     setLocalStorage();
   };
 
@@ -168,12 +164,12 @@ function App() {
       $menuName.textContent
     );
 
-    if (newMenuName === $menuName.textContent) {
-      alert("기존과 동일한 메뉴명입니다.");
+    if (isReduplicatedMenuName(newMenuName)) {
+      alert("이미 동일한 메뉴명이 있습니다.");
     } else if (newMenuName === "") {
-      alert("값을 입력해주세요.");
+      alert("메뉴명을 입력해주세요.");
     } else if (newMenuName !== null) {
-      this.menuItems[this.currentCategory][
+      this.menuItemInfoList[this.currentCategory][
         $listItem.dataset.id
       ].menuName = newMenuName;
       setLocalStorage();
@@ -183,7 +179,10 @@ function App() {
   const removeMenuItem = (e) => {
     const $listItem = e.target.closest("li");
     if (confirm("해당 메뉴를 삭제하시겠습니까?")) {
-      this.menuItems[this.currentCategory].splice($listItem.dataset.id, 1);
+      this.menuItemInfoList[this.currentCategory].splice(
+        $listItem.dataset.id,
+        1
+      );
       setLocalStorage();
     }
   };

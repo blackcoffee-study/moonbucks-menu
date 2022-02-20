@@ -19,6 +19,8 @@ const init = () => {
     initEventListeners();
 }
 
+const checkClassList = (element, className) => element.classList.contains(className);
+
 //Enter키 입력시 새로고침 방지
 const menuForm = $('#menu-form');
 menuForm.setAttribute('onsubmit', "return false;");
@@ -101,15 +103,16 @@ const initEventListeners = () => {
 
     // 메뉴리스트에 클릭 이벤트 추가 (이벤트위임(Delegation) (수정,삭제,품절 버튼))
     $('#menu-list').addEventListener('click', (e) => {
-        if (e.target.classList.contains('menu-edit-button')) {
+        if (e.target.type != 'button') return; //버튼을 클릭하지 않은경우 빠른리턴
+        if (checkClassList(e.target, 'menu-edit-button')) {
             updateMenu(e);
             return;
         }
-        if (e.target.classList.contains('menu-remove-button')) {
+        if (checkClassList(e.target, 'menu-remove-button')) {
             removeMenu(e);
             return;
         }
-        if (e.target.classList.contains('menu-sold-out-button')) {
+        if (checkClassList(e.target, 'menu-sold-out-button')) {
             soldOutMenu(e);
             return;
         }

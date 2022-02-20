@@ -48,10 +48,10 @@ export default class MenuNav extends Component {
   }
 
   setEvent() {
-    const { changeCategory } = this.props;
+    const { category, changeCategory } = this.props;
 
     $('nav').addEventListener('click', ({ target }) => {
-      if (target.type !== 'button') return;
+      if (target.type !== 'button' || category === target.dataset.categoryName) return;
 
       changeCategory(target.dataset.categoryName);
     });

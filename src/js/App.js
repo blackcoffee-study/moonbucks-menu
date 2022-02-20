@@ -36,7 +36,7 @@ export default class App extends Component {
     const $menuForm = $('[data-component="menu-form"]');
     const $menuList = $('[data-component="menu-list"]');
 
-    new MenuNav($menuNav, { changeCategory: changeCategory.bind(this) });
+    new MenuNav($menuNav, { category, changeCategory: changeCategory.bind(this) });
     new MenuHeader($menuHeader, { category, menuItems });
     new MenuForm($menuForm, { category, addMenu: addMenu.bind(this) });
     new MenuList($menuList, {

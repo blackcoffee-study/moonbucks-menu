@@ -7,6 +7,15 @@ import { getMenu, postMenu, patchMenu, deleteMenuById } from "./api/index.js";
 const menuContainer = document.querySelector("#espresso-menu-list");
 const menuInput = document.querySelector("#espresso-menu-name");
 
+window.onload = () => {
+  const init = () => {
+    eventHandler();
+    render();
+  };
+
+  init();
+};
+
 //메뉴 카운트 set
 const setMenuCount = () => {
   const menuCount = document.querySelector(".menu-count");
@@ -142,10 +151,3 @@ const render = () => {
   menuListRender();
   setMenuCount();
 };
-
-const init = () => {
-  eventHandler();
-  render();
-};
-
-init();

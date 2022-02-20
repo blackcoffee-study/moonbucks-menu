@@ -1,5 +1,5 @@
 import { menuListRender } from './elements.js';
-import { $ } from './common.js';
+import { $, $All } from './common.js';
 import { TEXT } from './text.js';
 
 const menuNameTag = $('#espresso-menu-name');
@@ -59,7 +59,7 @@ function setSoldOutMenu(currentMenuType, menuListLiTag) {
   let menuList = JSON.parse(localStorage.getItem(currentMenuType));
   let selectedMenuName = menuNameTag.innerText;
   let selectedMenuNameIndex = menuList.findIndex(menu => menu.name === selectedMenuName);
-  
+
   if(!soldOutTag) return;
   
   if(soldOutTag.classList.contains('sold-out')) {
@@ -73,8 +73,10 @@ function setSoldOutMenu(currentMenuType, menuListLiTag) {
   }
 }
 
+//메뉴 개수 관리
 function changeCountMenu() {
-  const menuCount = $('#espresso-menu-list').querySelectorAll('li').length;
+  const menuListElement = $('#espresso-menu-list');
+  const menuCount =  $All('li', menuListElement).length;
   menuCountTag.innerHTML = `총 ${menuCount}개`;
 }
 
@@ -83,4 +85,4 @@ function changeMenuListHeader(currentMenuType) {
   menuListHeaderTag.innerHTML = TEXT.menuListHeader[currentMenuType];
 }
 
-export { addMenu, editMenu, removeMenu, setSoldOutMenu, changeMenuListHeader };
+export { addMenu, editMenu, removeMenu, setSoldOutMenu, changeCountMenu, changeMenuListHeader };

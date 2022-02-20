@@ -34,5 +34,6 @@ cafeCategoryButtonTags.forEach(cafeCategoryButtonTag => {
     localStorage.setItem('currentMenuType', menuCategoryName);
     menuListRender(menuCategoryName);
     menuHandler.changeMenuListHeader(menuCategoryName);
+    menuHandler.changeCountMenu();
   })
 });

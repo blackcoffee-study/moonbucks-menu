@@ -13,7 +13,10 @@ registry.add("menu-form", menuForm);
 registry.add("categories", categories);
 registry.add("header", header);
 
-addEventListener("load", setLocalStorage("selectedCategoryId", "espresso"));
+addEventListener("beforeunload", () => {
+  setLocalStorage("selectedCategoryId", "espresso");
+  setLocalStorage("menuList", state.menuList);
+});
 
 const state = {
   selectedCategoryId: getLocalStorage("selectedCategoryId"),
@@ -30,18 +33,15 @@ const state = {
 const events = {
   addMenu(menu) {
     state.menuList.push(menu);
-    setLocalStorage("menuList", state.menuList);
     render();
   },
   setSoldout(id) {
     const target = state.menuList.find((menu) => menu.id === id);
     target.isSoldout = !target.isSoldout;
-    setLocalStorage("menuList", state.menuList);
     render();
   },
   removeMenu(id) {
     state.menuList = state.menuList.filter((menu) => menu.id !== id);
-    setLocalStorage("menuList", state.menuList);
     render();
   },
   renameMenu(id, name) {

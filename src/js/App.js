@@ -29,7 +29,6 @@ export default class App extends Component {
   }
 
   componentDidMount() {
-    console.log(this);
     const { category, menuItems, changeCategory, addMenu, updateMenu, deleteMenu, toggleSoldOut } =
       this;
     const $menuNav = $('[data-component="menu-nav"]');

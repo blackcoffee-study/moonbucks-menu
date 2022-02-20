@@ -1,10 +1,11 @@
-import  {$} from "./utils/dom.js";
+import { $ } from "./utils/dom.js";
 
 const $menuForm = $("#espresso-menu-form");
 const $menuInput = $("#espresso-menu-name");
 const $btnSubmit = $("#espresso-menu-submit-button");
 const $menuList = $("#espresso-menu-list");
 const $numberOfMenu = $(".menu-count");
+
 
 function countMenu() {
 	let count = $menuList.childElementCount;
@@ -14,6 +15,12 @@ function countMenu() {
 function createNewMenu(name) {
 	$menuList.innerHTML += `<li class="menu-list-item d-flex items-center py-2">
   <span class="w-100 pl-2 menu-name">${name}</span>
+  <button
+    type="button"
+    class="bg-gray-50 text-gray-500 text-sm mr-1 menu-sold-out-button"
+  >
+    품절
+  </button>
   <button
     type="button"
     class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
@@ -33,6 +40,11 @@ function createNewMenu(name) {
 function checkInput() {
 	$menuInput.value.trim() && createNewMenu($menuInput.value);
 	$menuInput.value = "";
+}
+
+function soldOutMenu(e){
+  const menuName = e.target.previousElementSibling;
+  menuName.classList.toggle("sold-out");
 }
 
 function deleteMenu(e) {
@@ -60,6 +72,7 @@ $menuForm.addEventListener("submit", (e) => {
 });
 
 $menuList.addEventListener("click", (e) => {
+  if (e.target.classList.contains("menu-sold-out-button")) return soldOutMenu(e);
 	if (e.target.classList.contains("menu-remove-button")) return deleteMenu(e);
 	if (e.target.classList.contains("menu-edit-button")) return editMenu(e);
 });

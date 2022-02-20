@@ -4,21 +4,7 @@ const $ = (selector) => document.querySelector(selector);
 
 // {espresso: [{name: "", soldOut: true},{name:"", soldOut: }], ...}
 // 해당 이름을 어떻게 찾을것인지 --> index를 어딘가에 따로 저장 : 어디에? dataset
-const menu = {
-    espresso: [],
-    frappuccino: [],
-    blended: [],
-    teavana: [],
-    dessert: [],
-};
-
-const soldOut = {
-    espresso: [],
-    frappuccino: [],
-    blended: [],
-    teavana: [],
-    dessert: [],
-};
+let menuDataList = [];
 
 const title = {
     espresso: "☕ 에스프레소",
@@ -40,13 +26,18 @@ const isSoldOut = (menuName) => {
 };
 
 const isVaildName = (name) => {
-    const duplicateNames = menu[curCategory].filter(
+    const duplicateNames = menuDataList.filter(
         (menuInfo) => menuInfo["menuName"] === name
     );
     if (!duplicateNames.length) return true;
 
     alert("이미 등록된 메뉴입니다.");
     return false;
+};
+
+const setMenuDataList = (category) => {
+    if (!getLocalStorage(category)) return;
+    menuDataList = getLocalStorage(category);
 };
 
 const createMenuListItem = (curData) => {
@@ -85,11 +76,11 @@ const updateMenuCount = () => {
 };
 
 const renderMenus = (category) => {
-    const menuList = menu[category].reduce(
+    const menuListElements = menuDataList.reduce(
         (prev, cur) => prev + createMenuListItem(cur),
         ""
     );
-    $("#menu-list").innerHTML = menuList;
+    $("#menu-list").innerHTML = menuListElements;
     updateMenuCount();
 };
 
@@ -99,8 +90,8 @@ const addMenuName = () => {
     const menuName = menuNameInput.value;
     if (!isVaildName(menuName)) return;
 
-    menu[curCategory].push({ menuName, soldOut: false });
-    setLocalStorage(curCategory, menu[curCategory]);
+    menuDataList.push({ menuName, soldOut: false });
+    setLocalStorage(curCategory, menuDataList);
     clearInputValue(menuNameInput);
     renderMenus(curCategory);
 };
@@ -112,14 +103,15 @@ const updateMenuName = (menuEditBtn) => {
 
     if (!newMenuName) return;
     if (!isVaildName(newMenuName)) return;
-    menu[curCategory][menu[curCategory].indexOf(curMenuName)] = newMenuName;
 
-    if (isSoldOut(curMenuName)) {
-        soldOut[curCategory][soldOut[curCategory].indexOf(curMenuName)] =
-            newMenuName;
-        setLocalStorage("soldOut", soldOut);
-    }
-    setLocalStorage(curCategory, menu[curCategory]);
+    const curIdx = menuDataList.findIndex(
+        (data) => data["menuName"] === curMenuName
+    );
+    menuDataList[curIdx]["menuName"] = newMenuName;
+
+    // soldOut처리
+
+    setLocalStorage(curCategory, menuDataList);
     renderMenus(curCategory);
 };
 
@@ -170,6 +162,7 @@ const initEventListeners = () => {
         // 폼 제목 현재 카테고리에 맞게 변경
         $("#form-title").innerText = `${title[curCategory]} 메뉴 관리`;
         // 리스트 현재 카테고리에 맞게 표시
+        setMenuDataList(curCategory);
         renderMenus(curCategory);
     });
 
@@ -198,32 +191,9 @@ const initEventListeners = () => {
 
 const init = () => {
     initEventListeners();
-    const categories = [
-        "espresso",
-        "frappuccino",
-        "blended",
-        "teavana",
-        "dessert",
-    ];
-
-    categories.forEach((category) => {
-        // LocalStroage에서 카테고리에 해당하는 메뉴들 가져오기
-        if (getLocalStorage(category))
-            menu[category] = getLocalStorage(category);
-    });
     // 초기화면은 espresso
     curCategory = "espresso";
-
-    // LocalStorage에서 soldOut 정보 가져오기
-    if (getLocalStorage("soldOut")) {
-        const soldOutInfo = getLocalStorage("soldOut");
-        categories.forEach((category) => {
-            soldOut[category] = soldOutInfo[category]
-                ? soldOutInfo[category]
-                : [];
-        });
-    }
-
+    setMenuDataList(curCategory);
     renderMenus(curCategory);
 };
 

@@ -39,6 +39,16 @@ const isSoldOut = (menuName) => {
     return true;
 };
 
+const isVaildName = (name) => {
+    const duplicateNames = menu[curCategory].filter(
+        (menuInfo) => menuInfo["menuName"] === name
+    );
+    if (!duplicateNames.length) return true;
+
+    alert("이미 등록된 메뉴입니다.");
+    return false;
+};
+
 const createMenuListItem = (curData) => {
     return `<li class="menu-list-item d-flex items-center py-2">
     <span class="w-100 pl-2 menu-name${
@@ -81,16 +91,6 @@ const renderMenus = (category) => {
     );
     $("#menu-list").innerHTML = menuList;
     updateMenuCount();
-};
-
-const isVaildName = (name) => {
-    const duplicateNames = menu[curCategory].filter(
-        (menuInfo) => menuInfo["menuName"] === name
-    );
-    if (!duplicateNames.length) return true;
-
-    alert("이미 등록된 메뉴입니다.");
-    return false;
 };
 
 const addMenuName = () => {

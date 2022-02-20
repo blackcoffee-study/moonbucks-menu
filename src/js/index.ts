@@ -1,13 +1,18 @@
 import { $ } from "./share/dom.js";
 import { getLocalStorage, setLocalStroage } from "./share/localStorage.js";
 
+interface Imenu {
+  name: string;
+  soldOut: boolean;
+}
+
 class CafeMenu {
   menu: {
-    espresso: string[];
-    frappuccino: string[];
-    blended: string[];
-    teavana: string[];
-    desert: string[];
+    espresso: Imenu[];
+    frappuccino: Imenu[];
+    blended: Imenu[];
+    teavana: Imenu[];
+    desert: Imenu[];
   };
 
   nav: HTMLElement;
@@ -99,14 +104,21 @@ class CafeMenu {
         (e.target as HTMLLIElement).classList.contains("menu-remove-button")
       )
         this.deleteMenu(e.target as HTMLLIElement, this.currentCategory);
+      else if (
+        (e.target as HTMLLIElement).classList.contains("menu-sold-out-button")
+      )
+        this.soldOutMenu(e.target as HTMLLIElement, this.currentCategory);
       else return;
     });
   }
 
-  createMenuHTML(name: string) {
+  createMenuHTML(name: string, soldOut: boolean) {
+    const soldOutClass = soldOut ? "sold-out" : "";
+
     return `
       <li class="menu-list-item d-flex items-center py-2">
-        <span class="w-100 pl-2 menu-name">${name}</span>
+        <span class="w-100 pl-2 menu-name ${soldOutClass}">${name}</span>
+        <button type="button" class="bg-gray-50 text-gray-500 text-sm mr-1 menu-sold-out-button">품절</button>
         <button type="button" class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button">수정</button>
         <button type="button" class="bg-gray-50 text-gray-500 text-sm menu-remove-button">삭제</button>
       </li>`;
@@ -118,8 +130,11 @@ class CafeMenu {
     this.menu = LS_MENU;
 
     this.menuList.innerHTML = "";
-    LS_MENU[category].map((item: string) => {
-      this.menuList.insertAdjacentHTML("beforeend", this.createMenuHTML(item));
+    LS_MENU[category].map((item: Imenu) => {
+      this.menuList.insertAdjacentHTML(
+        "beforeend",
+        this.createMenuHTML(item.name, item.soldOut)
+      );
     });
 
     this.updateCount(this.menuCount, category);
@@ -134,7 +149,7 @@ class CafeMenu {
     const menuName: string = this.menuInput.value;
     if (menuName === "") return;
 
-    this.menu[category].push(menuName);
+    this.menu[category].push({ name: menuName, soldOut: false });
     setLocalStroage("menu", this.menu);
     this.menuInput.value = "";
   }
@@ -143,13 +158,19 @@ class CafeMenu {
     const menuNameElement: HTMLSpanElement =
       menu.parentElement.querySelector(".menu-name");
     const name: string = menuNameElement.textContent;
-    const index: number = this.menu[category].indexOf(name);
+    let index = 0;
+    this.menu[category].forEach((menu, idx) => {
+      if (menu.name === name) index = idx;
+    });
 
     const newMenuName = prompt("메뉴명을 수정하세요", name);
     if (!newMenuName) return;
 
     menuNameElement.innerText = newMenuName;
-    this.menu[category].splice(index, 1, newMenuName);
+    this.menu[category].splice(index, 1, {
+      name: newMenuName,
+      soldOut: this.menu[category][index].soldOut,
+    });
     setLocalStroage("menu", this.menu);
   }
 
@@ -167,6 +188,26 @@ class CafeMenu {
     setLocalStroage("menu", this.menu);
 
     this.updateCount(this.menuCount, category);
+  }
+
+  soldOutMenu(menu: HTMLLIElement, category: string) {
+    const menuNameElement: HTMLSpanElement =
+      menu.parentElement.querySelector(".menu-name");
+    const name: string = menuNameElement.textContent;
+    let index = 0;
+    this.menu[category].forEach((menu, idx) => {
+      if (menu.name === name) index = idx;
+    });
+
+    this.menu[category].splice(index, 1, {
+      name,
+      soldOut: !this.menu[category][index].soldOut,
+    });
+    setLocalStroage("menu", this.menu);
+
+    if (menuNameElement.classList.contains("sold-out"))
+      menuNameElement.classList.remove("sold-out");
+    else menuNameElement.classList.add("sold-out");
   }
 }
 

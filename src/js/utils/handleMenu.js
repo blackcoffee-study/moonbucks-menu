@@ -13,7 +13,7 @@ function addMenu(currentMenuType) {
   let menuList = JSON.parse(localStorage.getItem(currentMenuType)) || [];
 
 	if(menuName && menuName !== '') {
-    document.querySelector('#espresso-menu-name').value = '';
+    $('#espresso-menu-name').value = '';
     menuList.push({'name': menuName, 'isSoldOut' : false});
     localStorage.setItem(currentMenuType, JSON.stringify(menuList));
     menuListRender(currentMenuType);
@@ -24,7 +24,7 @@ function addMenu(currentMenuType) {
 
 //메뉴 수정
 function editMenu(currentMenuType, menuListLiElement) {
-  const menuNameElement = menuListLiElement.querySelector('.menu-name');
+  const menuNameElement = $('.menu-name', menuListLiElement);
   let menuList = JSON.parse(localStorage.getItem(currentMenuType));
   let oldMenuName = menuNameElement.innerText;
   let newMenuName = prompt(`수정하실 메뉴이름을 입력하세요`);
@@ -39,7 +39,7 @@ function editMenu(currentMenuType, menuListLiElement) {
 
 //메뉴 삭제
 function removeMenu(currentMenuType, menuListLiElement) {
-  const menuNameElement = menuListLiElement.querySelector('.menu-name');
+  const menuNameElement = $('.menu-name', menuListLiElement);
   let menuList = JSON.parse(localStorage.getItem(currentMenuType));
   const selectedMenuName = menuNameElement.innerText;
   const message = '해당 메뉴를 삭제하시겠습니까?';
@@ -54,8 +54,8 @@ function removeMenu(currentMenuType, menuListLiElement) {
 
 //메뉴 품절 관리
 function setSoldOutMenu(currentMenuType, menuListLiElement) {
-  const menuNameElement = menuListLiElement.querySelector('.menu-name');
-  const soldOutElement = menuListLiElement.querySelector('.menu-sold-out-button');
+  const menuNameElement = $('.menu-name', menuListLiElement);
+  const soldOutElement = $('.menu-sold-out-button', menuListLiElement);
   let menuList = JSON.parse(localStorage.getItem(currentMenuType));
   let selectedMenuName = menuNameElement.innerText;
   let selectedMenuNameIndex = menuList.findIndex(menu => menu.name === selectedMenuName);

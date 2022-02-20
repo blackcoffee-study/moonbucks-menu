@@ -116,6 +116,16 @@ function App() {
     else if (classList.contains("menu-remove-button")) removeMenuName($li);
   };
 
+  const chooseCategory = ({ target }) => {
+    const isCategoryButton = target.classList.contains("cafe-category-name");
+    if (!isCategoryButton) return;
+    this.currentCategory = target.dataset.categoryName;
+    $("#category-title").textContent = `${target.textContent} 메뉴 관리 `;
+    $("#menu-name").placeholder = `${target.textContent
+      .trim()
+      .slice(3)} 메뉴 이름`;
+    render();
+  };
   const initEventListener = () => {
     $("#menu-list").addEventListener("click", updateMenuList);
 
@@ -128,17 +138,7 @@ function App() {
       addMenuName();
     });
 
-    $("nav").addEventListener("click", (e) => {
-      const isCategoryButton =
-        e.target.classList.contains("cafe-category-name");
-      if (!isCategoryButton) return;
-      this.currentCategory = e.target.dataset.categoryName;
-      $("#category-title").textContent = `${e.target.textContent} 메뉴 관리 `;
-      $("#menu-name").placeholder = `${e.target.textContent
-        .trim()
-        .slice(3)} 메뉴 이름`;
-      render();
-    });
+    $("nav").addEventListener("click", chooseCategory);
   };
 }
 

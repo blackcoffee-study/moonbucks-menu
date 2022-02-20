@@ -1,6 +1,5 @@
 import { getLocalStorage, setLocalStorage } from "./storage.js";
-
-const $ = (selector) => document.querySelector(selector);
+import { $ } from "./utils/dom.js";
 
 // 현재 카테고리의 데이터만 저장, {menuName:"메뉴이름", soldOut: 품절여부(Boolean)} 형식으로 요소 저장
 let menuDatas = [];

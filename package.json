@@ -1,0 +1,14 @@
+{
+  "name": "moonbucks-menu",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/hustle-dev/moonbucks-menu.git",
+  "author": "hustle-dev <dlwoabsdk@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "start": "live-server"
+  },
+  "dependencies": {
+    "live-server": "^1.2.1"
+  }
+}

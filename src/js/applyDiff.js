@@ -37,15 +37,15 @@ const applyDiff = (parentNode, currentNode, virtualNode) => {
     return;
   }
 
-  const realChildren = Array.from(currentNode.children);
+  const currentChildren = Array.from(currentNode.children);
   const virtualChildren = Array.from(virtualNode.children);
 
   // 더 많은 children 갖고 있는 node 찾기
-  const max = Math.max(realChildren.length, virtualChildren.length);
+  const max = Math.max(currentChildren.length, virtualChildren.length);
 
   // 재귀
   for (let i = 0; i < max; i++) {
-    applyDiff(currentNode, realChildren[i], virtualChildren[i]);
+    applyDiff(currentNode, currentChildren[i], virtualChildren[i]);
   }
 };
 

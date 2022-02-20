@@ -12,9 +12,9 @@ export default function MenuInfo({ initialState }) {
 
   this.render = () => {
     this.$categoryInfo.innerHTML = CATEGORY_INFO[this.state.currentCategory];
-    console.log(this.state.currentCategory);
+
     this.$menuCount.innerText = `총 ${
-      this.state[this.state.currentCategory]
+      this.state[this.state.currentCategory].length
     }개`;
   };
 

@@ -2,7 +2,7 @@ import { CATEGORY, CATEGORY_NAME, BUTTON_TYPE, TEXT } from "./consts.js";
 import { MENU_ITEM } from "./components/menuItem.js";
 import { store } from "./store.js";
 import { inputValidator, findMenu } from "./utils/utils.js";
-import { getMenu, postMenu, putMenu, deleteMenuById } from "./api/index.js";
+import { getMenu, postMenu, patchMenu, deleteMenuById } from "./api/index.js";
 
 const menuContainer = document.querySelector("#espresso-menu-list");
 const menuInput = document.querySelector("#espresso-menu-name");
@@ -53,7 +53,7 @@ const soldOutMenu = (target) => {
 
   menuName.classList.toggle("sold-out");
 
-  putMenu({ id: Number(menuId), name, isSoldOut: !isSoldOut });
+  patchMenu({ id: Number(menuId), name, isSoldOut: !isSoldOut });
 
   render();
 };
@@ -82,7 +82,7 @@ const updateMenu = (target) => {
 
   const { isSoldOut } = findMenu(Number(menuId));
 
-  putMenu({ id: Number(menuId), name: updatedName, isSoldOut });
+  patchMenu({ id: Number(menuId), name: updatedName, isSoldOut });
 
   render();
 };

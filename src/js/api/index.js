@@ -15,7 +15,7 @@ export const postMenu = (menu) => {
   localStorage.setItem(MENU, JSON.stringify(addedMenu));
 };
 
-export const putMenu = ({ id, name, isSoldOut }) => {
+export const patchMenu = ({ id, name, isSoldOut }) => {
   const updatedMenu = loadMenu().map((menu) => {
     if (menu.id === id) return { ...menu, name, isSoldOut };
 

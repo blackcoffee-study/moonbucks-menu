@@ -18,18 +18,9 @@ const isEmpty = (input) => {
     return Boolean(!input.value.length);
 };
 
-const isSoldOut = (menuName) => {
-    const curDataIdx = menuDatas.findIndex(
-        (data) => data["menuName"] === menuName
-    );
-    const curMenuData = menuDatas[curDataIdx];
-    if (curMenuData["soldOut"]) return true;
-    return false;
-};
-
 const isVaildName = (name) => {
     const duplicateNames = menuDatas.filter(
-        (menuInfo) => menuInfo["menuName"] === name
+        (menuData) => menuData["menuName"] === name
     );
     if (!duplicateNames.length) return true;
 
@@ -37,9 +28,20 @@ const isVaildName = (name) => {
     return false;
 };
 
+const findCurMenuIdx = (menuName) => {
+    return menuDatas.findIndex((menuData) => menuData["menuName"] === menuName);
+};
+
 const setMenuDatas = (category) => {
-    if (!getLocalStorage(category)) return;
-    menuDatas = getLocalStorage(category);
+    if (getLocalStorage(category)) {
+        menuDatas = getLocalStorage(category);
+        return;
+    }
+    menuDatas = [];
+};
+
+const clearInputValue = (input) => {
+    input.value = "";
 };
 
 const createMenuListItem = (curData) => {
@@ -68,20 +70,17 @@ const createMenuListItem = (curData) => {
   </li>`;
 };
 
-const clearInputValue = (input) => {
-    input.value = "";
-};
-
 const updateMenuCount = () => {
     const menuCount = $("#menu-list").childElementCount;
     $(".menu-count").innerText = `총 ${menuCount}개`;
 };
 
-const renderMenus = (category) => {
+const renderMenus = () => {
     const menuListElements = menuDatas.reduce(
         (prev, cur) => prev + createMenuListItem(cur),
         ""
     );
+
     $("#menu-list").innerHTML = menuListElements;
     updateMenuCount();
 };
@@ -95,7 +94,7 @@ const addMenuName = () => {
     menuDatas.push({ menuName, soldOut: false });
     setLocalStorage(curCategory, menuDatas);
     clearInputValue(menuNameInput);
-    renderMenus(curCategory);
+    renderMenus();
 };
 
 const updateMenuName = (menuEditBtn) => {
@@ -106,55 +105,33 @@ const updateMenuName = (menuEditBtn) => {
     if (!newMenuName) return;
     if (!isVaildName(newMenuName)) return;
 
-    const curIdx = menuDatas.findIndex(
-        (data) => data["menuName"] === curMenuName
-    );
+    const curIdx = findCurMenuIdx(curMenuName);
     menuDatas[curIdx]["menuName"] = newMenuName;
 
-    // soldOut처리
-
     setLocalStorage(curCategory, menuDatas);
-    renderMenus(curCategory);
+    renderMenus();
 };
 
 const removeMenuName = (menuRemoveBtn) => {
     const curListItem = menuRemoveBtn.parentElement;
     const curMenuName = curListItem.querySelector(".menu-name").innerText;
     if (!confirm(`선택한 메뉴("${curMenuName}")를 삭제하시겠습니까?`)) return;
-    menu[curCategory].splice(menu[curCategory].indexOf(curMenuName), 1);
-    if (isSoldOut(curMenuName)) {
-        soldOut[curCategory].splice(
-            soldOut[curCategory].indexOf(curMenuName),
-            1
-        );
-        setLocalStorage("soldOut", soldOut);
-    }
 
-    setLocalStorage(curCategory, menu[curCategory]);
-    renderMenus(curCategory);
+    menuDatas.splice(findCurMenuIdx(curMenuName), 1);
+
+    setLocalStorage(curCategory, menuDatas);
+    renderMenus();
 };
 
 const soldOutMenu = (menuSoldOutBtn) => {
     const curListItem = menuSoldOutBtn.parentElement;
     const curMenuEl = curListItem.querySelector(".menu-name");
     const curMenuName = curMenuEl.innerText;
-    if (!isSoldOut(curMenuName)) {
-        curMenuEl.classList.add("sold-out");
-        soldOut[curCategory].push(curMenuName);
-        setLocalStorage("soldOut", soldOut);
-        renderMenus(curCategory);
-        return;
-    }
-    if (isSoldOut(curMenuName)) {
-        curMenuEl.classList.remove("sold-out");
-        soldOut[curCategory].splice(
-            soldOut[curCategory].indexOf(curMenuName),
-            1
-        );
-        setLocalStorage("soldOut", soldOut);
-        renderMenus(curCategory);
-        return;
-    }
+    const curIdx = findCurMenuIdx(curMenuName);
+    menuDatas[curIdx]["soldOut"] = !menuDatas[curIdx]["soldOut"];
+
+    setLocalStorage(curCategory, menuDatas);
+    renderMenus();
 };
 
 const initEventListeners = () => {
@@ -165,7 +142,7 @@ const initEventListeners = () => {
         $("#form-title").innerText = `${title[curCategory]} 메뉴 관리`;
         // 리스트 현재 카테고리에 맞게 표시
         setMenuDatas(curCategory);
-        renderMenus(curCategory);
+        renderMenus();
     });
 
     $("#menu-form").addEventListener("submit", (e) => {
@@ -196,7 +173,7 @@ const init = () => {
     // 초기화면은 espresso
     curCategory = "espresso";
     setMenuDatas(curCategory);
-    renderMenus(curCategory);
+    renderMenus();
 };
 
 init();

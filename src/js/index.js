@@ -2,9 +2,7 @@ import { getLocalStorage, setLocalStorage } from "./storage.js";
 
 const $ = (selector) => document.querySelector(selector);
 
-// {espresso: [{name: "", soldOut: true},{name:"", soldOut: }], ...}
-// 해당 이름을 어떻게 찾을것인지 --> index를 어딘가에 따로 저장 : 어디에? dataset
-let menuDataList = [];
+let menuDatas = [];
 
 const title = {
     espresso: "☕ 에스프레소",
@@ -21,12 +19,16 @@ const isEmpty = (input) => {
 };
 
 const isSoldOut = (menuName) => {
-    if (soldOut[curCategory].indexOf(menuName) === -1) return false;
-    return true;
+    const curDataIdx = menuDatas.findIndex(
+        (data) => data["menuName"] === menuName
+    );
+    const curMenuData = menuDatas[curDataIdx];
+    if (curMenuData["soldOut"]) return true;
+    return false;
 };
 
 const isVaildName = (name) => {
-    const duplicateNames = menuDataList.filter(
+    const duplicateNames = menuDatas.filter(
         (menuInfo) => menuInfo["menuName"] === name
     );
     if (!duplicateNames.length) return true;
@@ -35,9 +37,9 @@ const isVaildName = (name) => {
     return false;
 };
 
-const setMenuDataList = (category) => {
+const setMenuDatas = (category) => {
     if (!getLocalStorage(category)) return;
-    menuDataList = getLocalStorage(category);
+    menuDatas = getLocalStorage(category);
 };
 
 const createMenuListItem = (curData) => {
@@ -76,7 +78,7 @@ const updateMenuCount = () => {
 };
 
 const renderMenus = (category) => {
-    const menuListElements = menuDataList.reduce(
+    const menuListElements = menuDatas.reduce(
         (prev, cur) => prev + createMenuListItem(cur),
         ""
     );
@@ -90,8 +92,8 @@ const addMenuName = () => {
     const menuName = menuNameInput.value;
     if (!isVaildName(menuName)) return;
 
-    menuDataList.push({ menuName, soldOut: false });
-    setLocalStorage(curCategory, menuDataList);
+    menuDatas.push({ menuName, soldOut: false });
+    setLocalStorage(curCategory, menuDatas);
     clearInputValue(menuNameInput);
     renderMenus(curCategory);
 };
@@ -104,14 +106,14 @@ const updateMenuName = (menuEditBtn) => {
     if (!newMenuName) return;
     if (!isVaildName(newMenuName)) return;
 
-    const curIdx = menuDataList.findIndex(
+    const curIdx = menuDatas.findIndex(
         (data) => data["menuName"] === curMenuName
     );
-    menuDataList[curIdx]["menuName"] = newMenuName;
+    menuDatas[curIdx]["menuName"] = newMenuName;
 
     // soldOut처리
 
-    setLocalStorage(curCategory, menuDataList);
+    setLocalStorage(curCategory, menuDatas);
     renderMenus(curCategory);
 };
 
@@ -162,7 +164,7 @@ const initEventListeners = () => {
         // 폼 제목 현재 카테고리에 맞게 변경
         $("#form-title").innerText = `${title[curCategory]} 메뉴 관리`;
         // 리스트 현재 카테고리에 맞게 표시
-        setMenuDataList(curCategory);
+        setMenuDatas(curCategory);
         renderMenus(curCategory);
     });
 
@@ -193,7 +195,7 @@ const init = () => {
     initEventListeners();
     // 초기화면은 espresso
     curCategory = "espresso";
-    setMenuDataList(curCategory);
+    setMenuDatas(curCategory);
     renderMenus(curCategory);
 };
 

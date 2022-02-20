@@ -1,6 +1,6 @@
 import Component from '../core/Component.js';
-import { KOREAN_MENU_NAME } from '../constants/constants.js';
 import { $ } from '../utils/dom.js';
+import { KOREAN_MENU_NAME } from '../constants/constants.js';
 
 export default class MenuForm extends Component {
   template() {

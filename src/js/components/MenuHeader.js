@@ -1,5 +1,5 @@
-import { KOREAN_MENU_NAME } from '../constants/constants.js';
 import Component from '../core/Component.js';
+import { KOREAN_MENU_NAME } from '../constants/constants.js';
 
 export default class MenuHeader extends Component {
   template() {

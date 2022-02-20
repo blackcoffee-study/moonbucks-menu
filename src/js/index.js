@@ -2,6 +2,7 @@ import { getLocalStorage, setLocalStorage } from "./storage.js";
 
 const $ = (selector) => document.querySelector(selector);
 
+// 현재 카테고리의 데이터만 저장, {menuName:"메뉴이름", soldOut: 품절여부(Boolean)} 형식으로 요소 저장
 let menuDatas = [];
 
 const title = {
@@ -28,20 +29,21 @@ const isVaildName = (name) => {
     return false;
 };
 
+const clearInputValue = (input) => {
+    input.value = "";
+};
+
 const findCurMenuIdx = (menuName) => {
     return menuDatas.findIndex((menuData) => menuData["menuName"] === menuName);
 };
 
+// menuDatas에 localStorage에서 가져온 데이터를 저장
 const setMenuDatas = (category) => {
     if (getLocalStorage(category)) {
         menuDatas = getLocalStorage(category);
         return;
     }
     menuDatas = [];
-};
-
-const clearInputValue = (input) => {
-    input.value = "";
 };
 
 const createMenuListItem = (curData) => {
@@ -170,7 +172,8 @@ const initEventListeners = () => {
 
 const init = () => {
     initEventListeners();
-    // 초기화면은 espresso
+
+    // 초기 화면 : 에스프레소메뉴
     curCategory = "espresso";
     setMenuDatas(curCategory);
     renderMenus();

@@ -1,5 +1,9 @@
+import { getLocalStorage, setLocalStorage } from "./storage.js";
+
 const $ = (selector) => document.querySelector(selector);
 
+// {espresso: [{name: "", soldOut: true},{name:"", soldOut: }], ...}
+// 해당 이름을 어떻게 찾을것인지 --> index를 어딘가에 따로 저장 : 어디에? dataset
 const menu = {
     espresso: [],
     frappuccino: [],
@@ -35,11 +39,11 @@ const isSoldOut = (menuName) => {
     return true;
 };
 
-const createMenuListItem = (menuName) => {
+const createMenuListItem = (curData) => {
     return `<li class="menu-list-item d-flex items-center py-2">
     <span class="w-100 pl-2 menu-name${
-        isSoldOut(menuName) ? " sold-out" : ""
-    }">${menuName}</span>
+        curData["soldOut"] ? " sold-out" : ""
+    }">${curData["menuName"]}</span>
     <button
     type="button"
     class="bg-gray-50 text-gray-500 text-sm mr-1 menu-sold-out-button"
@@ -71,33 +75,22 @@ const updateMenuCount = () => {
 };
 
 const renderMenus = (category) => {
-    let menuList = menu[category].reduce(
+    const menuList = menu[category].reduce(
         (prev, cur) => prev + createMenuListItem(cur),
         ""
     );
     $("#menu-list").innerHTML = menuList;
+    updateMenuCount();
 };
 
-const setLocalStorage = (key, value) => {
-    localStorage.setItem(key, JSON.stringify(value));
-};
+const isVaildName = (name) => {
+    const duplicateNames = menu[curCategory].filter(
+        (menuInfo) => menuInfo["menuName"] === name
+    );
+    if (!duplicateNames.length) return true;
 
-const getLocalStorage = (key) => {
-    if (!localStorage.getItem(key)) return;
-
-    let items = JSON.parse(localStorage.getItem(key));
-    return items;
-};
-
-const isVaildName = (menuName) => {
-    const curCategoryMenus = menu[curCategory];
-    for (let i = 0; i < curCategoryMenus.length; i++) {
-        if (curCategoryMenus[i] === menuName) {
-            alert("이미 존재하는 메뉴입니다.");
-            return false;
-        }
-    }
-    return true;
+    alert("이미 등록된 메뉴입니다.");
+    return false;
 };
 
 const addMenuName = () => {
@@ -106,11 +99,10 @@ const addMenuName = () => {
     const menuName = menuNameInput.value;
     if (!isVaildName(menuName)) return;
 
-    menu[curCategory].push(menuName);
+    menu[curCategory].push({ menuName, soldOut: false });
     setLocalStorage(curCategory, menu[curCategory]);
     clearInputValue(menuNameInput);
     renderMenus(curCategory);
-    updateMenuCount();
 };
 
 const updateMenuName = (menuEditBtn) => {
@@ -146,7 +138,6 @@ const removeMenuName = (menuRemoveBtn) => {
 
     setLocalStorage(curCategory, menu[curCategory]);
     renderMenus(curCategory);
-    updateMenuCount();
 };
 
 const soldOutMenu = (menuSoldOutBtn) => {
@@ -234,7 +225,6 @@ const init = () => {
     }
 
     renderMenus(curCategory);
-    updateMenuCount();
 };
 
 init();

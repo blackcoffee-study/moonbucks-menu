@@ -1,4 +1,4 @@
-import { CATEGORIES } from '../constants/constants.js';
+import { CATEGORIES, LOCALSTORAGE } from '../constants/constants.js';
 import { $ } from '../common/DOM.js';
 import { getLocalStorage, setLocalStroage } from '../common/localStorage.js';
 import Model from '../Model/model.js';
@@ -16,16 +16,16 @@ export default class View {
   }
 
   initApp() {
-    const storage = getLocalStorage('menu');
+    const storage = getLocalStorage(LOCALSTORAGE.ITEM);
 
     if (storage === null) {
-      setLocalStroage('menu', this.Model.menu);
+      setLocalStroage(LOCALSTORAGE.ITEM, this.Model.menu);
     }
     this.render(CATEGORIES.ESPRESSO.EN);
   }
 
   render(category) {
-    const storage = getLocalStorage('menu');
+    const storage = getLocalStorage(LOCALSTORAGE.ITEM);
 
     if (storage === null) {
       return;

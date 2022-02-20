@@ -1,4 +1,5 @@
 import { getLocalStorage } from '../common/localStorage.js';
+import { LOCALSTORAGE } from '../constants/constants.js';
 
 export default class Model {
   constructor() {
@@ -22,7 +23,7 @@ export default class Model {
   }
 
   updateMenuCount(target, category) {
-    const storage = getLocalStorage('menu');
+    const storage = getLocalStorage(LOCALSTORAGE.ITEM);
 
     target.textContent = `총 ${storage[category].length}개`;
   }

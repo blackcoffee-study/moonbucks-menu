@@ -1,6 +1,13 @@
-import { PROMPT, ALERT, CONFIRM, KEY } from '../constants/constants.js';
+import {
+  PROMPT,
+  ALERT,
+  CONFIRM,
+  KEY,
+  CATEGORIES,
+} from '../constants/constants.js';
 import { $ } from '../common/DOM.js';
 import { getLocalStorage, setLocalStroage } from '../common/localStorage.js';
+import { LOCALSTORAGE } from '../constants/constants.js';
 
 export default class Controller {
   constructor(model, view) {
@@ -18,11 +25,11 @@ export default class Controller {
       menuInput: $('#menu-name'),
     };
 
-    this.currentCategory = 'espresso';
+    this.currentCategory = CATEGORIES.ESPRESSO.EN;
   }
 
   isValidInput(category, value) {
-    const storage = getLocalStorage('menu');
+    const storage = getLocalStorage(LOCALSTORAGE.ITEM);
     this.Model.menu = storage;
 
     if (value.length === 0) {
@@ -42,7 +49,7 @@ export default class Controller {
   }
 
   deleteListItem(target, count, category) {
-    const storage = getLocalStorage('menu');
+    const storage = getLocalStorage(LOCALSTORAGE.ITEM);
     const name = target.parentNode.children[0].textContent;
     const index = storage[category].indexOf(name);
 
@@ -50,7 +57,7 @@ export default class Controller {
 
     if (window.confirm(CONFIRM.DELETE)) {
       this.Model.menu[category].splice(index, 1);
-      setLocalStroage('menu', this.Model.menu);
+      setLocalStroage(LOCALSTORAGE.ITEM, this.Model.menu);
       this.$.menuManange.removeChild(target.parentNode);
     }
 
@@ -58,7 +65,7 @@ export default class Controller {
   }
 
   editMenuList(target, category) {
-    this.Model.menu = getLocalStorage('menu');
+    this.Model.menu = getLocalStorage(LOCALSTORAGE.ITEM);
 
     const menuItem = target.closest('li').children[0];
     const name = menuItem.textContent;
@@ -68,7 +75,7 @@ export default class Controller {
     if (editedItemName) {
       menuItem.textContent = editedItemName;
       this.Model.menu[category].splice(index, 1, editedItemName);
-      setLocalStroage('menu', this.Model.menu);
+      setLocalStroage(LOCALSTORAGE.ITEM, this.Model.menu);
     }
 
     if (!editedItemName) {
@@ -84,15 +91,15 @@ export default class Controller {
     if (this.isValidInput(category, inputValue)) {
       this.Model.menu[category].push(inputValue);
 
-      const exisiingEntries = getLocalStorage('menu');
+      const exisiingEntries = getLocalStorage(LOCALSTORAGE.ITEM);
 
       if (exisiingEntries !== null) {
         exisiingEntries[category].push(inputValue);
-        setLocalStroage('menu', exisiingEntries);
+        setLocalStroage(LOCALSTORAGE.ITEM, exisiingEntries);
       }
 
       if (exisiingEntries === null) {
-        setLocalStroage('menu', this.Model.menu);
+        setLocalStroage(LOCALSTORAGE.ITEM, this.Model.menu);
       }
     }
   }

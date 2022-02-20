@@ -1,17 +1,18 @@
-const menuForm = document.querySelector("#espresso-menu-form");
-const menuInput = document.querySelector("#espresso-menu-name");
-const btnSubmit= document.querySelector("#espresso-menu-submit-button");
-const menuList = document.querySelector("#espresso-menu-list");
-const numberOfMenu = document.querySelector('.menu-count');
+import  {$} from "./utils/dom.js";
 
-function countMenu(){
-	let count = menuList.childElementCount
-	numberOfMenu.innerHTML=`총 ${count}개`
+const $menuForm = $("#espresso-menu-form");
+const $menuInput = $("#espresso-menu-name");
+const $btnSubmit = $("#espresso-menu-submit-button");
+const $menuList = $("#espresso-menu-list");
+const $numberOfMenu = $(".menu-count");
+
+function countMenu() {
+	let count = $menuList.childElementCount;
+	$numberOfMenu.innerHTML = `총 ${count}개`;
 }
 
-
-function createNewMenu(name){
-	menuList.innerHTML += `<li class="menu-list-item d-flex items-center py-2">
+function createNewMenu(name) {
+	$menuList.innerHTML += `<li class="menu-list-item d-flex items-center py-2">
   <span class="w-100 pl-2 menu-name">${name}</span>
   <button
     type="button"
@@ -29,37 +30,36 @@ function createNewMenu(name){
 	countMenu();
 }
 
-function checkInput(){
-  menuInput.value.trim() && createNewMenu(menuInput.value);
-	menuInput.value = "";
+function checkInput() {
+	$menuInput.value.trim() && createNewMenu($menuInput.value);
+	$menuInput.value = "";
 }
 
-function deleteMenu(e){
-  const menuLi = e.target.closest('li');
-    if (confirm('정말로 삭제하시겠습니까?')){
-      menuList.removeChild(menuLi);
-      countMenu();
-    }
+function deleteMenu(e) {
+	const menuLi = e.target.closest("li");
+	if (confirm("정말로 삭제하시겠습니까?")) {
+		$menuList.removeChild(menuLi);
+		countMenu();
+	}
 }
 
-function editMenu(e){
-  const menuName = (e.target.previousElementSibling)
-  const newName = prompt('어떤 이름으로 바꾸시겠습니까?')
-  newName.trim() && (menuName.innerHTML = newName)
+function editMenu(e) {
+	const menuName = e.target.previousElementSibling;
+	const newName = prompt("어떤 이름으로 바꾸시겠습니까?");
+	newName.trim() && (menuName.innerHTML = newName);
 }
 
-btnSubmit.addEventListener("click", (e) => {
+$btnSubmit.addEventListener("click", (e) => {
 	e.preventDefault();
 	checkInput();
 });
 
-menuForm.addEventListener("submit", (e) => {
+$menuForm.addEventListener("submit", (e) => {
 	e.preventDefault();
 	checkInput();
 });
 
-
-menuList.addEventListener('click', e => {
-  if(e.target.classList.contains('menu-remove-button')) return deleteMenu(e);
-  if(e.target.classList.contains('menu-edit-button')) return editMenu(e);
-})
+$menuList.addEventListener("click", (e) => {
+	if (e.target.classList.contains("menu-remove-button")) return deleteMenu(e);
+	if (e.target.classList.contains("menu-edit-button")) return editMenu(e);
+});

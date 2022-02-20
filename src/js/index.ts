@@ -1,4 +1,5 @@
 import { $ } from "./share/dom.js";
+import { getLocalStorage, setLocalStroage } from "./share/localStorage.js";
 
 class CafeMenu {
   menu: {
@@ -19,6 +20,7 @@ class CafeMenu {
   menuName: HTMLSpanElement;
   menuCount: HTMLSpanElement;
   currentCategory: string;
+  LS_MENU: Array<string>;
 
   constructor() {
     this.menu = {
@@ -40,6 +42,14 @@ class CafeMenu {
     this.menuCount = $<HTMLSpanElement>(".menu-count");
     this.currentCategory = "espresso";
 
+    this.initApp();
+  }
+
+  initApp() {
+    const LS_MENU = getLocalStorage("menu");
+    if (LS_MENU === null) setLocalStroage("menu", this.menu);
+
+    this.renderMenus(this.currentCategory);
     this.bindEventListeners();
   }
 
@@ -103,8 +113,12 @@ class CafeMenu {
   }
 
   renderMenus(category: string) {
+    const LS_MENU = getLocalStorage("menu");
+    if (LS_MENU === null) return;
+    this.menu = LS_MENU;
+
     this.menuList.innerHTML = "";
-    this.menu[category].map((item: string) => {
+    LS_MENU[category].map((item: string) => {
       this.menuList.insertAdjacentHTML("beforeend", this.createMenuHTML(item));
     });
 
@@ -112,7 +126,8 @@ class CafeMenu {
   }
 
   updateCount(target: HTMLSpanElement, category: string) {
-    target.textContent = `총 ${this.menu[category].length}개`;
+    const LS_MENU = getLocalStorage("menu");
+    target.textContent = `총 ${LS_MENU[category].length}개`;
   }
 
   addNewMenu(category: string) {
@@ -120,6 +135,7 @@ class CafeMenu {
     if (menuName === "") return;
 
     this.menu[category].push(menuName);
+    setLocalStroage("menu", this.menu);
     this.menuInput.value = "";
   }
 
@@ -134,6 +150,7 @@ class CafeMenu {
 
     menuNameElement.innerText = newMenuName;
     this.menu[category].splice(index, 1, newMenuName);
+    setLocalStroage("menu", this.menu);
   }
 
   deleteMenu(menu: HTMLLIElement, category: string) {
@@ -147,6 +164,7 @@ class CafeMenu {
 
     this.menuList.removeChild(menu.parentNode);
     this.menu[category].splice(index, 1);
+    setLocalStroage("menu", this.menu);
 
     this.updateCount(this.menuCount, category);
   }

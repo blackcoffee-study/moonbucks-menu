@@ -2,14 +2,14 @@ import { menuListRender } from './elements.js';
 import { $, $All } from './common.js';
 import { TEXT } from './text.js';
 
-const menuNameTag = $('#espresso-menu-name');
-const menuListUlTag = $('#espresso-menu-list');
-const menuCountTag = $('.menu-count');
-const menuListHeaderTag = $('.menu-list-header');
+const menuNameElement = $('#espresso-menu-name');
+const menuListUlElement = $('#espresso-menu-list');
+const menuCountElement = $('.menu-count');
+const menuListHeaderElement = $('.menu-list-header');
 
 //메뉴 추가
 function addMenu(currentMenuType) {
-	let menuName = menuNameTag.value;
+	let menuName = menuNameElement.value;
   let menuList = JSON.parse(localStorage.getItem(currentMenuType)) || [];
 
 	if(menuName && menuName !== '') {
@@ -23,53 +23,53 @@ function addMenu(currentMenuType) {
 }
 
 //메뉴 수정
-function editMenu(currentMenuType, menuListLiTag) {
-  const menuNameTag = menuListLiTag.querySelector('.menu-name');
+function editMenu(currentMenuType, menuListLiElement) {
+  const menuNameElement = menuListLiElement.querySelector('.menu-name');
   let menuList = JSON.parse(localStorage.getItem(currentMenuType));
-  let oldMenuName = menuNameTag.innerText;
+  let oldMenuName = menuNameElement.innerText;
   let newMenuName = prompt(`수정하실 메뉴이름을 입력하세요`);
 
   if(newMenuName !== '') {
     let oldMenuNameIndex = menuList.findIndex(menu => menu.name === oldMenuName);
     menuList[oldMenuNameIndex].name = newMenuName;
     localStorage.setItem(currentMenuType, JSON.stringify(menuList));
-    menuNameTag.innerText = newMenuName;
+    menuNameElement.innerText = newMenuName;
   }
 }
 
 //메뉴 삭제
-function removeMenu(currentMenuType, menuListLiTag) {
-  const menuNameTag = menuListLiTag.querySelector('.menu-name');
+function removeMenu(currentMenuType, menuListLiElement) {
+  const menuNameElement = menuListLiElement.querySelector('.menu-name');
   let menuList = JSON.parse(localStorage.getItem(currentMenuType));
-  const selectedMenuName = menuNameTag.innerText;
+  const selectedMenuName = menuNameElement.innerText;
   const message = '해당 메뉴를 삭제하시겠습니까?';
 
   if(confirm(message)) {
     menuList = menuList.filter(menu => menu.name !== selectedMenuName);
     localStorage.setItem(currentMenuType, JSON.stringify(menuList));
-    menuListUlTag.removeChild(menuListLiTag);
+    menuListUlElement.removeChild(menuListLiElement);
   }
   changeCountMenu();
 }
 
 //메뉴 품절 관리
-function setSoldOutMenu(currentMenuType, menuListLiTag) {
-  const menuNameTag = menuListLiTag.querySelector('.menu-name');
-  const soldOutTag = menuListLiTag.querySelector('.menu-sold-out-button');
+function setSoldOutMenu(currentMenuType, menuListLiElement) {
+  const menuNameElement = menuListLiElement.querySelector('.menu-name');
+  const soldOutElement = menuListLiElement.querySelector('.menu-sold-out-button');
   let menuList = JSON.parse(localStorage.getItem(currentMenuType));
-  let selectedMenuName = menuNameTag.innerText;
+  let selectedMenuName = menuNameElement.innerText;
   let selectedMenuNameIndex = menuList.findIndex(menu => menu.name === selectedMenuName);
 
-  if(!soldOutTag) return;
+  if(!soldOutElement) return;
   
-  if(soldOutTag.classList.contains('sold-out')) {
+  if(soldOutElement.classList.contains('sold-out')) {
     menuList[selectedMenuNameIndex].isSoldOut = false;
     localStorage.setItem(currentMenuType, JSON.stringify(menuList));
-    soldOutTag.classList.remove('sold-out');
+    soldOutElement.classList.remove('sold-out');
   } else {
     menuList[selectedMenuNameIndex].isSoldOut = true;
     localStorage.setItem(currentMenuType, JSON.stringify(menuList));
-    soldOutTag.classList.add('sold-out');
+    soldOutElement.classList.add('sold-out');
   }
 }
 
@@ -77,12 +77,12 @@ function setSoldOutMenu(currentMenuType, menuListLiTag) {
 function changeCountMenu() {
   const menuListElement = $('#espresso-menu-list');
   const menuCount =  $All('li', menuListElement).length;
-  menuCountTag.innerHTML = `총 ${menuCount}개`;
+  menuCountElement.innerHTML = `총 ${menuCount}개`;
 }
 
 //메뉴리스트 헤더명 관리
 function changeMenuListHeader(currentMenuType) {
-  menuListHeaderTag.innerHTML = TEXT.menuListHeader[currentMenuType];
+  menuListHeaderElement.innerHTML = TEXT.menuListHeader[currentMenuType];
 }
 
 export { addMenu, editMenu, removeMenu, setSoldOutMenu, changeCountMenu, changeMenuListHeader };

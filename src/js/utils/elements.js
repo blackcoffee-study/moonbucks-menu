@@ -1,6 +1,6 @@
 import { $ } from './common.js'
 
-const menuListUlTag = $('#espresso-menu-list');
+const menuListUlElement = $('#espresso-menu-list');
 
 const menuListRender = (currentMenuType) => {
 	let menuList = JSON.parse(localStorage.getItem(currentMenuType)) || [];
@@ -13,7 +13,7 @@ const menuListRender = (currentMenuType) => {
 		</li>`
 	}).join("");
 
-	menuListUlTag.innerHTML = menuListTemplate;
+	menuListUlElement.innerHTML = menuListTemplate;
 }
 
 export { menuListRender };

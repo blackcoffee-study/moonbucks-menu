@@ -1,10 +1,20 @@
-import MenuCount from './MenuCount.js';
+import MenuInfo from './MenuInfo.js';
 import MenuInput from './MenuInput.js';
 import MenuList from './MenuList.js';
+import { DEFAULT_CATEGORY } from '../commons/constants.js';
 
 export default function App($app) {
   this.$target = $app;
-  this.state = [];
+  this.state = {
+    currentCategory: DEFAULT_CATEGORY,
+    menus: {
+      espresso: [],
+      frappuccino: [],
+      blended: [],
+      teavana: [],
+      dessert: [],
+    },
+  };
 
   this.setState = (nextState) => {
     this.state = nextState;
@@ -12,13 +22,13 @@ export default function App($app) {
     menuCount.setState(nextState);
   };
 
-  const menuCount = new MenuCount({
+  const menuInfo = new MenuInfo({
     initialState: this.state,
   });
 
   const menuInput = new MenuInput({
     addMenu: (newMenu) => {
-      this.setState([...this.state, newMenu]);
+      this.setState({ ...this.state, newMenu });
     },
   });
 

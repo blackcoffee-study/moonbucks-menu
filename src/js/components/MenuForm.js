@@ -1,25 +1,28 @@
 import Component from '../core/Component.js';
+import { KOREAN_MENU_NAME } from '../constants/constants.js';
 import { $ } from '../utils/dom.js';
 
 export default class MenuForm extends Component {
   template() {
+    const { category } = this.props;
+
     return `
         <div class="d-flex w-100">
-          <label for="espresso-menu-name" class="input-label" hidden>
-            에스프레소 메뉴 이름
+          <label for="menu-name" class="input-label" hidden>
+            ${KOREAN_MENU_NAME[category]} 메뉴 이름
           </label>
           <input
             type="text"
-            id="espresso-menu-name"
-            name="espressoMenuName"
+            id="menu-name"
+            name="menuName"
             class="input-field"
-            placeholder="에스프레소 메뉴 이름"
+            placeholder="메뉴 이름"
             autocomplete="off"
           />
           <button
             type="submit"
             name="submit"
-            id="espresso-menu-submit-button"
+            id="menu-submit-button"
             class="input-submit bg-green-600 ml-2"
           >
             확인
@@ -33,7 +36,7 @@ export default class MenuForm extends Component {
 
     this.domNode.addEventListener('submit', e => {
       e.preventDefault();
-      addMenu($('#espresso-menu-name').value);
+      addMenu($('#menu-name').value);
     });
   }
 }

@@ -150,7 +150,7 @@
       });
       $espresso_menu_list.append($fragment);
       input_menu_list.setCount(menu_list.length);
-      input_menu_list.setMenuItem(menu_list);
+      input_menu_list[menu_type] = [...menu_list];
     }
   };
   $button.addEventListener('click', () => {

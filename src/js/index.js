@@ -4,7 +4,7 @@ import { MESSAGE, CATEGORY } from "./const/index.js";
 import store from "./store/index.js";
 
 function App() {
-  this.currentCategory = "espresso";
+  this.currentCategory = CATEGORY[Object.keys(CATEGORY)[0]];
   this.menu = {};
   this.init = () => {
     Object.values(CATEGORY).forEach((category) => (this.menu[category] = []));
@@ -17,9 +17,7 @@ function App() {
   const menuItemTemplate = (item, idx) => {
     return `
     <li 
-      class="menu-list-item d-flex items-center py-2" data-menu-id=${
-        item.id
-      } id=${idx}>
+      class="menu-list-item d-flex items-center py-2" data-menu-id=${idx}>
       <span class="${item.soldOut ? "sold-out" : ""}  w-100 pl-2 menu-name">${
       item.name
     }</span>
@@ -50,10 +48,10 @@ function App() {
       .map((item, idx) => menuItemTemplate(item, idx))
       .join("");
     $("#menu-list").innerHTML = template;
-    getMenuCount();
+    updateMenuCount();
   };
 
-  const getMenuCount = () => {
+  const updateMenuCount = () => {
     $(".menu-count").innerText = `총 ${
       this.menu[this.currentCategory].length
     } 개`;
@@ -66,7 +64,6 @@ function App() {
     if (isReduplicated(this.menu[this.currentCategory], newMenuName)) return;
     const newMenuObj = {
       name: newMenuName,
-      id: Date.now(),
       soldOut: false,
     };
     this.menu[this.currentCategory].push(newMenuObj);
@@ -92,7 +89,7 @@ function App() {
     if (isBlank(editedMenuName)) return;
     if (isReduplicated(this.menu[this.currentCategory], editedMenuName, menuId))
       return;
-    this.menu[this.currentCategory][$li.id].name = editedMenuName;
+    this.menu[this.currentCategory][menuId].name = editedMenuName;
     store.setLocalStorage(this.menu);
     render();
   };
@@ -100,9 +97,7 @@ function App() {
   const removeMenuName = ($li) => {
     if (confirm(MESSAGE.CHECK_DELETE)) {
       const menuId = $li.dataset.menuId;
-      this.menu[this.currentCategory] = this.menu[this.currentCategory].filter(
-        (item) => item.id !== parseInt(menuId)
-      );
+      this.menu[this.currentCategory].splice(menuId, 1);
       store.setLocalStorage(this.menu);
       render();
     }

@@ -1,11 +1,8 @@
 import { MESSAGE } from "../const/index.js";
 
 export function isBlank(menuName) {
-  if (!menuName) {
-    alert(MESSAGE.WARN_BLANK);
-    return true;
-  }
-  return false;
+  if (!menuName) alert(MESSAGE.WARN_BLANK);
+  return !menuName;
 }
 
 export function isReduplicated(arr, menuName, id = null) {

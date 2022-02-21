@@ -6,24 +6,32 @@ export const CATEGORY = {
   DESERT: 'desert',
 };
 
+export const CATEGORY_LABEL = {
+  [CATEGORY.ESPRESSO]: '☕ 에스프레소',
+  [CATEGORY.FRAPPUCCINO]: '🥤 프라푸치노',
+  [CATEGORY.BLENDED]: '🍹 블렌디드',
+  [CATEGORY.TEAVANA]: '🫖 티바나',
+  [CATEGORY.DESERT]: '🍰 디저트',
+};
+
 export const ACTION = {
   ADD_MENU: 'addMenu',
+  ADD_MENUS: 'addMenus',
   EDIT_MENU: 'editMenu',
   REMOVE_MENU: 'removeMenu',
   GET_MENUS: 'getMenus',
-  GET_MENU_BY_ID: 'getMenuById',
-  GET_SIZE: 'getSize',
-  HAS_MENU_BY_ID: 'hasMenuById',
-  HAS_MENU_BY_NAME: 'hasMenuByName',
+  TOGGLE_TAB: 'toggleTab',
+  ADD_TABS: 'addTabs',
+  GET_TABS: 'getTabs',
+  GET_CURRENT_TAB: 'getCurrentTab',
 };
 
 export const SELECTOR = {
-  FORM: '#espresso-menu-form',
-  MENU_LIST: '#espresso-menu-list',
   MENU_ITEM: '.menu-list-item',
   MENU_NAME: '.menu-name',
-  INPUT_MENU: '#espresso-menu-name',
   COUNT: '#menu-count',
+  TAB: '.tab',
+  MENU_HEADER: '.heading',
 };
 
 export const MESSAGE = {

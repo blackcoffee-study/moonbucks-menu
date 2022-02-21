@@ -55,11 +55,10 @@
       this[this.menu_type] = this[this.menu_type].map(item =>
         item.id !== id ? item : { ...item, [field]: value },
       );
-      console.log(this[this.menu_type]);
       if (field === 'value') {
         document.getElementById(id).firstChild.textContent = value;
       }
-      this.setMenuItem();
+      this.setMenuItem(this[this.menu_type]);
     },
     removeItem(id) {
       this[this.menu_type] = this[this.menu_type].filter(item => item.id !== id);
@@ -136,14 +135,16 @@
     return $li;
   };
   const createMenuList = menu_type => {
-    $espresso_menu_list.innerHTML = '';
+    // $espresso_menu_list.innerHTML = '';
+    [...$espresso_menu_list.children].forEach(node => {
+      $espresso_menu_list.removeChild(node);
+    });
     input_menu_list.setMenuType(menu_type);
 
     const res = localStorage.getItem(`${menu_type}`);
     if (res) {
       const $fragment = document.createDocumentFragment();
       const menu_list = JSON.parse(res);
-      console.log(menu_list);
       menu_list.forEach(item => {
         const new_menu_item = createInnerElement(item);
         $fragment.append(new_menu_item);
@@ -170,6 +171,10 @@
   });
   $nav.addEventListener('click', ({ target }) => {
     if (!target.matches('button')) return;
+
+    [...$espresso_menu_list.children].forEach(node => {
+      $espresso_menu_list.removeChild(node);
+    });
     const menu_type = target.dataset.categoryName;
     createMenuList(menu_type);
   });

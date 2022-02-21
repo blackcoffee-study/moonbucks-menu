@@ -4,7 +4,7 @@ export default function MenuList({
   editMenu,
   removeMenu,
 }) {
-  this.$menuList = document.querySelector('#espresso-menu-list');
+  this.$menuList = document.querySelector('#menu-list');
   this.state = initialState;
 
   this.setState = (nextState) => {

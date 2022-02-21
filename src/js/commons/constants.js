@@ -1,4 +1,4 @@
-// export const DEFAULT_CATEGORY = 'espresso';
+export const DEFAULT_CATEGORY = 'espresso';
 
 export const CATEGORY_INFO = {
   espresso: '☕ 에스프레소',

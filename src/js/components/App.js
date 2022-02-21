@@ -6,20 +6,23 @@ import {
   getLocalStorageData,
   setLocalStorageData,
 } from '../utils/localStorage.js';
-import { MENU_STORAGE_KEY } from '../commons/constants.js';
+import { MENU_STORAGE_KEY, DEFAULT_CATEGORY } from '../commons/constants.js';
 
 export default function App($app) {
   this.$target = $app;
-  this.state = getLocalStorageData(MENU_STORAGE_KEY);
 
-  // this.state = {
-  //   currentCategory: DEFAULT_CATEGORY,
-  //   espresso: [],
-  //   frappuccino: [],
-  //   blended: [],
-  //   teavana: [],
-  //   dessert: [],
-  // };
+  if (getLocalStorageData(MENU_STORAGE_KEY) === []) {
+    this.state = getLocalStorageData(MENU_STORAGE_KEY);
+  } else {
+    this.state = {
+      currentCategory: DEFAULT_CATEGORY,
+      espresso: [],
+      frappuccino: [],
+      blended: [],
+      teavana: [],
+      dessert: [],
+    };
+  }
 
   this.setState = (nextState) => {
     this.state = nextState;

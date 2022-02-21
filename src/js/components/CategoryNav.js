@@ -8,12 +8,14 @@ export default function CategoryNav({ initialState, changeCategory }) {
     this.render();
   };
   this.render = () => {
+    this.state;
     // 카테고리별 css 추가하기
   };
   this.setEvent = () => {
     this.$categoryNav.addEventListener('click', (e) => {
       // 이벤트 위치 확인 필요
       changeCategory(e.target.closest('button').dataset.categoryName);
+      // e.target.closest('button').classList.add('.current-category');
     });
   };
 

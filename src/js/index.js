@@ -81,37 +81,38 @@ function App() {
   const render = () => {
     if (this.menuItemInfoList[this.currentCategory]) {
       $menuList.innerHTML = this.menuItemInfoList[this.currentCategory]
-        .map((item, index) => {
-          return `<li data-id="${index}" class="menu-list-item  d-flex items-center py-2">
-                  <span class="${
-                    item.soldOut ? "sold-out" : ""
-                  } w-100 pl-2 menu-name">${item.menuName}</span>
-                  <button
-                type="button"
-                class="bg-gray-50 text-gray-500 text-sm mr-1 menu-sold-out-button"
-              >
-                품절
-              </button>
-                  <button
-                  type="button"
-                  class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
-                  >
-                  수정
-                  </button>
-                  <button
-                  type="button"
-                  class="bg-gray-50 text-gray-500 text-sm menu-remove-button"
-                  >
-                  삭제
-                  </button>
-              </li>`;
-        })
+        .map((item, index) => template(item, index))
         .join("");
       updateMenuCount();
       initMenuNameInput();
     }
   };
 
+  const template = (item, index) => {
+    return `<li data-id="${index}" class="menu-list-item  d-flex items-center py-2">
+              <span class="${
+                item.soldOut ? "sold-out" : ""
+              } w-100 pl-2 menu-name">${item.menuName}</span>
+              <button
+            type="button"
+            class="bg-gray-50 text-gray-500 text-sm mr-1 menu-sold-out-button"
+          >
+            품절
+          </button>
+              <button
+              type="button"
+              class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
+              >
+              수정
+              </button>
+              <button
+              type="button"
+              class="bg-gray-50 text-gray-500 text-sm menu-remove-button"
+              >
+              삭제
+              </button>
+          </li>`;
+  };
   const initMenuNameInput = () => {
     $menuNameInput.value = "";
     $menuNameInput.focus();

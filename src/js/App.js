@@ -64,9 +64,8 @@ export default function MoonBucks() {
       const isButton = e.target.classList.contains("cafe-category-name");
       if (isButton) {
         this.currentType = e.target.dataset.categoryName;
-        menuTypeHeading.querySelector(
-          "h2"
-        ).innerText = `${this.currentType} 메뉴 관리`;
+        const heading = menuTypeHeading.querySelector("h2");
+        heading.innerText = `${e.target.innerText} 메뉴 관리`;
         render();
       }
     });

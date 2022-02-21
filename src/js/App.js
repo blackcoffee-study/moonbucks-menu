@@ -28,6 +28,9 @@ export default function MoonBucks() {
       if (e.target.classList.contains("menu-edit-button")) {
         editMenu(e);
       }
+      if (e.target.classList.contains("menu-sold-out-button")) {
+        soldoutMenu(e);
+      }
       countMenu();
     });
   };
@@ -48,6 +51,15 @@ export default function MoonBucks() {
     if (window.confirm("메뉴를 삭제하시겠습니까?"))
       e.target.parentNode.remove();
   };
+
+  const soldoutMenu = (e) => {
+    const spanClassList = e.target.closest("li").childNodes[1].classList;
+    if (spanClassList.contains("sold-out")) {
+      spanClassList.remove("sold-out");
+    } else {
+      spanClassList.add("sold-out");
+    }
+  }
 
   const countMenu = () => {
     menuCount.innerText = `총 ${menuList.childElementCount}개`;

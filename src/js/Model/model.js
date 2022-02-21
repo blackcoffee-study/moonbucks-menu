@@ -25,6 +25,7 @@ export default class Model {
   updateMenuCount(target, category) {
     const storage = getLocalStorage(LOCALSTORAGE.ITEM);
 
+
     target.textContent = `총 ${storage[category].length}개`;
   }
 

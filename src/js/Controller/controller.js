@@ -30,6 +30,7 @@ export default class Controller {
 
   isValidInput(category, value) {
     const storage = getLocalStorage(LOCALSTORAGE.ITEM);
+
     this.Model.menu = storage;
 
     if (value.length === 0) {
@@ -50,6 +51,7 @@ export default class Controller {
 
   deleteListItem(target, count, category) {
     const storage = getLocalStorage(LOCALSTORAGE.ITEM);
+
     const name = target.parentNode.children[0].textContent;
     const index = storage[category].indexOf(name);
 
@@ -58,6 +60,7 @@ export default class Controller {
     if (window.confirm(CONFIRM.DELETE)) {
       this.Model.menu[category].splice(index, 1);
       setLocalStroage(LOCALSTORAGE.ITEM, this.Model.menu);
+
       this.$.menuManange.removeChild(target.parentNode);
     }
 
@@ -66,6 +69,7 @@ export default class Controller {
 
   editMenuList(target, category) {
     this.Model.menu = getLocalStorage(LOCALSTORAGE.ITEM);
+
 
     const menuItem = target.closest('li').children[0];
     const name = menuItem.textContent;
@@ -76,6 +80,7 @@ export default class Controller {
       menuItem.textContent = editedItemName;
       this.Model.menu[category].splice(index, 1, editedItemName);
       setLocalStroage(LOCALSTORAGE.ITEM, this.Model.menu);
+
     }
 
     if (!editedItemName) {
@@ -100,6 +105,7 @@ export default class Controller {
 
       if (exisiingEntries === null) {
         setLocalStroage(LOCALSTORAGE.ITEM, this.Model.menu);
+
       }
     }
   }

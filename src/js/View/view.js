@@ -1,4 +1,5 @@
 import { CATEGORIES, LOCALSTORAGE } from '../constants/constants.js';
+
 import { $ } from '../common/DOM.js';
 import { getLocalStorage, setLocalStroage } from '../common/localStorage.js';
 import Model from '../Model/model.js';
@@ -20,12 +21,14 @@ export default class View {
 
     if (storage === null) {
       setLocalStroage(LOCALSTORAGE.ITEM, this.Model.menu);
+
     }
     this.render(CATEGORIES.ESPRESSO.EN);
   }
 
   render(category) {
     const storage = getLocalStorage(LOCALSTORAGE.ITEM);
+
 
     if (storage === null) {
       return;

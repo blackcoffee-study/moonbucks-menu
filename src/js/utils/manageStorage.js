@@ -1,9 +1,11 @@
+import { store } from "../store/store.js";
+
 const storage = {
 	setLocalStorage(menu) {
-		localStorage.setItem("menu", JSON.stringify(menu));
+		localStorage.setItem(menu, JSON.stringify(store[menu]))	;
 	},
-	getLocalStorage() {
-		return JSON.parse(localStorage.getItem("menu"));
+	getLocalStorage(menu) {
+		return JSON.parse(localStorage.getItem(menu));
 	},
 };
 

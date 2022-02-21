@@ -1,13 +1,10 @@
 import { LOCALSTORAGE } from '../constants/constants.js';
 import { $ } from '../common/DOM.js';
 import { getLocalStorage } from '../common/localStorage.js';
-import Model from '../Model/model.js';
 import { menuListTemplate } from '../common/template.js';
 
 export default class View {
   constructor() {
-    this.Model = new Model();
-
     this.$ = {
       menuList: $('#menu-list'),
     };

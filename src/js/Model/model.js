@@ -106,10 +106,6 @@ export default class Model {
   itemSoldOut(target) {
     const menuItem = target.closest('li').children[0];
 
-    if (menuItem.classList.contains('sold-out')) {
-      menuItem.classList.remove('sold-out');
-    } else {
-      menuItem.classList.add('sold-out');
-    }
+    menuItem.classList.toggle('sold-out');
   }
 }

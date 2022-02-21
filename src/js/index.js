@@ -1,6 +1,4 @@
-const $ = (selector) => {
-  return document.querySelector(selector);
-};
+import { $, MESSAGE } from "./consts.js";
 
 function App() {
   const $menuForm = $("#espresso-menu-form");
@@ -81,14 +79,14 @@ function App() {
   const render = () => {
     if (this.menuItemInfoList[this.currentCategory]) {
       $menuList.innerHTML = this.menuItemInfoList[this.currentCategory]
-        .map((item, index) => template(item, index))
+        .map((item, index) => menuItemTemplate(item, index))
         .join("");
       updateMenuCount();
       initMenuNameInput();
     }
   };
 
-  const template = (item, index) => {
+  const menuItemTemplate = (item, index) => {
     return `<li data-id="${index}" class="menu-list-item  d-flex items-center py-2">
               <span class="${
                 item.soldOut ? "sold-out" : ""
@@ -113,6 +111,7 @@ function App() {
               </button>
           </li>`;
   };
+
   const initMenuNameInput = () => {
     $menuNameInput.value = "";
     $menuNameInput.focus();
@@ -139,12 +138,12 @@ function App() {
 
   const addMenuItem = () => {
     if (isReduplicatedMenuName($menuNameInput.value)) {
-      alert("이미 동일한 메뉴명이 있습니다.");
+      alert(MESSAGE.ALREADY_EXIST);
       initMenuNameInput();
       return;
     }
     if ($menuNameInput.value.trim() === "") {
-      alert("메뉴명을 입력해주세요.");
+      alert(MESSAGE.WARN_BLANK);
       initMenuNameInput();
       return;
     }
@@ -161,14 +160,14 @@ function App() {
     const $listItem = e.target.closest("li");
     const $menuName = $listItem.querySelector(".menu-name");
     const newMenuName = prompt(
-      "수정할 메뉴명을 적어주세요.",
+      MESSAGE.CHECK_MODIFY,
       $menuName.textContent
-    );
+    ).trim();
 
     if (isReduplicatedMenuName(newMenuName)) {
-      alert("이미 동일한 메뉴명이 있습니다.");
+      alert(MESSAGE.ALREADY_EXIST);
     } else if (newMenuName === "") {
-      alert("메뉴명을 입력해주세요.");
+      alert(MESSAGE.WARN_BLANK);
     } else if (newMenuName !== null) {
       this.menuItemInfoList[this.currentCategory][
         $listItem.dataset.id
@@ -179,7 +178,7 @@ function App() {
 
   const removeMenuItem = (e) => {
     const $listItem = e.target.closest("li");
-    if (confirm("해당 메뉴를 삭제하시겠습니까?")) {
+    if (confirm(MESSAGE.CHECK_REMOVE)) {
       this.menuItemInfoList[this.currentCategory].splice(
         $listItem.dataset.id,
         1

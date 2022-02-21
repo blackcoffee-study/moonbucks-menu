@@ -16,8 +16,14 @@ class EspressoView  {
   showEspressoMenu(espressoMenuList) {
     this.espressoMenuListElement.innerHTML = "";
     espressoMenuList
-      .map((espressoMenu) => this.template.menuAddTemplate(espressoMenu))
+      .map((espressoMenu) => this.template.menuAddTemplate(espressoMenu.name))
       .map((espressoMenuTemplate) => this.espressoMenuListElement.append(espressoMenuTemplate));
+    const menuNameList = qsAll('.menu-name');
+    for (let i = 0; i < espressoMenuList.length; i++) {
+      espressoMenuList[i].soldout === true
+      ? menuNameList[i].classList.add('sold-out')
+      : menuNameList[i].classList.remove('sold-out')
+    }
   }
 
   bindEvent() {
@@ -43,13 +49,15 @@ class EspressoView  {
       this.editEspressoMenu(target);
     } else if (target.classList.contains('menu-remove-button')) {
       this.removeEspressoMenu(target);
+    } else if (target.classList.contains('menu-sold-out-button')) {
+      this.soldoutEspressoMenu(target);
     }
   }
 
   removeEspressoMenu(target) {
     if (confirm('삭제하시겠습니까?')) {
       const value = [...target.closest('li').childNodes].find((espressoMenu) => espressoMenu.className).textContent;
-      emit(this.espressoMenuListElement, "@removeEspressoMenu", value);
+      emit(this.espressoMenuListElement, '@removeEspressoMenu', value);
       target.closest('li').remove();
     }
   }
@@ -57,7 +65,12 @@ class EspressoView  {
   editEspressoMenu(target) {
     const editEspressoMenuName = prompt('메뉴 이름을 입력해주세요');
     const value = [...target.closest('li').childNodes].find((espressoMenu) => espressoMenu.className).textContent;
-    editEspressoMenuName && emit(this.espressoMenuListElement, "@editEspressoMenu", [value, editEspressoMenuName]);
+    editEspressoMenuName && emit(this.espressoMenuListElement, '@editEspressoMenu', [value, editEspressoMenuName]);
+  }
+
+  soldoutEspressoMenu(target) {
+    const value = [...target.closest('li').childNodes].find((espressoMenu) => espressoMenu.className).textContent;
+    emit(this.espressoMenuListElement, '@soldoutEspressoMenu', value);
   }
 }
 
@@ -69,6 +82,12 @@ class Template {
     fragment.innerHTML = `
       <li class="menu-list-item d-flex items-center py-2">
         <span class="w-100 pl-2 menu-name">${menuName}</span>
+        <button
+          type="button"
+          class="bg-gray-50 text-gray-500 text-sm mr-1 menu-sold-out-button"
+        >
+          품절
+        </button>
         <button
           type="button"
           class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
@@ -86,4 +105,5 @@ class Template {
 
     return fragment;
   }
+
 }

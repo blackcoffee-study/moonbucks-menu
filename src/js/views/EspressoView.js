@@ -1,40 +1,41 @@
-import { qs, on } from '../helper.js';
-import View from './View.js';
-
-class EspressoView extends View {
+import { qs, on, emit, qsAll } from '../helper.js';
+class EspressoView  {
   constructor() {
-    super(qs('#app'));
-    this.espressoMenuList = [];
-
     this.template = new Template();
 
     this.espressoForm = qs('#espresso-menu-form');
     this.espressoInput = qs('.input-field');
     this.espressoSubmitButton = qs('.input-submit');
-    this.espressoMeueList = qs('#espresso-menu-list');
+    this.espressoMenuListElement = qs('#espresso-menu-list');
     this.espressoMenuCountText = qs('.menu-count');
 
     this.bindEvent();
+
+  }
+
+  showEspressoMenu(espressoMenuList) {
+    this.espressoMenuListElement.innerHTML = "";
+    espressoMenuList
+      .map((espressoMenu) => this.template.menuAddTemplate(espressoMenu))
+      .map((espressoMenuTemplate) => this.espressoMenuListElement.append(espressoMenuTemplate));
   }
 
   bindEvent() {
     on(this.espressoForm, 'submit', (event) => this.addEspressoMenu(event));
     on(this.espressoSubmitButton, 'click', (event) => this.addEspressoMenu(event));
-    on(this.espressoMeueList, 'click', ({ target }) => this.handleEspressoMenuEvent(target));
+    on(this.espressoMenuListElement, 'click', ({ target }) => this.handleEspressoMenuEvent(target));
   }
 
   addEspressoMenu(event) {
     event.preventDefault();
-    if (this.espressoInput.value !== '') {
-      this.espressoMenuList.push(this.espressoInput.value);
-      this.espressoMeueList.append(this.template.menuAddTemplate(this.espressoInput.value));
-      this.espressoMenuCount();
-    }
+    const value = this.espressoInput.value;
+    emit(this.espressoForm, '@addEspressoMenu', value);
     this.espressoInput.value = '';
   }
 
   espressoMenuCount() {
-    this.espressoMenuCountText.textContent = `총 ${this.espressoMenuList.length}개`;
+    const espressoMenuList = qsAll('.menu-list-item');
+    this.espressoMenuCountText.textContent = `총 ${espressoMenuList.length}개`;
   }
 
   handleEspressoMenuEvent(target) {
@@ -47,22 +48,16 @@ class EspressoView extends View {
 
   removeEspressoMenu(target) {
     if (confirm('삭제하시겠습니까?')) {
+      const value = [...target.closest('li').childNodes].find((espressoMenu) => espressoMenu.className).textContent;
+      emit(this.espressoMenuListElement, "@removeEspressoMenu", value);
       target.closest('li').remove();
-      this.espressoMenuList = this.espressoMenuList
-        .filter((espressoMenu) => espressoMenu !== target.previousElementSibling.previousElementSibling.textContent);
-      this.espressoMenuCount();
     }
   }
 
   editEspressoMenu(target) {
     const editEspressoMenuName = prompt('메뉴 이름을 입력해주세요');
-    this.espressoMenuList
-      .find((espressoMenu, index) => {
-        espressoMenu === target.previousElementSibling.textContent 
-        ? this.espressoMenuList[index] = editEspressoMenuName 
-        : null
-      });
-    target.previousElementSibling.textContent = editEspressoMenuName;
+    const value = [...target.closest('li').childNodes].find((espressoMenu) => espressoMenu.className).textContent;
+    editEspressoMenuName && emit(this.espressoMenuListElement, "@editEspressoMenu", [value, editEspressoMenuName]);
   }
 }
 

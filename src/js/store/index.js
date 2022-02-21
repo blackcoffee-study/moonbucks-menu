@@ -1,72 +1,79 @@
-import { ACTION, CATEGORY } from '../const/index.js';
+import MenuList from '../components/MenuList.js';
+import { CATEGORY, CATEGORY_LABEL } from '../const/index.js';
+import menuTrigger from '../trigger/menuTrigger.js';
+import tabTrigger from '../trigger/tabTrigger.js';
+import Tab from '../components/Tab.js';
+import MenuForm from '../components/MenuForm.js';
+import MenuHeader from '../components/MenuHeader.js';
 
-export const store = {
-  [CATEGORY.ESPRESSO]: new Map(),
+const storeCreator = (triggerCoupler, renderer) => (state) => {
+  const trigger = triggerCoupler(renderer);
+
+  const dispatch = ({ type, payload }) => {
+    trigger[type] && trigger[type](state, payload);
+  };
+
+  return {
+    dispatch,
+    state,
+  };
 };
 
-const addMenu = (state, payload) => {
-  const id = `${Date.now()}`;
-  state.set(id, {
-    id,
-    ...payload,
-  });
+const menuStoreCreator = (
+  (storeCreatorCurry) => (trigger, renderer) =>
+    Object.values(CATEGORY).reduce((store, menu) => {
+      const creator = storeCreatorCurry(trigger, renderer);
+
+      store[menu] = creator(new Map());
+
+      return store;
+    }, {})
+)(storeCreator);
+
+const tabStoreCreator = ((storeCreatorCurry) => (trigger, renderer) => {
+  const creator = storeCreatorCurry(trigger, renderer);
+
+  const tabMap = new Map();
+
+  const initialCurrentTab = {
+    name: CATEGORY.ESPRESSO,
+    label: CATEGORY_LABEL[CATEGORY.ESPRESSO],
+  };
+
+  const initialTabs = Object.values(CATEGORY).map((tab) => ({
+    label: CATEGORY_LABEL[tab],
+    name: tab,
+  }));
+
+  tabMap.set('currentTab', initialCurrentTab);
+  tabMap.set('tabs', initialTabs);
+
+  return creator(tabMap);
+})(storeCreator);
+
+const menuStore = menuStoreCreator(menuTrigger);
+
+const tabStore = tabStoreCreator(tabTrigger);
+
+let _renderer = null;
+export const currentStore = (renderer) => {
+  const { name, label } = tabStore.state.get('currentTab');
+  _renderer = renderer ? renderer : _renderer;
+  return {
+    categoryName: name,
+    categoryLabel: label,
+    menuCommonStore: menuStore,
+    menuStore: menuStore[name],
+    tabStore,
+    renderer: _renderer,
+  };
 };
-const editMenu = (state, { id, ...rest }) => {
-  const oldValue = state.get(id);
-  state.set(id, {
-    ...oldValue,
-    ...rest,
-  });
+
+export const rendererStore = () => {
+  return {
+    header: MenuHeader().renderer,
+    form: MenuForm().renderer,
+    list: MenuList().renderer,
+    tab: Tab().renderer,
+  };
 };
-const removeMenu = (state, { id }) => state.has(id) && state.delete(id);
-
-const getMenus = (state) => [...state.values()];
-const getMenuById = (state, { id }) => state.get(id);
-const getSize = (state) => state.size;
-const hasMenuById = (state, { id }) => state.has(id);
-const hasMenuByName = (state, { name }) =>
-  getMenus(state).some(({ name: _n }) => _n === name);
-
-const menuRendererState = (state) => ({
-  menus: getMenus(state),
-  size: getSize(state),
-});
-
-const triggerCoupler = (renderer) => ({
-  [ACTION.ADD_MENU](state, payload) {
-    addMenu(state, payload);
-    renderer(menuRendererState(state));
-  },
-  [ACTION.EDIT_MENU](state, payload) {
-    editMenu(state, payload);
-    renderer(menuRendererState(state));
-  },
-  [ACTION.REMOVE_MENU](state, payload) {
-    removeMenu(state, payload);
-    renderer(menuRendererState(state));
-  },
-  [ACTION.GET_MENUS](state) {
-    return getMenus(state);
-  },
-  [ACTION.GET_MENU_BY_ID](state, payload) {
-    return getMenuById(state, payload);
-  },
-  [ACTION.GET_SIZE](state) {
-    return getSize(state);
-  },
-  [ACTION.HAS_MENU_BY_ID](state, payload) {
-    return hasMenuById(state, payload);
-  },
-  [ACTION.HAS_MENU_BY_NAME](state, payload) {
-    return hasMenuByName(state, payload);
-  },
-});
-
-export const storeHandler = (
-  (triggerCoupler) =>
-  (state, renderer) =>
-  (action, payload = null) => {
-    const trigger = triggerCoupler(renderer);
-    return trigger[action](state, payload);
-  }
-)(triggerCoupler);

@@ -1,10 +1,4 @@
-import {
-  PROMPT,
-  ALERT,
-  CONFIRM,
-  KEY,
-  CATEGORIES,
-} from '../constants/constants.js';
+import { KEY, CATEGORIES } from '../constants/constants.js';
 import { $ } from '../common/DOM.js';
 import { getLocalStorage, setLocalStroage } from '../common/localStorage.js';
 import { LOCALSTORAGE } from '../constants/constants.js';
@@ -18,90 +12,32 @@ export default class Controller {
       nav: $('nav'),
       menuForm: $('#menu-form'),
       submitBtn: $('#menu-submit-button'),
-      menuManange: $('ul'),
       menuTitle: $('#category-title'),
       menuList: $('#menu-list'),
       menuCount: $('.menu-count'),
       menuInput: $('#menu-name'),
+      menuManange: $('ul'),
     };
 
     this.currentCategory = CATEGORIES.ESPRESSO.EN;
   }
 
-  isValidInput(category, value) {
+  initApp() {
     const storage = getLocalStorage(LOCALSTORAGE.ITEM);
-    this.Model.menu = storage;
 
-    if (value.length === 0) {
-      window.alert(ALERT.EMPTY);
-      return;
-    }
-    if (value.trim().length === 0) {
-      window.alert(ALERT.BLANK);
-      return;
-    }
-    if (this.Model.menu[category].includes(value)) {
-      window.alert(ALERT.DUPLICATED);
-      return;
-    }
-
-    return true;
-  }
-
-  deleteListItem(target, count, category) {
-    const storage = getLocalStorage(LOCALSTORAGE.ITEM);
-    const name = target.parentNode.children[0].textContent;
-    const index = storage[category].indexOf(name);
-
-    this.Model.menu = storage;
-
-    if (window.confirm(CONFIRM.DELETE)) {
-      this.Model.menu[category].splice(index, 1);
-      setLocalStroage(LOCALSTORAGE.ITEM, this.Model.menu);
-      this.$.menuManange.removeChild(target.parentNode);
-    }
-
-    this.Model.updateMenuCount(count, category);
-  }
-
-  editMenuList(target, category) {
-    this.Model.menu = getLocalStorage(LOCALSTORAGE.ITEM);
-
-    const menuItem = target.closest('li').children[0];
-    const name = menuItem.textContent;
-    const index = this.Model.menu[category].indexOf(name);
-    let editedItemName = window.prompt(PROMPT.RENAME);
-
-    if (editedItemName) {
-      menuItem.textContent = editedItemName;
-      this.Model.menu[category].splice(index, 1, editedItemName);
+    if (storage === null) {
       setLocalStroage(LOCALSTORAGE.ITEM, this.Model.menu);
     }
-
-    if (!editedItemName) {
-      alert(ALERT.RENAME);
-    }
+    this.View.render(CATEGORIES.ESPRESSO.EN);
+    this.View.clearInputValue(this.$.menuInput);
+    this.View.updateMenuCount(this.$.menuCount, this.currentCategory);
   }
 
-  updateStorage(category) {
-    this.storeMenusItems(category, this.Model.getInputValue(this.$.menuInput));
-  }
-
-  storeMenusItems(category, inputValue) {
-    if (this.isValidInput(category, inputValue)) {
-      this.Model.menu[category].push(inputValue);
-
-      const exisiingEntries = getLocalStorage(LOCALSTORAGE.ITEM);
-
-      if (exisiingEntries !== null) {
-        exisiingEntries[category].push(inputValue);
-        setLocalStroage(LOCALSTORAGE.ITEM, exisiingEntries);
-      }
-
-      if (exisiingEntries === null) {
-        setLocalStroage(LOCALSTORAGE.ITEM, this.Model.menu);
-      }
-    }
+  // 메소드명 수정 필요 ?
+  updateApp(input, count, category) {
+    this.View.render(category);
+    this.View.clearInputValue(input);
+    this.View.updateMenuCount(count, category);
   }
 
   bindEvent() {
@@ -111,10 +47,14 @@ export default class Controller {
 
     this.$.menuInput.addEventListener('keyup', ({ key }) => {
       if (key === KEY.ENTER) {
-        this.updateStorage(this.currentCategory);
+        this.Model.updateStorage(this.currentCategory);
 
         if (this.$.menuList.dataset.categoryName === this.currentCategory) {
-          this.View.render(this.currentCategory);
+          this.updateApp(
+            this.$.menuInput,
+            this.$.menuCount,
+            this.currentCategory
+          );
         }
       }
     });
@@ -127,27 +67,36 @@ export default class Controller {
 
         this.$.menuList.dataset.categoryName = this.currentCategory;
 
-        this.View.render(this.currentCategory);
+        this.updateApp(
+          this.$.menuInput,
+          this.$.menuCount,
+          this.currentCategory
+        );
       }
     });
 
     this.$.submitBtn.addEventListener('click', () => {
-      this.updateStorage(this.currentCategory);
+      this.Model.updateStorage(this.currentCategory);
 
       if (this.$.menuList.dataset.categoryName === this.currentCategory) {
-        this.View.render(this.currentCategory);
+        this.updateApp(
+          this.$.menuInput,
+          this.$.menuCount,
+          this.currentCategory
+        );
       }
     });
 
     this.$.menuManange.addEventListener('click', ({ target }) => {
       if (target.classList.contains('menu-edit-button')) {
-        this.editMenuList(target, this.currentCategory);
+        this.Model.editMenuList(target, this.currentCategory);
       }
       if (target.classList.contains('menu-sold-out-button')) {
         this.Model.itemSoldOut(target);
       }
       if (target.classList.contains('menu-remove-button')) {
-        this.deleteListItem(target, this.$.menuCount, this.currentCategory);
+        this.Model.deleteListItem(target, this.currentCategory);
+        this.View.updateMenuCount(this.$.menuCount, this.currentCategory);
       }
     });
   }

@@ -1,78 +1,54 @@
-import {
-  qsCurry,
-  innerText,
-  inputWrapper,
-  targetElementWrapper,
-} from './utils/dom.js';
-import { store, storeHandler } from './store/index.js';
-import { ACTION, CATEGORY, MESSAGE, SELECTOR } from './const/index.js';
-import MenuRenderer from './render/MenuRenderer.js';
+import { currentStore } from './store/index.js';
+import MenuList from './components/MenuList.js';
+import Tab from './components/Tab.js';
+import * as Action from './action/index.js';
+import * as Api from './api/query/index.js';
+import MenuHeader from './components/MenuHeader.js';
+import MenuForm from './components/MenuForm.js';
+import { CATEGORY } from './const/index.js';
 
 const App = () => {
-  const $ = qsCurry();
-  const $form = $(SELECTOR.FORM);
-  const $menuList = $(SELECTOR.MENU_LIST);
-  const $inputMenu = $(SELECTOR.INPUT_MENU);
-  const $count = $(SELECTOR.COUNT);
+  const initTab = () => {
+    const currentTab = Api.getCurrentTab();
+    const { tabStore } = currentStore();
 
-  const menuRenderer = MenuRenderer($menuList, $count);
-
-  const espressoMenuStore = storeHandler(
-    store[CATEGORY.ESPRESSO],
-    menuRenderer
-  );
-
-  const handleSubmit = (event, $input) => {
-    event.preventDefault();
-    const { value, reset, focus } = inputWrapper($input);
-
-    if (!value) {
-      alert(MESSAGE.PLZ_INSERT_MENU);
-      return;
-    }
-
-    if (espressoMenuStore(ACTION.HAS_MENU_BY_NAME, { name: value })) {
-      alert(MESSAGE.ALERT_ALREADY_ADDED_MENU);
-      reset();
-      return;
-    }
-
-    espressoMenuStore(ACTION.ADD_MENU, { name: value });
-    reset();
-    focus();
+    tabStore.dispatch(Action.addTabs(Api.getTabs().data));
+    tabStore.dispatch(Action.toggleTab(currentTab));
   };
 
-  const handleClick = (event, trigger) => {
-    const target = targetElementWrapper(event.target);
-    const mode = target.dataset('mode');
-    mode && trigger[mode](target.closest(SELECTOR.MENU_ITEM));
+  const initMenu = () => {
+    const { menuStore, menuCommonStore } = currentStore();
+
+    menuStore.dispatch(
+      Action.addMenus({
+        store: menuCommonStore,
+        data: Api.getMenus({
+          pathParams: {
+            categoryName: Object.values(CATEGORY).join(','),
+          },
+        }),
+      })
+    );
   };
 
-  const editMenu = ($menu) => {
-    const id = $menu.id;
-    const oldName = innerText(SELECTOR.MENU_NAME);
-    const newName = prompt(MESSAGE.PLZ_INSERT_MENU, oldName);
+  const initRender = () => {
+    const { renderer } = currentStore({
+      header: MenuHeader().renderer,
+      form: MenuForm().renderer,
+      list: MenuList().renderer,
+      tab: Tab().renderer,
+    });
 
-    espressoMenuStore(ACTION.EDIT_MENU, { id, name: newName });
+    Object.values(renderer).forEach((rd) => rd());
   };
 
-  const removeMenu = ($menu) => {
-    const id = $menu.id;
-    if (!espressoMenuStore(ACTION.HAS_MENU_BY_ID, { id })) return;
-
-    const { name } = espressoMenuStore(ACTION.GET_MENU_BY_ID, { id });
-    if (confirm(`${name}${MESSAGE.CONFIRM_REMOVE_MENU}`)) {
-      espressoMenuStore(ACTION.REMOVE_MENU, { id });
-    }
+  const init = () => {
+    initTab();
+    initMenu();
+    initRender();
   };
 
-  const trigger = {
-    edit: editMenu,
-    remove: removeMenu,
-  };
-
-  $form.addEventListener('submit', (event) => handleSubmit(event, $inputMenu));
-  $menuList.addEventListener('click', (event) => handleClick(event, trigger));
+  init();
 };
 
 window.requestAnimationFrame(App);

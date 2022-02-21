@@ -12,13 +12,13 @@ class MainModel {
   }
 
   removeEspressoMenu(espressoMenuName, categoryName) {
-    const removeEspressoMenuList = this.getEspressoMenu()
+    const removeEspressoMenuList = this.getEspressoMenu(categoryName)
       .filter((espressoMenu) => espressoMenu.name !== espressoMenuName);
     localStorage.setItem(`${categoryName}`, JSON.stringify([...removeEspressoMenuList]));
   }
 
   editEspressoMenu(editEspressoMenuInfo, categoryName) {
-    const editEspressoMenu = this.getEspressoMenu()
+    const editEspressoMenu = this.getEspressoMenu(categoryName)
       .map((espressoMenu) => espressoMenu.name === editEspressoMenuInfo[0] 
         ? {name: espressoMenu.name = editEspressoMenuInfo[1], soldout: espressoMenu.soldout} 
         : espressoMenu);
@@ -26,7 +26,7 @@ class MainModel {
   }
 
   soldoutEspressMenu(espressoMenuName, categoryName) {
-    const soldoutEspressMenu = this.getEspressoMenu()
+    const soldoutEspressMenu = this.getEspressoMenu(categoryName)
       .map((espressoMenu) => espressoMenu.name === espressoMenuName 
       ? espressoMenu.soldout
         ? {name: espressoMenu.name, soldout: espressoMenu.soldout = false}

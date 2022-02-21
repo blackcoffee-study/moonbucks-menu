@@ -89,11 +89,10 @@ const MenuForm = () => {
     focus();
   };
 
-  const { $input, $button } = createElement(handleSubmit);
-
   $form.addEventListener('submit', handleSubmit);
 
   const renderer = () => {
+    const { $input, $button } = createElement(handleSubmit);
     const { categoryName } = currentStore();
     $form.innerHTML = menuFormHtml(categoryName, $input, $button);
   };

@@ -1,60 +1,60 @@
 import { on } from "../helper.js";
 
 class MainController {
-  constructor(mainModel, { menuView, espressoView }) {
+  constructor(mainModel, { categoryView, menuView }) {
     this.mainModel = mainModel;
+    this.categoryView = categoryView;
     this.menuView = menuView;
-    this.espressoView = espressoView;
 
     this.categoryName = 'espresso';
 
-    this.showEspressoMenu();
+    this.showMenu();
 
     this.submitMenuEvent();
   
     this.submitViewEvent();
   }
 
-  showEspressoMenu() {
-    this.espressoMenuList = this.mainModel.getEspressoMenu(this.categoryName);
-    this.espressoView.showEspressoMenu(this.espressoMenuList);
-    this.espressoView.espressoMenuCount();
+  showMenu() {
+    this.menuList = this.mainModel.getMenuList(this.categoryName);
+    this.menuView.showMenuList(this.menuList);
+    this.menuView.menuCount();
   }
 
   submitMenuEvent() {
-    on(this.menuView.menuListElement, '@menuClick', (event) => this.submitMenuClick(event));
+    on(this.categoryView.menuListElement, '@menuClick', (event) => this.submitMenuClick(event));
   }
 
   submitViewEvent() {
-    on(this.espressoView.espressoForm, '@addEspressoMenu', (event) => this.submitAddEspressMenu(event));
-    on(this.espressoView.espressoMenuListElement, '@editEspressoMenu', (event) => this.submitEditEspressMenu(event));
-    on(this.espressoView.espressoMenuListElement, '@removeEspressoMenu', (event) => this.submitRemoveEspressMenu(event));
-    on(this.espressoView.espressoMenuListElement, '@soldoutEspressoMenu', (event) => this.submitSoldoutEspressMenu(event));
+    on(this.menuView.menuForm, '@addMenu', (event) => this.submitAddMenu(event));
+    on(this.menuView.menuListElement, '@editMenu', (event) => this.submitEditMenu(event));
+    on(this.menuView.menuListElement, '@removeMenu', (event) => this.submitRemoveMenu(event));
+    on(this.menuView.menuListElement, '@soldoutMenu', (event) => this.submitSoldoutMenu(event));
   }
 
   submitMenuClick(event) {
     this.categoryName = event.detail;
-    this.showEspressoMenu();
+    this.showMenu();
   }
 
-  submitAddEspressMenu(event) {
-    this.mainModel.addEspressoMenu(event.detail, this.categoryName);
-    this.showEspressoMenu();
+  submitAddMenu(event) {
+    this.mainModel.setAddMenu(event.detail, this.categoryName);
+    this.showMenu();
   }
 
-  submitEditEspressMenu(event) {
-    this.mainModel.editEspressoMenu(event.detail, this.categoryName);
-    this.showEspressoMenu();
+  submitEditMenu(event) {
+    this.mainModel.setEditMenu(event.detail, this.categoryName);
+    this.showMenu();
   }
 
-  submitRemoveEspressMenu(event) {
-    this.mainModel.removeEspressoMenu(event.detail, this.categoryName);
-    this.showEspressoMenu();
+  submitRemoveMenu(event) {
+    this.mainModel.setRemoveMenu(event.detail, this.categoryName);
+    this.showMenu();
   }
 
-  submitSoldoutEspressMenu(event) {
-    this.mainModel.soldoutEspressMenu(event.detail, this.categoryName);
-    this.showEspressoMenu();
+  submitSoldoutMenu(event) {
+    this.mainModel.setSoldoutMenu(event.detail, this.categoryName);
+    this.showMenu();
   }
 
 }

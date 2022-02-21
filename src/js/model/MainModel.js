@@ -1,38 +1,38 @@
 class MainModel {
 
-  getEspressoMenu(categoryName) {
+  getMenuList(categoryName) {
     return JSON.parse(localStorage.getItem(categoryName));
   }
 
-  addEspressoMenu(espressoMenuName, categoryName) {
-    const prevEspressoMenuList = this.getEspressoMenu(categoryName);
-    prevEspressoMenuList 
-    ? localStorage.setItem(categoryName, JSON.stringify([{name: espressoMenuName, soldout: false}, ...prevEspressoMenuList]))
-    : localStorage.setItem(categoryName, JSON.stringify([{name: espressoMenuName, soldout: false}]))
+  setAddMenu(menuName, categoryName) {
+    const prevMenuList = this.getMenuList(categoryName);
+    prevMenuList 
+    ? localStorage.setItem(categoryName, JSON.stringify([{name: menuName, soldout: false}, ...prevMenuList]))
+    : localStorage.setItem(categoryName, JSON.stringify([{name: menuName, soldout: false}]))
   }
 
-  removeEspressoMenu(espressoMenuName, categoryName) {
-    const removeEspressoMenuList = this.getEspressoMenu(categoryName)
-      .filter((espressoMenu) => espressoMenu.name !== espressoMenuName);
-    localStorage.setItem(categoryName, JSON.stringify([...removeEspressoMenuList]));
+  setRemoveMenu(menuName, categoryName) {
+    const removeMenu = this.getMenuList(categoryName)
+      .filter((menu) => menu.name !== menuName);
+    localStorage.setItem(categoryName, JSON.stringify([...removeMenu]));
   }
 
-  editEspressoMenu(editEspressoMenuInfo, categoryName) {
-    const editEspressoMenu = this.getEspressoMenu(categoryName)
-      .map((espressoMenu) => espressoMenu.name === editEspressoMenuInfo[0] 
-        ? {name: espressoMenu.name = editEspressoMenuInfo[1], soldout: espressoMenu.soldout} 
-        : espressoMenu);
-    localStorage.setItem(categoryName, JSON.stringify([...editEspressoMenu]));
+  setEditMenu(menuInfo, categoryName) {
+    const editMenu = this.getMenuList(categoryName)
+      .map((menu) => menu.name === menuInfo[0] 
+        ? {name: menu.name = menuInfo[1], soldout: menu.soldout} 
+        : menu);
+    localStorage.setItem(categoryName, JSON.stringify([...editMenu]));
   }
 
-  soldoutEspressMenu(espressoMenuName, categoryName) {
-    const soldoutEspressMenu = this.getEspressoMenu(categoryName)
-      .map((espressoMenu) => espressoMenu.name === espressoMenuName 
-      ? espressoMenu.soldout
-        ? {name: espressoMenu.name, soldout: espressoMenu.soldout = false}
-        : {name: espressoMenu.name, soldout: espressoMenu.soldout = true}
-      : espressoMenu);
-    localStorage.setItem(categoryName, JSON.stringify([...soldoutEspressMenu]));
+  setSoldoutMenu(menuName, categoryName) {
+    const soldoutMenu = this.getMenuList(categoryName)
+      .map((menu) => menu.name === menuName 
+      ? menu.soldout
+        ? {name: menu.name, soldout: menu.soldout = false}
+        : {name: menu.name, soldout: menu.soldout = true}
+      : menu);
+    localStorage.setItem(categoryName, JSON.stringify([...soldoutMenu]));
   }
 
 }

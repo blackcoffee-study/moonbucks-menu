@@ -15,15 +15,18 @@ class EspressoView  {
 
   showEspressoMenu(espressoMenuList) {
     this.espressoMenuListElement.innerHTML = "";
-    espressoMenuList
-      .map((espressoMenu) => this.template.menuAddTemplate(espressoMenu.name))
-      .map((espressoMenuTemplate) => this.espressoMenuListElement.append(espressoMenuTemplate));
-    const menuNameList = qsAll('.menu-name');
-    for (let i = 0; i < espressoMenuList.length; i++) {
-      espressoMenuList[i].soldout === true
-      ? menuNameList[i].classList.add('sold-out')
-      : menuNameList[i].classList.remove('sold-out')
+    if(espressoMenuList) {
+      espressoMenuList
+        .map((espressoMenu) => this.template.menuAddTemplate(espressoMenu.name))
+        .map((espressoMenuTemplate) => this.espressoMenuListElement.append(espressoMenuTemplate));
+      const menuNameList = qsAll('.menu-name');
+      for (let i = 0; i < espressoMenuList.length; i++) {
+        espressoMenuList[i].soldout === true
+        ? menuNameList[i].classList.add('sold-out')
+        : menuNameList[i].classList.remove('sold-out')
+      }
     }
+
   }
 
   bindEvent() {

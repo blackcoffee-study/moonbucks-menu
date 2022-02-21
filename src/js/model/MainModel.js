@@ -1,38 +1,38 @@
 class MainModel {
 
-  getEspressoMenu() {
-    return JSON.parse(localStorage.getItem("ESPRESSO"));
+  getEspressoMenu(categoryName) {
+    return JSON.parse(localStorage.getItem(`${categoryName}`));
   }
 
-  addEspressoMenu(espressoMenuName) {
-    const prevEspressoMenuList = this.getEspressoMenu();
+  addEspressoMenu(espressoMenuName, categoryName) {
+    const prevEspressoMenuList = this.getEspressoMenu(categoryName);
     prevEspressoMenuList 
-    ? localStorage.setItem("ESPRESSO", JSON.stringify([{name: espressoMenuName, soldout: false}, ...prevEspressoMenuList]))
-    : localStorage.setItem("ESPRESSO", JSON.stringify([{name: espressoMenuName, soldout: false}]))
+    ? localStorage.setItem(`${categoryName}`, JSON.stringify([{name: espressoMenuName, soldout: false}, ...prevEspressoMenuList]))
+    : localStorage.setItem(`${categoryName}`, JSON.stringify([{name: espressoMenuName, soldout: false}]))
   }
 
-  removeEspressoMenu(espressoMenuName) {
+  removeEspressoMenu(espressoMenuName, categoryName) {
     const removeEspressoMenuList = this.getEspressoMenu()
       .filter((espressoMenu) => espressoMenu.name !== espressoMenuName);
-    localStorage.setItem("ESPRESSO", JSON.stringify([...removeEspressoMenuList]));
+    localStorage.setItem(`${categoryName}`, JSON.stringify([...removeEspressoMenuList]));
   }
 
-  editEspressoMenu(editEspressoMenuInfo) {
+  editEspressoMenu(editEspressoMenuInfo, categoryName) {
     const editEspressoMenu = this.getEspressoMenu()
       .map((espressoMenu) => espressoMenu.name === editEspressoMenuInfo[0] 
         ? {name: espressoMenu.name = editEspressoMenuInfo[1], soldout: espressoMenu.soldout} 
         : espressoMenu);
-    localStorage.setItem("ESPRESSO", JSON.stringify([...editEspressoMenu]));
+    localStorage.setItem(`${categoryName}`, JSON.stringify([...editEspressoMenu]));
   }
 
-  soldoutEspressMenu(espressoMenuName) {
+  soldoutEspressMenu(espressoMenuName, categoryName) {
     const soldoutEspressMenu = this.getEspressoMenu()
       .map((espressoMenu) => espressoMenu.name === espressoMenuName 
       ? espressoMenu.soldout
         ? {name: espressoMenu.name, soldout: espressoMenu.soldout = false}
         : {name: espressoMenu.name, soldout: espressoMenu.soldout = true}
       : espressoMenu);
-    localStorage.setItem("ESPRESSO", JSON.stringify([...soldoutEspressMenu]));
+    localStorage.setItem(`${categoryName}`, JSON.stringify([...soldoutEspressMenu]));
   }
 
 }

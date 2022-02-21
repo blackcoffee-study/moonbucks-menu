@@ -30,8 +30,8 @@
       const menu_list = JSON.parse(localStorage.getItem(`${this.menu_type}`));
       createMenuList(menu_list);
     },
-    setMenuItem(list) {
-      this[this.menu_type] = [...list];
+    setMenuItem() {
+      localStorage.setItem(`${this.menu_type}`, JSON.stringify(this[this.menu_type]));
     },
     setMenuType(type) {
       this.menu_type = type;
@@ -58,7 +58,7 @@
       if (field === 'value') {
         document.getElementById(id).firstChild.textContent = value;
       }
-      this.setMenuItem(this[this.menu_type]);
+      this.setMenuItem();
     },
     removeItem(id) {
       this[this.menu_type] = this[this.menu_type].filter(item => item.id !== id);

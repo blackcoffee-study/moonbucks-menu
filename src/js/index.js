@@ -135,7 +135,6 @@
     return $li;
   };
   const createMenuList = menu_type => {
-    // $espresso_menu_list.innerHTML = '';
     [...$espresso_menu_list.children].forEach(node => {
       $espresso_menu_list.removeChild(node);
     });

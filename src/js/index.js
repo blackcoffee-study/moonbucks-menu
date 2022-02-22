@@ -2,23 +2,6 @@ import { $ } from './utils/dom.js';
 import { REQUIRED_TEXT, UPDATE_NAME_INPUT_TEXT, DELETE_TEXT, CATEGORIES, DUPLICATED_ITEM_TEXT } from './constants/index.js';
 import { MenuApi } from './api/index.js';
 
-// TODO 서버요청
-// - [x] [링크](https://github.com/blackcoffee-study/moonbucks-menu-server)에 있는 웹 서버 저장소를 clone하여 로컬에서 웹 서버를 실행시킨다.
-// - [x] 웹 서버를 띄운다.
-// - [x] 서버에 새로운 메뉴를 추가할 수 있도록 요청한다.
-// - [x] 서버에 전체 메뉴리스트를 요청한다.
-// - [x] 서버에 특정메뉴이름 수정을 요청한다.
-// - [x] 서버에 특정메뉴 품절상태를 토글될수 있도록 요청한다.
-// - [x] 서버에 특정메뉴 삭제를 요청한다.
-
-// TODO 리팩토링
-// - [x] localStorage에 저장하는 로직은 지운다.
-// - [x] fetch 비동기 api를 사용하는 부분을 async await을 사용하여 구현한다.
-
-// TODO 사용자 경험
-// - [x] API 통신이 실패하는 경우에 대해 사용자가 알 수 있게 [alert](https://developer.mozilla.org/ko/docs/Web/API/Window/alert)으로 예외처리를 진행한다.
-// - [ ] 중복되는 메뉴는 추가할 수 없다.
-
 function App() {
   this.menu = {};
   for (const key in CATEGORIES) {

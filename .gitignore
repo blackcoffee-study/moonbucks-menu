@@ -102,3 +102,23 @@ dist
 
 # TernJS port file
 .tern-port
+cypress/integration/1-getting-started/todo.spec.js
+cypress/integration/2-advanced-examples/actions.spec.js
+cypress/integration/2-advanced-examples/aliasing.spec.js
+cypress/integration/2-advanced-examples/assertions.spec.js
+cypress/integration/2-advanced-examples/connectors.spec.js
+cypress/integration/2-advanced-examples/cookies.spec.js
+cypress/integration/2-advanced-examples/cypress_api.spec.js
+cypress/integration/2-advanced-examples/files.spec.js
+cypress/integration/2-advanced-examples/local_storage.spec.js
+cypress/integration/2-advanced-examples/location.spec.js
+cypress/integration/2-advanced-examples/misc.spec.js
+cypress/integration/2-advanced-examples/navigation.spec.js
+cypress/integration/2-advanced-examples/network_requests.spec.js
+cypress/integration/2-advanced-examples/querying.spec.js
+cypress/integration/2-advanced-examples/spies_stubs_clocks.spec.js
+cypress/integration/2-advanced-examples/traversal.spec.js
+cypress/integration/2-advanced-examples/utilities.spec.js
+cypress/integration/2-advanced-examples/viewport.spec.js
+cypress/integration/2-advanced-examples/waiting.spec.js
+cypress/integration/2-advanced-examples/window.spec.js

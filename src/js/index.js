@@ -5,7 +5,7 @@ import { REQUIRED_TEXT, UPDATE_NAME_INPUT_TEXT, DELETE_TEXT, CATEGORIES } from '
 function App() {
   this.menu = {};
   for (const key in CATEGORIES) {
-    this.menu[key] = [];
+    this.menu[CATEGORIES[key]] = [];
   }
   this.currentCategory = CATEGORIES.ESPRESSO;
   this.init = () => {
@@ -18,6 +18,7 @@ function App() {
   };
 
   const render = () => {
+    if (!this.menu[this.currentCategory]) return;
     const template = this.menu[this.currentCategory]
       .map((menuItem, index) => {
         return `<li data-menu-id="${index}" class="menu-list-item d-flex items-center py-2">

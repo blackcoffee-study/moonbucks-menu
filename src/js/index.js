@@ -3,13 +3,10 @@ import { store } from './store/index.js';
 import { REQUIRED_TEXT, UPDATE_NAME_INPUT_TEXT, DELETE_TEXT, CATEGORIES } from './constants/index.js';
 
 function App() {
-  this.menu = {
-    espresso: [],
-    frappuccino: [],
-    blended: [],
-    teavana: [],
-    desert: [],
-  };
+  this.menu = {};
+  for (const key in CATEGORIES) {
+    this.menu[key] = [];
+  }
   this.currentCategory = CATEGORIES.ESPRESSO;
   this.init = () => {
     $('#category-title').textContent = `${$('nav button').textContent} 메뉴 관리`;

@@ -8,4 +8,12 @@ export const CATEGORY_INFO = {
   dessert: '🍰 디저트',
 };
 
+export const CATEGORY_NAMES = [
+  'espresso',
+  'frappuccino',
+  'blended',
+  'teavana',
+  'dessert',
+];
+
 export const MENU_STORAGE_KEY = 'menus';

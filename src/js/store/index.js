@@ -1,5 +1,8 @@
 import { LOCAL_STORAGE_KEY_MENU } from '../constants/index.js';
 
+/**
+ * @deprecated
+ */
 export const store = {
   setLocalStorage(menu) {
     localStorage.setItem(LOCAL_STORAGE_KEY_MENU, JSON.stringify(menu));

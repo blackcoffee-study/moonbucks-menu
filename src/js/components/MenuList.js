@@ -58,7 +58,6 @@ export default function MenuList({
 
       if (e.target.classList.contains('menu-edit-button')) {
         const editedMenu = prompt('수정할 메뉴 이름을 입력해주세요.');
-        // 취소했을 때 null에 대한 처리 추가하기
         if (editedMenu !== null && editedMenu !== '') {
           editMenu(e.target.closest('li').getAttribute('index'), editedMenu);
         }

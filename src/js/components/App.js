@@ -12,8 +12,6 @@ export default function App($app) {
   this.$target = $app;
 
   if (getLocalStorageData(MENU_STORAGE_KEY) === []) {
-    this.state = getLocalStorageData(MENU_STORAGE_KEY);
-  } else {
     this.state = {
       currentCategory: DEFAULT_CATEGORY,
       espresso: [],
@@ -22,6 +20,8 @@ export default function App($app) {
       teavana: [],
       dessert: [],
     };
+  } else {
+    this.state = getLocalStorageData(MENU_STORAGE_KEY);
   }
 
   this.setState = (nextState) => {

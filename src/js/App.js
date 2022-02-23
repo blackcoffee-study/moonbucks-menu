@@ -19,8 +19,8 @@ export default class App extends Component {
         <main class="mt-10 d-flex justify-center">
           <div class="wrapper bg-white p-10">
             <div class="heading d-flex justify-between" data-component="menu-header"></div>
-            <form id="espresso-menu-form" data-component="menu-form"></form>
-            <ul id="espresso-menu-list" class="mt-3 pl-0" data-component="menu-list"></ul>
+            <form id="menu-form" data-component="menu-form"></form>
+            <ul id="menu-list" class="mt-3 pl-0" data-component="menu-list"></ul>
           </div>
         </main>
       </div>

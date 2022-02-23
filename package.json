@@ -6,9 +6,13 @@
   "author": "hustle-dev <dlwoabsdk@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "start": "live-server"
+    "start": "live-server",
+    "test": "cypress open"
   },
   "dependencies": {
     "live-server": "^1.2.1"
+  },
+  "devDependencies": {
+    "cypress": "^9.5.0"
   }
 }

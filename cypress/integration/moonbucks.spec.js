@@ -30,9 +30,6 @@ describe('example to-do app', () => {
       if ($input.text() === '') {
         cy.get('#menu-submit-button').click();
         cy.get('#menu-list li').should('have.length', 3);
-      } else {
-        cy.get('#menu-submit-button').click();
-        cy.get('#menu-list li').should('have.length', 4);
       }
     });
   });
@@ -55,15 +52,15 @@ describe('example to-do app', () => {
     cy.get('.menu-count').should('have.text', '총 2개');
   });
   it('종류별 메뉴판 관리할 수 있게 만든다.', () => {
-    const menuName = ['espresso', 'frappuccino', 'blended', 'teavana', 'dessert'];
+    const menuNames = ['espresso', 'frappuccino', 'blended', 'teavana', 'dessert'];
 
-    for (let i = 0; i < 5; i++) {
-      cy.get(`[data-category-name=${menuName[i]}]`).click();
+    menuNames.forEach(menuName => {
+      cy.get(`[data-category-name=${menuName}]`).click();
       cy.get('[data-component=menu-header]')
         .children()
         .first()
-        .contains(KOREAN_MENU_NAME[menuName[i]]);
-    }
+        .contains(KOREAN_MENU_NAME[menuName]);
+    });
   });
   it('페이지에 최초로 접근할 때는 에스프레소 메뉴가 먼저 보이게 한다.', () => {
     cy.get('[data-component=menu-header]')

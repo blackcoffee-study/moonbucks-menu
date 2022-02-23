@@ -4,7 +4,6 @@ describe('example to-do app', () => {
   beforeEach(() => {
     cy.visit('../../index.html');
   });
-
   it('에스프레소 메뉴판에 새로운 메뉴를 확인 버튼을 눌러 추가할 수 있다.', () => {
     const newMenu = '아메리카노';
     cy.get('#menu-name').type(newMenu);

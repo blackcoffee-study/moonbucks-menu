@@ -7,13 +7,13 @@ function App() {
   const $submitButton = $("#espresso-menu-submit-button");
   const $counter = $(".menu-count");
   const $categoryNav = $("#cafe-category-nav");
-  const $categoryNames = document.getElementsByClassName("cafe-category-name");
+  const $categoryList = document.getElementsByClassName("cafe-category-name");
   const $menuTitle = $(".mt-1");
 
   this.init = () => {
     this.menuItemInfoList = {};
-    this.currentCategory = $categoryNames[0].dataset.categoryName;
-    const categoryArray = [...$categoryNames].map(
+    this.currentCategory = $categoryList[0].dataset.categoryName;
+    const categoryArray = [...$categoryList].map(
       (item) => item.dataset.categoryName
     );
     categoryArray.map((item) => {
@@ -122,12 +122,12 @@ function App() {
     return false;
   };
 
-  const isReduplicatedMenuName = (newMenuName) => {
-    const reduplicatedMenuItem = this.menuItemInfoList[
-      this.currentCategory
-    ].find((item) => item.menuName === newMenuName);
+  const isduplicatedMenuName = (newMenuName) => {
+    const duplicatedMenuItem = this.menuItemInfoList[this.currentCategory].find(
+      (item) => item.menuName === newMenuName
+    );
 
-    if (reduplicatedMenuItem) return true;
+    if (duplicatedMenuItem) return true;
     return false;
   };
 
@@ -137,7 +137,7 @@ function App() {
   };
 
   const addMenuItem = () => {
-    if (isReduplicatedMenuName($menuNameInput.value)) {
+    if (isduplicatedMenuName($menuNameInput.value)) {
       alert(MESSAGE.ALREADY_EXIST);
       initMenuNameInput();
       return;
@@ -164,7 +164,7 @@ function App() {
       $menuName.textContent
     ).trim();
 
-    if (isReduplicatedMenuName(newMenuName)) {
+    if (isduplicatedMenuName(newMenuName)) {
       alert(MESSAGE.ALREADY_EXIST);
     } else if (newMenuName === "") {
       alert(MESSAGE.WARN_BLANK);

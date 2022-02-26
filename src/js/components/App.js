@@ -2,7 +2,7 @@ import MenuInfo from './MenuInfo.js';
 import MenuInput from './MenuInput.js';
 import MenuList from './MenuList.js';
 import CategoryNav from './CategoryNav.js';
-import { getMenuData, addMenuData } from '../api/api.js';
+import { getMenuData, addMenuData, editMenuData } from '../api/api.js';
 import { DEFAULT_CATEGORY } from '../commons/constants.js';
 
 export default function App($app) {
@@ -64,24 +64,37 @@ export default function App($app) {
     toggleSoldOut: (currentIndex) => {
       this.setState({
         ...this.state,
-        menus: this.state.menus.map((menu, index) =>
-          index === currentIndex
+        menus: this.state.menus.map((menu) =>
+          menu.id === currentIndex
             ? { ...menu, isSoldOut: !menu.isSoldOut }
             : menu
         ),
       });
     },
-    editMenu: (index, editedMenu) => {
-      const nextMenu = [...this.state[this.state.currentCategory]];
-      nextMenu.splice(index, 1, editedMenu);
-      this.setState({ ...this.state, [this.state.currentCategory]: nextMenu });
+    editMenu: async (id, editedMenu) => {
+      try {
+        const data = await editMenuData(
+          this.state.currentCategory,
+          id,
+          editedMenu
+        );
+
+        const nextMenu = [...this.state.menus];
+        const editIndex = nextMenu.findIndex((menu) => menu.id === id);
+        nextMenu.splice(editIndex, 1, {
+          id: nextMenu[editIndex].id,
+          name: editedMenu,
+          isSoldOut: nextMenu[editIndex].isSoldOut,
+        });
+        this.setState({ ...this.state, menus: nextMenu });
+      } catch (e) {
+        alert(e);
+      }
     },
     removeMenu: (currentIndex) => {
       this.setState({
         ...this.state,
-        [this.state.currentCategory]: this.state[
-          this.state.currentCategory
-        ].filter((_, index) => index !== currentIndex),
+        menus: this.state.menus.filter((menu) => menu.id !== currentIndex),
       });
     },
   });

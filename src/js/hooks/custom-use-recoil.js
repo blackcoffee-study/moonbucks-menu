@@ -1,24 +1,22 @@
-import Atom from './atom.js';
-
 const _state = {};
 const _index = {};
 const subscribers = {};
 const targets = {};
 
-export function customUseRecoilState(key, component, target) {
-  const state = _state[key] || Atom[key];
+export function customUseRecoilState(atom, component, target) {
+  const state = _state[atom.atom.key] || atom.default;
 
-  if (!_index[key]) index[key] = 0;
-  if (!subscribers[key]) subscribers[key] = [];
-  if (!targets[key]) targets[key] = [];
+  if (!_index[atom.key]) index[atom.key] = 0;
+  if (!subscribers[atom.key]) subscribers[atom.key] = [];
+  if (!targets[atom.key]) targets[atom.key] = [];
 
-  const index = _index[key]++;
-  subscribers[key][index] = component;
-  targets[key][index] = target;
+  const index = _index[atom.key]++;
+  subscribers[atom.key][index] = component;
+  targets[atom.key][index] = target;
 
   const setRecoilState = (newState) => {
-    _state[key] = newState;
-    _index[key] = 0;
+    _state[atom.key] = newState;
+    _index[atom.key] = 0;
 
     reRender();
   }
@@ -32,32 +30,32 @@ export function customUseRecoilState(key, component, target) {
   return [state, setRecoilState];
 }
 
-export function customUseRecoilValue(key, component, target) {
-  const state = _state[key] || Atom[key];
+export function customUseRecoilValue(atom, component, target) {
+  const state = _state[atom.key] || atom.default;
 
-  if (!_index[key]) _index[key] = 0;
-  if (!subscribers[key]) subscribers[key] = [];
-  if (!targets[key]) targets[key] = [];
+  if (!_index[atom.key]) _index[atom.key] = 0;
+  if (!subscribers[atom.key]) subscribers[atom.key] = [];
+  if (!targets[atom.key]) targets[atom.key] = [];
 
-  const index = _index[key]++;
+  const index = _index[atom.key]++;
 
-  subscribers[key][index] = component;
-  targets[key][index] = target;
+  subscribers[atom.key][index] = component;
+  targets[atom.key][index] = target;
 
   return state;
 }
 
-export function customUseRecoilSetState(key) {
+export function customUseRecoilSetState(atom) {
   const setRecoilState = (newState) => {
-    _state[key] = newState;
-    _index[key] = 0;
+    _state[atom.key] = newState;
+    _index[atom.key] = 0;
 
     reRender();
   }
 
   const reRender = () => {
-    subscribers[key]?.forEach((component, i) => {
-      component(targets[key][i]);
+    subscribers[atom.key]?.forEach((component, i) => {
+      component(targets[atom.key][i]);
     })
 
   };

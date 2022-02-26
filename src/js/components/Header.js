@@ -1,11 +1,12 @@
 import { customUseRecoilSetState } from '../hooks/custom-use-recoil.js';
 
 import { $, MENUTYPE } from '../utils/utils.js';
+import currentMenuType from '../atoms/current-menu-type.js';
 
 import MenuTypeButton from './MenuTypeButton.js';
 
 export default function Header($target) {
-  const setCurrnetMenuType = customUseRecoilSetState('CURRENT_MENUTYPE');
+  const setCurrnetMenuType = customUseRecoilSetState(currentMenuType);
 
   const render = () => {
     $target.innerHTML = /*html*/`

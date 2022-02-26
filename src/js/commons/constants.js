@@ -1,6 +1,6 @@
 export const DEFAULT_CATEGORY = 'espresso';
 export const MENU_STORAGE_KEY = 'menus';
-export const MENU_URL = '/api/category/';
+export const MENU_URL = 'http://localhost:3000/api/category';
 
 export const CATEGORY_INFO = {
   espresso: '☕ 에스프레소',

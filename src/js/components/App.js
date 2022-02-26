@@ -2,6 +2,7 @@ import MenuInfo from './MenuInfo.js';
 import MenuInput from './MenuInput.js';
 import MenuList from './MenuList.js';
 import CategoryNav from './CategoryNav.js';
+import { getMenus } from '../api/api.js';
 import { DEFAULT_CATEGORY } from '../commons/constants.js';
 
 export default function App($app) {
@@ -29,13 +30,24 @@ export default function App($app) {
     menuList.setState(nextState);
     menuInfo.setState(nextState);
     categoryNav.setState(nextState.currentCategory);
+    console.log(nextState);
+    console.log(this.state);
     // setLocalStorageData(MENU_STORAGE_KEY, nextState);
   };
 
   const categoryNav = new CategoryNav({
     initialState: this.state.currentCategory,
-    changeCategory: (newCategory) => {
-      this.setState({ ...this.state, currentCategory: newCategory });
+    changeCategory: async (newCategory) => {
+      try {
+        const data = await getMenus(newCategory);
+        this.setState({
+          ...this.state,
+          currentCategory: newCategory,
+          menus: data,
+        });
+      } catch (e) {
+        alert(e);
+      }
     },
   });
 
@@ -47,10 +59,7 @@ export default function App($app) {
     addMenu: (newMenu) => {
       this.setState({
         ...this.state,
-        [this.state.currentCategory]: [
-          ...this.state[this.state.currentCategory],
-          { isSoldOut: false, name: newMenu },
-        ],
+        menus: [...this.state.menus, { isSoldOut: false, name: newMenu }],
       });
     },
   });
@@ -60,9 +69,7 @@ export default function App($app) {
     toggleSoldOut: (currentIndex) => {
       this.setState({
         ...this.state,
-        [this.state.currentCategory]: this.state[
-          this.state.currentCategory
-        ].map((menu, index) =>
+        menus: this.state.menus.map((menu, index) =>
           index === currentIndex
             ? { ...menu, isSoldOut: !menu.isSoldOut }
             : menu

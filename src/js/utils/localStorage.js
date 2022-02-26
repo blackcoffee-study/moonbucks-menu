@@ -16,3 +16,16 @@ export const setLocalStorageData = (key, newState) => {
     alert(e.message);
   }
 };
+
+// if (getLocalStorageData(MENU_STORAGE_KEY) === []) {
+//   this.state = {
+//     currentCategory: DEFAULT_CATEGORY,
+//     espresso: [],
+//     frappuccino: [],
+//     blended: [],
+//     teavana: [],
+//     dessert: [],
+//   };
+// } else {
+//   this.state = getLocalStorageData(MENU_STORAGE_KEY);
+// }

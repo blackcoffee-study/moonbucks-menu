@@ -2,24 +2,12 @@ import MenuInfo from './MenuInfo.js';
 import MenuInput from './MenuInput.js';
 import MenuList from './MenuList.js';
 import CategoryNav from './CategoryNav.js';
-import { getMenus } from '../api/api.js';
+import { getMenuData, addMenuData } from '../api/api.js';
 import { DEFAULT_CATEGORY } from '../commons/constants.js';
 
 export default function App($app) {
   this.$target = $app;
 
-  // if (getLocalStorageData(MENU_STORAGE_KEY) === []) {
-  //   this.state = {
-  //     currentCategory: DEFAULT_CATEGORY,
-  //     espresso: [],
-  //     frappuccino: [],
-  //     blended: [],
-  //     teavana: [],
-  //     dessert: [],
-  //   };
-  // } else {
-  //   this.state = getLocalStorageData(MENU_STORAGE_KEY);
-  // }
   this.state = {
     currentCategory: DEFAULT_CATEGORY,
     menus: [],
@@ -27,10 +15,9 @@ export default function App($app) {
 
   this.setState = (nextState) => {
     this.state = nextState;
-    menuList.setState(nextState);
+    menuList.setState(nextState.menus);
     menuInfo.setState(nextState);
     categoryNav.setState(nextState.currentCategory);
-    console.log(nextState);
     console.log(this.state);
     // setLocalStorageData(MENU_STORAGE_KEY, nextState);
   };
@@ -39,7 +26,7 @@ export default function App($app) {
     initialState: this.state.currentCategory,
     changeCategory: async (newCategory) => {
       try {
-        const data = await getMenus(newCategory);
+        const data = await getMenuData(newCategory);
         this.setState({
           ...this.state,
           currentCategory: newCategory,
@@ -56,16 +43,24 @@ export default function App($app) {
   });
 
   const menuInput = new MenuInput({
-    addMenu: (newMenu) => {
-      this.setState({
-        ...this.state,
-        menus: [...this.state.menus, { isSoldOut: false, name: newMenu }],
-      });
+    addMenu: async (newMenu) => {
+      try {
+        const data = await addMenuData(this.state.currentCategory, newMenu);
+        this.setState({
+          ...this.state,
+          menus: [
+            ...this.state.menus,
+            { id: data.id, name: newMenu, isSoldOut: false },
+          ],
+        });
+      } catch (e) {
+        alert(e);
+      }
     },
   });
 
   const menuList = new MenuList({
-    initialState: this.state,
+    initialState: this.state.menus,
     toggleSoldOut: (currentIndex) => {
       this.setState({
         ...this.state,
@@ -90,4 +85,18 @@ export default function App($app) {
       });
     },
   });
+
+  this.init = async () => {
+    try {
+      const data = await getMenuData(DEFAULT_CATEGORY);
+      this.setState({
+        currentCategory: DEFAULT_CATEGORY,
+        menus: data,
+      });
+    } catch (e) {
+      alert(e.message);
+    }
+  };
+
+  this.init();
 }

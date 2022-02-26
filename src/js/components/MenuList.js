@@ -13,10 +13,8 @@ export default function MenuList({
   };
 
   this.render = () => {
-    this.$menuList.innerHTML = Array.isArray(
-      this.state[this.state.currentCategory]
-    )
-      ? `${this.state[this.state.currentCategory]
+    this.$menuList.innerHTML = Array.isArray(this.state)
+      ? `${this.state
           .map(
             (
               menu,

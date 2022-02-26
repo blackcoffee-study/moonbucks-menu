@@ -13,7 +13,7 @@ export default function MenuInfo({ initialState }) {
   this.render = () => {
     this.$categoryInfo.innerText = CATEGORY_INFO[this.state.currentCategory];
 
-    //this.$menuCount.innerText = `총 ${this.state.menus.length}개`;
+    this.$menuCount.innerText = `총 ${this.state.menus.length}개`;
   };
 
   this.render();

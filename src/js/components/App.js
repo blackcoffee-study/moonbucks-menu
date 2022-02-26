@@ -9,6 +9,7 @@ import {
   setSoldOutData,
   removeMenuData,
 } from '../api/api.js';
+import { checkDuplicate } from '../utils/checkDuplicate.js';
 import { DEFAULT_CATEGORY } from '../commons/constants.js';
 
 export default function App($app) {
@@ -24,7 +25,6 @@ export default function App($app) {
     menuList.setState(nextState.menus);
     menuInfo.setState(nextState);
     categoryNav.setState(nextState.currentCategory);
-    console.log(this.state);
     // setLocalStorageData(MENU_STORAGE_KEY, nextState);
   };
 
@@ -51,14 +51,16 @@ export default function App($app) {
   const menuInput = new MenuInput({
     addMenu: async (newMenu) => {
       try {
-        const data = await addMenuData(this.state.currentCategory, newMenu);
-        this.setState({
-          ...this.state,
-          menus: [
-            ...this.state.menus,
-            { id: data.id, name: newMenu, isSoldOut: false },
-          ],
-        });
+        if (!checkDuplicate(this.state.menus, newMenu)) {
+          const data = await addMenuData(this.state.currentCategory, newMenu);
+          this.setState({
+            ...this.state,
+            menus: [
+              ...this.state.menus,
+              { id: data.id, name: newMenu, isSoldOut: false },
+            ],
+          });
+        }
       } catch (e) {
         alert(e);
       }

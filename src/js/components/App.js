@@ -2,34 +2,34 @@ import MenuInfo from './MenuInfo.js';
 import MenuInput from './MenuInput.js';
 import MenuList from './MenuList.js';
 import CategoryNav from './CategoryNav.js';
-import {
-  getLocalStorageData,
-  setLocalStorageData,
-} from '../utils/localStorage.js';
-import { MENU_STORAGE_KEY, DEFAULT_CATEGORY } from '../commons/constants.js';
+import { DEFAULT_CATEGORY } from '../commons/constants.js';
 
 export default function App($app) {
   this.$target = $app;
 
-  if (getLocalStorageData(MENU_STORAGE_KEY) === []) {
-    this.state = {
-      currentCategory: DEFAULT_CATEGORY,
-      espresso: [],
-      frappuccino: [],
-      blended: [],
-      teavana: [],
-      dessert: [],
-    };
-  } else {
-    this.state = getLocalStorageData(MENU_STORAGE_KEY);
-  }
+  // if (getLocalStorageData(MENU_STORAGE_KEY) === []) {
+  //   this.state = {
+  //     currentCategory: DEFAULT_CATEGORY,
+  //     espresso: [],
+  //     frappuccino: [],
+  //     blended: [],
+  //     teavana: [],
+  //     dessert: [],
+  //   };
+  // } else {
+  //   this.state = getLocalStorageData(MENU_STORAGE_KEY);
+  // }
+  this.state = {
+    currentCategory: DEFAULT_CATEGORY,
+    menus: [],
+  };
 
   this.setState = (nextState) => {
     this.state = nextState;
     menuList.setState(nextState);
     menuInfo.setState(nextState);
     categoryNav.setState(nextState.currentCategory);
-    setLocalStorageData(MENU_STORAGE_KEY, nextState);
+    // setLocalStorageData(MENU_STORAGE_KEY, nextState);
   };
 
   const categoryNav = new CategoryNav({

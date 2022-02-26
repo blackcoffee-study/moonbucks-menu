@@ -1,4 +1,6 @@
 export const DEFAULT_CATEGORY = 'espresso';
+export const MENU_STORAGE_KEY = 'menus';
+export const MENU_URL = '/api/category/';
 
 export const CATEGORY_INFO = {
   espresso: '☕ 에스프레소',
@@ -15,5 +17,3 @@ export const CATEGORY_NAMES = [
   'teavana',
   'dessert',
 ];
-
-export const MENU_STORAGE_KEY = 'menus';

@@ -33,3 +33,10 @@ export const editMenuData = (category, id, name) => {
     }),
   });
 };
+
+export const setSoldOutData = (category, id) => {
+  //console.log(id);
+  request(`${MENU_URL}/${category}/menu/${id}/soldout`, {
+    method: 'PUT',
+  });
+};

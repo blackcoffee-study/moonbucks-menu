@@ -50,7 +50,7 @@ export default function MenuList({
     this.$menuList.addEventListener('click', (e) => {
       // Event delegate
       if (e.target.classList.contains('menu-sold-out-button')) {
-        toggleSoldOut(Number(e.target.closest('li').getAttribute('id')));
+        toggleSoldOut(e.target.closest('li').getAttribute('id'));
       }
 
       if (e.target.classList.contains('menu-edit-button')) {
@@ -61,7 +61,7 @@ export default function MenuList({
       }
       if (e.target.classList.contains('menu-remove-button')) {
         if (confirm('메뉴를 삭제하시겠습니까?')) {
-          removeMenu(Number(e.target.closest('li').getAttribute('id')));
+          removeMenu(e.target.closest('li').getAttribute('id'));
         }
       }
     });

@@ -2,7 +2,12 @@ import MenuInfo from './MenuInfo.js';
 import MenuInput from './MenuInput.js';
 import MenuList from './MenuList.js';
 import CategoryNav from './CategoryNav.js';
-import { getMenuData, addMenuData, editMenuData } from '../api/api.js';
+import {
+  getMenuData,
+  addMenuData,
+  editMenuData,
+  setSoldOutData,
+} from '../api/api.js';
 import { DEFAULT_CATEGORY } from '../commons/constants.js';
 
 export default function App($app) {
@@ -61,40 +66,30 @@ export default function App($app) {
 
   const menuList = new MenuList({
     initialState: this.state.menus,
-    toggleSoldOut: (currentIndex) => {
+    toggleSoldOut: (id) => {
+      setSoldOutData(this.state.currentCategory, id);
       this.setState({
         ...this.state,
         menus: this.state.menus.map((menu) =>
-          menu.id === currentIndex
-            ? { ...menu, isSoldOut: !menu.isSoldOut }
-            : menu
+          menu.id === id ? { ...menu, isSoldOut: !menu.isSoldOut } : menu
         ),
       });
     },
-    editMenu: async (id, editedMenu) => {
-      try {
-        const data = await editMenuData(
-          this.state.currentCategory,
-          id,
-          editedMenu
-        );
-
-        const nextMenu = [...this.state.menus];
-        const editIndex = nextMenu.findIndex((menu) => menu.id === id);
-        nextMenu.splice(editIndex, 1, {
-          id: nextMenu[editIndex].id,
-          name: editedMenu,
-          isSoldOut: nextMenu[editIndex].isSoldOut,
-        });
-        this.setState({ ...this.state, menus: nextMenu });
-      } catch (e) {
-        alert(e);
-      }
+    editMenu: (id, editedMenu) => {
+      editMenuData(this.state.currentCategory, id, editedMenu);
+      const nextMenu = [...this.state.menus];
+      const editIndex = nextMenu.findIndex((menu) => menu.id === id);
+      nextMenu.splice(editIndex, 1, {
+        id: nextMenu[editIndex].id,
+        name: editedMenu,
+        isSoldOut: nextMenu[editIndex].isSoldOut,
+      });
+      this.setState({ ...this.state, menus: nextMenu });
     },
-    removeMenu: (currentIndex) => {
+    removeMenu: (id) => {
       this.setState({
         ...this.state,
-        menus: this.state.menus.filter((menu) => menu.id !== currentIndex),
+        menus: this.state.menus.filter((menu) => menu.id !== id),
       });
     },
   });

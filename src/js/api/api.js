@@ -1,11 +1,12 @@
 import { MENU_URL } from '../commons/constants.js';
 
-const request = async (url, options) => {
+const request = async (url, options, noResponse) => {
   const response = await fetch(url, { ...options });
   if (!response.ok) {
     throw new Error('API Error');
   }
-  return response.json();
+
+  return noResponse ? response : response.json();
 };
 
 export const getMenuData = (category) =>
@@ -35,8 +36,17 @@ export const editMenuData = (category, id, name) => {
 };
 
 export const setSoldOutData = (category, id) => {
-  //console.log(id);
   request(`${MENU_URL}/${category}/menu/${id}/soldout`, {
     method: 'PUT',
   });
+};
+
+export const removeMenuData = (category, id) => {
+  request(
+    `${MENU_URL}/${category}/menu/${id}`,
+    {
+      method: 'DELETE',
+    },
+    true
+  );
 };

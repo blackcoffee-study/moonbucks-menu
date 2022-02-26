@@ -7,6 +7,7 @@ import {
   addMenuData,
   editMenuData,
   setSoldOutData,
+  removeMenuData,
 } from '../api/api.js';
 import { DEFAULT_CATEGORY } from '../commons/constants.js';
 
@@ -87,6 +88,7 @@ export default function App($app) {
       this.setState({ ...this.state, menus: nextMenu });
     },
     removeMenu: (id) => {
+      removeMenuData(this.state.currentCategory, id);
       this.setState({
         ...this.state,
         menus: this.state.menus.filter((menu) => menu.id !== id),

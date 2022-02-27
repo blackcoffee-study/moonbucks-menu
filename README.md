@@ -67,11 +67,11 @@
 
 ## 🎯 step2 요구사항 - 상태 관리로 메뉴 관리하기
 
-- [ ] [localStorage](https://developer.mozilla.org/ko/docs/Web/API/Window/localStorage)에 데이터를 저장하여 새로고침해도 데이터가 남아있게 한다.
-- [ ] 에스프레소, 프라푸치노, 블렌디드, 티바나, 디저트 각각의 종류별로 메뉴판을 관리할 수 있게 만든다.
-  - [ ] 페이지에 최초로 접근할 때는 에스프레소 메뉴가 먼저 보이게 한다.
-- [ ] 품절 상태인 경우를 보여줄 수 있게, 품절 버튼을 추가하고 `sold-out` class를 추가하여 상태를 변경한다.
-- 품절 상태 메뉴의 마크업
+- [v] [localStorage](https://developer.mozilla.org/ko/docs/Web/API/Window/localStorage)에 데이터를 저장하여 새로고침해도 데이터가 남아있게 한다.
+- [v] 에스프레소, 프라푸치노, 블렌디드, 티바나, 디저트 각각의 종류별로 메뉴판을 관리할 수 있게 만든다.
+  - [v] 페이지에 최초로 접근할 때는 에스프레소 메뉴가 먼저 보이게 한다.
+- [v] 품절 상태인 경우를 보여줄 수 있게, 품절 버튼을 추가하고 `sold-out` class를 추가하여 상태를 변경한다.
+- [v] 품절 상태 메뉴의 마크업
 
 ```js
 <li class="menu-list-item d-flex items-center py-2">
@@ -90,12 +90,12 @@
 
 ## 🎯 step3 요구사항 - 서버와의 통신을 통해 메뉴 관리하기
 
-- [ ] [링크](https://github.com/blackcoffee-study/moonbucks-menu-server)에 있는 웹 서버 저장소를 clone하여 로컬에서 웹 서버를 실행시킨다.
-- [ ] 웹 서버를 띄워서 실제 서버에 데이터의 변경을 저장하는 형태로 리팩터링한다.
-  - [ ] localStorage에 저장하는 로직은 지운다.
-  - [ ] fetch 비동기 api를 사용하는 부분을 async await을 사용하여 구현한다.
-  - [ ] API 통신이 실패하는 경우에 대해 사용자가 알 수 있게 [alert](https://developer.mozilla.org/ko/docs/Web/API/Window/alert)으로 예외처리를 진행한다.
-- [ ] 중복되는 메뉴는 추가할 수 없다.
+- [v] [링크](https://github.com/blackcoffee-study/moonbucks-menu-server)에 있는 웹 서버 저장소를 clone하여 로컬에서 웹 서버를 실행시킨다.
+- [v] 웹 서버를 띄워서 실제 서버에 데이터의 변경을 저장하는 형태로 리팩터링한다.
+  - [v] localStorage에 저장하는 로직은 지운다.
+  - [v] fetch 비동기 api를 사용하는 부분을 async await을 사용하여 구현한다.
+  - [v] API 통신이 실패하는 경우에 대해 사용자가 알 수 있게 [alert](https://developer.mozilla.org/ko/docs/Web/API/Window/alert)으로 예외처리를 진행한다.
+- [v] 중복되는 메뉴는 추가할 수 없다.
 
 ## 📝 API
 

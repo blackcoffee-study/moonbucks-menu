@@ -1,0 +1,23 @@
+{
+  "name": "moonbucks-menu",
+  "version": "1.0.0",
+  "description": "<br/> <p align=\"middle\">   <img width=\"200px;\" src=\"./src/images/moonbucks.png\"/> </p> <h2 align=\"middle\">JS 문벅스 카페메뉴 앱</h2> <p align=\"middle\">Vanilla JS로 구현 하는 상태관리가 가능한 카페메뉴 앱</p> <p align=\"middle\">   <img src=\"https://img.shields.io/badge/version-1.0.0-blue?style=flat-square\" alt=\"template version\"/>   <img src=\"https://img.shields.io/badge/language-html-red.svg?style=flat-square\"/>   <img src=\"https://img.shields.io/badge/language-css-blue.svg?style=flat-square\"/>   <img src=\"https://img.shields.io/badge/language-js-yellow.svg?style=flat-square\"/>   <a href=\"https://github.com/blackcoffee-study/js-lv1-book-manual/blob/main/LICENSE\" target=\"_blank\">     <img src=\"https://img.shields.io/github/license/blackcoffee-study/moonbucks-menu.svg?style=flat-square&label=license&color=08CE5D\"/>   </a> </p>",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bereal1995/moonbucks-menu.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bereal1995/moonbucks-menu/issues"
+  },
+  "homepage": "https://github.com/bereal1995/moonbucks-menu#readme",
+  "devDependencies": {
+    "cypress": "^9.5.0"
+  }
+}

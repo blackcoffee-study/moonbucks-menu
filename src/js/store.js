@@ -1,6 +1,6 @@
-import { CATEGORY, MENU } from "./consts.js";
+import { CATEGORY } from "./consts.js";
 
 export const store = {
-  currentTab: CATEGORY.Espresso,
-  [MENU.EspressoMenu]: [],
+  currentTab: CATEGORY.espresso,
+  items: [],
 };

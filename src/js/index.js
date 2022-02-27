@@ -1,22 +1,31 @@
-import { MENU, BUTTON_TYPE, TEXT } from "./consts.js";
+import { CATEGORY, CATEGORY_NAME, BUTTON_TYPE, TEXT } from "./consts.js";
 import { MENU_ITEM } from "./components/menuItem.js";
 import { store } from "./store.js";
-import { inputValidator } from "./utils/utils.js";
+import { inputValidator, findMenu } from "./utils/utils.js";
+import { getMenu, postMenu, patchMenu, deleteMenuById } from "./api/index.js";
 
 const menuContainer = document.querySelector("#espresso-menu-list");
+const menuInput = document.querySelector("#espresso-menu-name");
+
+window.onload = () => {
+  const init = () => {
+    eventHandler();
+    render();
+  };
+
+  init();
+};
 
 //메뉴 카운트 set
 const setMenuCount = () => {
   const menuCount = document.querySelector(".menu-count");
 
-  menuCount.textContent = `총${store[MENU.EspressoMenu].length}개`;
+  menuCount.textContent = `총${store.items.length}개`;
 };
 
 //메뉴 추가
 const addMenu = () => {
-  const menuInput = document.querySelector("#espresso-menu-name");
-
-  if (inputValidator(store[MENU.EspressoMenu], menuInput.value)) {
+  if (inputValidator(store.items, menuInput.value)) {
     menuInput.value = "";
     menuInput.focus();
 
@@ -24,11 +33,13 @@ const addMenu = () => {
   }
 
   const menu = {
-    id: store[MENU.EspressoMenu].length + 1,
+    id: Date.now(),
     name: menuInput.value,
+    category: store.currentTab,
+    isSoldOut: false,
   };
 
-  store[MENU.EspressoMenu] = [...store[MENU.EspressoMenu], menu];
+  postMenu(menu);
   menuInput.value = "";
   menuInput.focus();
 
@@ -37,9 +48,23 @@ const addMenu = () => {
 
 //메뉴 리스트 파싱
 const menuListRender = () => {
-  const template = store[MENU.EspressoMenu].map(MENU_ITEM).join("");
-
+  store.items = getMenu(store.currentTab);
+  const template = store.items.map(MENU_ITEM).join("");
   menuContainer.innerHTML = template;
+};
+
+//메뉴 품절
+const soldOutMenu = (target) => {
+  const menuItem = target.parentNode;
+  const menuName = menuItem.querySelector(".menu-name");
+  const { menuId } = menuItem.dataset;
+  const { name, isSoldOut } = findMenu(Number(menuId));
+
+  menuName.classList.toggle("sold-out");
+
+  patchMenu({ id: Number(menuId), name, isSoldOut: !isSoldOut });
+
+  render();
 };
 
 //메뉴 삭제
@@ -50,11 +75,7 @@ const deleteMenu = (target) => {
     return;
   }
 
-  const deletedMenu = store[MENU.EspressoMenu].filter(
-    (menu) => menu.id !== parseInt(menuId)
-  );
-
-  store[MENU.EspressoMenu] = deletedMenu;
+  deleteMenuById(Number(menuId));
 
   render();
 };
@@ -62,19 +83,33 @@ const deleteMenu = (target) => {
 //메뉴 수정
 const updateMenu = (target) => {
   const { menuId } = target.parentNode.dataset;
-  const updatedText = prompt(TEXT.MENU_UPDATE);
+  const updatedName = prompt(TEXT.MENU_UPDATE);
 
-  if (inputValidator(store[MENU.EspressoMenu], updatedText)) {
+  if (inputValidator(store.items, updatedName)) {
     return;
   }
 
-  const updatedMenu = store[MENU.EspressoMenu].map((menu) => {
-    const { id } = menu;
-    if (id === parseInt(menuId)) return { ...menu, name: updatedText };
-    return menu;
-  });
+  const { isSoldOut } = findMenu(Number(menuId));
 
-  store[MENU.EspressoMenu] = updatedMenu;
+  patchMenu({ id: Number(menuId), name: updatedName, isSoldOut });
+
+  render();
+};
+
+// 카테고리 이벤트 핸들러
+const categoryEventHandler = (e) => {
+  const menuTitle = document.querySelector("#menu-title");
+  const { categoryName } = e.target.dataset;
+  const categoryText = e.target.textContent;
+
+  if (!categoryName in CATEGORY) return;
+
+  store.currentTab = categoryName;
+  menuTitle.textContent = `${categoryText} 메뉴 관리`;
+  menuInput.setAttribute(
+    "placeholder",
+    `${CATEGORY_NAME[categoryName]} 메뉴 이름`
+  );
 
   render();
 };
@@ -90,7 +125,9 @@ const menuEventHandler = (e) => {
   const { target } = e;
   const { buttonType } = target.dataset;
 
-  if (buttonType === BUTTON_TYPE.Update) {
+  if (buttonType === BUTTON_TYPE.SoldOut) {
+    soldOutMenu(target);
+  } else if (buttonType === BUTTON_TYPE.Update) {
     updateMenu(target);
   } else if (buttonType === BUTTON_TYPE.Delete) {
     deleteMenu(target);
@@ -99,9 +136,11 @@ const menuEventHandler = (e) => {
 
 //이벤트 핸들러
 const eventHandler = () => {
+  const categoryContainer = document.querySelector("#cafe-category-list");
   const menuForm = document.querySelector("#espresso-menu-form");
   const menuSubmitBtn = document.querySelector("#espresso-menu-submit-button");
 
+  categoryContainer.addEventListener("click", categoryEventHandler);
   menuForm.addEventListener("submit", formEventHandler);
   menuSubmitBtn.addEventListener("click", addMenu);
   menuContainer.addEventListener("click", menuEventHandler);
@@ -109,13 +148,6 @@ const eventHandler = () => {
 
 //렌더 함수
 const render = () => {
-  setMenuCount();
   menuListRender();
+  setMenuCount();
 };
-
-const init = () => {
-  eventHandler();
-  render();
-};
-
-init();

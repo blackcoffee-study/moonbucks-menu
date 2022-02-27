@@ -1,21 +1,21 @@
 export const CATEGORY = {
-  Espresso: "Espresso",
-  Frappuccino: "Frappuccino",
-  Blended: "Blended",
-  Teavana: "Teavana",
-  Desert: "Desert",
+  espresso: "espresso",
+  frappuccino: "frappuccino",
+  blended: "blended",
+  teavana: "teavana",
+  desert: "desert",
 };
 
-export const MENU = {
-  EspressoMenu: "EspressoMenu",
-  FrappuccinoMenu: "FrappuccinoMenu",
-  BlendedMenu: "BlendedMenu",
-  TeavanaMenu: "TeavanaMenu",
-  DesertMenu: "DesertMenu",
+export const CATEGORY_NAME = {
+  [CATEGORY.espresso]: "에스프레소",
+  [CATEGORY.frappuccino]: "프라푸치노",
+  [CATEGORY.blended]: "블렌디드",
+  [CATEGORY.teavana]: "티바나",
+  [CATEGORY.desert]: "디저트",
 };
 
 export const BUTTON_TYPE = {
-  SoldOut: "soldOut",
+  SoldOut: "sold-out",
   Update: "update",
   Delete: "delete",
 };

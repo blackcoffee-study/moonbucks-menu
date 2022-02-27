@@ -52,7 +52,7 @@ describe('example to-do app', () => {
     cy.get('.menu-count').should('have.text', '총 2개');
   });
   it('종류별 메뉴판 관리할 수 있게 만든다.', () => {
-    const menuNames = ['espresso', 'frappuccino', 'blended', 'teavana', 'dessert'];
+    const menuNames = ['espresso', 'frappuccino', 'blended', 'teavana', 'desert'];
 
     menuNames.forEach(menuName => {
       cy.get(`[data-category-name=${menuName}]`).click();

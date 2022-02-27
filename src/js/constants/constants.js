@@ -8,7 +8,7 @@ export const INITIAL_STATE = Object.freeze({
   frappuccino: [],
   blended: [],
   teavana: [],
-  dessert: [],
+  desert: [],
 });
 
 export const INITIAL_RENDERING_MENU = 'espresso';
@@ -18,5 +18,5 @@ export const KOREAN_MENU_NAME = Object.freeze({
   frappuccino: '🥤 프라푸치노',
   blended: '🍹 블렌디드',
   teavana: '🫖 티바나',
-  dessert: '🍰 디저트',
+  desert: '🍰 디저트',
 });

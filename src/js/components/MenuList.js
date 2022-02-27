@@ -3,13 +3,13 @@ import { MESSAGE } from '../constants/constants.js';
 
 export default class MenuList extends Component {
   template() {
-    const { menuItems } = this.props;
+    const { menu } = this.props;
 
-    return menuItems
+    return menu
       .map(
-        ({ id, menuName, isSoldOut }) => `
+        ({ id, name, isSoldOut }) => `
       <li class="menu-list-item d-flex items-center py-2" data-id="${id}">
-        <span class="w-100 pl-2 menu-name ${isSoldOut ? 'sold-out' : ''}">${menuName}</span>
+        <span class="w-100 pl-2 menu-name ${isSoldOut ? 'sold-out' : ''}">${name}</span>
         <button
           type="button"
           class="bg-gray-50 text-gray-500 text-sm mr-1 menu-sold-out-button"
@@ -49,17 +49,17 @@ export default class MenuList extends Component {
       if (isUpdateButton) {
         const newMenuName = prompt(MESSAGE.UPDATE, target.parentNode.firstElementChild.textContent);
 
-        updateMenu(newMenuName, Number(target.closest('[data-id]').dataset.id));
+        updateMenu(newMenuName, target.closest('[data-id]').dataset.id);
       }
 
       if (isDeleteButton) {
         const isCheck = confirm(MESSAGE.DELETE);
 
-        if (isCheck) deleteMenu(Number(target.closest('[data-id]').dataset.id));
+        if (isCheck) deleteMenu(target.closest('[data-id]').dataset.id);
       }
 
       if (isSoldOutButton) {
-        toggleSoldOut(Number(target.closest('[data-id]').dataset.id));
+        toggleSoldOut(target.closest('[data-id]').dataset.id);
       }
     });
   }

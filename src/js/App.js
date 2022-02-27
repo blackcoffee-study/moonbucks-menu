@@ -1,14 +1,11 @@
 import Component from './core/Component.js';
 import { MenuHeader, MenuForm, MenuList, MenuNav } from './components/index.js';
-import { $, generateID } from './utils/index.js';
-import { INITIAL_STATE, INITIAL_RENDERING_MENU } from './constants/constants.js';
+import { $ } from './utils/index.js';
+import { menuApi } from './utils/api.js';
 
 export default class App extends Component {
   init() {
-    this.state = {
-      menu: JSON.parse(localStorage.getItem('menu')) || INITIAL_STATE,
-      category: INITIAL_RENDERING_MENU,
-    };
+    this.state = this.props;
   }
 
   template() {
@@ -29,27 +26,20 @@ export default class App extends Component {
   }
 
   componentDidMount() {
-    const { category, menuItems, changeCategory, addMenu, updateMenu, deleteMenu, toggleSoldOut } =
-      this;
+    const { menu, category, changeCategory, addMenu, updateMenu, deleteMenu, toggleSoldOut } = this;
     const $menuNav = $('[data-component="menu-nav"]');
     const $menuHeader = $('[data-component="menu-header"]');
     const $menuForm = $('[data-component="menu-form"]');
     const $menuList = $('[data-component="menu-list"]');
 
     new MenuNav($menuNav, { category, changeCategory: changeCategory.bind(this) });
-    new MenuHeader($menuHeader, { category, menuItems });
+    new MenuHeader($menuHeader, { category, menu });
     new MenuForm($menuForm, { category, addMenu: addMenu.bind(this) });
     new MenuList($menuList, {
-      menuItems,
+      menu,
       updateMenu: updateMenu.bind(this),
       deleteMenu: deleteMenu.bind(this),
       toggleSoldOut: toggleSoldOut.bind(this),
-    });
-  }
-
-  setEvent() {
-    window.addEventListener('beforeunload', () => {
-      localStorage.setItem('menu', JSON.stringify(this.menu));
     });
   }
 
@@ -61,73 +51,48 @@ export default class App extends Component {
     return this.state.category;
   }
 
-  get menuItems() {
-    return this.state.menu[this.state.category];
-  }
-
-  addMenu(menuName) {
+  async addMenu(menuName) {
     if (!menuName.trim()) return;
 
+    await menuApi.addMenu(this.category, menuName);
+
     this.setState({
       ...this.state,
-      menu: {
-        ...this.menu,
-        [this.category]: [
-          ...this.menuItems,
-          {
-            id: generateID(this.menuItems),
-            menuName,
-            isSoldOut: false,
-          },
-        ],
-      },
+      menu: await menuApi.getMenuListByCategory(this.category),
     });
   }
 
-  updateMenu(newMenuName, targetID) {
-    const updatedMenuItems = this.menuItems.map(menuItem =>
-      menuItem.id === targetID ? { ...menuItem, menuName: newMenuName } : menuItem
-    );
+  async updateMenu(newMenuName, targetID) {
+    await menuApi.updateMenu(this.category, targetID, newMenuName);
 
     this.setState({
       ...this.state,
-      menu: {
-        ...this.menu,
-        [this.category]: updatedMenuItems,
-      },
+      menu: await menuApi.getMenuListByCategory(this.category),
     });
   }
 
-  deleteMenu(targetID) {
-    const deletedMenuItems = this.menuItems.filter(({ id }) => id !== targetID);
+  async deleteMenu(targetID) {
+    await menuApi.deleteMenu(this.category, targetID);
 
     this.setState({
       ...this.state,
-      menu: {
-        ...this.menu,
-        [this.category]: deletedMenuItems,
-      },
+      menu: await menuApi.getMenuListByCategory(this.category),
     });
   }
 
-  changeCategory(newCategory) {
+  async changeCategory(newCategory) {
     this.setState({
-      ...this.state,
+      menu: await menuApi.getMenuListByCategory(newCategory),
       category: newCategory,
     });
   }
 
-  toggleSoldOut(targetID) {
-    const soldOutMenuItems = this.menuItems.map(menuItem =>
-      menuItem.id === targetID ? { ...menuItem, isSoldOut: !menuItem.isSoldOut } : menuItem
-    );
+  async toggleSoldOut(targetID) {
+    await menuApi.toggleSoldOut(this.category, targetID);
 
     this.setState({
       ...this.state,
-      menu: {
-        ...this.menu,
-        [this.category]: soldOutMenuItems,
-      },
+      menu: await menuApi.getMenuListByCategory(this.category),
     });
   }
 }

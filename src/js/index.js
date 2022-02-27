@@ -1,13 +1,19 @@
-import { addMenu, updateMenu, removeMenu, render } from './utils.js';
-import store from './reducer.js';
+import { addMenu,
+  updateMenu,
+  removeMenu,
+  updateSoldout,
+  init } from './common/utils/menu.js';
+import { updateCategory } from './common/utils/category.js';
 
-const $menuForm = document.querySelector('#espresso-menu-form');
-const $menuList = document.querySelector('#espresso-menu-list');
+const $categoryList = document.querySelectorAll('.cafe-category-name');
+const $menuForm = document.querySelector('#menu-form');
+const $menuList = document.querySelector('#menu-list');
 
 (() => {
-  store.subscribe(render);
-
   $menuForm.addEventListener('submit', addMenu);
+
+  $categoryList.forEach(($category) => $category.addEventListener('click', updateCategory));
+  
   $menuList.addEventListener('click', ({ target }) => {
     const { type } = target.dataset;
     if (type === 'edit') {
@@ -16,7 +22,10 @@ const $menuList = document.querySelector('#espresso-menu-list');
     if (type === 'remove') {
       removeMenu(target);
     }
+    if (type === 'soldout') {
+      updateSoldout(target);
+    }
   })
-  render();
+  init('espresso');
 })();
 

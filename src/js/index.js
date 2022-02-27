@@ -5,9 +5,10 @@ import {
   isEmpty,
   getMenuTemplate,
   renderMenusByFunction,
-  toggleMenuStatusInStore,
+  soldOutMenuInStore,
   editMenuInStore,
   removeMenuInStore,
+  formPreventSubmit,
   setLocalStorage,
   getLocalStorage,
 } from "./utils/index.js";
@@ -17,7 +18,7 @@ let menus;
 window.onload = () => {
   setMenuUseLocalStorage();
   menuRender();
-  preventSubmitInForm();
+  formPreventSubmit();
   setDocumentHandlers();
 };
 
@@ -36,13 +37,6 @@ const menuRender = () => {
   $menuList.innerHTML = renderMenusByFunction(menus[currentCategory], getMenuTemplate);
   $menuCount.textContent = `총 ${menus[currentCategory].length}개`;
 }
-
-const preventSubmitInForm = () => {
-  const $form = $("#espresso-menu-form");
-  $form.addEventListener("submit", (event) => {
-    event.preventDefault();
-  });
-};
 
 const setDocumentHandlers = () => { 
   formHandler();
@@ -80,7 +74,7 @@ const menuListHandler = () => {
     const classList = target.classList;
 
     if (classList.contains("menu-sold-out-button")) {
-      toggleMenuStatusInStore(menus, currentCategory, menuId);
+      soldOutMenuInStore(menus, currentCategory, menuId);
       setLocalStorage("menus", menus);
       menuRender();
       return;

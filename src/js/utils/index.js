@@ -1,7 +1,7 @@
-export * from './dom.js';
-export * from './validation.js';
-export * from './localStorage.js';
-export * from "./storeHandler.js";
+import { $ } from './dom.js';
+import { isEmpty } from './validation.js';
+import { setLocalStorage, getLocalStorage } from './localStorage.js';
+import { soldOutMenuInStore, editMenuInStore, removeMenuInStore } from './storeHandler.js';
 
 const getMenuTemplate = ({ id, name, status }) => {
   return `
@@ -33,7 +33,23 @@ const renderMenusByFunction = (menus, generateTemplate) => {
   return menus.map((menu) => generateTemplate(menu)).join("");
 };
 
+const formPreventSubmit = () => {
+  const $form = $("#espresso-menu-form");
+  $form.addEventListener("submit", (event) => {
+    event.preventDefault();
+  });
+};
+
+
 export {
+  $,
+  isEmpty,
+  setLocalStorage,
+  getLocalStorage,
   getMenuTemplate,
   renderMenusByFunction,
+  formPreventSubmit,
+  soldOutMenuInStore,
+  editMenuInStore,
+  removeMenuInStore,
 };

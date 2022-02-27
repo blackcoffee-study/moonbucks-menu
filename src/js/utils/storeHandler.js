@@ -1,4 +1,4 @@
-const toggleMenuStatusInStore = (Store, currentCategory, menuId) => {
+const soldOutMenuInStore = (Store, currentCategory, menuId) => {
   Store[currentCategory] = Store[currentCategory].map((el) => {
     if (el.id === menuId) {
       const status = el.status === "soldOut" ? "onSale" : "soldOut";
@@ -27,8 +27,9 @@ const removeMenuInStore = (Store, currentCategory, menuId) => {
   }
 };
 
+
 export {
-  toggleMenuStatusInStore,
+  soldOutMenuInStore,
   editMenuInStore,
   removeMenuInStore,
 }

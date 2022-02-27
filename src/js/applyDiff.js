@@ -21,31 +21,31 @@ const isNodeChanged = (node1, node2) => {
   return false;
 };
 
-const applyDiff = (parentNode, realNode, virtualNode) => {
-  if (realNode && !virtualNode) {
-    realNode.remove();
+const applyDiff = (parentNode, currentNode, virtualNode) => {
+  if (currentNode && !virtualNode) {
+    currentNode.remove();
     return;
   }
 
-  if (!realNode && virtualNode) {
+  if (!currentNode && virtualNode) {
     parentNode.appendChild(virtualNode);
     return;
   }
 
-  if (isNodeChanged(virtualNode, realNode)) {
-    realNode.replaceWith(virtualNode);
+  if (isNodeChanged(virtualNode, currentNode)) {
+    currentNode.replaceWith(virtualNode);
     return;
   }
 
-  const realChildren = Array.from(realNode.children);
+  const currentChildren = Array.from(currentNode.children);
   const virtualChildren = Array.from(virtualNode.children);
 
   // 더 많은 children 갖고 있는 node 찾기
-  const max = Math.max(realChildren.length, virtualChildren.length);
+  const max = Math.max(currentChildren.length, virtualChildren.length);
 
   // 재귀
   for (let i = 0; i < max; i++) {
-    applyDiff(realNode, realChildren[i], virtualChildren[i]);
+    applyDiff(currentNode, currentChildren[i], virtualChildren[i]);
   }
 };
 

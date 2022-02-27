@@ -61,6 +61,10 @@ export default class MenuList extends Component {
       if (isSoldOutButton) {
         toggleSoldOut(target.closest('[data-id]').dataset.id);
       }
+
+      if (isSoldOutButton) {
+        toggleSoldOut(Number(target.closest('[data-id]').dataset.id));
+      }
     });
   }
 }

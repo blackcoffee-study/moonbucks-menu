@@ -8,7 +8,7 @@ export class cafeAPP {
     const model = new Model();
     const controller = new Controller(model, view);
 
-    view.initApp();
+    controller.initApp();
     controller.bindEvent();
   }
 }

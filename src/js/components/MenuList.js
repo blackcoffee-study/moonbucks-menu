@@ -1,14 +1,21 @@
 import Component from '../core/Component.js';
-import { MESSAGE } from '../constants/Message.js';
+import { MESSAGE } from '../constants/constants.js';
 
 export default class MenuList extends Component {
   template() {
     const { menuItems } = this.props;
+
     return menuItems
       .map(
-        ({ id, menuName }) => `
+        ({ id, menuName, isSoldOut }) => `
       <li class="menu-list-item d-flex items-center py-2" data-id="${id}">
-        <span class="w-100 pl-2 menu-name">${menuName}</span>
+        <span class="w-100 pl-2 menu-name ${isSoldOut ? 'sold-out' : ''}">${menuName}</span>
+        <button
+          type="button"
+          class="bg-gray-50 text-gray-500 text-sm mr-1 menu-sold-out-button"
+        >
+          품절
+        </button>
         <button
           type="button"
           class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
@@ -21,28 +28,38 @@ export default class MenuList extends Component {
         >
           삭제
         </button>
-      </li>`
+      </li>
+      `
       )
       .join('');
   }
 
   setEvent() {
-    const { updateMenu, deleteMenu } = this.props;
+    const { updateMenu, deleteMenu, toggleSoldOut } = this.props;
 
     this.domNode.addEventListener('click', ({ target }) => {
-      const isUpdateButton = target.classList.contains('menu-edit-button');
-      const isDeleteButton = target.classList.contains('menu-remove-button');
+      if (target.type !== 'button') return;
 
-      if (!isUpdateButton && !isDeleteButton) return;
+      const isClassExisted = selector => target.classList.contains(selector);
+
+      const isUpdateButton = isClassExisted('menu-edit-button');
+      const isDeleteButton = isClassExisted('menu-remove-button');
+      const isSoldOutButton = isClassExisted('menu-sold-out-button');
 
       if (isUpdateButton) {
-        const newMenuName = prompt(MESSAGE.UPDATE, target.previousElementSibling.textContent);
+        const newMenuName = prompt(MESSAGE.UPDATE, target.parentNode.firstElementChild.textContent);
 
         updateMenu(newMenuName, Number(target.closest('[data-id]').dataset.id));
-      } else {
+      }
+
+      if (isDeleteButton) {
         const isCheck = confirm(MESSAGE.DELETE);
 
         if (isCheck) deleteMenu(Number(target.closest('[data-id]').dataset.id));
+      }
+
+      if (isSoldOutButton) {
+        toggleSoldOut(Number(target.closest('[data-id]').dataset.id));
       }
     });
   }

@@ -9,6 +9,13 @@ const store = {
 
 const BASE_URL = 'http://localhost:3000/api'
 
+const MenuApi = {
+    async getAllMenuByCategory(category) {
+        const response = await fetch(`${BASE_URL}/category/${category}/menu`)
+        return response.json();
+    }
+}
+
 function App() {
     const menuName = document.querySelector("#menu-name"),
     menuForm = document.querySelector("#menu-form"),
@@ -26,10 +33,10 @@ function App() {
         desert: [],
     };
     this.currentCategory = 'espresso';
-    this.init = () => {
-        if(store.getLocalStorage()) {
-            menu = store.getLocalStorage();
-        }
+    this.init = async () => {
+        menu[this.currentCategory] = await MenuApi.getAllMenuByCategory(
+            this.currentCategory
+        );
         render();
         initEventListeners();
     }
@@ -88,17 +95,13 @@ function App() {
         })
         .then((res) => {
             return res.json();
-        })
-
-        await fetch(`${BASE_URL}/category/${this.currentCategory}/menu`)
-            .then((res) => {
-                return res.json();
-            })
-            .then((data) => {
-                menu[this.currentCategory] = data
-                render();
-                menuName.value = "";
-            });
+        });
+        
+        menu[this.currentCategory] = await MenuApi.getAllMenuByCategory(
+            this.currentCategory
+        );
+        render();
+        menuName.value = "";
     }
 
     const render = () => {

@@ -7,6 +7,8 @@ const store = {
     }
 }
 
+const BASE_URL = 'http://localhost:3000/api'
+
 function App() {
     const menuName = document.querySelector("#menu-name"),
     menuForm = document.querySelector("#menu-form"),
@@ -76,10 +78,25 @@ function App() {
             return;
         }
         const MenuName = menuName.value;
-        menu[this.currentCategory].push({ name: MenuName });
-        store.setLocalStorage(menu);
-        render();
-        menuName.value = "";
+        
+        fetch(`${BASE_URL}/category/${this.currentCategory}/menu`, {
+            method: "POST",
+            headers: {
+                "Content-Type" : "application/json",
+            },
+            body: JSON.stringify({ name: MenuName}),
+        })
+        .then((res) => {
+            return res.json();
+        })
+        .then((data) => {
+            console.log(data)
+        });
+
+        // menu[this.currentCategory].push({ name: MenuName });
+        // store.setLocalStorage(menu);
+        // render();
+        // menuName.value = "";
     }
 
     const render = () => {

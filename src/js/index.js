@@ -38,7 +38,15 @@ const MenuApi = {
             console.error("에러가 발생했습니다.");
         }
         return response.json();
-    }
+    },
+    async toggleSoldOutMenu(category, menuId) {
+        const response = await fetch(`${BASE_URL}/category/${category}/menu/${menuId}/soldout`, {
+            method: "PUT",
+        });
+        if(!response.ok) {
+            console.error("에러가 발생했습니다.");
+        }
+    },
 };
 
 function App() {
@@ -93,9 +101,10 @@ function App() {
         // 품절
         if(e.target.classList.contains("menu-sold-out-button")) {
             const menuId = e.target.closest("li").dataset.menuId;
-            menu[this.currentCategory][menuId].soldOut = 
-                !menu[this.currentCategory][menuId].soldOut;
-            store.setLocalStorage(menu);
+            await MenuApi.toggleSoldOutMenu(this.currentCategory, menuId);
+            menu[this.currentCategory] = await MenuApi.getAllMenuByCategory(
+                this.currentCategory
+            );
             render();
         }
     })
@@ -124,7 +133,7 @@ function App() {
         const template = menu[this.currentCategory].map((item, idx) => {
             return `
                 <li data-menu-id="${item.id}" class="menu-list-item d-flex items-center py-2">
-                    <span class="w-100 pl-2 menu-name ${item.soldOut ? 'sold-out' : ''}">${item.name}</span>
+                    <span class="w-100 pl-2 menu-name ${item.isSoldOut ? 'sold-out' : ''}">${item.name}</span>
                     <button
                     type="button"
                     class="bg-gray-50 text-gray-500 text-sm mr-1 menu-sold-out-button"

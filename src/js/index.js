@@ -47,6 +47,14 @@ const MenuApi = {
             console.error("에러가 발생했습니다.");
         }
     },
+    async deleteMenu(category, menuId) {
+        const response = await fetch(`${BASE_URL}/category/${category}/menu/${menuId}`, {
+            method: "DELETE",
+        });
+        if(!response.ok) {
+            console.error("에러가 발생했습니다.");
+        }
+    }
 };
 
 function App() {
@@ -92,8 +100,10 @@ function App() {
         if(e.target.classList.contains("menu-remove-button")) {
             if(confirm("정말 삭제하시겠습니까?")) {
                 const menuId = e.target.closest("li").dataset.menuId;
-                menu[this.currentCategory].splice(menuId, 1);
-                store.setLocalStorage(menu);
+                await MenuApi.deleteMenu(this.currentCategory, menuId);
+                menu[this.currentCategory] = await MenuApi.getAllMenuByCategory(
+                    this.currentCategory
+                );
                 render();
             }
         }
@@ -183,14 +193,14 @@ function App() {
                 const categoryName = e.target.dataset.categoryName;
                 this.currentCategory = categoryName;
                 categoryTitle.innerText = `${e.target.innerText} 메뉴 관리`;
-                menu[this.currentCategory] = await MenuApi.getAllMenuByCategory(this.currentCategory);
+                menu[this.currentCategory] = await MenuApi.getAllMenuByCategory(
+                    this.currentCategory
+                );
                 render();
             }
         })
     }
 }
-
-
 
 const app = new App();
 app.init();

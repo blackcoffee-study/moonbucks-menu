@@ -13,8 +13,20 @@ const MenuApi = {
     async getAllMenuByCategory(category) {
         const response = await fetch(`${BASE_URL}/category/${category}/menu`)
         return response.json();
-    }
-}
+    },
+    async createMenu(category, name) {
+        const response = await fetch(`${BASE_URL}/category/${category}/menu`, {
+            method: "POST",
+            headers: {
+                "Content-Type" : "application/json",
+            },
+            body: JSON.stringify({ name }),
+        });
+        if(!response.ok) {
+            console.error("에러가 발생했습니다.");
+        }
+    },
+};
 
 function App() {
     const menuName = document.querySelector("#menu-name"),
@@ -85,18 +97,7 @@ function App() {
             return;
         }
         const MenuName = menuName.value;
-        
-        await fetch(`${BASE_URL}/category/${this.currentCategory}/menu`, {
-            method: "POST",
-            headers: {
-                "Content-Type" : "application/json",
-            },
-            body: JSON.stringify({ name: MenuName}),
-        })
-        .then((res) => {
-            return res.json();
-        });
-        
+        await MenuApi.createMenu(this.currentCategory, MenuName);
         menu[this.currentCategory] = await MenuApi.getAllMenuByCategory(
             this.currentCategory
         );
@@ -152,12 +153,13 @@ function App() {
             addMenu();
         });
     
-        nav.addEventListener("click", (e) => {
+        nav.addEventListener("click", async (e) => {
             const isCategoryBtn = e.target.classList.contains("cafe-category-name")
             if(isCategoryBtn) {
                 const categoryName = e.target.dataset.categoryName;
                 this.currentCategory = categoryName;
                 categoryTitle.innerText = `${e.target.innerText} 메뉴 관리`;
+                menu[this.currentCategory] = await MenuApi.getAllMenuByCategory(this.currentCategory);
                 render();
             }
         })

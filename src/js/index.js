@@ -72,14 +72,14 @@ function App() {
     });
     
     // 메뉴 추가함수
-    const addMenu = () => {
+    const addMenu = async () => {
         if(menuName === "") {
             alert("값을 입력해주세요");
             return;
         }
         const MenuName = menuName.value;
         
-        fetch(`${BASE_URL}/category/${this.currentCategory}/menu`, {
+        await fetch(`${BASE_URL}/category/${this.currentCategory}/menu`, {
             method: "POST",
             headers: {
                 "Content-Type" : "application/json",
@@ -89,14 +89,16 @@ function App() {
         .then((res) => {
             return res.json();
         })
-        .then((data) => {
-            console.log(data)
-        });
 
-        // menu[this.currentCategory].push({ name: MenuName });
-        // store.setLocalStorage(menu);
-        // render();
-        // menuName.value = "";
+        await fetch(`${BASE_URL}/category/${this.currentCategory}/menu`)
+            .then((res) => {
+                return res.json();
+            })
+            .then((data) => {
+                menu[this.currentCategory] = data
+                render();
+                menuName.value = "";
+            });
     }
 
     const render = () => {

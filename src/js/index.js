@@ -26,6 +26,19 @@ const MenuApi = {
             console.error("에러가 발생했습니다.");
         }
     },
+    async updateMenu(category, name, menuId) {
+        const response = await fetch(`${BASE_URL}/category/${category}/menu/${menuId}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type" : "application/json",
+            },
+            body: JSON.stringify({ name }),
+        })
+        if(!response.ok) {
+            console.error("에러가 발생했습니다.");
+        }
+        return response.json();
+    }
 };
 
 function App() {
@@ -54,14 +67,16 @@ function App() {
     }
     
     // 수정, 삭제, 품절버튼 이벤트핸들링 처리
-    menuList.addEventListener("click", (e) => {
+    menuList.addEventListener("click", async (e) => {
         // 수정
         if(e.target.classList.contains("menu-edit-button")) {
             const menuId = e.target.closest("li").dataset.menuId;
             const reMenuName = e.target.closest("li").querySelector(".menu-name"),
             updatedMenu = prompt("메뉴명을 수정하세요", reMenuName.innerText);
-            menu[this.currentCategory][menuId].name = updatedMenu;
-            store.setLocalStorage(menu);
+            await MenuApi.updateMenu(this.currentCategory, updatedMenu, menuId)
+            menu[this.currentCategory] = await MenuApi.getAllMenuByCategory(
+                this.currentCategory
+            );
             render();
         }
 
@@ -108,7 +123,7 @@ function App() {
     const render = () => {
         const template = menu[this.currentCategory].map((item, idx) => {
             return `
-                <li data-menu-id="${idx}" class="menu-list-item d-flex items-center py-2">
+                <li data-menu-id="${item.id}" class="menu-list-item d-flex items-center py-2">
                     <span class="w-100 pl-2 menu-name ${item.soldOut ? 'sold-out' : ''}">${item.name}</span>
                     <button
                     type="button"

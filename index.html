@@ -16,7 +16,7 @@
             <a href="/" class="text-black">
               <h1 class="text-center font-bold">🌝 문벅스 메뉴 관리</h1>
             </a>
-            <nav class="d-flex justify-center flex-wrap">
+            <nav class="d-flex justify-center flex-wrap category-nav">
               <button
                 data-category-name="espresso"
                 class="cafe-category-name btn bg-white shadow mx-1"
@@ -62,7 +62,7 @@
                   </label>
                   <input
                     type="text"
-                    id="espresso-menu-name"
+                    id="menu-name"
                     name="espressoMenuName"
                     class="input-field"
                     placeholder="에스프레소 메뉴 이름"
@@ -70,6 +70,7 @@
                   />
                   <button
                     name="submit"
+                    id="menu-submit-button"
                     id="espresso-menu-submit-button"
                     class="input-submit bg-green-600 ml-2"
                   >
@@ -77,7 +78,7 @@
                   </button>
                 </div>
               </form>
-              <ul id="espresso-menu-list" class="mt-3 pl-0"></ul>
+              <ul id="menu-list" class="mt-3 pl-0"></ul>
             </div>
           </main>
         </div>

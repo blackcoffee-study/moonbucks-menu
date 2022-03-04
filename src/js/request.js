@@ -3,7 +3,9 @@ async function fetchData(method, ...rest) {
     const fetchFunc = request[method].bind(request);
 
     const res = await fetchFunc(...rest);
+
     if (res.statusText !== 'OK') {
+      const data = await res.json();
       const error = new Error(data.message);
       throw error;
     }

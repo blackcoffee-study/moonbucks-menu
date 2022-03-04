@@ -35,7 +35,6 @@ import fetchData from './request.js';
     setMenuType(type) {
       this.menu_type = type;
       $heading.textContent = `${menu_title[type]} 메뉴 관리`;
-      localStorage.setItem('menu_type', this.menu_type);
     },
     getMenuItemsCount() {
       return this.count;

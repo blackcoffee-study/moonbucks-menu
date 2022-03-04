@@ -1,3 +1,5 @@
+import fetchData from './request.js';
+
 (() => {
   // 2차
   const $nav = document.querySelector('.nav-menu');
@@ -24,15 +26,12 @@
     pushItem(item) {
       this[this.menu_type] = this[this.menu_type].concat(item);
       this.increaseCount();
-      localStorage.setItem(`${this.menu_type}`, JSON.stringify(this[this.menu_type]));
     },
     getMenuList() {
-      const menu_list = JSON.parse(localStorage.getItem(`${this.menu_type}`));
+      const menu_list = this[this.menu_type];
       createMenuList(menu_list);
     },
-    setMenuItem() {
-      localStorage.setItem(`${this.menu_type}`, JSON.stringify(this[this.menu_type]));
-    },
+
     setMenuType(type) {
       this.menu_type = type;
       $heading.textContent = `${menu_title[type]} 메뉴 관리`;
@@ -55,16 +54,11 @@
       this[this.menu_type] = this[this.menu_type].map(item =>
         item.id !== id ? item : { ...item, [field]: value },
       );
-      if (field === 'value') {
-        document.getElementById(id).firstChild.textContent = value;
-      }
-      this.setMenuItem();
     },
     removeItem(id) {
       this[this.menu_type] = this[this.menu_type].filter(item => item.id !== id);
       document.getElementById(id).remove();
       this.decreaseCount();
-      this.setMenuItem();
     },
   };
 
@@ -72,25 +66,33 @@
     sold_out: {
       name: '품절',
       className: 'bg-gray-50 text-gray-500 text-sm mr-1 menu-sold-out-button',
-      handler({ target }) {
-        const menu_item = target.previousSibling;
+      async handler({ target }) {
         const { id } = target.parentNode;
-        const isSoldOut = ![...menu_item.classList].includes('sold-out');
-        if (isSoldOut) {
+        const menu_item = document.getElementById(id).firstChild;
+        const menu_type = input_menu_list.menu_type;
+
+        const data = await fetchData('put', menu_type, id);
+
+        if (data.isSoldOut) {
           menu_item.classList.add('sold-out');
         } else {
           menu_item.classList.remove('sold-out');
         }
-        input_menu_list.editItem(isSoldOut, id, 'sold_out');
+        input_menu_list.editItem(data.isSoldOut, id, 'isSoldOut');
       },
     },
     edit: {
       name: '수정',
       className: 'bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button',
-      handler({ target }) {
+      async handler({ target }) {
         const { id } = target.parentNode;
-        const newValue = window.prompt('수정할 텍스트를 입력해주세요');
-        input_menu_list.editItem(newValue, id, 'value');
+        const name = window.prompt('수정할 텍스트를 입력해주세요');
+        const menu_type = input_menu_list.menu_type;
+        const data = await fetchData('put', menu_type, id, name);
+
+        if (data.name) {
+          document.getElementById(id).firstChild.textContent = data.name;
+        }
       },
     },
     remove: {
@@ -98,8 +100,13 @@
       className: 'bg-gray-50 text-gray-500 text-sm menu-remove-button',
       handler({ target }) {
         const result = window.confirm('정말 삭제하시겠습니까?');
+
         if (result) {
           const { id } = target.parentNode;
+          const menu_type = input_menu_list.menu_type;
+
+          fetchData('delete', menu_type, id);
+
           input_menu_list.removeItem(id);
         }
       },
@@ -128,46 +135,49 @@
 
     $li.className = 'menu-list-item d-flex items-center py-2';
     $li.id = item.id;
-    $span.className = item.sold_out ? 'w-100 pl-2 menu-name sold-out' : 'w-100 pl-2 menu-name';
-    $span.textContent = item.value;
+    $span.className = item.isSoldOut ? 'w-100 pl-2 menu-name sold-out' : 'w-100 pl-2 menu-name';
+    $span.textContent = item.name;
     $fragment.append($span, buttonGroup);
     $li.append($fragment);
     return $li;
   };
-  const createMenuList = menu_type => {
+  const createMenuList = async menu_type => {
     [...$espresso_menu_list.children].forEach(node => {
       $espresso_menu_list.removeChild(node);
     });
     input_menu_list.setMenuType(menu_type);
 
-    const res = localStorage.getItem(`${menu_type}`);
-    if (res) {
-      const $fragment = document.createDocumentFragment();
-      const menu_list = JSON.parse(res);
-      menu_list.forEach(item => {
-        const new_menu_item = createInnerElement(item);
-        $fragment.append(new_menu_item);
-      });
-      $espresso_menu_list.append($fragment);
-      input_menu_list.setCount(menu_list.length);
-      input_menu_list[menu_type] = [...menu_list];
-    }
+    const menu_list = (await fetchData('get', menu_type)) || [];
+    const $fragment = document.createDocumentFragment();
+
+    menu_list?.forEach(item => {
+      const new_menu_item = createInnerElement(item);
+      $fragment.append(new_menu_item);
+    });
+    $espresso_menu_list.append($fragment);
+    input_menu_list.setCount(menu_list.length);
+    input_menu_list[menu_type] = [...menu_list];
   };
-  $button.addEventListener('click', () => {
+
+  $button.addEventListener('click', async () => {
     if (!$input.value) return;
-    const { count } = input_menu_list;
-    const item = { value: $input.value, sold_out: false, id: `menu_item${count}` };
-    input_menu_list.pushItem(item);
 
-    const new_menu_item = createInnerElement(item);
-    $espresso_menu_list.append(new_menu_item);
+    const category = input_menu_list.menu_type;
+    const item = await fetchData('post', category, $input.value);
+    if (item) {
+      input_menu_list.pushItem(item);
 
+      const new_menu_item = createInnerElement(item);
+      $espresso_menu_list.append(new_menu_item);
+    }
     $input.value = '';
   });
+
   window.addEventListener('DOMContentLoaded', () => {
-    const menu_type = localStorage.getItem('menu_type') || input_menu_list.menu_type;
+    const menu_type = input_menu_list.menu_type;
     createMenuList(menu_type);
   });
+
   $nav.addEventListener('click', ({ target }) => {
     if (!target.matches('button')) return;
 

@@ -12,6 +12,37 @@
 const $ = (selector) => document.querySelector(selector);
 
 function App() {
+  /**
+   * [x] 메뉴 수정 버튼 클릭 이벤트를 받고 메뉴 수정하는 모달창이 뜬다.
+   * [x] 모달창에서 신규메뉴명을 입력 받고, 확인 버튼을 누르면 메뉴가 수정된다.
+   */
+
+  // 이벤트 위임
+  // 최초 앱 실행 시 메뉴가 존재하지 않기 때문에 li 태그 안의 버튼 수정, 삭제 버튼도 존재하지
+  // 않는다. html 태그로도 존재하지 않기 때문에 수정, 삭제 버튼에 클릭 이벤트를 바로 줄 수는
+  // 없고 대신 그들의 상위 엘리먼츠인 espresso-menu-list에 클릭 이벤트를 위임한다.
+  $("#espresso-menu-list").addEventListener("click", (e) => {
+    // classList는 e.target의 클래스들을 배열처럼 가져온다.
+    // contains는 배열안에 해당 클래스가 존재하는지 확인
+    if (e.target.classList.contains("menu-edit-button")) {
+      console.log(e.target);
+      // prompt로 모달 창 생성 첫번째 인자는 모달창에 띄워 줄 메세지, 두번째 인자는 입력창의 defualt값
+      console.log(e);
+      const menuName = e.target
+        .closest("li")
+        .querySelector(".menu-name").innerText;
+
+      // 기본적으로 prompt 모달창에 입력하고 확인을 누르면 String 값으로 리턴해준다.
+      // prompt("메뉴명을 수정하세여.", menuName);
+
+      // 이런식으로 변수에 리턴한 String값을 담을 수 있다.
+      const updatedMenuName = prompt("메뉴명을 수정하세여.", menuName);
+
+      e.target.closest("li").querySelector(".menu-name").innerText =
+        updatedMenuName;
+    }
+  });
+
   // form 태그는 기본적으로 엔터키를 눌렀을 때 자동으로 submit이 발생하도록 브라우저에서 지원하기 때문에
   // 강제로 form 태그의 엔터키 감지를 막아줘야한다.
   // 엔터를 눌렀을 시 form의 submit을 막아주는 메서드

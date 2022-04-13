@@ -12,7 +12,14 @@
 const $ = (selector) => document.querySelector(selector);
 
 function App() {
+  // 메뉴 카운트 해주는 함수
+  // 함수명은 보통 동사를 앞에 쓴다.
+  const updateMenuCount = () => {
+    const menuCount = $("#espresso-menu-list").querySelectorAll("li").length;
+    $(".menu-count").innerText = `총 ${menuCount} 개`;
+  };
   /**
+   * 수정하기
    * [x] 메뉴 수정 버튼 클릭 이벤트를 받고 메뉴 수정하는 모달창이 뜬다.
    * [x] 모달창에서 신규메뉴명을 입력 받고, 확인 버튼을 누르면 메뉴가 수정된다.
    * 구현완료
@@ -41,6 +48,24 @@ function App() {
 
       e.target.closest("li").querySelector(".menu-name").innerText =
         updatedMenuName;
+    }
+
+    /**
+     * 삭제하기
+     * [x]메뉴 삭제 버튼 클릭시 이벤트를 받고, 메뉴 삭제 컨펌 모달창이 뜬다.
+     * [x]확인 버튼 클릭하면 메뉴가 삭제된다.
+     * [x]총 메뉴 갯수를 count하여 상단에 보여준다.
+     */
+
+    // 삭제하기
+    if (e.target.classList.contains("menu-remove-button")) {
+      // 확인 버튼 누르면 true 리턴
+      // 취소 버튼 누르면 false를 리턴한다.
+      if (confirm("정말 삭제하시겠습니까?")) {
+        // li태그를 통으로 삭제해야한다.
+        e.target.closest("li").remove();
+        updateMenuCount();
+      }
     }
   });
 
@@ -88,8 +113,9 @@ function App() {
     );
 
     // const 변수 = li 갯수 카운트
-    const menuCount = $("#espresso-menu-list").querySelectorAll("li").length;
-    $(".menu-count").innerText = `총 ${menuCount} 개`;
+    // const menuCount = $("#espresso-menu-list").querySelectorAll("li").length;
+    // $(".menu-count").innerText = `총 ${menuCount} 개`;
+    updateMenuCount();
 
     // input 박스 초기화
     $("#espresso-menu-name").value = "";

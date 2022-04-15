@@ -8,74 +8,32 @@
  * [x] 사용자 입력값이 빈 값이라면 추가되지 않는다.
  */
 
+/**
+ * 수정하기
+ * [x] 메뉴 수정 버튼 클릭 이벤트를 받고 메뉴 수정하는 모달창이 뜬다.
+ * [x] 모달창에서 신규메뉴명을 입력 받고, 확인 버튼을 누르면 메뉴가 수정된다.
+ * 구현완료
+ */
+
+/**
+ * 삭제하기
+ * [x]메뉴 삭제 버튼 클릭시 이벤트를 받고, 메뉴 삭제 컨펌 모달창이 뜬다.
+ * [x]확인 버튼 클릭하면 메뉴가 삭제된다.
+ * [x]총 메뉴 갯수를 count하여 상단에 보여준다.
+ */
+
 // $는 자바스크립트에서 html 엘리먼츠를 가지고 올때 관용적으로 사용하는 표현이다.
 const $ = (selector) => document.querySelector(selector);
 
 function App() {
-  // 메뉴 카운트 해주는 함수
   // 함수명은 보통 동사를 앞에 쓴다.
+  // 메뉴 카운팅
   const updateMenuCount = () => {
     const menuCount = $("#espresso-menu-list").querySelectorAll("li").length;
     $(".menu-count").innerText = `총 ${menuCount} 개`;
   };
-  /**
-   * 수정하기
-   * [x] 메뉴 수정 버튼 클릭 이벤트를 받고 메뉴 수정하는 모달창이 뜬다.
-   * [x] 모달창에서 신규메뉴명을 입력 받고, 확인 버튼을 누르면 메뉴가 수정된다.
-   * 구현완료
-   */
 
-  // 이벤트 위임
-  // 최초 앱 실행 시 메뉴가 존재하지 않기 때문에 li 태그 안의 버튼 수정, 삭제 버튼도 존재하지
-  // 않는다. html 태그로도 존재하지 않기 때문에 수정, 삭제 버튼에 클릭 이벤트를 바로 줄 수는
-  // 없고 대신 그들의 상위 엘리먼츠인 espresso-menu-list에 클릭 이벤트를 위임한다.
-  $("#espresso-menu-list").addEventListener("click", (e) => {
-    // classList는 e.target의 클래스들을 배열처럼 가져온다.
-    // contains는 배열안에 해당 클래스가 존재하는지 확인
-    if (e.target.classList.contains("menu-edit-button")) {
-      console.log(e.target);
-      // prompt로 모달 창 생성 첫번째 인자는 모달창에 띄워 줄 메세지, 두번째 인자는 입력창의 defualt값
-      console.log(e);
-      const menuName = e.target
-        .closest("li")
-        .querySelector(".menu-name").innerText;
-
-      // 기본적으로 prompt 모달창에 입력하고 확인을 누르면 String 값으로 리턴해준다.
-      // prompt("메뉴명을 수정하세여.", menuName);
-
-      // 이런식으로 변수에 리턴한 String값을 담을 수 있다.
-      const updatedMenuName = prompt("메뉴명을 수정하세여.", menuName);
-
-      e.target.closest("li").querySelector(".menu-name").innerText =
-        updatedMenuName;
-    }
-
-    /**
-     * 삭제하기
-     * [x]메뉴 삭제 버튼 클릭시 이벤트를 받고, 메뉴 삭제 컨펌 모달창이 뜬다.
-     * [x]확인 버튼 클릭하면 메뉴가 삭제된다.
-     * [x]총 메뉴 갯수를 count하여 상단에 보여준다.
-     */
-
-    // 삭제하기
-    if (e.target.classList.contains("menu-remove-button")) {
-      // 확인 버튼 누르면 true 리턴
-      // 취소 버튼 누르면 false를 리턴한다.
-      if (confirm("정말 삭제하시겠습니까?")) {
-        // li태그를 통으로 삭제해야한다.
-        e.target.closest("li").remove();
-        updateMenuCount();
-      }
-    }
-  });
-
-  // form 태그는 기본적으로 엔터키를 눌렀을 때 자동으로 submit이 발생하도록 브라우저에서 지원하기 때문에
-  // 강제로 form 태그의 엔터키 감지를 막아줘야한다.
-  // 엔터를 눌렀을 시 form의 submit을 막아주는 메서드
-  $("#espresso-menu-form").addEventListener("submit", (e) => {
-    e.preventDefault();
-  });
-
+  // 메뉴 추가
   const addMenuName = () => {
     if ($("#espresso-menu-name").value === "") {
       // 입력받은 값이 빈값이라면 메뉴에 추가되면 안된다.
@@ -121,11 +79,63 @@ function App() {
     $("#espresso-menu-name").value = "";
   };
 
-  // 클릭 버튼 눌렀을 시
-  $("#espresso-menu-submit-button").addEventListener("click", (event) => {
-    // 재사용되는 부분 메서드화
-    addMenuName();
+  // 삭제
+  const removeMenuName = (e) => {
+    // 확인 버튼 누르면 true 리턴
+    // 취소 버튼 누르면 false를 리턴한다.
+    if (confirm("정말 삭제하시겠습니까?")) {
+      // li태그를 통으로 삭제해야한다.
+      e.target.closest("li").remove();
+      updateMenuCount();
+    }
+  };
+
+  //메뉴 수정
+  const updateMenuName = (e) => {
+    // prompt로 모달 창 생성 첫번째 인자는 모달창에 띄워 줄 메세지, 두번째 인자는 입력창의 defualt값
+    console.log(e);
+    const menuName = e.target
+      .closest("li")
+      .querySelector(".menu-name").innerText;
+
+    // 기본적으로 prompt 모달창에 입력하고 확인을 누르면 String 값으로 리턴해준다.
+    // prompt("메뉴명을 수정하세여.", menuName);
+
+    // 이런식으로 변수에 리턴한 String값을 담을 수 있다.
+    const updatedMenuName = prompt("메뉴명을 수정하세여.", menuName);
+
+    e.target.closest("li").querySelector(".menu-name").innerText =
+      updatedMenuName;
+  };
+
+  // 이벤트 위임
+  // 최초 앱 실행 시 메뉴가 존재하지 않기 때문에 li 태그 안의 버튼 수정, 삭제 버튼도 존재하지
+  // 않는다. html 태그로도 존재하지 않기 때문에 수정, 삭제 버튼에 클릭 이벤트를 바로 줄 수는
+  // 없고 대신 그들의 상위 엘리먼츠인 espresso-menu-list에 클릭 이벤트를 위임한다.
+  $("#espresso-menu-list").addEventListener("click", (e) => {
+    // 수정하기
+    // classList는 e.target의 클래스들을 배열처럼 가져온다.
+    // contains는 배열안에 해당 클래스가 존재하는지 확인
+    if (e.target.classList.contains("menu-edit-button")) {
+      updateMenuName(e);
+    }
+
+    // 삭제하기
+    if (e.target.classList.contains("menu-remove-button")) {
+      removeMenuName(e);
+    }
   });
+
+  // form 태그는 기본적으로 엔터키를 눌렀을 때 자동으로 submit이 발생하도록 브라우저에서 지원하기 때문에
+  // 강제로 form 태그의 엔터키 감지를 막아줘야한다.
+  // 엔터를 눌렀을 시 form의 submit을 막아주는 메서드
+  $("#espresso-menu-form").addEventListener("submit", (e) => {
+    e.preventDefault();
+  });
+
+  // 클릭 버튼 눌렀을 시
+  // $("#espresso-menu-submit-button").addEventListener("click", addMenuName());  함수명 뒤에 ()를 붙이면 함수의 호출에 해당함으로 ()를 빼는 것이 좋다.
+  $("#espresso-menu-submit-button").addEventListener("click", addMenuName);
 
   // 메뉴의 이름을 입력 받아야한다.
 

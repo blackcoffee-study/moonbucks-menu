@@ -1,31 +1,26 @@
-/**
- * step1 요구사항 구현을 위한 전략
- * [x] 메뉴의 이름을 입력 받고 엔터키 입력으로 추가한다.
- * [x] 메뉴의 이름을 입력 받고 확인 버튼을 클릭하면 메뉴 추가를 한다.
- * [x] 추가되는 메뉴의 아래 마크업은 <ul id="espresso-menu-list" class="mt-3 pl-0"></ul> 안에 삽입해야 한다.
- * [x] 총 메뉴 갯수를 count하여 상단에 보여준다.
- * [x] 메뉴가 추가되면 input박스의 값은 초기화 되어야한다.
- * [x] 사용자 입력값이 빈 값이라면 추가되지 않는다.
- */
-
-/**
- * 수정하기
- * [x] 메뉴 수정 버튼 클릭 이벤트를 받고 메뉴 수정하는 모달창이 뜬다.
- * [x] 모달창에서 신규메뉴명을 입력 받고, 확인 버튼을 누르면 메뉴가 수정된다.
- * 구현완료
- */
-
-/**
- * 삭제하기
- * [x]메뉴 삭제 버튼 클릭시 이벤트를 받고, 메뉴 삭제 컨펌 모달창이 뜬다.
- * [x]확인 버튼 클릭하면 메뉴가 삭제된다.
- * [x]총 메뉴 갯수를 count하여 상단에 보여준다.
- */
-
 // $는 자바스크립트에서 html 엘리먼츠를 가지고 올때 관용적으로 사용하는 표현이다.
 const $ = (selector) => document.querySelector(selector);
+const store = {
+  // 로컬스토리지 셋터
+  setLocalStorage(menu) {
+    // 로컬스토리지에는 문자열로만 저장할 수 있다. (객체 불가능) => 문자열로 파싱해줘야 한다.
+    // JSON.stringify 메서드로 객체를 JSON 문자열로 파싱 할 수 있다.
+    //                    key,  value
+    localStorage.setItem("menu", JSON.stringify(menu));
+  },
+
+  // 로컬스토리지 겟터
+  getLocalStorage() {
+    localStorage.getItem("menu");
+  },
+};
 
 function App() {
+  // 상태는 변하는 데이터, 이 앱에서 변하는 것이 무엇인가 - 메뉴명
+  // 메뉴 데이터가 변하는 시점은 ? - addMenuName, removeMenuName
+  // 데이터 선언 및 초기화
+  this.menu = [];
+
   // 함수명은 보통 동사를 앞에 쓴다.
   // 메뉴 카운팅
   const updateMenuCount = () => {
@@ -42,7 +37,13 @@ function App() {
     }
     const espressoMenuName = $("#espresso-menu-name").value;
     console.log(espressoMenuName, "espressoMenuName");
-    const menuItemtemplate = (espressoMenuName) => {
+    // 메뉴에 추가
+    this.menu.push({ name: espressoMenuName });
+
+    // 상태가 변경된 즉시 로컬스토리지에 추가
+    store.setLocalStorage(this.menu);
+
+    /* const menuItemtemplate = (espressoMenuName) => {
       return `<li class="menu-list-item d-flex items-center py-2">
             <span class="w-100 pl-2 menu-name">${espressoMenuName}</span>
             <button
@@ -57,18 +58,37 @@ function App() {
             >
             삭제
             </button>
+        </li>`; */
+
+    // 변경된 메뉴를 기준으로
+    const template = this.menu
+      .map((item) => {
+        return `<li class="menu-list-item d-flex items-center py-2">
+            <span class="w-100 pl-2 menu-name">${item.name}</span>
+            <button
+                type="button"
+                class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
+            >
+            수정
+            </button>
+            <button
+                type="button"
+                class="bg-gray-50 text-gray-500 text-sm menu-remove-button"
+            >
+            삭제
+            </button>
         </li>`;
-    };
-    console.log(menuItemtemplate, "menuItemtemplate");
+      })
+      .join("");
+    // 메뉴의 갯수 만큼 ['<li></li>', '<li></li>'] 이런식으로 만들어주고 있음
+    //
+    // console.log(menuItemtemplate, "menuItemtemplate");
     // 자바스크립트에서 작성한 html 스크립트를 HTML태그에 삽입해주는 메서드 innteHTML
     // $("#espresso-menu-list").innerHTML = menuItemtemplate(espressoMenuName);
 
     // 단순히 innerHTML을 하면 기존의 태그가 계속 새로 덮어씌어진다. 방지하기 위한 메서드 insertAdjacentHTML 사용
 
-    $("#espresso-menu-list").insertAdjacentHTML(
-      "beforeend",
-      menuItemtemplate(espressoMenuName)
-    );
+    $("#espresso-menu-list").innerHTML = template;
 
     // const 변수 = li 갯수 카운트
     // const menuCount = $("#espresso-menu-list").querySelectorAll("li").length;
@@ -150,4 +170,13 @@ function App() {
 }
 
 // App호출//
-App();
+
+// 그냥 App()으로 호출 시 this로 가르킨 변수가 Cannot set properties of undefined 오류를 발생한다.
+// this의 값은 현재 위치에 있는 함수를 호출한 객체를 뜻하며
+// 일반함수에서는 this는 window를
+// 메소드 내부에서는 메소드를 포함하는 객체를 가르킨다.
+// App();
+
+// new로 생성자를 만들경우 this는 생성자에서 새로 만들어질 변수를 가르킨다.
+// https://velog.io/@ghdtjrrl94/JS-%EC%A7%80%EC%8B%9D2.-%ED%99%94%EC%82%B4%ED%91%9C-%ED%95%A8%EC%88%98%EC%99%80-this-new
+const app = new App();

@@ -11,7 +11,8 @@ const store = {
 
   // 로컬스토리지 겟터
   getLocalStorage() {
-    localStorage.getItem("menu");
+    // 문자열로 저장된 메뉴를 가져올때는 객체로 가져와야 하기 때문에 문자열에서 다시 객체로 파싱해준다.
+    return JSON.parse(localStorage.getItem("menu"));
   },
 };
 
@@ -21,50 +22,18 @@ function App() {
   // 데이터 선언 및 초기화
   this.menu = [];
 
-  // 함수명은 보통 동사를 앞에 쓴다.
-  // 메뉴 카운팅
-  const updateMenuCount = () => {
-    const menuCount = $("#espresso-menu-list").querySelectorAll("li").length;
-    $(".menu-count").innerText = `총 ${menuCount} 개`;
+  this.init = () => {
+    if (store.getLocalStorage().length > 1) {
+      this.menu = store.getLocalStorage();
+    }
+    render();
   };
 
-  // 메뉴 추가
-  const addMenuName = () => {
-    if ($("#espresso-menu-name").value === "") {
-      // 입력받은 값이 빈값이라면 메뉴에 추가되면 안된다.
-      alert("값을 입력해주세요.");
-      return;
-    }
-    const espressoMenuName = $("#espresso-menu-name").value;
-    console.log(espressoMenuName, "espressoMenuName");
-    // 메뉴에 추가
-    this.menu.push({ name: espressoMenuName });
-
-    // 상태가 변경된 즉시 로컬스토리지에 추가
-    store.setLocalStorage(this.menu);
-
-    /* const menuItemtemplate = (espressoMenuName) => {
-      return `<li class="menu-list-item d-flex items-center py-2">
-            <span class="w-100 pl-2 menu-name">${espressoMenuName}</span>
-            <button
-                type="button"
-                class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
-            >
-            수정
-            </button>
-            <button
-                type="button"
-                class="bg-gray-50 text-gray-500 text-sm menu-remove-button"
-            >
-            삭제
-            </button>
-        </li>`; */
-
-    // 변경된 메뉴를 기준으로
+  const render = () => {
     const template = this.menu
-      .map((item) => {
-        return `<li class="menu-list-item d-flex items-center py-2">
-            <span class="w-100 pl-2 menu-name">${item.name}</span>
+      .map((menuItem, index) => {
+        return `<li data-menu-id="${index}" class="menu-list-item d-flex items-center py-2">
+            <span class="w-100 pl-2 menu-name">${menuItem.name}</span>
             <button
                 type="button"
                 class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
@@ -94,6 +63,32 @@ function App() {
     // const menuCount = $("#espresso-menu-list").querySelectorAll("li").length;
     // $(".menu-count").innerText = `총 ${menuCount} 개`;
     updateMenuCount();
+  };
+
+  // 함수명은 보통 동사를 앞에 쓴다.
+  // 메뉴 카운팅
+  const updateMenuCount = () => {
+    const menuCount = $("#espresso-menu-list").querySelectorAll("li").length;
+    $(".menu-count").innerText = `총 ${menuCount} 개`;
+  };
+
+  // 메뉴 추가
+  const addMenuName = () => {
+    if ($("#espresso-menu-name").value === "") {
+      // 입력받은 값이 빈값이라면 메뉴에 추가되면 안된다.
+      alert("값을 입력해주세요.");
+      return;
+    }
+    const espressoMenuName = $("#espresso-menu-name").value;
+    console.log(espressoMenuName, "espressoMenuName");
+    // 메뉴에 추가
+    this.menu.push({ name: espressoMenuName });
+
+    // 상태가 변경된 즉시 로컬스토리지에 추가
+    store.setLocalStorage(this.menu);
+
+    render();
+    // 변경된 메뉴를 기준으로
 
     // input 박스 초기화
     $("#espresso-menu-name").value = "";
@@ -104,28 +99,36 @@ function App() {
     // 확인 버튼 누르면 true 리턴
     // 취소 버튼 누르면 false를 리턴한다.
     if (confirm("정말 삭제하시겠습니까?")) {
+      // 삭제할 메뉴 id를 가져온다.
+      const menuId = e.target.closest("li").dataset.menuId;
+
+      // menuId에 해당하는 객체 아이템을 1개 만큼 삭제
+      this.menu.splice(menuId, 1);
+
+      store.setLocalStorage(this.menu);
+
       // li태그를 통으로 삭제해야한다.
       e.target.closest("li").remove();
+
       updateMenuCount();
     }
   };
 
   //메뉴 수정
   const updateMenuName = (e) => {
+    const menuId = e.target.closest("li").dataset.menuId;
     // prompt로 모달 창 생성 첫번째 인자는 모달창에 띄워 줄 메세지, 두번째 인자는 입력창의 defualt값
     console.log(e);
-    const menuName = e.target
-      .closest("li")
-      .querySelector(".menu-name").innerText;
+    const $menuName = e.target.closest("li").querySelector(".menu-name");
 
     // 기본적으로 prompt 모달창에 입력하고 확인을 누르면 String 값으로 리턴해준다.
     // prompt("메뉴명을 수정하세여.", menuName);
 
     // 이런식으로 변수에 리턴한 String값을 담을 수 있다.
-    const updatedMenuName = prompt("메뉴명을 수정하세여.", menuName);
-
-    e.target.closest("li").querySelector(".menu-name").innerText =
-      updatedMenuName;
+    const updatedMenuName = prompt("메뉴명을 수정하세여.", $menuName.innerText);
+    this.menu[menuId].name = updatedMenuName;
+    store.setLocalStorage(this.menu);
+    $menuName.innerText = updatedMenuName;
   };
 
   // 이벤트 위임
@@ -180,3 +183,4 @@ function App() {
 // new로 생성자를 만들경우 this는 생성자에서 새로 만들어질 변수를 가르킨다.
 // https://velog.io/@ghdtjrrl94/JS-%EC%A7%80%EC%8B%9D2.-%ED%99%94%EC%82%B4%ED%91%9C-%ED%95%A8%EC%88%98%EC%99%80-this-new
 const app = new App();
+app.init();

@@ -17,7 +17,7 @@ const MenuApi = {
     // });
   },
 
-  // 메뉴 생성
+  // 메뉴 등록
   async createMenu(category, name) {
     const response = await fetch(`${BASE_URL}/category/${category}/menu`, {
       method: "POST",
@@ -26,6 +26,49 @@ const MenuApi = {
       },
       body: JSON.stringify({ name }),
     });
+    if (!response.ok) {
+      console.error(response, "에러 로그");
+    }
+  },
+
+  // 메뉴 수정
+  async updateMenu(category, name, menuId) {
+    const response = await fetch(
+      `${BASE_URL}/category/${category}/menu/${menuId}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name }),
+      }
+    );
+    if (!response.ok) {
+      console.error(response, "에러 로그");
+    }
+  },
+
+  // 메뉴 품절 토글 처리
+  async toggleSoldOutMenu(category, menuId) {
+    const response = await fetch(
+      `${BASE_URL}/category/${category}/menu/${menuId}/soldout`,
+      {
+        method: "PUT",
+      }
+    );
+    if (!response.ok) {
+      console.error(response, "에러 로그");
+    }
+  },
+
+  // 메뉴 삭제
+  async deleteMenu(category, menuId) {
+    const response = await fetch(
+      `${BASE_URL}/category/${category}/menu/${menuId}`,
+      {
+        method: "DELETE",
+      }
+    );
     if (!response.ok) {
       console.error(response, "에러 로그");
     }
@@ -58,20 +101,26 @@ function App() {
     initEventListeners();
   };
 
-  const soldOutMenu = (e) => {
+  const soldOutMenu = async (e) => {
     const menuId = e.target.closest("li").dataset.menuId;
-    this.menu[this.currentCategory][menuId].soldOut =
-      !this.menu[this.currentCategory][menuId].soldOut;
-    store.setLocalStorage(this.menu);
+    // this.menu[this.currentCategory][menuId].soldOut =
+    //   !this.menu[this.currentCategory][menuId].soldOut;
+    await MenuApi.toggleSoldOutMenu(this.currentCategory, menuId);
+    this.menu[this.currentCategory] = await MenuApi.getAllMenuByCategory(
+      this.currentCategory
+    );
+    // store.setLocalStorage(this.menu);
     render();
   };
 
   const render = () => {
     const template = this.menu[this.currentCategory]
-      .map((menuItem, index) => {
-        return `<li data-menu-id="${index}" class="menu-list-item d-flex items-center py-2">
+      .map((menuItem) => {
+        return `<li data-menu-id="${
+          menuItem.id
+        }" class="menu-list-item d-flex items-center py-2">
             <span class="${
-              menuItem.soldOut ? "sold-out" : ""
+              menuItem.isSoldOut ? "sold-out" : ""
             }  w-100 pl-2 menu-name">${menuItem.name}</span>
             <button
                 type="button"
@@ -159,7 +208,7 @@ function App() {
   };
 
   // 삭제
-  const removeMenuName = (e) => {
+  const removeMenuName = async (e) => {
     // 확인 버튼 누르면 true 리턴
     // 취소 버튼 누르면 false를 리턴한다.
     if (confirm("정말 삭제하시겠습니까?")) {
@@ -167,10 +216,13 @@ function App() {
       const menuId = e.target.closest("li").dataset.menuId;
 
       // menuId에 해당하는 객체 아이템을 1개 만큼 삭제
-      this.menu[this.currentCategory].splice(menuId, 1);
+      // this.menu[this.currentCategory].splice(menuId, 1);
+      // store.setLocalStorage(this.menu);
 
-      store.setLocalStorage(this.menu);
-
+      await MenuApi.deleteMenu(this.currentCategory, menuId);
+      this.menu[this.currentCategory] = await MenuApi.getAllMenuByCategory(
+        this.currentCategory
+      );
       // li태그를 통으로 삭제해야한다.
       // e.target.closest("li").remove();
       render();
@@ -180,7 +232,7 @@ function App() {
   };
 
   //메뉴 수정
-  const updateMenuName = (e) => {
+  const updateMenuName = async (e) => {
     const menuId = e.target.closest("li").dataset.menuId;
     // prompt로 모달 창 생성 첫번째 인자는 모달창에 띄워 줄 메세지, 두번째 인자는 입력창의 defualt값
     console.log(e);
@@ -191,9 +243,13 @@ function App() {
 
     // 이런식으로 변수에 리턴한 String값을 담을 수 있다.
     const updatedMenuName = prompt("메뉴명을 수정하세여.", $menuName.innerText);
-    this.menu[this.currentCategory][menuId].name = updatedMenuName;
-    store.setLocalStorage(this.menu);
+    // this.menu[this.currentCategory][menuId].name = updatedMenuName;
+    // store.setLocalStorage(this.menu);
     // $menuName.innerText = updatedMenuName;
+    await MenuApi.updateMenu(this.currentCategory, updatedMenuName, menuId);
+    this.menu[this.currentCategory] = await MenuApi.getAllMenuByCategory(
+      this.currentCategory
+    );
     render();
   };
 

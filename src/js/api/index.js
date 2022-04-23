@@ -1,27 +1,27 @@
-const BASE_URL = "http://localhost:3000/api";
+const BASE_URL = 'http://localhost:3000/api';
 
 const HTTP_METHOD = {
   POST(data) {
     return {
-      method: "POST",
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify(data),
     };
   },
   PUT(data) {
     return {
-      method: "PUT",
+      method: 'PUT',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       body: data ? JSON.stringify(data) : null,
     };
   },
   DELETE() {
     return {
-      method: "DELETE",
+      method: 'DELETE',
     };
   },
 };
@@ -29,8 +29,8 @@ const HTTP_METHOD = {
 const request = async (url, option) => {
   const response = await fetch(url, option);
   if (!response.ok) {
-    alert("에러가 발생했습니다.");
-    console.error(response, "에러 로그");
+    alert('에러가 발생했습니다.');
+    console.error(response, '에러 로그');
   }
   return response.json();
 };
@@ -38,8 +38,8 @@ const request = async (url, option) => {
 const requestWithOutJson = async (url, option) => {
   const response = await fetch(url, option);
   if (!response.ok) {
-    alert("에러가 발생했습니다.");
-    console.error(response, "에러 로그");
+    alert('에러가 발생했습니다.');
+    console.error(response, '에러 로그');
   }
   return response;
 };
@@ -63,10 +63,7 @@ const MenuApi = {
 
   // 메뉴 등록
   async createMenu(category, name) {
-    return request(
-      `${BASE_URL}/category/${category}/menu`,
-      HTTP_METHOD.POST({ name })
-    );
+    return request(`${BASE_URL}/category/${category}/menu`, HTTP_METHOD.POST({ name }));
     // const response = await fetch(`${BASE_URL}/category/${category}/menu`, {
     //   method: "POST",
     //   headers: {
@@ -81,26 +78,17 @@ const MenuApi = {
 
   // 메뉴 수정
   async updateMenu(category, name, menuId) {
-    return request(
-      `${BASE_URL}/category/${category}/menu/${menuId}`,
-      HTTP_METHOD.PUT({ name })
-    );
+    return request(`${BASE_URL}/category/${category}/menu/${menuId}`, HTTP_METHOD.PUT({ name }));
   },
 
   // 메뉴 품절 토글 처리
   async toggleSoldOutMenu(category, menuId) {
-    return request(
-      `${BASE_URL}/category/${category}/menu/${menuId}/soldout`,
-      HTTP_METHOD.PUT()
-    );
+    return request(`${BASE_URL}/category/${category}/menu/${menuId}/soldout`, HTTP_METHOD.PUT());
   },
 
   // 메뉴 삭제
   async deleteMenu(category, menuId) {
-    return requestWithOutJson(
-      `${BASE_URL}/category/${category}/menu/${menuId}`,
-      HTTP_METHOD.DELETE()
-    );
+    return requestWithOutJson(`${BASE_URL}/category/${category}/menu/${menuId}`, HTTP_METHOD.DELETE());
   },
 };
 

@@ -249,6 +249,8 @@ This project is [MIT](https://github.com/blackcoffee-study/moonbucks-menu/blob/m
 
 ## 💁‍♀️ Team
 
+팀명: 춘식이는 개발개발해
+
 - 이하은
 - 김동영
 - 송지원

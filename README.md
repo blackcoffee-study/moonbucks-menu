@@ -244,3 +244,11 @@ live-server 폴더명
 ## 📝 License
 
 This project is [MIT](https://github.com/blackcoffee-study/moonbucks-menu/blob/main/LICENSE) licensed.
+
+## 춘식이는 개발개발해
+
+- 송지원
+- 이하은
+- 김동영
+- 이시현
+- 이승효

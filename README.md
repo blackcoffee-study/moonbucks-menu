@@ -29,7 +29,7 @@
 
 <br/>
 
-## 🔥 Projects!
+## 🔥 Projects
 
 <p align="middle">
   <img width="400" src="./src/images/moonbucks-main.png">
@@ -244,3 +244,11 @@ live-server 폴더명
 ## 📝 License
 
 This project is [MIT](https://github.com/blackcoffee-study/moonbucks-menu/blob/main/LICENSE) licensed.
+
+## 팀: 춘식이는 개발개발해
+
+- [김동영](https://github.com/pers0n4/moonbucks-menu)
+- [송지원](https://github.com/zwonlala/moonbucks-menu)
+- [이승효](https://github.com/bingwer/moonbucks-menu)
+- [이시현](https://github.com/hey210056/moonbucks-menu)
+- [이하은](https://github.com/Leehaeun0/moonbucks-menu)

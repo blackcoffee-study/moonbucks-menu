@@ -1,3 +1,9 @@
+# TEAM : 카라멜 팝콘
+
+팝콘, 신다혜, 킹지, 안수경, 민오, 선리
+
+---
+
 <br/>
 <p align="middle">
   <img width="200px;" src="./src/images/moonbucks.png"/>

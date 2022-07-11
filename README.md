@@ -29,6 +29,17 @@
 
 <br/>
 
+## 🏃 잘살아보세
+| 성함                                      | 깃허브                          |
+|-------------------------------------------|---------------------------------|
+| [양아름](https://github.com/areumsheep)   | https://github.com/areumsheep   |
+| [김가람](https://github.com/dev-riverkim) | https://github.com/dev-riverkim |
+| [신윤선](https://github.com/jnny1017)     | https://github.com/jnny1017     |
+| [유원영](https://github.com/yooveloper)   | https://github.com/yooveloper   |
+| [김슬기](https://github.com/sgsg9447)     | https://github.com/sgsg9447     |
+
+<br/>
+
 ## 🔥 Projects!
 
 <p align="middle">

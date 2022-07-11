@@ -29,6 +29,17 @@
 
 <br/>
 
+## 오히려 좋아
+
+- 신성수
+- 유세빈
+- 추지애
+- 김도현
+- 최재원
+- 이경아
+
+<br/>
+
 ## 🔥 Projects!
 
 <p align="middle">
@@ -56,16 +67,10 @@
 ```js
 <li class="menu-list-item d-flex items-center py-2">
   <span class="w-100 pl-2 menu-name">${name}</span>
-  <button
-    type="button"
-    class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
-  >
+  <button type="button" class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button">
     수정
   </button>
-  <button
-    type="button"
-    class="bg-gray-50 text-gray-500 text-sm menu-remove-button"
-  >
+  <button type="button" class="bg-gray-50 text-gray-500 text-sm menu-remove-button">
     삭제
   </button>
 </li>
@@ -82,22 +87,13 @@
 ```js
 <li class="menu-list-item d-flex items-center py-2">
   <span class="w-100 pl-2 menu-name sold-out">${name}</span>
-  <button
-    type="button"
-    class="bg-gray-50 text-gray-500 text-sm mr-1 menu-sold-out-button"
-  >
+  <button type="button" class="bg-gray-50 text-gray-500 text-sm mr-1 menu-sold-out-button">
     품절
   </button>
-  <button
-    type="button"
-    class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
-  >
+  <button type="button" class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button">
     수정
   </button>
-  <button
-    type="button"
-    class="bg-gray-50 text-gray-500 text-sm menu-remove-button"
-  >
+  <button type="button" class="bg-gray-50 text-gray-500 text-sm menu-remove-button">
     삭제
   </button>
 </li>
@@ -147,8 +143,8 @@
 {
   response: [
     {
-      id: "string",
-      name: "string",
+      id: 'string',
+      name: 'string',
       isSoldOut: Boolean,
     },
   ];

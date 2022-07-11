@@ -38,7 +38,7 @@ export default class MenuNav extends Component {
             </button>
             <button
             type="button"
-            data-category-name="dessert"
+            data-category-name="desert"
             class="cafe-category-name btn bg-white shadow mx-1"
             >
             🍰 디저트

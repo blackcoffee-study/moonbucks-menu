@@ -1,3 +1,11 @@
+# 잘살아보세
+
+- 김가람
+- 신윤선
+- 유원영
+- 양아름
+- 김슬기
+
 <br/>
 <p align="middle">
   <img width="200px;" src="./src/images/moonbucks.png"/>

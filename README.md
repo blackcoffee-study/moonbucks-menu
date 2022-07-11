@@ -245,7 +245,7 @@ live-server 폴더명
 
 This project is [MIT](https://github.com/blackcoffee-study/moonbucks-menu/blob/main/LICENSE) licensed.
 
-# 팀 이름
+# 오히려좋아
 
 - 신성수
 - 유세빈

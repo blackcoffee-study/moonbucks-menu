@@ -1,6 +1,6 @@
 export const MESSAGE = Object.freeze({
-  INPUT_NAME: "이름을 입력하세요",
-  REQUIRED_MENU: "메뉴 이름을 입력하세요",
+  PROMPT_MENU_NAME: "이름을 입력하세요",
+  REQUIRED_MENU_NAME: "메뉴 이름을 입력하세요",
   CONFIRM_DELETE: "정말로 삭제하시겠습니까?",
 });
 

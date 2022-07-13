@@ -4,6 +4,6 @@ export const validateMenuName = (menuName) => {
   const checkName = (menuName || "").trim();
 
   if (!checkName) {
-    throw new Error(MESSAGE.REQUIRED_MENU);
+    throw new Error(MESSAGE.REQUIRED_MENU_NAME);
   }
 };

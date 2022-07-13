@@ -29,7 +29,7 @@ export const MenuListItem = ($container, { menuName }) => {
   };
 
   const editMenuName = () => {
-    const newName = prompt(MESSAGE.INPUT_NAME, ref.menuName);
+    const newName = prompt(MESSAGE.PROMPT_MENU_NAME, ref.menuName);
 
     try {
       validateMenuName(newName);

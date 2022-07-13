@@ -70,4 +70,4 @@ function handleDelete(event) {
 function updateTotalCount(){
     const count = menuList.childNodes.length;
     totalCount.innerText = `총 ${count}개`;
-}
+} 

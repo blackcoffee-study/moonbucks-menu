@@ -24,6 +24,7 @@ export default class EtoileApp {
         id: newMenuEntity.id,
         name,
         onEdit: this.appController.editMenu,
+        onRemove: this.appController.deleteMenu,
       });
 
       this.$menuList.append(newNode);
@@ -39,7 +40,7 @@ class MenuItemNode {
   menuItemRemoveButtonClassName = 'menu-remove-button';
   menuItemNameClassName = 'menu-name';
 
-  constructor({ id, name, onEdit }) {
+  constructor({ id, name, onEdit, onRemove }) {
     const parsedDocument = new DOMParser().parseFromString(
       `<li class="${this.menuItemClassName} d-flex items-center py-2">
         <span class="w-100 pl-2 ${this.menuItemNameClassName}">${name}</span>
@@ -68,6 +69,18 @@ class MenuItemNode {
     $menuItemEditButton.addEventListener('click', () => {
       const newName = onEdit(id);
       this.newListItemNode.querySelector(`.${this.menuItemNameClassName}`).textContent = newName;
+    });
+
+    const $menuItemRemoveButton = this.newListItemNode.querySelector(
+      `.${this.menuItemRemoveButtonClassName}`
+    );
+
+    $menuItemRemoveButton.addEventListener('click', () => {
+      const confirmResult = onRemove(id);
+
+      if (!confirmResult) return;
+
+      this.newListItemNode.remove();
     });
 
     return this.newListItemNode;

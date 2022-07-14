@@ -7,6 +7,7 @@ export default class AppController {
     this.menuService = new MenuService();
 
     this.editMenu = this.editMenu.bind(this);
+    this.deleteMenu = this.deleteMenu.bind(this);
   }
 
   // all APIs
@@ -45,7 +46,17 @@ export default class AppController {
   }
 
   // 그 메뉴 이제 팔지 말자
-  deleteMenu(id) {}
+  deleteMenu(id) {
+    const category = this.categoryService.getCurrent();
+
+    const confirmResult = confirm('정말 삭제하겠다고요? 이거 매출 견인하는 상품이에욧!');
+
+    if (confirmResult) {
+      this.menuService.deleteMenu(category, { id });
+    }
+
+    return confirmResult;
+  }
 
   // 이제 다른 카테고리 보자
   switchCategory(category) {

@@ -24,4 +24,12 @@ export default class EtoileRepository {
 
     this.caches.set(category, menus);
   }
+
+  delete(category, id) {
+    const menus = this.caches.get(category);
+
+    const index = menus.findIndex((menu) => menu.id === id);
+
+    delete menus[index];
+  }
 }

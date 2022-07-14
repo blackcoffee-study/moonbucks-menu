@@ -21,4 +21,7 @@ export default class MenuService {
 
     return name;
   }
+  deleteMenu(category, id) {
+    this.menuRepository.delete(category, id);
+  }
 }

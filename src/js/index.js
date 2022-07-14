@@ -1,7 +1,7 @@
 import Menu from "./modules/Menu.js";
 
 function App() {
-  new Menu([]);
+  new Menu();
 }
 
 App();

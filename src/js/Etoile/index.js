@@ -18,19 +18,58 @@ export default class EtoileApp {
 
       const name = new FormData(event.target).get('espressoMenuName');
 
-      this.appController.addMenu({ name });
+      const newMenuEntity = this.appController.addMenu({ name });
 
-      const newNode = this.getMenuItemNode(name);
+      const newNode = new MenuItemNode({
+        id: newMenuEntity.id,
+        name,
+        onEdit: this.appController.editMenu,
+      });
+
       this.$menuList.append(newNode);
 
       this.$menuTextInput.value = '';
     });
   }
+}
 
-  getMenuItemNode(name) {
-    return new DOMParser().parseFromString(
-      `<li class="menu-list-item d-flex items-center py-2"><span class="w-100 pl-2 menu-name">${name}</span><button type="button" class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"> 수정 </button> <button type="button" class="bg-gray-50 text-gray-500 text-sm menu-remove-button">삭제</button></li>`,
+class MenuItemNode {
+  menuItemClassName = 'menu-list-item';
+  menuItemEditButtonClassName = 'menu-edit-button';
+  menuItemRemoveButtonClassName = 'menu-remove-button';
+  menuItemNameClassName = 'menu-name';
+
+  constructor({ id, name, onEdit }) {
+    const parsedDocument = new DOMParser().parseFromString(
+      `<li class="${this.menuItemClassName} d-flex items-center py-2">
+        <span class="w-100 pl-2 ${this.menuItemNameClassName}">${name}</span>
+        <button
+          type="button"
+          class="bg-gray-50 text-gray-500 text-sm mr-1 ${this.menuItemEditButtonClassName}"
+        >
+          수정
+        </button>
+        <button
+          type="button"
+          class="bg-gray-50 text-gray-500 text-sm ${this.menuItemRemoveButtonClassName}"
+        >
+          삭제
+        </button>
+      </li>`,
       'text/html'
-    ).body.firstChild;
+    );
+
+    this.newListItemNode = parsedDocument.body.firstChild;
+
+    const $menuItemEditButton = this.newListItemNode.querySelector(
+      `.${this.menuItemEditButtonClassName}`
+    );
+
+    $menuItemEditButton.addEventListener('click', () => {
+      const newName = onEdit(id);
+      this.newListItemNode.querySelector(`.${this.menuItemNameClassName}`).textContent = newName;
+    });
+
+    return this.newListItemNode;
   }
 }

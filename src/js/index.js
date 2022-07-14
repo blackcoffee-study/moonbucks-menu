@@ -1,6 +1,6 @@
 import Menu from "./modules/Menu.js";
 
-export default function App() {
+function App() {
   new Menu([]);
 }
 

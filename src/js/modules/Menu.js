@@ -41,19 +41,23 @@ export default class Menu {
     res.push("</ul>");
     menuListContainer.innerHTML = res.join("");
     // 총 메뉴 갯수를 count하여 상단에 보여준다
-    document.querySelector(".menu-count").innerHTML = this.menu.length;
+    document.querySelector(
+      ".menu-count"
+    ).innerHTML = `총 ${this.menu.length} 개`;
   }
   init() {
     // 에스프레소 메뉴에 새로운 메뉴를 확인 버튼 또는 엔터키 입력으로 추가한다
     document
       .querySelector(".input-submit")
       .addEventListener("click", this.post.bind(this));
-    document.addEventListener("keypress", (e) => {
-      if (e.code === "Enter") {
-        e.preventDefault();
-        this.post();
-      }
-    });
+    document
+      .querySelector("#espresso-menu-name")
+      .addEventListener("keypress", (e) => {
+        if (e.code === "Enter") {
+          e.preventDefault();
+          this.post();
+        }
+      });
     this.output();
   }
 }

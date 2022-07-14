@@ -2,14 +2,55 @@ const menuListWrapper = document.querySelector("#espresso-menu-list");
 const menuInput = document.querySelector("#espresso-menu-name");
 const confirmBtn = document.querySelector("#espresso-menu-submit-button");
 
-const createMenuItem = (name) => {
-  let li = document.createElement("li");
-  li.textContent = name;
+const data = {
+  menuList: [],
+};
+
+const createBtnElem = (btnText, btnType) => {
+  const btn = document.createElement("button");
+
+  btn.textContent = btnText;
+  btn.classList = `bg-gray-50 text-gray-500 text-sm mr-1 menu-${btnType}-button`;
+  return btn;
+};
+
+const createMenuItemElem = (menuName) => {
+  const li = document.createElement("li");
+  const span = document.createElement("span");
+  const soldOutBtn = createBtnElem("품절", "sold-out");
+  const editBtn = createBtnElem("수정", "edit");
+  const removeBtn = createBtnElem("삭제", "remove");
+
+  span.textContent = menuName;
+  span.className = "w-100 pl-2 menu-name";
+
+  editBtn.addEventListener("click", () => {
+    const editMenuIdx = li.getAttribute("data-menu-id");
+    const menuName = prompt("메뉴명을 수정하세요 :)");
+
+    data.menuList.splice(editMenuIdx, 1, createMenuItemElem(menuName));
+    rendorMenuList();
+  });
+
+  removeBtn.addEventListener("click", () => {
+    const removeMenuIdx = li.getAttribute("data-menu-id");
+
+    data.menuList.splice(removeMenuIdx, 1);
+    rendorMenuList();
+  });
+
+  li.append(span, soldOutBtn, editBtn, removeBtn);
+  li.className = "menu-list-item d-flex items-center py-2";
   return li;
 };
 
-const data = {
-  menuList: [],
+const rendorMenuList = () => {
+  for (let i = 0; i < data.menuList.length; i++) {
+    const menuElem = data.menuList[i];
+
+    menuElem.setAttribute("data-menu-id", i);
+  }
+  menuListWrapper.replaceChildren(...data.menuList);
 };
 
 confirmBtn.addEventListener("click", () => {
@@ -19,11 +60,8 @@ confirmBtn.addEventListener("click", () => {
     return;
   }
 
-  data.menuList.push(createMenuItem(menuInput.value));
-
-  for (let i = 0; i < data.menuList.length; i++) {
-    menuListWrapper.append(data.menuList[i]);
-  }
+  data.menuList.push(createMenuItemElem(menuInput.value));
+  rendorMenuList();
 
   menuInput.value = "";
   menuInput.focus();

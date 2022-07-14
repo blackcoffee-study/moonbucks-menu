@@ -1,4 +1,4 @@
-import { EtoileApp } from './Etoile/index.js';
+import EtoileApp from './Etoile/index.js';
 /**
  * App
  * 문벅스는 카페에 설치된 메뉴스크린을 위한 어드민 앱이다.
@@ -17,12 +17,6 @@ import { EtoileApp } from './Etoile/index.js';
  * - ?
  */
 
-const defaultCategories = [
-  '에스프레소',
-  '프라푸치노',
-  '블렌디드',
-  '티바나',
-  '디저트',
-];
+const defaultCategories = ['에스프레소', '프라푸치노', '블렌디드', '티바나', '디저트'];
 
 new EtoileApp(defaultCategories);

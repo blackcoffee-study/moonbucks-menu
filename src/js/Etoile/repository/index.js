@@ -3,11 +3,25 @@ export default class EtoileRepository {
   caches = new Map();
 
   insert(category, menu) {
-    const set = this.caches.get(category) || new Set();
-    set.add(menu);
-    this.caches.set(category, set);
+    const menus = this.caches.get(category) || [];
+    menus.push(menu);
+
+    this.caches.set(category, menus);
   }
+
   getAll(category) {
-    return [...this.caches.get(category)];
+    return this.caches.get(category);
+  }
+
+  update(category, { id, name }) {
+    const menus = this.caches.get(category);
+
+    const index = menus.findIndex((menu) => menu.id === id);
+
+    if (index === -1) return;
+
+    menus[index] = { ...menus[index], name };
+
+    this.caches.set(category, menus);
   }
 }

@@ -5,7 +5,7 @@ export const $ = (selector, el = document) => {
 export const createElement = (template) => {
   const $el = document.createElement("template");
   $el.insertAdjacentHTML("afterbegin", template);
-  return $el.firstChild.cloneNode(true);
+  return $el.firstElementChild.cloneNode(true);
 };
 
 export const dispatchCustomEvent = (name, detail, target = window) => {

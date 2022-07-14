@@ -29,7 +29,7 @@ export const MenuInput = ($container) => {
     dispatchCustomEvent(EVENTS.ADD_MENU, { menuName });
   };
 
-  addEventListener("load", () => focus());
+  addEventListener("load", focus);
 
-  addCustomEventListener(EVENTS.MENU_FORM_SUBMIT, () => addMenu());
+  addCustomEventListener(EVENTS.MENU_FORM_SUBMIT, addMenu);
 };

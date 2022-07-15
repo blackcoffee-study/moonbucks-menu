@@ -18,6 +18,14 @@ export default function App() {
 
   function init() {
     menuForm.addEventListener("submit", (event) => event.preventDefault());
+    menuList.addEventListener("click", ({ target }) => {
+      if (!target) return;
+      const menuItem = target.closest("moon-menu-item");
+
+      if (target.classList.contains("menu-edit-button")) {
+        editMenuItem(menuItem);
+      }
+    });
     menuInput.addEventListener("keydown", (event) => {
       if (event.key === "Enter") {
         appendMenuItem();
@@ -34,6 +42,16 @@ export default function App() {
       menu.setAttribute("name", menuInput.value);
       menuList.appendChild(menu);
       menuInput.value = "";
+    }
+  }
+
+  function editMenuItem(menuItem) {
+    const newMenuName = window.prompt(
+      "수정할 메뉴 이름을 입력하세요",
+      menuItem.getAttribute("name"),
+    );
+    if (newMenuName) {
+      menuItem.setAttribute("name", newMenuName);
     }
   }
 }

@@ -24,6 +24,8 @@ export default function App() {
 
       if (target.classList.contains("menu-edit-button")) {
         editMenuItem(menuItem);
+      } else if (target.classList.contains("menu-remove-button")) {
+        removeMenuItem(menuItem);
       }
     });
     menuInput.addEventListener("keydown", (event) => {
@@ -53,5 +55,9 @@ export default function App() {
     if (newMenuName) {
       menuItem.setAttribute("name", newMenuName);
     }
+  }
+
+  function removeMenuItem(menuItem) {
+    window.confirm("메뉴를 삭제하시겠습니까?") && menuItem.remove();
   }
 }

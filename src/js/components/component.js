@@ -1,5 +1,3 @@
-import { alertText } from '../constant/index.js';
-
 export default class Component {
   constructor(containerId, template) {
     const $container = document.getElementById(containerId);
@@ -60,8 +58,8 @@ export default class Component {
     this.clearHtmlList();
   }
 
-  makePrompt() {
-    return prompt(alertText.MENU_UPDATE);
+  makePrompt(msg) {
+    return prompt(msg);
   }
 
   makeHTML() {}

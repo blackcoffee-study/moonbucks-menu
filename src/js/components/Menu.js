@@ -61,14 +61,14 @@ export default class Menu extends Component {
   }
 
   updateMenu(target) {
-    const name = this.makePrompt();
-    if (this.checkDuplication(name)) {
+    const newName = this.makePrompt(alertText.MENU_UPDATE);
+    if (this.checkDuplication(newName)) {
       alert(alertText.MENU_EXIST);
       return;
     }
     const targetObj = this.state.menu.find((menu) => menu.name === target);
-    if (!name || name.replaceAll(' ', '') === '' || !targetObj) return;
-    targetObj.name = name;
+    if (!newName || newName.replaceAll(' ', '') === '' || !targetObj) return;
+    targetObj.name = newName;
     this.setState('menu', [...this.state.menu]);
   }
 

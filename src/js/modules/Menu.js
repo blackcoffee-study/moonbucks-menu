@@ -15,6 +15,7 @@ export default class Menu {
       const newMenuUpdateButton = document.createElement("button");
       newMenuUpdateButton.className =
         "bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button";
+      // 메뉴의 수정 버튼을 눌러 메뉴 이름을 수정할 수 있다
       newMenuUpdateButton.onclick = (e) => this.updateMenu(e);
       newMenuUpdateButton.appendChild(document.createTextNode("수정"));
       const newMenuDeleteButton = document.createElement("button");
@@ -35,7 +36,10 @@ export default class Menu {
     }
   }
   updateMenu(e) {
-    console.log("수정");
+    const name = e.target.closest("li").querySelector(".menu-name");
+    // 메뉴 수정시 브라우저에서 제공하는 prompt 인터페이스를 활용한다
+    const updateName = prompt("메뉴명을 수정하세요", name.innerHTML);
+    if (updateName) name.innerHTML = updateName;
   }
   deleteMenu(e) {
     // 메뉴 삭제시 브라우저에서 제공하는 confirm 인터페이스를 활용한다

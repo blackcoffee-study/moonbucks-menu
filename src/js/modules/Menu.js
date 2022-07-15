@@ -28,10 +28,10 @@ export default class Menu {
       menuList.appendChild(newMenu);
       // 메뉴가 추가되고 나면, input은 빈 값으로 초기화한다
       newMenuInput.value = "";
+      this.count();
     } else {
       alert("값을 입력해주세요.");
     }
-    this.count();
   }
   update() {
     console.log("수정");

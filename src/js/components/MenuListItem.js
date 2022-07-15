@@ -7,11 +7,15 @@ import {
 } from "../util";
 
 export function MenuListItem($container, { menuName }) {
-  const $menuName = $(".menu-name", $container);
-  const $removeButton = $(".menu-remove-button", $container);
-  const $editButton = $(".menu-edit-button", $container);
-
   const ref = { menuName };
+
+  const $menuName = $(".menu-name", $container);
+
+  const $removeButton = $(".menu-remove-button", $container);
+  $removeButton.addEventListener("click", removeMenu);
+
+  const $editButton = $(".menu-edit-button", $container);
+  $editButton.addEventListener("click", editMenuName);
 
   function setMenuName(name) {
     ref.menuName = name;
@@ -39,9 +43,6 @@ export function MenuListItem($container, { menuName }) {
 
     setMenuName(newName);
   }
-
-  $editButton.addEventListener("click", editMenuName);
-  $removeButton.addEventListener("click", removeMenu);
 
   return { $container };
 }

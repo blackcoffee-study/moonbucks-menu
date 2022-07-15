@@ -6,19 +6,19 @@ import {
   validateMenuName,
 } from "../util";
 
-export const MenuListItem = ($container, { menuName }) => {
+export function MenuListItem($container, { menuName }) {
   const $menuName = $(".menu-name", $container);
   const $removeButton = $(".menu-remove-button", $container);
   const $editButton = $(".menu-edit-button", $container);
 
   const ref = { menuName };
 
-  const setMenuName = (name) => {
+  function setMenuName(name) {
     ref.menuName = name;
     $menuName.textContent = name;
-  };
+  }
 
-  const removeMenu = () => {
+  function removeMenu() {
     if (!confirm(MESSAGE.CONFIRM_DELETE)) {
       return;
     }
@@ -26,9 +26,9 @@ export const MenuListItem = ($container, { menuName }) => {
     $container.remove();
 
     dispatchCustomEvent(EVENTS.REMOVE_MENU);
-  };
+  }
 
-  const editMenuName = () => {
+  function editMenuName() {
     const newName = prompt(MESSAGE.PROMPT_MENU_NAME, ref.menuName);
 
     try {
@@ -38,15 +38,15 @@ export const MenuListItem = ($container, { menuName }) => {
     }
 
     setMenuName(newName);
-  };
+  }
 
   $editButton.addEventListener("click", editMenuName);
   $removeButton.addEventListener("click", removeMenu);
 
   return { $container };
-};
+}
 
-export const DefaultMenuListItem = (menuName) => {
+export function DefaultMenuListItem(menuName) {
   const template = `
   <li class="menu-list-item d-flex items-center py-2">
     <span class="w-100 pl-2 menu-name">${menuName}</span>
@@ -57,4 +57,4 @@ export const DefaultMenuListItem = (menuName) => {
   const $container = createElement(template);
 
   return MenuListItem($container, { menuName });
-};
+}

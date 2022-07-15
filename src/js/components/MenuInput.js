@@ -5,16 +5,16 @@ import {
   validateMenuName,
 } from "../util";
 
-export const MenuInput = ($container) => {
-  const setValue = (value) => {
+export function MenuInput($container) {
+  function setValue(value) {
     $container.value = value;
-  };
+  }
 
-  const focus = () => {
+  function focus() {
     $container.focus();
-  };
+  }
 
-  const addMenu = () => {
+  function addMenu() {
     const { value: menuName } = $container;
 
     try {
@@ -27,9 +27,9 @@ export const MenuInput = ($container) => {
     focus();
 
     dispatchCustomEvent(EVENTS.ADD_MENU, { menuName });
-  };
+  }
 
   addEventListener("load", focus);
 
   addCustomEventListener(EVENTS.MENU_FORM_SUBMIT, addMenu);
-};
+}

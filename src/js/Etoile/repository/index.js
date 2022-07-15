@@ -1,5 +1,10 @@
 // repository : 기본은 인메모리
 export default class EtoileRepository {
+  /**
+   * type Category = string
+   * type Menu = { id: string, name: string }
+   * type Caches = Map<Category, Menu[]>
+   */
   caches = new Map();
 
   insert(category, menu) {

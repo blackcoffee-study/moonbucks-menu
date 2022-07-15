@@ -1,7 +1,5 @@
-import Menu from "./modules/Menu.js";
+import Menu from "./components/Menu.js";
 
-function App() {
-  new Menu();
-}
-
-App();
+document.addEventListener("DOMContentLoaded", () => {
+  Menu();
+});

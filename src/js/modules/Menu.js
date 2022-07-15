@@ -2,8 +2,8 @@ export default class Menu {
   constructor() {
     this.init();
   }
-  createMenu() {
-    const newMenuInput = document.querySelector(".input-field");
+  createMenu(e) {
+    const newMenuInput = e.target.querySelector(".input-field");
     // 사용자 입력값이 빈 값이라면 추가되지 않는다
     if (newMenuInput.value) {
       const menuList = document.querySelector("#espresso-menu-list");
@@ -56,16 +56,10 @@ export default class Menu {
   init() {
     // 에스프레소 메뉴에 새로운 메뉴를 확인 버튼 또는 엔터키 입력으로 추가한다
     document
-      .querySelector(".input-submit")
-      .addEventListener("click", this.createMenu.bind(this));
-    document
-      .querySelector("#espresso-menu-name")
-      .addEventListener("keypress", (e) => {
-        if (e.code === "Enter") {
-          e.preventDefault();
-          this.createMenu();
-        }
+      .querySelector("#espresso-menu-form")
+      .addEventListener("submit", (e) => {
+        e.preventDefault();
+        this.createMenu(e);
       });
-    this.countMenu();
   }
 }

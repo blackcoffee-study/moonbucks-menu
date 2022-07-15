@@ -44,6 +44,7 @@ export default function App() {
       menu.setAttribute("name", menuInput.value);
       menuList.appendChild(menu);
       menuInput.value = "";
+      updateMenuCount();
     }
   }
 
@@ -58,6 +59,14 @@ export default function App() {
   }
 
   function removeMenuItem(menuItem) {
-    window.confirm("메뉴를 삭제하시겠습니까?") && menuItem.remove();
+    if (window.confirm("메뉴를 삭제하시겠습니까?")) {
+      menuItem.remove();
+      updateMenuCount();
+    }
+  }
+
+  function updateMenuCount() {
+    const menuCount = menuList.children.length;
+    select(".menu-count").textContent = `총 ${menuCount}개`;
   }
 }

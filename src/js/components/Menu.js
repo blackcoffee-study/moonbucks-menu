@@ -55,8 +55,8 @@ export default class Menu extends Component {
       return;
     }
 
-    this.state.count += 1;
     $menuInput.value = '';
+    this.setState('count', this.state.count + 1);
     this.setState('menu', [...this.state.menu, { name: newMenu }]);
   }
 
@@ -74,7 +74,7 @@ export default class Menu extends Component {
 
   deleteMenu(target) {
     if (!this.makeConfirmAlert(alertText.MENU_DELETE)) return;
-    this.state.count -= 1;
+    this.state('count', this.state.count - 1);
     this.setState(
       'menu',
       this.state.menu.filter((menu) => menu.name !== target)

@@ -52,6 +52,15 @@ function updateMenuName(i) {
 	renderMenuList();
 }
 
+function removeMenuItem(i) {
+	const isConfrimed = confirm("정말 삭제하시겠습니까?");
+
+	if (isConfrimed) {
+		state.delete(i);
+		renderMenuList();
+	}
+}
+
 function createMenuListItemElement(menu, index) {
 	const li = document.createElement("li");
 	li.className = "menu-list-item d-flex items-center py-2";
@@ -69,6 +78,7 @@ function createMenuListItemElement(menu, index) {
 	const deleteButton = document.createElement("button");
 	deleteButton.type = "button";
 	deleteButton.className = "bg-gray-50 text-gray-500 text-sm menu-remove-button";
+	deleteButton.addEventListener("click", () => removeMenuItem(index));
 	deleteButton.innerHTML = "삭제";
 
 	li.appendChild(menuName);

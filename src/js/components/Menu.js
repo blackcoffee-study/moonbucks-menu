@@ -1,19 +1,19 @@
+import { $ } from "../utils/$.js";
+
 const Menu = () => {
-  const newMenuInput = document.querySelector(".input-field");
+  const newMenuInput = $(".input-field");
   // 에스프레소 메뉴에 새로운 메뉴를 확인 버튼 또는 엔터키 입력으로 추가한다
-  document
-    .querySelector("#espresso-menu-form")
-    .addEventListener("submit", (e) => {
-      e.preventDefault();
-      // 사용자 입력값이 빈 값이라면 추가되지 않는다
-      newMenuInput.value
-        ? createMenu(newMenuInput.value)
-        : alert("값을 입력해주세요.");
-      // 메뉴가 추가되고 나면, input은 빈 값으로 초기화한다
-      newMenuInput.value = "";
-    });
+  $("#espresso-menu-form").addEventListener("submit", (e) => {
+    e.preventDefault();
+    // 사용자 입력값이 빈 값이라면 추가되지 않는다
+    newMenuInput.value
+      ? createMenu(newMenuInput.value)
+      : alert("값을 입력해주세요.");
+    // 메뉴가 추가되고 나면, input은 빈 값으로 초기화한다
+    newMenuInput.value = "";
+  });
   const createMenu = (name) => {
-    const menuList = document.querySelector("#espresso-menu-list");
+    const menuList = $("#espresso-menu-list");
     const newMenu = document.createElement("li");
     newMenu.className = "menu-list-item d-flex items-center py-2";
     const newMenuName = document.createElement("span");
@@ -53,7 +53,7 @@ const Menu = () => {
   const countMenu = () => {
     // 총 메뉴 갯수를 count하여 상단에 보여준다
     const count = document.querySelectorAll(".menu-list-item").length;
-    document.querySelector(".menu-count").innerHTML = `총 ${count} 개`;
+    $(".menu-count").innerHTML = `총 ${count} 개`;
   };
 };
 

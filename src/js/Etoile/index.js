@@ -9,34 +9,48 @@ export default class EtoileApp {
   constructor(categories) {
     this.appController = new AppController(categories);
 
+    this.handleSubmitMenu = this.handleSubmitMenu.bind(this);
+    this.handleEditMenu = this.handleEditMenu.bind(this);
+    this.handleRemoveMenu = this.handleRemoveMenu.bind(this);
+
     this.attachListeners();
   }
 
   attachListeners() {
-    this.$menuForm.addEventListener('submit', (event) => {
-      event.preventDefault();
+    this.$menuForm.addEventListener('submit', this.handleSubmitMenu);
+  }
 
-      const name = new FormData(event.target).get('espressoMenuName');
+  handleEditMenu() {
+    return this.appController.editMenu();
+  }
+  handleRemoveMenu() {
+    return this.appController.deleteMenu();
+  }
 
-      let newMenuEntity;
-      try {
-        newMenuEntity = this.appController.addMenu({ name });
-      } catch (error) {
-        console.warn(error);
-        return;
-      }
+  handleSubmitMenu(event) {
+    event.preventDefault();
 
-      const newNode = new MenuItemNode({
-        id: newMenuEntity.id,
-        name,
-        onEdit: this.appController.editMenu,
-        onRemove: this.appController.deleteMenu,
-      });
+    const name = new FormData(event.target).get('espressoMenuName');
 
-      this.$menuList.append(newNode);
+    let newMenuEntity;
 
-      this.$menuTextInput.value = '';
+    try {
+      newMenuEntity = this.appController.addMenu({ name });
+    } catch (error) {
+      console.warn(error);
+      return;
+    }
+
+    const newNode = new MenuItemNode({
+      id: newMenuEntity.id,
+      name,
+      onEdit: this.handleEditMenu,
+      onRemove: this.handleRemoveMenu,
     });
+
+    this.$menuList.append(newNode);
+
+    this.$menuTextInput.value = '';
   }
 }
 

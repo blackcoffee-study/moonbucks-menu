@@ -71,6 +71,23 @@
 </li>
 ```
 
+## 😸 step1 코드리뷰 확인 사항  
+
+1. 코드 불필요한 주석은 없는가? 
+2. 불필요한 “console.log()” 는 없는가? 
+3. eol 개행을 하였는가? 
+	- [파일 끝에 개행을 추가해야 하는 이유](https://coderifleman.tumblr.com/post/115464362564/%ED%8C%8C%EC%9D%BC-%EB%81%9D%EC%97%90-%EA%B0%9C%ED%96%89%EC%9D%84-%EC%B6%94%EA%B0%80%ED%95%B4%EC%95%BC-%ED%95%98%EB%8A%94-%EC%9D%B4%EC%9C%A0)
+	- [파일마다 EOL(End Of Line)을 왜 넣어야 할까](https://avocado12-note.tistory.com/11)
+4. var 사용을 지양하고 let, const를 적절히 사용하였는가? 
+5. 불필요한 전역변수를 사용하지 않았는가? 
+6. 변수명에 적절한 네이밍을 적용하였는가?
+7. 중복코드를 최소화하였는가?
+8. 하나의 함수가 너무 많은 일을 하고 있진 않은가?
+9. UI 렌더링 코드와 비즈니스 로직 코드를 분리하였는가?
+10. [부정 조건을 사용하지 않는가?](https://velog.io/@seob/JavaScript-Clean-Code-%EA%B0%80%EB%8F%85%EC%84%B1-%EB%86%92%EC%9D%B4%EA%B8%B0)
+11. [Early return pattern을 적용하였는가?](https://uminoh.tistory.com/m/35)
+
+
 ## 🎯 step2 요구사항 - 상태 관리로 메뉴 관리하기
 
 - [ ] [localStorage](https://developer.mozilla.org/ko/docs/Web/API/Window/localStorage)에 데이터를 저장하여 새로고침해도 데이터가 남아있게 한다.

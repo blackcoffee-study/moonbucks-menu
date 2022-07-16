@@ -20,7 +20,8 @@ export default class AppController {
 
   // 신메뉴 넣자
   addMenu(menuDto) {
-    // validate
+    validator.isEmptyString(menuDto.name);
+
     const category = this.categoryService.getCurrent();
     const newMenu = this.menuService.addMenu(category, menuDto);
 
@@ -64,3 +65,9 @@ export default class AppController {
     this.menuService.showMenu(category);
   }
 }
+
+const validator = {
+  isEmptyString: (value) => {
+    if (value.length === 0) throw new Error('input is empty string');
+  },
+};

@@ -18,7 +18,13 @@ export default class EtoileApp {
 
       const name = new FormData(event.target).get('espressoMenuName');
 
-      const newMenuEntity = this.appController.addMenu({ name });
+      let newMenuEntity;
+      try {
+        newMenuEntity = this.appController.addMenu({ name });
+      } catch (error) {
+        console.warn(error);
+        return;
+      }
 
       const newNode = new MenuItemNode({
         id: newMenuEntity.id,

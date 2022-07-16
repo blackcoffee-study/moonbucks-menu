@@ -1,5 +1,4 @@
-import Component from './component.js';
-import { store } from '../index.js';
+import Component from './Component.js';
 import { alertText } from '../constant/index.js';
 
 export default class Menu extends Component {
@@ -22,8 +21,9 @@ export default class Menu extends Component {
     super(containerId, menuListTemplate);
   }
 
-  initFunc() {
+  init() {
     this.setState('menu', []);
+    this.setState('count', 0);
     const $menuSubmitForm = document.getElementById('espresso-menu-form');
 
     this.addEvent($menuSubmitForm, 'submit', (e) => {
@@ -38,7 +38,7 @@ export default class Menu extends Component {
 
   updateCount() {
     const $count = document.querySelector('.menu-count');
-    $count.innerHTML = `총 ${store.count}개`;
+    $count.innerHTML = `총 ${this.state.count}개`;
   }
 
   addMenu() {
@@ -55,7 +55,7 @@ export default class Menu extends Component {
       return;
     }
 
-    store.count += 1;
+    this.state.count += 1;
     $menuInput.value = '';
     this.setState('menu', [...this.state.menu, { name: newMenu }]);
   }
@@ -74,7 +74,7 @@ export default class Menu extends Component {
 
   deleteMenu(target) {
     if (!this.makeConfirmAlert(alertText.MENU_DELETE)) return;
-    store.count -= 1;
+    this.state.count -= 1;
     this.setState(
       'menu',
       this.state.menu.filter((menu) => menu.name !== target)

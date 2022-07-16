@@ -3,20 +3,20 @@ export default class Component {
     const $container = document.getElementById(containerId);
 
     if (!$container) {
-      throw "container doen't exists";
+      throw "container doesn't exists";
     }
 
+    this.state = {};
     this.container = $container;
     this.baseTemplate = template;
     this.renderTemplate = template;
     this.htmlList = [];
-    this.state = {};
-    this.initFunc();
+    this.init();
     this.render();
   }
 
-  addEvent($element, evnetName, func) {
-    $element.addEventListener(evnetName, func);
+  addEvent($element, eventName, func) {
+    $element.addEventListener(eventName, func);
   }
 
   setState(key, value) {
@@ -25,10 +25,10 @@ export default class Component {
   }
 
   getHTMLElement(template) {
-    const $warpper = document.createElement('div');
-    $warpper.innerHTML = template;
-    const $targetElement = $warpper.firstChild.cloneNode(true);
-    $warpper.remove();
+    const $wrapper = document.createElement('div');
+    $wrapper.innerHTML = template;
+    const $targetElement = $wrapper.firstChild.cloneNode(true);
+    $wrapper.remove();
     return $targetElement;
   }
 
@@ -64,7 +64,7 @@ export default class Component {
 
   makeHTML() {}
 
-  initFunc() {}
+  init() {}
 
   render() {}
 }

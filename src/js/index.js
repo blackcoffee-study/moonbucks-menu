@@ -41,20 +41,54 @@ function addNewMenu(menuName) {
 	renderMenuList();
 }
 
-function createMenuListItemElementStr(menu) {
-	return `
-<li class="menu-list-item d-flex items-center py-2">
-	<span class="w-100 pl-2 menu-name">${menu.name}</span>
-	<button type="button" class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button">수정</button>
-	<button type="button" class="bg-gray-50 text-gray-500 text-sm menu-remove-button">삭제</button>
-</li>`;
+function updateMenuName(i) {
+	const newName = prompt("메뉴명을 수정하세요");
+
+	if (!newName) {
+		alert("값을 입력해주세요.");
+		return;
+	}
+	state.update(i, new Menu(newName.trim()));
+	renderMenuList();
+}
+
+function createMenuListItemElement(menu, index) {
+	const li = document.createElement("li");
+	li.className = "menu-list-item d-flex items-center py-2";
+
+	const menuName = document.createElement("span")
+	menuName.className = "w-100 pl-2 menu-name";
+	menuName.innerHTML = menu.name;
+
+	const editButton = document.createElement("button");
+	editButton.type = "button"
+	editButton.className = "bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button";
+	editButton.addEventListener("click", () => updateMenuName(index));
+	editButton.innerHTML = "수정";
+
+	const deleteButton = document.createElement("button");
+	deleteButton.type = "button";
+	deleteButton.className = "bg-gray-50 text-gray-500 text-sm menu-remove-button";
+	deleteButton.innerHTML = "삭제";
+
+	li.appendChild(menuName);
+	li.appendChild(editButton);
+	li.appendChild(deleteButton);
+
+	return li;
 }
 
 function renderMenuList() {
-	const menuLiTagStrList = state.getMenuList().map(
-		(menu) => createMenuListItemElementStr(menu)
+	// 기존에 menuList의 innerHtml에 존재하던 <li> 모두 제거
+	while (menuList.firstChild) {
+		menuList.removeChild(menuList.firstChild);
+	}
+
+	// 현재 state의 해당하는 Menu 배열을 불러와, 각각의 menu를 기반으로 <li> Element를 생성하여 menuList에 삽입
+	state.getMenuList().forEach(
+		(menu, index) => menuList.appendChild(createMenuListItemElement(menu, index))
 	);
-	menuList.innerHTML = menuLiTagStrList.join("");
+
 	menuCount.innerHTML = `총 ${state.getMenuCount()}개`;
 }
 

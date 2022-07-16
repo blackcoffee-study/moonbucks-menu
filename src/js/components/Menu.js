@@ -1,43 +1,41 @@
 const Menu = () => {
+  const newMenuInput = document.querySelector(".input-field");
   // 에스프레소 메뉴에 새로운 메뉴를 확인 버튼 또는 엔터키 입력으로 추가한다
   document
     .querySelector("#espresso-menu-form")
     .addEventListener("submit", (e) => {
       e.preventDefault();
-      createMenu(e);
-    });
-  const createMenu = (e) => {
-    const newMenuInput = e.target.querySelector(".input-field");
-    // 사용자 입력값이 빈 값이라면 추가되지 않는다
-    if (newMenuInput.value) {
-      const menuList = document.querySelector("#espresso-menu-list");
-      const newMenu = document.createElement("li");
-      newMenu.className = "menu-list-item d-flex items-center py-2";
-      const newMenuName = document.createElement("span");
-      newMenuName.className = "w-100 pl-2 menu-name";
-      newMenuName.appendChild(document.createTextNode(`${newMenuInput.value}`));
-      const newMenuUpdateButton = document.createElement("button");
-      newMenuUpdateButton.className =
-        "bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button";
-      // 메뉴의 수정 버튼을 눌러 메뉴 이름을 수정할 수 있다
-      newMenuUpdateButton.onclick = (e) => updateMenu(e);
-      newMenuUpdateButton.appendChild(document.createTextNode("수정"));
-      const newMenuDeleteButton = document.createElement("button");
-      newMenuDeleteButton.className =
-        "bg-gray-50 text-gray-500 text-sm menu-remove-button";
-      // 메뉴 삭제 버튼을 이용하여 메뉴를 삭제할 수 있다
-      newMenuDeleteButton.onclick = (e) => deleteMenu(e);
-      newMenuDeleteButton.appendChild(document.createTextNode("삭제"));
-      newMenu.appendChild(newMenuName);
-      newMenu.appendChild(newMenuUpdateButton);
-      newMenu.appendChild(newMenuDeleteButton);
-      menuList.appendChild(newMenu);
+      // 사용자 입력값이 빈 값이라면 추가되지 않는다
+      newMenuInput.value
+        ? createMenu(newMenuInput.value)
+        : alert("값을 입력해주세요.");
       // 메뉴가 추가되고 나면, input은 빈 값으로 초기화한다
       newMenuInput.value = "";
-      countMenu();
-    } else {
-      alert("값을 입력해주세요.");
-    }
+    });
+  const createMenu = (name) => {
+    const menuList = document.querySelector("#espresso-menu-list");
+    const newMenu = document.createElement("li");
+    newMenu.className = "menu-list-item d-flex items-center py-2";
+    const newMenuName = document.createElement("span");
+    newMenuName.className = "w-100 pl-2 menu-name";
+    newMenuName.appendChild(document.createTextNode(`${name}`));
+    const newMenuUpdateButton = document.createElement("button");
+    newMenuUpdateButton.className =
+      "bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button";
+    // 메뉴의 수정 버튼을 눌러 메뉴 이름을 수정할 수 있다
+    newMenuUpdateButton.onclick = (e) => updateMenu(e);
+    newMenuUpdateButton.appendChild(document.createTextNode("수정"));
+    const newMenuDeleteButton = document.createElement("button");
+    newMenuDeleteButton.className =
+      "bg-gray-50 text-gray-500 text-sm menu-remove-button";
+    // 메뉴 삭제 버튼을 이용하여 메뉴를 삭제할 수 있다
+    newMenuDeleteButton.onclick = (e) => deleteMenu(e);
+    newMenuDeleteButton.appendChild(document.createTextNode("삭제"));
+    newMenu.appendChild(newMenuName);
+    newMenu.appendChild(newMenuUpdateButton);
+    newMenu.appendChild(newMenuDeleteButton);
+    menuList.appendChild(newMenu);
+    countMenu();
   };
   const updateMenu = (e) => {
     const name = e.target.closest("li").querySelector(".menu-name");

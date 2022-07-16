@@ -10,6 +10,11 @@ function onInputKeyDown(e) {
 	const trimmedInputValueString = String(inputValue).trim();
 
 	if (e.key === "Enter" && !e.isComposing) {
+		// 사용자가 <input>에 메뉴명 입력 없이 "Enter" 입력 시 예외 처리시키는 부분
+		if (!trimmedInputValueString) {
+			alert("값을 입력해주세요.");
+			return;
+		}
 		addNewMenu(trimmedInputValueString);
 		inputTag.value = "";
 	}
@@ -18,6 +23,12 @@ function onInputKeyDown(e) {
 function onSubmitButtonClicked(e) {
 	const inputValue = inputTag.value;
 	const trimmedInputValueString = String(inputValue).trim();
+
+	// 사용자가 <input>에 메뉴명 입력 없이 "확인" 버튼 클릭 시 예외 처리시키는 부분
+	if (!inputValue) {
+		alert("값을 입력해주세요.");
+		return;
+	}
 
 	addNewMenu(trimmedInputValueString);
 	inputTag.value = "";

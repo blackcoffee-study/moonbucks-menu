@@ -6,6 +6,9 @@ const submitButton = document.getElementById("espresso-menu-submit-button");
 const menuList = document.getElementById("espresso-menu-list");
 const menuCount = document.getElementsByClassName("menu-count")[0];
 
+inputTag.addEventListener("keydown", onInputKeyDown);
+submitButton.addEventListener("click", onSubmitButtonClicked);
+
 function getTrimmedInputString() {
 	return String(inputTag.value).trim();
 }
@@ -105,6 +108,3 @@ function renderMenuList() {
 
 	menuCount.innerHTML = `총 ${state.getMenuCount()}개`;
 }
-
-inputTag.addEventListener("keydown", onInputKeyDown);
-submitButton.addEventListener("click", onSubmitButtonClicked);

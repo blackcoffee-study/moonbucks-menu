@@ -1,6 +1,4 @@
-import Menu from './Menu';
-
-export default class MenuStatus {
+class MenuStatus {
     constructor(menuList = []) {
         if (menuList.some(menu => !menu instanceof Menu)) {
             console.error(`Invalid Input! ${menuList} array has a non Menu instance value @MenuStatus.constructor() 1st parameter`);

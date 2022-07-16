@@ -1,4 +1,4 @@
-export default class Menu {
+class Menu {
     constructor(name) {
         if (!name) {
 			console.error(`Invalid Input! ${name} is 'undefined' or 'null' or ""(empty string) value! @Menu.constructor() 1st parameter`);

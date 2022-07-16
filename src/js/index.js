@@ -9,10 +9,10 @@ function onInputKeyDown(e) {
     const inputValue = inputTag.value;
     const trimmedInputValueString = String(inputValue).trim();
 
-    if (e.key === 'Enter') {
-        addNewMenu(trimmedInputValueString);
-        inputTag.value = '';
-    }
+    if (e.key === "Enter" && !e.isComposing) {
+		addNewMenu(trimmedInputValueString);
+		inputTag.value = "";
+	}
 }
 
 function onSubmitButtonClicked(e) {

@@ -6,32 +6,34 @@ const submitButton = document.getElementById("espresso-menu-submit-button");
 const menuList = document.getElementById("espresso-menu-list");
 const menuCount = document.getElementsByClassName("menu-count")[0];
 
+function getTrimmedInputString() {
+	return String(inputTag.value).trim();
+}
+
 function onInputKeyDown(e) {
-	const inputValue = inputTag.value;
-	const trimmedInputValueString = String(inputValue).trim();
+	const inputString = getTrimmedInputString();
 
 	if (e.key === "Enter" && !e.isComposing) {
 		// 사용자가 <input>에 메뉴명 입력 없이 "Enter" 입력 시 예외 처리시키는 부분
-		if (!trimmedInputValueString) {
+		if (!inputString) {
 			alert("값을 입력해주세요.");
 			return;
 		}
-		addNewMenu(trimmedInputValueString);
+		addNewMenu(inputString);
 		inputTag.value = "";
 	}
 }
 
 function onSubmitButtonClicked(e) {
-	const inputValue = inputTag.value;
-	const trimmedInputValueString = String(inputValue).trim();
+	const inputString = getTrimmedInputString();
 
 	// 사용자가 <input>에 메뉴명 입력 없이 "확인" 버튼 클릭 시 예외 처리시키는 부분
-	if (!inputValue) {
+	if (!inputString) {
 		alert("값을 입력해주세요.");
 		return;
 	}
 
-	addNewMenu(trimmedInputValueString);
+	addNewMenu(inputString);
 	inputTag.value = "";
 }
 

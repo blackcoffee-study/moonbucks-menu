@@ -1,3 +1,24 @@
+const template = document.createElement("template");
+template.innerHTML = /* html */ `
+  <li class="menu-list-item d-flex items-center py-2">
+    <span class="w-100 pl-2 menu-name">
+      <slot name="menu-name"></slot>
+    </span>
+    <button
+      type="button"
+      class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
+    >
+      수정
+    </button>
+    <button
+      type="button"
+      class="bg-gray-50 text-gray-500 text-sm menu-remove-button"
+    >
+      삭제
+    </button>
+  </li>
+`;
+
 export default class MenuItem extends HTMLElement {
   static get observedAttributes() {
     return ["name"];
@@ -5,27 +26,6 @@ export default class MenuItem extends HTMLElement {
 
   constructor() {
     super();
-
-    const template = document.createElement("template");
-    template.innerHTML = /* html */ `
-      <li class="menu-list-item d-flex items-center py-2">
-        <span class="w-100 pl-2 menu-name">
-          <slot name="menu-name"></slot>
-        </span>
-        <button
-          type="button"
-          class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
-        >
-          수정
-        </button>
-        <button
-          type="button"
-          class="bg-gray-50 text-gray-500 text-sm menu-remove-button"
-        >
-          삭제
-        </button>
-      </li>
-    `;
 
     this.appendChild(template.content.cloneNode(true));
   }

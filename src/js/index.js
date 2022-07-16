@@ -4,6 +4,7 @@ const state = new MenuStatus([]);
 const inputTag = document.getElementById("espresso-menu-name");
 const submitButton = document.getElementById("espresso-menu-submit-button");
 const menuList = document.getElementById("espresso-menu-list");
+const menuCount = document.getElementsByClassName("menu-count")[0];
 
 function onInputKeyDown(e) {
 	const inputValue = inputTag.value;
@@ -54,6 +55,7 @@ function renderMenuList() {
 		(menu) => createMenuListItemElementStr(menu)
 	);
 	menuList.innerHTML = menuLiTagStrList.join("");
+	menuCount.innerHTML = `총 ${state.getMenuCount()}개`;
 }
 
 inputTag.addEventListener("keydown", onInputKeyDown);

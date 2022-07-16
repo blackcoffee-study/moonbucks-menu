@@ -36,11 +36,9 @@ export default class AppController {
   }
 
   // 그 메뉴 이름이랑 사진 바꾸자, 가격도 올려!
-  editMenu(id) {
+  editMenu(id, name) {
     const category = this.categoryService.getCurrent();
 
-    const name = prompt('새 이름을 입력하세요');
-    // validate
     this.menuService.editMenu(category, { id, name });
 
     return name;
@@ -65,9 +63,3 @@ export default class AppController {
     this.menuService.showMenu(category);
   }
 }
-
-const validator = {
-  isEmptyString: (value) => {
-    if (value.length === 0) throw new Error('input is empty string');
-  },
-};

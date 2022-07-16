@@ -1,3 +1,4 @@
+import { validator } from '../utils/index.js';
 import AppController from './controller/index.js';
 
 export default class EtoileApp {
@@ -20,8 +21,8 @@ export default class EtoileApp {
     this.$menuForm.addEventListener('submit', this.handleSubmitMenu);
   }
 
-  handleEditMenu() {
-    return this.appController.editMenu();
+  handleEditMenu(id, name) {
+    return this.appController.editMenu(id, name);
   }
   handleRemoveMenu() {
     return this.appController.deleteMenu();
@@ -87,7 +88,13 @@ class MenuItemNode {
     );
 
     $menuItemEditButton.addEventListener('click', () => {
-      const newName = onEdit(id);
+      const newName = prompt('새 이름을 입력하세요');
+
+      validator.isEmptyString(newName);
+
+      // should 'try' EDIT commands here?
+      onEdit(id, newName);
+
       this.newListItemNode.querySelector(`.${this.menuItemNameClassName}`).textContent = newName;
     });
 

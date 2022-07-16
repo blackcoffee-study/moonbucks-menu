@@ -54,11 +54,13 @@ function updateMenuName(index) {
 
 function removeMenuItem(index) {
 	const isConfrimed = confirm("정말 삭제하시겠습니까?");
-
-	if (isConfrimed) {
-		state.delete(index);
-		renderMenuList();
+	
+	if (!isConfrimed) {
+		return;
 	}
+
+	state.delete(index);
+	renderMenuList();
 }
 
 function createMenuListItemElement(menu, index) {

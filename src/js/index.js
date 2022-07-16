@@ -41,22 +41,22 @@ function addNewMenu(menuName) {
 	renderMenuList();
 }
 
-function updateMenuName(i) {
+function updateMenuName(index) {
 	const newName = prompt("메뉴명을 수정하세요");
 
 	if (!newName) {
 		alert("값을 입력해주세요.");
 		return;
 	}
-	state.update(i, new Menu(newName.trim()));
+	state.update(index, new Menu(newName.trim()));
 	renderMenuList();
 }
 
-function removeMenuItem(i) {
+function removeMenuItem(index) {
 	const isConfrimed = confirm("정말 삭제하시겠습니까?");
 
 	if (isConfrimed) {
-		state.delete(i);
+		state.delete(index);
 		renderMenuList();
 	}
 }

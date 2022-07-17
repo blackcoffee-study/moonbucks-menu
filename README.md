@@ -1,5 +1,4 @@
-### PR 2022-07-11
-
+### 팀원 소개
 김가람 - riverkim
 신윤선 - jnny1017
 유원영 - yooveloper

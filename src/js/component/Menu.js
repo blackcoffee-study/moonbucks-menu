@@ -2,6 +2,7 @@ import MenuCount from "./MenuCount.js";
 import RemoveEvent from "../event/RemoveEvent.js";
 import EditEvent from "../event/EditEvent.js";
 import MenuList from "./MenuList.js";
+import { DELETE_MESSAGE, EDIT_MESSAGE } from '../common/constants.js';
 
 function Menu() {
     this.$inputText = document.getElementById("espresso-menu-name");
@@ -33,7 +34,7 @@ function Menu() {
     }
 
     this.removeEvent = (event) => {
-      if(confirm('정말 삭제하시겠습니까?')) {
+      if(confirm(DELETE_MESSAGE)) {
         const menuId = event.target.closest("li").dataset.menuId;
         this.menu.splice(menuId, 1);
         this.render();
@@ -41,7 +42,7 @@ function Menu() {
     }
     
     this.editEvent = (event) => {
-      const newValue = prompt('변경될 이름을 입력해주세요');
+      const newValue = prompt(EDIT_MESSAGE);
       const menuId = event.target.closest("li").dataset.menuId;
       this.menu[menuId].name = newValue;
       this.render();

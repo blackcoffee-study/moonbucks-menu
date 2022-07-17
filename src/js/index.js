@@ -1,13 +1,82 @@
-// 자바스크립트 생초보나 마찬가지인 상태라.. 일단은 강의 보며 따라 치고 공부하는 위주로..!
-
 // step1 요구사항 - 돔 조작과 이벤트 핸들링으로 메뉴 관리하기
 
-// - [ ] 에스프레소 메뉴에 새로운 메뉴를 확인 버튼 또는 엔터키 입력으로 추가한다.
-//   - [ ] 메뉴가 추가되고 나면, input은 빈 값으로 초기화한다.
-//   - [ ] 사용자 입력값이 빈 값이라면 추가되지 않는다.
-// - [ ] 메뉴의 수정 버튼을 눌러 메뉴 이름 수정할 수 있다.
-//   - [ ] 메뉴 수정시 브라우저에서 제공하는 `prompt` 인터페이스를 활용한다.
-// - [ ] 메뉴 삭제 버튼을 이용하여 메뉴 삭제할 수 있다.
-//   - [ ] 메뉴 삭제시 브라우저에서 제공하는 `confirm` 인터페이스를 활용한다.
-// - [ ] 총 메뉴 갯수를 count하여 상단에 보여준다.
-// - 추가되는 메뉴의 아래 마크업은 `<ul id="espresso-menu-list" class="mt-3 pl-0"></ul>` 안에 삽입해야 한다.
+const $menuNameInput = document.querySelector('#espresso-menu-name');
+const $menuForm = document.querySelector('#espresso-menu-form');
+const $menuList = document.querySelector('#espresso-menu-list');
+const $munuCount = document.querySelector('.menu-count');
+const $menuSubmitBtn = document.querySelector('#espresso-menu-submit-button');
+const countMenuNum = () => {
+  let menuNum = $menuList.childElementCount;
+  $munuCount.innerHTML = `총 ${menuNum}개`;
+  $menuNameInput.value = null;
+};
+const addFunc = () => {
+  let name = $menuNameInput.value;
+  let newMenuHTML = `<li class="menu-list-item d-flex items-center py-2">
+  <span class="w-100 pl-2 menu-name">${name}</span>
+  <button
+    type="button"
+    class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
+  >
+    수정
+  </button>
+  <button
+    type="button"
+    class="bg-gray-50 text-gray-500 text-sm menu-remove-button"
+  >
+    삭제
+  </button>
+</li>`;
+  if (name === '') {
+    return;
+  } else {
+    $menuList.insertAdjacentHTML('beforeend', newMenuHTML);
+  }
+
+  countMenuNum();
+};
+
+// 실행 함수
+function App() {
+  $menuForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+  });
+
+  $menuNameInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+      addFunc();
+    }
+  });
+
+  $menuSubmitBtn.addEventListener('click', () => {
+    addFunc();
+  });
+
+  $menuList.addEventListener('click', (e) => {
+    if (e.target.classList.contains('menu-edit-button')) {
+      let edit = e.target;
+      let currentMenu = edit.closest('li');
+      let targetName = currentMenu.querySelector('.menu-name');
+      let editedMenu = prompt('어떤 메뉴로 변경하고 싶으신가요?');
+      if (editedMenu === null) {
+        return;
+      } else {
+        targetName.innerHTML = editedMenu;
+      }
+    }
+  });
+
+  $menuList.addEventListener('click', (e) => {
+    if (e.target.classList.contains('menu-remove-button')) {
+      if (!confirm('정말 삭제할까요?')) {
+        return;
+      } else {
+        let currentMenu = e.target.closest('.menu-list-item');
+        currentMenu.remove();
+        countMenuNum();
+      }
+    }
+  });
+}
+
+App();

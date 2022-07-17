@@ -1,4 +1,5 @@
 import { CategoryService, MenuService } from '../service/index.js';
+import { validator } from '../../utils/index.js';
 
 // controller : 제어권을 가진 점주
 export default class AppController {

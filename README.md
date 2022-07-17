@@ -244,3 +244,9 @@ live-server 폴더명
 ## 📝 License
 
 This project is [MIT](https://github.com/blackcoffee-study/moonbucks-menu/blob/main/LICENSE) licensed.
+
+<br/>
+
+## 블랙커피 JS 코드리뷰 스터디 14기 / 잘살아보세 팀
+
+김가람, 김슬기, 신윤선, 양아름, 유원영

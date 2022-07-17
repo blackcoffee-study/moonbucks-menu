@@ -61,7 +61,9 @@ const removeMenuName = function(e) {
     registerMenu(e);
   });
 
-  document.querySelector("#espresso-menu-submit-button").addEventListener("click", registerMenu);
+  document.querySelector("#espresso-menu-submit-button").addEventListener("click", (e) => {
+    registerMenu(e);
+  });
 
   menuList.addEventListener("click", (e) => {
     if(e.target.classList.contains("menu-edit-button")){

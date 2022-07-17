@@ -1,3 +1,11 @@
+# TEAM : 카라멜 팝콘
+
+팝콘, 신다혜, 킹지, 안수경, 민오, 선리
+
+깃허브 어렵다..
+
+---
+
 <br/>
 <p align="middle">
   <img width="200px;" src="./src/images/moonbucks.png"/>
@@ -147,11 +155,11 @@
 {
   response: [
     {
-      id: "string",
-      name: "string",
+      id: 'string',
+      name: 'string',
       isSoldOut: Boolean,
     },
-  ];
+  ]
 }
 ```
 

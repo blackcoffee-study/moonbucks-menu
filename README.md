@@ -252,3 +252,17 @@ This project is [MIT](https://github.com/blackcoffee-study/moonbucks-menu/blob/m
 - 김동영
 - 이시현
 - 이승효
+
+## 체크 리스트
+
+- 코드 불필요한 주석은 없는가?
+- 불필요한 “console.log()” 는 없는가?
+- eol 개행을 하였는가?
+- var 사용을 지양하고 let, const를 적절히 사용하였는가?
+- 불필요한 전역변수를 사용하지 않았는가?
+- 변수명에 적절한 네이밍을 적용하였는가?
+- 중복코드를 최소화하였는가?
+- 하나의 함수가 너무 많은 일을 하고 있진 않은가?
+- UI 렌더링 코드와 비즈니스 로직 코드를 분리하였는가?
+- 부정 조건을 사용하지 않는가?
+- Early return pattern을 적용하였는가?

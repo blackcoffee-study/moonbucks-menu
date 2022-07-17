@@ -34,7 +34,7 @@ export default class EtoileApp {
     try {
       newMenuEntity = this.appController.addMenu({ name: newMenuName });
     } catch (error) {
-      console.warn(error);
+      alert(error);
       return;
     }
 

@@ -1,6 +1,7 @@
 const menuListWrapper = document.querySelector("#espresso-menu-list");
 const menuInput = document.querySelector("#espresso-menu-name");
 const confirmBtn = document.querySelector("#espresso-menu-submit-button");
+const countElem = document.querySelector(".menu-count");
 
 const data = {
   menuList: [],
@@ -35,8 +36,10 @@ const createMenuItemElem = (menuName) => {
   removeBtn.addEventListener("click", () => {
     const removeMenuIdx = li.getAttribute("data-menu-id");
 
-    data.menuList.splice(removeMenuIdx, 1);
-    rendorMenuList();
+    if (window.confirm("정말 삭제하시겠습니다까?")) {
+      data.menuList.splice(removeMenuIdx, 1);
+      rendorMenuList();
+    }
   });
 
   li.append(span, soldOutBtn, editBtn, removeBtn);
@@ -51,6 +54,7 @@ const rendorMenuList = () => {
     menuElem.setAttribute("data-menu-id", i);
   }
   menuListWrapper.replaceChildren(...data.menuList);
+  countElem.innerHTML = `총 ${data.menuList.length}개`;
 };
 
 confirmBtn.addEventListener("click", () => {

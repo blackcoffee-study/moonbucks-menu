@@ -8,9 +8,9 @@ const menuListId = generateId();
 
 const onSubmit = (event) => {
   event.preventDefault();
-  const [menuList, setMenuList] = menuListStore();
+  const [_, setMenuList] = menuListStore();
   const name = menuName.value;
-  setMenuList([...menuList, { id: menuListId(), name }]);
+  setMenuList((prev) => [...prev, { id: menuListId(), name }]);
   menuName.value = "";
 };
 

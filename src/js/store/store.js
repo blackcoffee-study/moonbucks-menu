@@ -4,7 +4,12 @@ export const store = (initValue, renderContainer) => {
     return [
       menuList,
       (newMenuList) => {
-        menuList = [...newMenuList];
+        if (typeof newMenuList === "function") {
+          menuList = newMenuList(menuList);
+        } else {
+          menuList = newMenuList;
+        }
+
         renderContainer();
       },
     ];

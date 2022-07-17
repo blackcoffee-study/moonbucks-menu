@@ -1,0 +1,23 @@
+{
+  "name": "moonbucks-menu",
+  "version": "1.0.0",
+  "description": "김가람 - riverkim 신윤선 - jnny1017 유원영 - yooveloper 양아름 - areumsheep 김슬기 - sgsg9447",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://yooveloper@github.com/yooveloper/moonbucks-menu.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/yooveloper/moonbucks-menu/issues"
+  },
+  "homepage": "https://github.com/yooveloper/moonbucks-menu#readme",
+  "dependencies": {
+    "live-server": "^1.2.2"
+  }
+}

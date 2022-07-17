@@ -5,7 +5,9 @@ export default class EtoileApp {
   $menuForm = document.getElementById('espresso-menu-form');
   $menuTextInput = document.getElementById('espresso-menu-name');
   $menuList = document.getElementById('espresso-menu-list');
+  $menuCount = document.querySelector('span.menu-count');
 
+  count = 0;
   // initialize App
   constructor(categories) {
     this.appController = new AppController(categories);
@@ -25,7 +27,13 @@ export default class EtoileApp {
     return this.appController.editMenu(id, name);
   }
   handleRemoveMenu() {
-    return this.appController.deleteMenu();
+    const confirmResult = this.appController.deleteMenu(id);
+
+    if (confirmResult) {
+      this.handleCount((this.count -= 1));
+    }
+
+    return confirmResult;
   }
 
   handleCreateMenu(newMenuName) {
@@ -33,12 +41,24 @@ export default class EtoileApp {
 
     try {
       newMenuEntity = this.appController.addMenu({ name: newMenuName });
+      this.handleCount((this.count += 1));
     } catch (error) {
       alert(error);
       return;
     }
 
     return newMenuEntity;
+  }
+
+  set count(newCount) {
+    if (typeof newCount !== 'number' || Math.round(newCount) !== newCount)
+      throw new Error(`${newCount} should be int`);
+    this.count = newCount;
+  }
+
+  handleCount(newCount) {
+    console.log(this.$menuCount);
+    this.$menuCount.textContent = `총 ${newCount}개`;
   }
 
   handleSubmitMenu(event) {

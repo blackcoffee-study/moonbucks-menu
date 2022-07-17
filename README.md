@@ -244,3 +244,12 @@ live-server 폴더명
 ## 📝 License
 
 This project is [MIT](https://github.com/blackcoffee-study/moonbucks-menu/blob/main/LICENSE) licensed.
+
+# 오히려좋아
+
+- 신성수
+- 유세빈
+- 추지예
+- 김도현
+- 최재원
+- 이경아

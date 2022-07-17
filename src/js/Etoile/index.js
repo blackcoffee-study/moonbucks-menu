@@ -28,22 +28,28 @@ export default class EtoileApp {
     return this.appController.deleteMenu();
   }
 
-  handleSubmitMenu(event) {
-    event.preventDefault();
-
-    const name = new FormData(event.target).get('espressoMenuName');
-
+  handleCreateMenu(newMenuName) {
     let newMenuEntity;
 
     try {
-      newMenuEntity = this.appController.addMenu({ name });
+      newMenuEntity = this.appController.addMenu({ name: newMenuName });
     } catch (error) {
       console.warn(error);
       return;
     }
 
+    return newMenuEntity;
+  }
+
+  handleSubmitMenu(event) {
+    event.preventDefault();
+
+    const name = new FormData(event.target).get('espressoMenuName');
+
+    const newMenu = this.handleCreateMenu(name);
+
     const newNode = new MenuItemNode({
-      id: newMenuEntity.id,
+      id: newMenu.id,
       name,
       onEdit: this.handleEditMenu,
       onRemove: this.handleRemoveMenu,

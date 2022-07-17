@@ -9,8 +9,8 @@ function render() {
     const totalCount = list.length;
     menuCount.textContent = totalCount;
 
-    const li = list.map(({ title }, index) => (
-        `<li class="menu-list-item d-flex items-center py-2" key=${index}>
+    const li = list.map(({ title }) => (
+        `<li class="menu-list-item d-flex items-center py-2">
             <span class="w-100 pl-2 menu-name">${title}</span>
             <button
                 type="button"

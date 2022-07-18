@@ -23,7 +23,8 @@ function App() {
   }
 
   const updateMenuCount = function() {
-    document.querySelector(".menu-count").innerText = `총 ${document.querySelectorAll("li.menu-list-item").length} 개`;
+    // document.querySelector(".menu-count").innerText = `총 ${document.querySelectorAll("li.menu-list-item").length} 개`;
+    document.querySelector(".menu-count").innerText = `총 ${menuList.children.length} 개`;
   }
 
   const registerMenu = function(e) {
@@ -41,26 +42,21 @@ function App() {
 
 const updateMenuName = function(e) {
     const espressoMenuRename = e.target.closest("li").querySelector("span.menu-name");
-    const menuRenamed = prompt("메뉴를 수정 하세요", espressoMenuRename.innerText);
-    if (menuRenamed != null){
-      espressoMenuRename.innerText = menuRenamed;
+    const renamedMenu = prompt("메뉴를 수정 하세요", espressoMenuRename.innerText);
+    if (renamedMenu != null && renamedMenu.trim().length != 0){
+      espressoMenuRename.innerText = renamedMenu;
     }
 }
     
 const removeMenuName = function(e) {
     const espressoMenuRemoved = e.target.parentElement;
-    if (confirm("메뉴를 삭제 하시겠습니까?")){
+    if (!confirm("메뉴를 삭제 하시겠습니까?")) return;
       espressoMenuRemoved.remove();
       updateMenuCount();
-    }
 }
 
 
   espressoMenuForm.addEventListener("submit", (e) => {
-    registerMenu(e);
-  });
-
-  document.querySelector("#espresso-menu-submit-button").addEventListener("click", (e) => {
     registerMenu(e);
   });
 

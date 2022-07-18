@@ -80,7 +80,7 @@ function createMenuListItemElement(menu, index) {
 function renderMenuList() {
 	// 기존에 menuList의 innerHtml에 존재하던 <li> 모두 제거
 	while (menuList.firstChild) {
-		menuList.removeChild(menuList.firstChild);
+		menuList.firstChild.remove();
 	}
 
 	// 현재 state의 해당하는 Menu 배열을 불러와, 각각의 menu를 기반으로 <li> Element를 생성하여 menuList에 삽입

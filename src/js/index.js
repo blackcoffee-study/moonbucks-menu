@@ -2,34 +2,16 @@
 const state = new MenuStatus([]);
 
 const inputTag = document.getElementById("espresso-menu-name");
-const submitButton = document.getElementById("espresso-menu-submit-button");
+const menuForm = document.getElementById("espresso-menu-form");;
 const menuList = document.getElementById("espresso-menu-list");
 const menuCount = document.getElementsByClassName("menu-count")[0];
 
-inputTag.addEventListener("keydown", onInputKeyDown);
-submitButton.addEventListener("click", onSubmitButtonClicked);
 
-function getTrimmedInputString() {
-	return String(inputTag.value).trim();
-}
+menuForm.addEventListener("submit", onSubmitForm);
 
-function onInputKeyDown(e) {
-	const inputString = getTrimmedInputString();
-
-	if (e.key === "Enter" && !e.isComposing) {
-		// 사용자가 <input>에 메뉴명 입력 없이 "Enter" 입력 시 예외 처리시키는 부분
-		if (!inputString) {
-			alert("값을 입력해주세요.");
-			return;
-		}
-		addNewMenu(inputString);
-		inputTag.value = "";
-	}
-}
-
-function onSubmitButtonClicked(e) {
-	const inputString = getTrimmedInputString();
-
+function onSubmitForm(e) {
+	e.preventDefault();
+	const inputString = String(inputTag.value).trim();
 	// 사용자가 <input>에 메뉴명 입력 없이 "확인" 버튼 클릭 시 예외 처리시키는 부분
 	if (!inputString) {
 		alert("값을 입력해주세요.");

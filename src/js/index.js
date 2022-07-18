@@ -88,9 +88,9 @@ function createMenuListItemElement(menu, index) {
 	deleteButton.addEventListener("click", () => removeMenuItem(index));
 	deleteButton.innerHTML = "삭제";
 
-	li.appendChild(menuName);
-	li.appendChild(editButton);
-	li.appendChild(deleteButton);
+	li.insertAdjacentElement("beforeend", menuName);
+	li.insertAdjacentElement("beforeend", editButton);
+	li.insertAdjacentElement("beforeend", deleteButton);
 
 	return li;
 }
@@ -103,7 +103,7 @@ function renderMenuList() {
 
 	// 현재 state의 해당하는 Menu 배열을 불러와, 각각의 menu를 기반으로 <li> Element를 생성하여 menuList에 삽입
 	state.getMenuList().forEach(
-		(menu, index) => menuList.appendChild(createMenuListItemElement(menu, index))
+		(menu, index) => menuList.insertAdjacentElement("beforeend", createMenuListItemElement(menu, index))
 	);
 
 	menuCount.innerHTML = `총 ${state.getMenuCount()}개`;

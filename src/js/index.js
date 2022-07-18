@@ -56,19 +56,19 @@ function createMenuListItemElement(menu, index) {
 
 	const menuName = document.createElement("span")
 	menuName.className = "w-100 pl-2 menu-name";
-	menuName.innerHTML = menu.name;
+	menuName.innerText = menu.name;
 
 	const editButton = document.createElement("button");
 	editButton.type = "button"
 	editButton.className = "bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button";
 	editButton.addEventListener("click", () => updateMenuName(index));
-	editButton.innerHTML = "수정";
+	editButton.innerText = "수정";
 
 	const deleteButton = document.createElement("button");
 	deleteButton.type = "button";
 	deleteButton.className = "bg-gray-50 text-gray-500 text-sm menu-remove-button";
 	deleteButton.addEventListener("click", () => removeMenuItem(index));
-	deleteButton.innerHTML = "삭제";
+	deleteButton.innerText = "삭제";
 
 	li.insertAdjacentElement("beforeend", menuName);
 	li.insertAdjacentElement("beforeend", editButton);
@@ -78,7 +78,7 @@ function createMenuListItemElement(menu, index) {
 }
 
 function renderMenuList() {
-	// 기존에 menuList의 innerHtml에 존재하던 <li> 모두 제거
+	// 기존에 menuList의 innerHTML에 존재하던 <li> 모두 제거
 	while (menuList.firstChild) {
 		menuList.firstChild.remove();
 	}
@@ -88,5 +88,5 @@ function renderMenuList() {
 		(menu, index) => menuList.insertAdjacentElement("beforeend", createMenuListItemElement(menu, index))
 	);
 
-	menuCount.innerHTML = `총 ${state.getMenuCount()}개`;
+	menuCount.innerText = `총 ${state.getMenuCount()}개`;
 }

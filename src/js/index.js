@@ -5,10 +5,12 @@ const submitButton = document.querySelector('#espresso-menu-submit-button');
 
 let list = []
 
-function render() {
+function getMenuCount() {
     const totalCount = list.length;
-    menuCount.textContent = totalCount;
+    menuCount.textContent = `총 ${totalCount}개`;
+}
 
+function render() {
     const li = list.map(({ title }) => (
         `<li class="menu-list-item d-flex items-center py-2">
             <span class="w-100 pl-2 menu-name">${title}</span>
@@ -46,24 +48,8 @@ function addMenu() {
     menu.value = '';
 
     render();
-}
 
-function editMenu(index) {
-    let value = prompt("수정 값을 입력하세요", "");
-
-    list[index].title = value
-
-    render();
-}
-
-function removeMenu(index) {
-    if (window.confirm("이 메뉴를 삭제하시겠습니까?")) {
-        const filteredMenu = list.filter((_, i) => i !== index);
-
-        list = filteredMenu
-    }
-
-    render();
+    getMenuCount();
 }
 
 menu.addEventListener('keydown', (event) => {
@@ -75,22 +61,18 @@ menu.addEventListener('keydown', (event) => {
 
 submitButton.addEventListener('click', addMenu)
 
-const editButton = document.querySelectorAll('.menu-edit-button');
-const removeButton = document.querySelectorAll('.menu-remove-button');
+menuList.addEventListener('click', function (event) {
+    if (event.target.classList.contains('menu-edit-button')) {
+        const value = prompt("수정 값을 입력하세요", "");
 
-if (list.length > 0) {
-    editButton.forEach((button, index) => {
-        button.addEventListener('click', function () {
-            editMenu(index)
-        })
-    })
+        event.target.closest('li').querySelector('.menu-name').innerText = value;
+    }
 
-    removeButton.forEach((button, index) => {
-        button.addEventListener('click', function () {
-            removeMenu(index);
-        })
-    })
-}
-
-
+    if (event.target.classList.contains('menu-remove-button')) {
+        if (window.confirm("이 메뉴를 삭제하시겠습니까?")) {
+            event.target.closest('li').remove();
+            getMenuCount();
+        }
+    }
+})
 

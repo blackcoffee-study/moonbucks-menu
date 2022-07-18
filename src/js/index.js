@@ -23,8 +23,8 @@ function App() {
   }
 
   const updateMenuCount = function() {
-    // document.querySelector(".menu-count").innerText = `총 ${document.querySelectorAll("li.menu-list-item").length} 개`;
-    document.querySelector(".menu-count").innerText = `총 ${menuList.children.length} 개`;
+    const updateCount = document.querySelector(".menu-count");
+    updateCount.innerText = `총 ${menuList.children.length} 개`;
   }
 
   const registerMenu = function(e) {

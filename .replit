@@ -1,0 +1,4 @@
+run = "sh -c cowsay Configure me!"
+
+[nix]
+channel = "stable-21_11"

@@ -26,7 +26,7 @@ export default class EtoileApp {
   handleEditMenu(id, name) {
     return this.appController.editMenu(id, name);
   }
-  handleRemoveMenu() {
+  handleRemoveMenu(id) {
     const confirmResult = this.appController.deleteMenu(id);
 
     if (confirmResult) {

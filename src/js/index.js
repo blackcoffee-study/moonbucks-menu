@@ -1,16 +1,35 @@
-// JS에서 DOM엘리먼트를 가져올때 관용적으로 $표시를 많이 사용한다.
-const $ = (selector) => document.querySelector(selector);
-function App(){
-  const updateMenuCount = ()=> {
-    const menuCount = $("#espresso-menu-list").querySelectorAll("li").length;
-    $(".menu-count").innerText = `총 ${menuCount}개`;
-  }
 
-  const addMenuName = () => {
-    if($("#espresso-menu-name").value === '') return;
-    const espressoMenuName = $("#espresso-menu-name").value;
-    const menuItemTemplate = (espressoMenuName) => {return `<li class="menu-list-item d-flex items-center py-2">
-    <span class="w-100 pl-2 menu-name">${espressoMenuName}</span>
+const inputField = document.getElementById('espresso-menu-name');
+const submitButton = document.getElementById('espresso-menu-submit-button');
+const menuList = document.getElementById('espresso-menu-list');
+const totalCount = document.querySelector('.menu-count');
+
+inputField.addEventListener("keypress", handleEnter);
+submitButton.addEventListener("click", handleSubmit);
+
+
+function handleEnter(event) {
+    if(event.key === 'Enter'){
+        event.preventDefault();
+        
+        handleSubmit();
+    }
+}
+
+function handleSubmit(event){
+    const keyword = inputField.value.trim();
+    if(keyword.length === 0){
+        return;
+    }
+    addMenu(keyword);
+    inputField.value = '';
+    updateTotalCount();
+}
+
+function addMenu(item){
+    menuList.innerHTML += 
+    `<li class="menu-list-item d-flex items-center py-2">
+    <span class="w-100 pl-2 menu-name">${item}</span>
     <button
       type="button"
       class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
@@ -23,46 +42,33 @@ function App(){
     >
       삭제
     </button>
-  </li>`};
-  $("#espresso-menu-list").insertAdjacentHTML(
-    'beforeend', 
-    menuItemTemplate(espressoMenuName)
-    );
-    updateMenuCount();
-    $("#espresso-menu-name").value = '';
-  }
-  const updateMenuName = (e) => {
-    const $menuName = e.target.closest("li").querySelector(".menu-name");
-    const updatedName = prompt("수정할 이름을 입력해주세요.", $menuName.innerText);
-    $menuName.innerText = updatedName;
-  }
-  const removeMenuName = (e) => {
-    if(confirm("정말 삭제하시겠습니까?")){
-      e.target.closest("li").remove();
-      updateMenuCount();
-    }
-  }
-  $("#espresso-menu-list").addEventListener("click", (e)=> {
-    if(e.target.classList.contains("menu-edit-button")){
-      updateMenuName(e);
-    }
-    if(e.target.classList.contains("menu-remove-button")){
-      removeMenuName(e);
-    }
-  });
-
-  $("#espresso-menu-form")
-        .addEventListener("submit", (e)=> {
-            e.preventDefault()
-      });
-
-      $("#espresso-menu-submit-button").addEventListener("click", addMenuName)
-    $("#espresso-menu-name")
-        .addEventListener("keypress", (e) => {
-          if(e.key !== 'Enter') return;
-          addMenuName();
-          
-        });
+  </li>`;
+    setItemEvent();
+}
+function setItemEvent(){
+    const editButtons = document.querySelectorAll('.menu-edit-button');
+    const removeButtons = document.querySelectorAll('.menu-remove-button');
+    editButtons.forEach((editButton, index) => {
+        editButton.addEventListener('click', handleEdit);
+        removeButtons[index].addEventListener('click', handleDelete);
+    });
 }
 
-App();
+function handleEdit(event){
+    const menuName = event.target.previousElementSibling;
+    const newMenuName = prompt('메뉴명을 수정하세요.', menuName.innerText) ?? menuName.innerText;
+    menuName.innerText = newMenuName;
+}
+
+function handleDelete(event) {
+    const wantDelete = confirm('정말 삭제하시겠습니까?');
+    if(wantDelete){
+        const li = event.target.parentNode;
+        li.remove();
+        updateTotalCount();
+    }
+}
+function updateTotalCount(){
+    const count = menuList.childNodes.length;
+    totalCount.innerText = `총 ${count}개`;
+}

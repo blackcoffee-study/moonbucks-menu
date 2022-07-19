@@ -14,6 +14,10 @@ function App() {
       $("#espresso-menu-list").insertAdjacentHTML("beforeend", menuItemTemplate(espressoMenuName));
       updateMenuCount();
       $("#espresso-menu-name").value = "";
+
+      if(true){
+        confirm("띠용");
+      }
   };
   
   const updateMenuCount = () => {
@@ -47,6 +51,7 @@ function App() {
   const editMenuName = (e) =>{
     const $menuName = e.target.closest("li").querySelector(".menu-name");
     const editedName = prompt("메뉴명을 수정하세요", $menuName.innerText);
+    if(!editedName) return;
     $menuName.innerText = editedName;
   };
 

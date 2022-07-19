@@ -11,13 +11,14 @@ export default function App() {
   /** @type {HTMLInputElement} */
   const menuInput = select("#espresso-menu-name");
 
-  /** @type {HTMLButtonElement} */
-  const submitButton = select("#espresso-menu-submit-button");
-
   init();
 
   function init() {
-    menuForm.addEventListener("submit", (event) => event.preventDefault());
+    menuForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      appendMenuItem();
+    });
+
     menuList.addEventListener("click", ({ target }) => {
       if (!target) return;
       const menuItem = target.closest("moon-menu-item");
@@ -27,14 +28,6 @@ export default function App() {
       } else if (target.classList.contains("menu-remove-button")) {
         removeMenuItem(menuItem);
       }
-    });
-    menuInput.addEventListener("keydown", (event) => {
-      if (event.key === "Enter" && !event.isComposing) {
-        appendMenuItem();
-      }
-    });
-    submitButton.addEventListener("click", () => {
-      appendMenuItem();
     });
   }
 

@@ -40,9 +40,9 @@ export default function App() {
 
   function appendMenuItem() {
     if (menuInput.value.trim()) {
-      const menu = new MenuItem();
-      menu.setAttribute("name", menuInput.value);
-      menuList.appendChild(menu);
+      const menuItem = new MenuItem();
+      menuItem.setAttribute("name", menuInput.value.trim());
+      menuList.appendChild(menuItem);
       menuInput.value = "";
       updateMenuCount();
     }

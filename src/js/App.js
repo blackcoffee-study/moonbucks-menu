@@ -48,6 +48,9 @@ export default function App() {
     }
   }
 
+  /**
+   * @param {MenuItem} menuItem
+   */
   function editMenuItem(menuItem) {
     const newMenuName = window.prompt(
       "수정할 메뉴 이름을 입력하세요",
@@ -58,6 +61,9 @@ export default function App() {
     }
   }
 
+  /**
+   * @param {MenuItem} menuItem
+   */
   function removeMenuItem(menuItem) {
     if (window.confirm("메뉴를 삭제하시겠습니까?")) {
       menuItem.remove();

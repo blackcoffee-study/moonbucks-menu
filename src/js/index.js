@@ -1,3 +1,11 @@
+import App from './components/App.js';
+
+document.addEventListener('DOMContentLoaded', () => {
+  const app = new App();
+  app.render();
+});
+
+/*
 function App() {
   let currentId = 1;
   const menuList = [];
@@ -93,3 +101,6 @@ function App() {
 }
 
 App();
+
+
+*/

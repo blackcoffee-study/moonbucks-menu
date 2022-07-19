@@ -1,4 +1,5 @@
 import { $ } from "../utils/dom.js";
+import { MESSAGE } from "../constants/index.js";
 
 const Menu = () => {
   const menuForm = $("#espresso-menu-form");
@@ -40,13 +41,13 @@ const Menu = () => {
   const updateMenu = ({ target }) => {
     const currentName = target.closest("li").querySelector(".menu-name");
     // 메뉴 수정시 브라우저에서 제공하는 prompt 인터페이스를 활용한다
-    const updateName = prompt("메뉴명을 수정하세요", currentName.innerHTML);
+    const updateName = prompt(MESSAGE.PROMPT_UPDATE, currentName.innerHTML);
     if (updateName) currentName.innerHTML = updateName;
   };
 
   const deleteMenu = ({ target }) => {
     // 메뉴 삭제시 브라우저에서 제공하는 confirm 인터페이스를 활용한다
-    if (window.confirm("정말 삭제하시겠습니까?")) {
+    if (window.confirm(MESSAGE.CONFIRM_DELETE)) {
       target.parentElement.remove();
       countMenu();
     }
@@ -56,7 +57,7 @@ const Menu = () => {
   menuForm.addEventListener("submit", (e) => {
     e.preventDefault();
     // 사용자 입력값이 빈 값이라면 추가되지 않는다
-    menuInput.value ? createMenu(menuInput.value) : alert("값을 입력해주세요.");
+    menuInput.value ? createMenu(menuInput.value) : alert(MESSAGE.ALERT_CREATE);
     // 메뉴가 추가되고 나면, input은 빈 값으로 초기화한다
     menuForm.reset();
   });

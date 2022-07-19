@@ -1,12 +1,40 @@
 /**
- * @typedef {Object} Menu
+ * @typedef {Object} MenuObject
  * @property {String} name
  * @property {boolean} isAdded
+ * @property {boolean} isSoldOut
  */
 
 /**
+ * @typedef {Object} UseMenuReturn
+ * @property {Object} MenuState
+ * @property {Function} AddMenu
+ */
+
+/**
+ * Markup ID prefix
+ */
+
+const elementIdObject = {
+  espressoMenuListId: "espresso-menu-list",
+  removeButtonId: "removeButton",
+  updateButtonId: "updateButton",
+  soldOutButtonId: "soldOutButton",
+  menuNameId: "menuName",
+  menuWrapperId: "menuWrapper",
+};
+
+const menus = {
+  espresso: useMenu(),
+  frappuccino: useMenu(),
+  blended: useMenu(),
+  tibana: useMenu(),
+  dessert: useMenu(),
+};
+
+/**
  * it creates state of menu.
- * @returns {[Object, Function]} it returns menu state and function to add menu.
+ * @returns {UseMenuReturn} it returns menu state and function to add menu.
  */
 function useMenu() {
   let id = 0;
@@ -30,17 +58,11 @@ function useMenu() {
     showCount(Object.keys(state).length);
   }
 
-  /**
-   * @param {Menu} menu
-   */
-  function add(menu) {
-    id = id + 1;
+  function setState(param) {
+    console.log("state", state);
+    console.log("param", param);
 
-    state = {
-      ...state,
-      [id]: menu,
-    };
-
+    state = param;
     renderMenu();
   }
 
@@ -71,7 +93,15 @@ function useMenu() {
     getById("count").textContent = count;
   }
 
-  return [state, add];
+  function incrementId() {
+    return ++id;
+  }
+
+  function getState() {
+    return state;
+  }
+
+  return [getState, setState, incrementId];
 }
 
 /**
@@ -80,7 +110,8 @@ function useMenu() {
  * @param {boolean} isSoldOut
  */
 function toggleSoldOut(id, isSoldOut) {
-  const menuName = getById(`menuName${id}`);
+  const { menuNameId } = elementIdObject;
+  const menuName = getById(`${menuNameId}${id}`);
 
   if (isSoldOut && !menuName.classList.contains("sold-out")) {
     menuName.classList.add("sold-out");
@@ -109,40 +140,32 @@ function appendMenu(
   name,
   { onClickSoldOut, onClickUpdate, onClickRemove }
 ) {
-  getById("espresso-menu-list").insertAdjacentHTML(
-    "beforeend",
-    $menuWrapper(id)
-  );
+  const { espressoMenuListId, menuWrapperId } = elementIdObject;
 
-  getById(`menuWrapper${id}`).insertAdjacentHTML(
-    "beforeend",
-    $menuName(id, name)
-  );
-
-  getById(`menuWrapper${id}`).insertAdjacentHTML(
-    "beforeend",
-    $soldOutButton(id)
-  );
-  getById(`soldOutButton${id}`).onclick = onClickSoldOut;
-
-  getById(`menuWrapper${id}`).insertAdjacentHTML(
-    "beforeend",
-    $updateButton(id)
-  );
-  getById(`updateButton${id}`).onclick = onClickUpdate;
-
-  getById(`menuWrapper${id}`).insertAdjacentHTML(
-    "beforeend",
-    $removeButton(id)
-  );
-  getById(`removeButton${id}`).onclick = onClickRemove;
+  appendHtml(espressoMenuListId, $menuWrapper(id));
+  appendHtml(`${menuWrapperId}${id}`, $menuName(id, name));
+  appendHtml(`${menuWrapperId}${id}`, $soldOutButton(id), {
+    eventName: "onclick",
+    callback: onClickSoldOut,
+  });
+  appendHtml(`${menuWrapperId}${id}`, $updateButton(id), {
+    eventName: "onclick",
+    callback: onClickUpdate,
+  });
+  appendHtml(`${menuWrapperId}${id}`, $removeButton(id), {
+    eventName: "onclick",
+    callback: onClickRemove,
+  });
 }
 
 /**
  * When DOMContentLoaded
  */
 
-const [state, add] = useMenu();
+/**
+ * @type {"espresso" | "frappuccino" | "blended" | "tibana" | "dessert"}
+ */
+let currentMenuType = "espresso";
 
 /**
  * @param {SubmitEvent} e
@@ -160,10 +183,17 @@ const onSubmit = (e) => {
     return;
   }
 
-  add({
-    name,
-    isSoldOut: false,
-    isAdded: false,
+  const [getState, setState, incrementId] = menus[currentMenuType];
+
+  console.log("state", getState());
+
+  setState({
+    ...getState(),
+    [incrementId()]: {
+      name,
+      isSoldOut: false,
+      isAdded: false,
+    },
   });
 
   submitForm.reset();
@@ -189,28 +219,43 @@ function getById(id) {
   return document.getElementById(id);
 }
 
+function appendHtml(parentId, htmlTemplate, event) {
+  const $ = getById(`${parentId}`);
+  $.insertAdjacentHTML("beforeend", htmlTemplate);
+
+  if (event) {
+    const { eventName, callback } = event;
+    $.lastChild[eventName] = callback;
+  }
+}
+
 /**
  * Templates
  */
 
 function $removeButton(id) {
-  return `<button type="button" id="removeButton${id}" class="bg-gray-50 text-gray-500 text-sm menu-remove-button">삭제</button>`;
+  const { removeButtonId } = elementIdObject;
+  return `<button type="button" id="${removeButtonId}${id}" class="bg-gray-50 text-gray-500 text-sm menu-remove-button">삭제</button>`;
 }
 
 function $updateButton(id) {
-  return `<button type="button" id="updateButton${id}" class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button">수정</button>`;
+  const { updateButtonId } = elementIdObject;
+  return `<button type="button" id="${updateButtonId}${id}" class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button">수정</button>`;
 }
 
 function $soldOutButton(id) {
-  return `<button id="soldOutButton${id}" type="button" class="bg-gray-50 text-gray-500 text-sm mr-1 menu-sold-out-button">
+  const { soldOutButtonId } = elementIdObject;
+  return `<button id="${soldOutButtonId}${id}" type="button" class="bg-gray-50 text-gray-500 text-sm mr-1 menu-sold-out-button">
           품절
         </button>`;
 }
 
 function $menuName(id, name) {
-  return `<span id="menuName${id}" class="w-100 pl-2 menu-name">${name}</span>`;
+  const { menuNameId } = elementIdObject;
+  return `<span id="${menuNameId}${id}" class="w-100 pl-2 menu-name">${name}</span>`;
 }
 
 function $menuWrapper(id) {
-  return `<li data-menu-id="${id}" id="menuWrapper${id}" class="menu-list-item d-flex items-center py-2"></li>`;
+  const { menuWrapperId } = elementIdObject;
+  return `<li data-menu-id="${id}" id="${menuWrapperId}${id}" class="menu-list-item d-flex items-center py-2"></li>`;
 }

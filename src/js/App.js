@@ -29,7 +29,7 @@ export default function App() {
       }
     });
     menuInput.addEventListener("keydown", (event) => {
-      if (event.key === "Enter") {
+      if (event.key === "Enter" && !event.isComposing) {
         appendMenuItem();
       }
     });

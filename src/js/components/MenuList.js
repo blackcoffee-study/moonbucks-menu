@@ -2,8 +2,15 @@ import { $ } from '../utils/index.js';
 
 export default function MenuList() {
   this.menuListEl = $('#espresso-menu-list');
-  this.makeMenuEl = name => {
-    return `<li class="menu-list-item d-flex items-center py-2">
+  this.menuListEl.addEventListener('click', e => {
+    if (e.target.classList.contains('menu-edit-button')) {
+      this.updateMenu(e.target.parentNode);
+    } else if (e.target.classList.contains('menu-remove-button')) {
+      this.deleteMenu(e.target.parentNode.id);
+    }
+  });
+  this.makeMenuEl = (name, id) => {
+    return `<li id=${id} class="menu-list-item d-flex items-center py-2">
             <span class="w-100 pl-2 menu-name">${name}</span>
             <button
             type="button"
@@ -20,8 +27,18 @@ export default function MenuList() {
             </li>`;
   };
   this.render = menuList => {};
-  this.addNewMenu = newMenu => {
-    const menu = this.makeMenuEl(newMenu);
+  this.addNewMenu = (newMenu, id) => {
+    let ans = window.prompt('어떤 이름으로 수정하시겠어요?');
+    if (!ans) return;
+
+    const menu = this.makeMenuEl(newMenu, id);
     this.menuListEl.insertAdjacentHTML('afterBegin', menu);
+  };
+  this.updateMenu = parentNode => {
+    let valueEl = parentNode.querySelector('span');
+    valueEl.innerHTML = ans;
+  };
+  this.deleteMenu = () => {
+    console.log('delete');
   };
 }

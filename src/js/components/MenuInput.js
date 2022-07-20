@@ -5,7 +5,7 @@ export default function MenuInput({ onAdd }) {
   this.submitBtnEl = $('#espresso-menu-submit-button');
   this.submitForm = $('#espresso-menu-form');
 
-  this.submitBtnEl.addEventListener('click', this.addMenu);
+  this.submitBtnEl.addEventListener('click', () => this.addMenu());
   this.menuInputEl.addEventListener('keypress', e => {
     if (e.key !== 'Enter') return;
     this.addMenu();

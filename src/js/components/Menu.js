@@ -7,7 +7,7 @@ const Menu = () => {
   const menuCount = $(".menu-count");
   const menuList = $("#espresso-menu-list");
 
-  const menuData = [];
+  let menuData = [];
 
   const countMenu = () => {
     // 총 메뉴 갯수를 count하여 상단에 보여준다
@@ -15,12 +15,13 @@ const Menu = () => {
     menuCount.innerHTML = `총 ${count} 개`;
   };
 
-  const drawMenu = (name) => {
+  const drawMenu = (menu) => {
     const menuItem = document.createElement("li");
     menuItem.className = "menu-list-item d-flex items-center py-2";
+    menuItem.id = menu.id;
     const menuItemName = document.createElement("span");
     menuItemName.className = "w-100 pl-2 menu-name";
-    menuItemName.appendChild(document.createTextNode(`${name}`));
+    menuItemName.appendChild(document.createTextNode(menu.name));
     const menuItemUpdateButton = document.createElement("button");
     menuItemUpdateButton.className =
       "bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button";
@@ -46,14 +47,18 @@ const Menu = () => {
 
   const loadMenu = () => {
     const savedMenuData = localStorage.getItem("espresso");
-    if (savedMenuData) JSON.parse(savedMenuData).forEach(drawMenu);
+    if (savedMenuData !== null) {
+      const parsedData = JSON.parse(savedMenuData);
+      parsedData.forEach(drawMenu);
+      menuData = parsedData;
+    }
   };
 
   const createMenu = (e) => {
     e.preventDefault();
-    const newMenu = menuInput.value;
     // 사용자 입력값이 빈 값이라면 추가되지 않는다
-    if (newMenu === "") return alert(MESSAGE.ALERT_CREATE);
+    if (menuInput.value === "") return alert(MESSAGE.ALERT_CREATE);
+    const newMenu = { id: `${Date.now()}`, name: menuInput.value };
     drawMenu(newMenu);
     menuData.push(newMenu);
     saveMenu();
@@ -72,6 +77,8 @@ const Menu = () => {
     // 메뉴 삭제시 브라우저에서 제공하는 confirm 인터페이스를 활용한다
     if (confirm(MESSAGE.CONFIRM_DELETE)) {
       target.parentElement.remove();
+      menuData = menuData.filter((data) => data.id !== target.parentElement.id);
+      saveMenu();
       countMenu();
     }
   };

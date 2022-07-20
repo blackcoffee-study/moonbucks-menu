@@ -67,10 +67,17 @@ const MenuList = () => {
   };
 
   const updateMenu = ({ target }) => {
-    const currentName = target.closest("li").querySelector(".menu-name");
+    const currentName = target.parentElement.querySelector(".menu-name");
     // 메뉴 수정시 브라우저에서 제공하는 prompt 인터페이스를 활용한다
     const updateName = prompt(MESSAGE.PROMPT_UPDATE, currentName.innerHTML);
-    if (updateName) currentName.innerHTML = updateName;
+    if (updateName) {
+      currentName.innerHTML = updateName;
+      menuData.map((data) => {
+        if (data.id === target.parentElement.id) data.name = updateName;
+        return data;
+      });
+      saveMenu();
+    }
   };
 
   const deleteMenu = ({ target }) => {

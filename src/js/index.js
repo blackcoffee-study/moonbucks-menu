@@ -1,7 +1,14 @@
 /**
+ * JS doc 타입 정의
+ */
+
+/**
+ * @typedef {"espresso" | "frappuccino" | "blended" | "teavana" | "dessert"} MenuCategory
+ */
+
+/**
  * @typedef {Object} MenuObject
  * @property {String} name
- * @property {boolean} isAdded
  * @property {boolean} isSoldOut
  */
 
@@ -12,117 +19,6 @@
  */
 
 /**
- * Markup ID prefix
- */
-
-const elementIdObject = {
-  espressoMenuListId: "espresso-menu-list",
-  removeButtonId: "removeButton",
-  updateButtonId: "updateButton",
-  soldOutButtonId: "soldOutButton",
-  menuNameId: "menuName",
-  menuWrapperId: "menuWrapper",
-};
-
-const menus = {
-  espresso: useMenu(),
-  frappuccino: useMenu(),
-  blended: useMenu(),
-  tibana: useMenu(),
-  dessert: useMenu(),
-};
-
-/**
- * it creates state of menu.
- * @returns {UseMenuReturn} it returns menu state and function to add menu.
- */
-function useMenu() {
-  let id = 0;
-  let state = {};
-
-  function renderMenu() {
-    for (const [id, menu] of Object.entries(state)) {
-      if (menu.isAdded) {
-        continue;
-      }
-
-      appendMenu(id, menu.name, {
-        onClickRemove: () => remove(id),
-        onClickUpdate: () => update(id),
-        onClickSoldOut: () => soldOut(id),
-      });
-
-      menu.isAdded = true;
-    }
-
-    showCount(Object.keys(state).length);
-  }
-
-  function setState(param) {
-    console.log("state", state);
-    console.log("param", param);
-
-    state = param;
-    renderMenu();
-  }
-
-  function remove(id) {
-    if (confirm("정말로 삭제하시겠습니까?")) {
-      getById(`menuWrapper${id}`).remove();
-      delete state[id];
-    }
-
-    renderMenu();
-  }
-
-  function soldOut(id) {
-    state[id].isSoldOut = !state[id].isSoldOut;
-    toggleSoldOut(id, state[id].isSoldOut);
-  }
-
-  function update(id) {
-    const newName = prompt("수정하고 싶은 이름을 입력해주세요.");
-
-    if (newName) {
-      getById(`menuName${id}`).textContent = newName;
-      state[id].name = newName;
-    }
-  }
-
-  function showCount(count) {
-    getById("count").textContent = count;
-  }
-
-  function incrementId() {
-    return ++id;
-  }
-
-  function getState() {
-    return state;
-  }
-
-  return [getState, setState, incrementId];
-}
-
-/**
- * toggle sold out state using isSoldOut value.
- * @param {number} id
- * @param {boolean} isSoldOut
- */
-function toggleSoldOut(id, isSoldOut) {
-  const { menuNameId } = elementIdObject;
-  const menuName = getById(`${menuNameId}${id}`);
-
-  if (isSoldOut && !menuName.classList.contains("sold-out")) {
-    menuName.classList.add("sold-out");
-  }
-
-  if (!isSoldOut && menuName.classList.contains("sold-out")) {
-    menuName.classList.remove("sold-out");
-  }
-}
-
-/**
  * @typedef {Object} AppendMenuOnClickCallbackObject
  * @property {Function} onClickSoldOut
  * @property {Function} onClickUpdate
@@ -130,50 +26,281 @@ function toggleSoldOut(id, isSoldOut) {
  */
 
 /**
- * Append one menu.
- * @param {number} id
- * @param {String} name
- * @param {AppendMenuOnClickCallbackObject} callbackObject
+ * Global Constants
  */
-function appendMenu(
-  id,
-  name,
-  { onClickSoldOut, onClickUpdate, onClickRemove }
-) {
-  const { espressoMenuListId, menuWrapperId } = elementIdObject;
 
-  appendHtml(espressoMenuListId, $menuWrapper(id));
-  appendHtml(`${menuWrapperId}${id}`, $menuName(id, name));
-  appendHtml(`${menuWrapperId}${id}`, $soldOutButton(id), {
-    eventName: "onclick",
-    callback: onClickSoldOut,
-  });
-  appendHtml(`${menuWrapperId}${id}`, $updateButton(id), {
-    eventName: "onclick",
-    callback: onClickUpdate,
-  });
-  appendHtml(`${menuWrapperId}${id}`, $removeButton(id), {
-    eventName: "onclick",
-    callback: onClickRemove,
-  });
+const elementIdMap = {
+  espressoMenuForm: "espresso-menu-form",
+  espressoMenuList: "espresso-menu-list",
+  espressoMenuNameInput: "espresso-menu-name",
+  removeButton: "removeButton",
+  updateButton: "updateButton",
+  soldOutButton: "soldOutButton",
+  menuName: "menuName",
+  menuWrapper: "menuWrapper",
+  menuCategoryButtonWrapper: "menuCategoryButtonWrapper",
+  menuTitleName: "menuTitleName",
+};
+
+const localStorageKey = {
+  categoryState: "moonbucksState.categoryState",
+  categorySeqState: "moonbucksState.categorySeqState",
+};
+
+const localCategoryState = JSON.parse(
+  localStorage.getItem(localStorageKey.categoryState)
+);
+
+const localCategorySeqState = JSON.parse(
+  localStorage.getItem(localStorageKey.categorySeqState)
+);
+
+const saveInLocalStorageHandler = (localStorageKey) => ({
+  set(target, prop, val, receiver) {
+    Reflect.set(target, prop, val, receiver);
+    localStorage.setItem(localStorageKey, JSON.stringify(target));
+    return true;
+  },
+});
+
+const categoryState = new Proxy(
+  localCategoryState || {
+    espresso: {},
+    frappuccino: {},
+    blended: {},
+    teavana: {},
+    dessert: {},
+  },
+  saveInLocalStorageHandler(localStorageKey.categoryState)
+);
+
+const categorySeqState = new Proxy(
+  localCategorySeqState || {
+    espresso: 0,
+    frappuccino: 0,
+    blended: 0,
+    teavana: 0,
+    dessert: 0,
+  },
+  saveInLocalStorageHandler(localStorageKey.categorySeqState)
+);
+
+const [getState, setState, incrementId, setCategoryName] = useMenu();
+
+/**
+ * 메뉴의 상태를 만들고 관리한다.
+ * @param {MenuCategory} initCategoryName
+ * @returns {UseMenuReturn} it returns menu state and function to add menu.
+ */
+function useMenu(initCategoryName = "espresso") {
+  /**
+   * Init
+   */
+  let categoryNameState;
+  let menuState;
+
+  setCategoryName(initCategoryName);
+
+  /**
+   * Mutation Functions
+   */
+
+  function setCategoryName(categoryName) {
+    if (menuState) {
+      stashMenu();
+    }
+
+    categoryNameState = categoryName;
+    menuState = categoryState[categoryName];
+
+    renderMenu();
+  }
+
+  function setMenuState(param) {
+    menuState = param;
+    categoryState[categoryNameState] = menuState;
+    renderMenu();
+  }
+
+  function remove(seq) {
+    if (confirm("정말로 삭제하시겠습니까?")) {
+      $removeElement(seq);
+
+      const { [seq]: removeMenu, ...rest } = menuState;
+
+      setMenuState({
+        ...rest,
+      });
+    }
+  }
+
+  function soldOut(seq) {
+    const { [seq]: soldOutMenu, ...rest } = menuState;
+    soldOutMenu.isSoldOut = !soldOutMenu.isSoldOut;
+
+    setMenuState({
+      [seq]: soldOutMenu,
+      ...rest,
+    });
+
+    toggleSoldOutUI(seq, menuState[seq].isSoldOut);
+  }
+
+  function update(seq) {
+    const { menuName } = elementIdMap;
+    const newName = prompt("수정하고 싶은 이름을 입력해주세요.");
+
+    if (newName) {
+      const { [seq]: updateMenu, ...rest } = menuState;
+      updateMenu.name = newName;
+
+      setMenuState({
+        [seq]: updateMenu,
+        ...rest,
+      });
+
+      getById(`${menuName}${seq}`).textContent = newName;
+    }
+  }
+
+  /**
+   * Get Functions
+   */
+
+  function getMenuSeq() {
+    return ++categorySeqState[categoryNameState];
+  }
+
+  function getMenuState() {
+    return categoryState[categoryNameState];
+  }
+
+  function getMenuWrapperId(seq) {
+    const { menuWrapper } = elementIdMap;
+    return `${categoryState}-${menuWrapper}-${seq}`;
+  }
+
+  /**
+   * UI Control Functions
+   */
+
+  function renderMenu() {
+    renderAppendMenu(menuState);
+    showCount(Object.keys(menuState).length);
+  }
+
+  function stashMenu() {
+    for (const [seq, _] of Object.entries(menuState)) {
+      $removeElement(seq);
+    }
+  }
+
+  function appendMenu(
+    seq,
+    name,
+    menuWrapperId,
+    { onClickSoldOut, onClickUpdate, onClickRemove },
+    isSoldOut
+  ) {
+    const { espressoMenuList: espressoMenuListId } = elementIdMap;
+
+    appendHtml(espressoMenuListId, $menuWrapper(menuWrapperId));
+    appendHtml(menuWrapperId, $menuName(seq, name, isSoldOut));
+    appendHtml(menuWrapperId, $soldOutButton(seq), {
+      eventName: "onclick",
+      callback: onClickSoldOut,
+    });
+    appendHtml(menuWrapperId, $updateButton(seq), {
+      eventName: "onclick",
+      callback: onClickUpdate,
+    });
+    appendHtml(menuWrapperId, $removeButton(seq), {
+      eventName: "onclick",
+      callback: onClickRemove,
+    });
+  }
+
+  function renderAppendMenu(menuState) {
+    for (const [seq, menu] of Object.entries(menuState)) {
+      const menuWrapperId = getMenuWrapperId(seq);
+
+      if (getById(menuWrapperId)) {
+        continue;
+      }
+
+      const { name, isSoldOut } = menu;
+
+      appendMenu(
+        seq,
+        name,
+        menuWrapperId,
+        {
+          onClickRemove: () => remove(seq),
+          onClickUpdate: () => update(seq),
+          onClickSoldOut: () => soldOut(seq),
+        },
+        isSoldOut
+      );
+    }
+  }
+
+  function showCount(count) {
+    getById("count").textContent = count;
+  }
+
+  function $removeElement(seq) {
+    getById(getMenuWrapperId(seq)).remove();
+  }
+
+  function toggleSoldOutUI(seq, isSoldOut) {
+    const { menuName } = elementIdMap;
+    const $menuName = getById(`${menuName}${seq}`);
+
+    if (isSoldOut && !$menuName.classList.contains("sold-out")) {
+      $menuName.classList.add("sold-out");
+    }
+
+    if (!isSoldOut && $menuName.classList.contains("sold-out")) {
+      $menuName.classList.remove("sold-out");
+    }
+  }
+
+  /**
+   * Get html template functions
+   */
+
+  function $removeButton(seq) {
+    const { removeButton } = elementIdMap;
+    return `<button type="button" id="${removeButton}${seq}" class="bg-gray-50 text-gray-500 text-sm menu-remove-button">삭제</button>`;
+  }
+
+  function $updateButton(seq) {
+    const { updateButton } = elementIdMap;
+    return `<button type="button" id="${updateButton}${seq}" class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button">수정</button>`;
+  }
+
+  function $soldOutButton(seq) {
+    const { soldOutButton } = elementIdMap;
+    return `<button id="${soldOutButton}${seq}" type="button" class="bg-gray-50 text-gray-500 text-sm mr-1 menu-sold-out-button">
+          품절
+        </button>`;
+  }
+
+  function $menuName(seq, name, isSoldOut) {
+    const { menuName } = elementIdMap;
+    return `<span id="${menuName}${seq}" class="w-100 pl-2 menu-name ${
+      isSoldOut ? "sold-out" : ""
+    }">${name}</span>`;
+  }
+
+  function $menuWrapper(menuWrapperId) {
+    return `<li data-menu-id="${menuWrapperId}" id="${menuWrapperId}" class="menu-list-item d-flex items-center py-2"></li>`;
+  }
+
+  return [getMenuState, setMenuState, getMenuSeq, setCategoryName];
 }
 
-/**
- * When DOMContentLoaded
- */
-
-/**
- * @type {"espresso" | "frappuccino" | "blended" | "tibana" | "dessert"}
- */
-let currentMenuType = "espresso";
-
-/**
- * @param {SubmitEvent} e
- */
 const onSubmit = (e) => {
-  /**
-   * @type {HTMLFormElement}
-   */
   const submitForm = e.target;
   e.preventDefault();
 
@@ -183,30 +310,48 @@ const onSubmit = (e) => {
     return;
   }
 
-  const [getState, setState, incrementId] = menus[currentMenuType];
-
-  console.log("state", getState());
-
   setState({
     ...getState(),
     [incrementId()]: {
       name,
       isSoldOut: false,
-      isAdded: false,
     },
   });
 
   submitForm.reset();
 };
 
-function bindOnClickSubmit() {
-  getById("espresso-menu-form").onsubmit = onSubmit;
+function bindOnSubmitMenu() {
+  const { espressoMenuForm: espressoMenuFormId } = elementIdMap;
+  getById(espressoMenuFormId).onsubmit = onSubmit;
 }
+
+function bindOnClickMenuCategory() {
+  const { menuCategoryButtonWrapper } = elementIdMap;
+  const buttons = getById(menuCategoryButtonWrapper).children;
+  for (const $button of buttons) {
+    const categoryName = $button.getAttribute("data-category-name");
+
+    $button.onclick = (e) => {
+      const { menuTitleName, espressoMenuNameInput } = elementIdMap;
+      getById(menuTitleName).textContent = e.target.textContent;
+      getById(
+        espressoMenuNameInput
+      ).placeholder = `${e.target.textContent.trim()} 메뉴 이름`;
+      setCategoryName(categoryName);
+    };
+  }
+}
+
+/**
+ * When DOMContentLoaded
+ */
 
 document.addEventListener(
   "DOMContentLoaded",
-  function () {
-    bindOnClickSubmit();
+  () => {
+    bindOnSubmitMenu();
+    bindOnClickMenuCategory();
   },
   false
 );
@@ -227,35 +372,4 @@ function appendHtml(parentId, htmlTemplate, event) {
     const { eventName, callback } = event;
     $.lastChild[eventName] = callback;
   }
-}
-
-/**
- * Templates
- */
-
-function $removeButton(id) {
-  const { removeButtonId } = elementIdObject;
-  return `<button type="button" id="${removeButtonId}${id}" class="bg-gray-50 text-gray-500 text-sm menu-remove-button">삭제</button>`;
-}
-
-function $updateButton(id) {
-  const { updateButtonId } = elementIdObject;
-  return `<button type="button" id="${updateButtonId}${id}" class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button">수정</button>`;
-}
-
-function $soldOutButton(id) {
-  const { soldOutButtonId } = elementIdObject;
-  return `<button id="${soldOutButtonId}${id}" type="button" class="bg-gray-50 text-gray-500 text-sm mr-1 menu-sold-out-button">
-          품절
-        </button>`;
-}
-
-function $menuName(id, name) {
-  const { menuNameId } = elementIdObject;
-  return `<span id="${menuNameId}${id}" class="w-100 pl-2 menu-name">${name}</span>`;
-}
-
-function $menuWrapper(id) {
-  const { menuWrapperId } = elementIdObject;
-  return `<li data-menu-id="${id}" id="${menuWrapperId}${id}" class="menu-list-item d-flex items-center py-2"></li>`;
 }

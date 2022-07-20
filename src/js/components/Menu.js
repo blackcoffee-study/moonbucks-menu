@@ -13,12 +13,12 @@ const Menu = () => {
     menuCount.innerHTML = `총 ${count} 개`;
   };
 
-  const createMenu = (name) => {
+  const drawMenu = (menuName) => {
     const newMenu = document.createElement("li");
     newMenu.className = "menu-list-item d-flex items-center py-2";
     const newMenuName = document.createElement("span");
     newMenuName.className = "w-100 pl-2 menu-name";
-    newMenuName.appendChild(document.createTextNode(`${name}`));
+    newMenuName.appendChild(document.createTextNode(`${menuName}`));
     const newMenuUpdateButton = document.createElement("button");
     newMenuUpdateButton.className =
       "bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button";
@@ -38,6 +38,14 @@ const Menu = () => {
     countMenu();
   };
 
+  const createMenu = (e) => {
+    e.preventDefault();
+    // 사용자 입력값이 빈 값이라면 추가되지 않는다
+    menuInput.value ? drawMenu(menuInput.value) : alert(MESSAGE.ALERT_CREATE);
+    // 메뉴가 추가되고 나면, input은 빈 값으로 초기화한다
+    menuForm.reset();
+  };
+
   const updateMenu = ({ target }) => {
     const currentName = target.closest("li").querySelector(".menu-name");
     // 메뉴 수정시 브라우저에서 제공하는 prompt 인터페이스를 활용한다
@@ -53,14 +61,12 @@ const Menu = () => {
     }
   };
 
-  // 에스프레소 메뉴에 새로운 메뉴를 확인 버튼 또는 엔터키 입력으로 추가한다
-  menuForm.addEventListener("submit", (e) => {
-    e.preventDefault();
-    // 사용자 입력값이 빈 값이라면 추가되지 않는다
-    menuInput.value ? createMenu(menuInput.value) : alert(MESSAGE.ALERT_CREATE);
-    // 메뉴가 추가되고 나면, input은 빈 값으로 초기화한다
-    menuForm.reset();
-  });
+  const init = () => {
+    // 에스프레소 메뉴에 새로운 메뉴를 확인 버튼 또는 엔터키 입력으로 추가한다
+    menuForm.addEventListener("submit", createMenu);
+  };
+
+  init();
 };
 
 export default Menu;

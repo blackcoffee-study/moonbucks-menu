@@ -1,18 +1,18 @@
 import { $ } from "../utils/dom.js";
 import { MESSAGE } from "../constants/index.js";
 
-const Menu = () => {
-  const menuForm = $("#espresso-menu-form");
-  const menuInput = $(".input-field");
-  const menuCount = $(".menu-count");
-  const menuList = $("#espresso-menu-list");
+const MenuList = () => {
+  const $menuForm = $("#espresso-menu-form");
+  const $menuInput = $(".input-field");
+  const $menuCount = $(".menu-count");
+  const $menuList = $("#espresso-menu-list");
 
   let menuData = [];
 
   const countMenu = () => {
     // 총 메뉴 갯수를 count하여 상단에 보여준다
-    const count = menuList.querySelectorAll("li").length;
-    menuCount.innerHTML = `총 ${count} 개`;
+    const count = $menuList.querySelectorAll("li").length;
+    $menuCount.innerHTML = `총 ${count} 개`;
   };
 
   const drawMenu = (menu) => {
@@ -37,8 +37,7 @@ const Menu = () => {
     menuItem.appendChild(menuItemName);
     menuItem.appendChild(menuItemUpdateButton);
     menuItem.appendChild(menuItemDeleteButton);
-    menuList.appendChild(menuItem);
-    countMenu();
+    $menuList.appendChild(menuItem);
   };
 
   const saveMenu = () => {
@@ -57,13 +56,14 @@ const Menu = () => {
   const createMenu = (e) => {
     e.preventDefault();
     // 사용자 입력값이 빈 값이라면 추가되지 않는다
-    if (menuInput.value === "") return alert(MESSAGE.ALERT_CREATE);
-    const newMenu = { id: `${Date.now()}`, name: menuInput.value };
+    if ($menuInput.value === "") return alert(MESSAGE.ALERT_CREATE);
+    const newMenu = { id: `${Date.now()}`, name: $menuInput.value };
     drawMenu(newMenu);
     menuData.push(newMenu);
     saveMenu();
+    countMenu();
     // 메뉴가 추가되고 나면, input은 빈 값으로 초기화한다
-    menuForm.reset();
+    $menuForm.reset();
   };
 
   const updateMenu = ({ target }) => {
@@ -84,12 +84,14 @@ const Menu = () => {
   };
 
   const init = () => {
+    // localStorage에 데이터를 저장하여 새로고침해도 데이터가 남아있게 한다
     loadMenu();
+    countMenu();
     // 에스프레소 메뉴에 새로운 메뉴를 확인 버튼 또는 엔터키 입력으로 추가한다
-    menuForm.addEventListener("submit", createMenu);
+    $menuForm.addEventListener("submit", createMenu);
   };
 
   init();
 };
 
-export default Menu;
+export default MenuList;

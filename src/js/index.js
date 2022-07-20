@@ -1,5 +1,5 @@
-import Menu from "./components/Menu.js";
+import MenuList from "./components/MenuList.js";
 
 document.addEventListener("DOMContentLoaded", () => {
-  Menu();
+  MenuList();
 });

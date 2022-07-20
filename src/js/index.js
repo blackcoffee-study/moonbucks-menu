@@ -1,16 +1,34 @@
-import { MenuCount, MenuForm, MenuInput, MenuList } from "./components";
-import { $ } from "./util";
+import {
+  MenuTitle,
+  MenuCategory,
+  MenuCount,
+  MenuForm,
+  MenuInput,
+  MenuList,
+} from "./components";
+import { $, CafeStorage, StateListener, StateManager } from "./util";
+import { createCafe } from "./util";
 
-const state = {
-  count: 0,
-};
+const cafeStorage = new CafeStorage();
+const cafe = createCafe({ cafeStorage });
+
+const state = { cafe, currentCafe: "espresso" };
+const stateManager = new StateManager(state);
+
+new StateListener({ cafe, stateManager, cafeStorage });
 
 document.addEventListener("DOMContentLoaded", () => {
-  MenuForm($("#espresso-menu-form"), { state });
+  const props = { cafe, stateManager };
 
-  MenuInput($("#espresso-menu-name"), { state });
+  MenuForm($("#espresso-menu-form"), props);
 
-  MenuList($("#espresso-menu-list"), { state });
+  MenuInput($("#espresso-menu-name"), props);
 
-  MenuCount($(".menu-count"), { state });
+  MenuList($("#espresso-menu-list"), props);
+
+  MenuCount($(".menu-count"), props);
+
+  MenuCategory(null, props);
+
+  MenuTitle($(".heading h2"), props);
 });

@@ -1,11 +1,16 @@
 import { EVENTS } from "../constant";
 import { addCustomEventListener } from "../util";
 
-export function MenuCount($container, { state }) {
+export function MenuCount($container, { stateManager }) {
   function setCount(count) {
     $container.textContent = `총 ${count}개`;
   }
 
-  addCustomEventListener(EVENTS.ADD_MENU, () => setCount(++state.count));
-  addCustomEventListener(EVENTS.REMOVE_MENU, () => setCount(--state.count));
+  function setCountFromState() {
+    setTimeout(() => setCount(stateManager.currentCafeItemsSize()));
+  }
+
+  addCustomEventListener(EVENTS.CHANGE_CATEGORY, setCountFromState);
+  addCustomEventListener(EVENTS.ADD_MENU, setCountFromState);
+  addCustomEventListener(EVENTS.REMOVE_MENU, setCountFromState);
 }

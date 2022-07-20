@@ -6,7 +6,7 @@ import {
   validateMenuName,
 } from "../util";
 
-export function MenuListItem($container, { menuName }) {
+export function MenuListItem($container, { menuName, soldout }) {
   const ref = { menuName };
 
   const $menuName = $(".menu-name", $container);
@@ -16,6 +16,9 @@ export function MenuListItem($container, { menuName }) {
 
   const $editButton = $(".menu-edit-button", $container);
   $editButton.addEventListener("click", editMenuName);
+
+  const $soldoutButton = $(".menu-soldout-button", $container);
+  $soldoutButton.addEventListener("click", soldoutMenu);
 
   function setMenuName(name) {
     ref.menuName = name;
@@ -27,9 +30,21 @@ export function MenuListItem($container, { menuName }) {
       return;
     }
 
+    const { menuId } = $container.dataset;
+
     $container.remove();
 
-    dispatchCustomEvent(EVENTS.REMOVE_MENU);
+    dispatchCustomEvent(EVENTS.REMOVE_MENU, { menuId });
+  }
+
+  function soldoutMenu() {
+    const { menuId, soldout } = $container.dataset;
+
+    const newSoldout = soldout === "true" ? "false" : "true";
+
+    toggleSoldout(newSoldout);
+
+    dispatchCustomEvent(EVENTS.CHANGE_MENU, { menuId, soldout: newSoldout });
   }
 
   function editMenuName() {
@@ -42,20 +57,40 @@ export function MenuListItem($container, { menuName }) {
     }
 
     setMenuName(newName);
+
+    const { menuId } = $container.dataset;
+
+    dispatchCustomEvent(EVENTS.CHANGE_MENU, { menuId, menuName: newName });
   }
+
+  function toggleSoldout(check) {
+    const soldoutClassName = "sold-out";
+
+    if (check === "true") {
+      $menuName.classList.add(soldoutClassName);
+    } else {
+      $menuName.classList.remove(soldoutClassName);
+    }
+
+    $container.dataset["soldout"] = check;
+  }
+
+  toggleSoldout(soldout);
 
   return { $container };
 }
 
-export function DefaultMenuListItem(menuName) {
+export function DefaultMenuListItem({ menuName, soldout }) {
   const template = `
   <li class="menu-list-item d-flex items-center py-2">
     <span class="w-100 pl-2 menu-name">${menuName}</span>
+    
+    <button type="button" class="bg-gray-50 text-gray-500 text-sm mr-1 menu-soldout-button">품절</button>
     <button type="button" class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button">수정</button>
     <button type="button" class="bg-gray-50 text-gray-500 text-sm menu-remove-button">삭제</button>
   </li>`;
 
   const $container = createElement(template);
 
-  return MenuListItem($container, { menuName });
+  return MenuListItem($container, { menuName, soldout });
 }

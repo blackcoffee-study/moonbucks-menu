@@ -65,7 +65,7 @@ const MenuList = () => {
   const createMenu = (e) => {
     e.preventDefault();
     // 사용자 입력값이 빈 값이라면 추가되지 않는다
-    if ($menuInput.value === "") return alert(MESSAGE.ALERT_CREATE);
+    if ($menuInput.value.trim() === "") return alert(MESSAGE.ALERT_CREATE);
     const newMenu = {
       id: `${Date.now()}`,
       name: $menuInput.value,
@@ -80,11 +80,11 @@ const MenuList = () => {
   };
 
   const updateMenu = ({ target }) => {
-    const currentName = target.parentElement.querySelector(".menu-name");
+    const $currentName = target.parentElement.querySelector(".menu-name");
     // 메뉴 수정시 브라우저에서 제공하는 prompt 인터페이스를 활용한다
-    const updateName = prompt(MESSAGE.PROMPT_UPDATE, currentName.innerHTML);
+    const updateName = prompt(MESSAGE.PROMPT_UPDATE, $currentName.innerHTML);
     if (updateName) {
-      currentName.innerHTML = updateName;
+      $currentName.innerHTML = updateName;
       menuData.map((data) => {
         if (data.id === target.parentElement.id) data.name = updateName;
         return data;

@@ -23,7 +23,7 @@ function App() {
     setState(deletedList);
   };
 
-  const menuList = new MenuList({ onUpdate: onUpdate, onDelete: onDelete });
+  const menuList = new MenuList({ onUpdate, onDelete });
   const count = new Count();
 
   const onAdd = newMenu => {

@@ -14,13 +14,13 @@ export default function MenuInput({ onAdd }) {
     e.preventDefault();
   });
 
-  this.addMenu = () => {
+  this.addMenu = function () {
     if (this.menuInputEl.value === '') return;
     onAdd(this.menuInputEl.value);
     this.cleanInput();
   };
 
-  this.cleanInput = () => {
+  this.cleanInput = function () {
     this.menuInputEl.value = '';
   };
 }

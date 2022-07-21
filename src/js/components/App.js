@@ -6,33 +6,33 @@ function App() {
   // NOTE:
   // enuInfo라는 이름이 적당한지는 모르겠음
   // 내부에 menu title과 id 값을 가진 object들을 요소로 가짐
-  this.menuInfo = [];
-  this.menuId = 0;
+  let menuInfo = [];
+  let menuId = 0;
 
-  this.setState = updatedMenuList => {
-    this.menuInfo = updatedMenuList;
+  const setState = updatedMenuList => {
+    menuInfo = updatedMenuList;
   };
 
-  this.onUpdate = (id, updatedMenu) => {
-    const updated = this.menuInfo.map(el => (el.id * 1 == id * 1 ? { title: updatedMenu, id: id * 1 } : el));
-    this.setState(updated);
+  const onUpdate = (id, updatedMenu) => {
+    const updated = menuInfo.map(el => (el.id * 1 == id * 1 ? { title: updatedMenu, id: id * 1 } : el));
+    setState(updated);
   };
 
-  this.onDelete = id => {
-    const deletedList = this.menuInfo.filter(el => el.id.toString() !== id.toString());
-    this.setState(deletedList);
+  const onDelete = id => {
+    const deletedList = menuInfo.filter(el => el.id.toString() !== id.toString());
+    setState(deletedList);
   };
 
-  const menuList = new MenuList({ onUpdate: this.onUpdate, onDelete: this.onDelete });
+  const menuList = new MenuList({ onUpdate: onUpdate, onDelete: onDelete });
   const count = new Count();
 
-  this.onAdd = newMenu => {
-    menuList.addMenu(newMenu, this.menuId);
-    this.setState([...this.menuInfo, { title: newMenu, id: this.menuId++ }]);
-    count.updateCount({ menuCount: this.menuInfo.length });
+  const onAdd = newMenu => {
+    menuList.addMenu(newMenu, menuId);
+    setState([...menuInfo, { title: newMenu, id: menuId++ }]);
+    count.updateCount({ menuCount: menuInfo.length });
   };
 
-  new MenuInput({ onAdd: this.onAdd });
+  new MenuInput({ onAdd: onAdd });
 }
 
 export default App;

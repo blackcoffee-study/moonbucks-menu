@@ -10,7 +10,7 @@ export default function MenuList({ onUpdate, onDelete }) {
     }
   });
 
-  this.makeMenuEl = (name, id) => {
+  this.makeMenuEl = function (name, id) {
     return `<li id=${id} class="menu-list-item d-flex items-center py-2">
             <span class="w-100 pl-2 menu-name">${name}</span>
             <button
@@ -28,12 +28,12 @@ export default function MenuList({ onUpdate, onDelete }) {
             </li>`;
   };
 
-  this.addMenu = (newMenu, id) => {
+  this.addMenu = function (newMenu, id) {
     const menu = this.makeMenuEl(newMenu, id);
     this.menuListEl.insertAdjacentHTML('afterBegin', menu);
   };
 
-  this.updateMenu = parentNode => {
+  this.updateMenu = function (parentNode) {
     let ans = window.prompt('어떤 이름으로 수정하시겠어요?');
     if (!ans) return;
 
@@ -42,7 +42,7 @@ export default function MenuList({ onUpdate, onDelete }) {
     onUpdate(parentNode.id, ans);
   };
 
-  this.deleteMenu = parentNode => {
+  this.deleteMenu = function (parentNode) {
     let result = window.confirm('정말 삭제하시겠어요?');
     if (!result) return;
 

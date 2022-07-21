@@ -32,7 +32,7 @@ function App() {
     count.updateCount({ menuCount: menuInfo.length });
   };
 
-  new MenuInput({ onAdd: onAdd });
+  new MenuInput({ onAdd });
 }
 
 export default App;

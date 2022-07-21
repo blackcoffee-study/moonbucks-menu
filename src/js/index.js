@@ -8,6 +8,7 @@ const menuCount = document.querySelector(".menu-count");
 
 
 menuForm.addEventListener("submit", onSubmitForm);
+menuList.addEventListener("click", onMenuClicked);
 
 function onSubmitForm(e) {
 	e.preventDefault();
@@ -50,9 +51,42 @@ function removeMenuItem(index) {
 	renderMenuList();
 }
 
+function onMenuClicked(e) {
+	const menuListItem = e.target.closest(".menu-list-item");
+	const menuListItemIndex = Number(menuListItem?.dataset.index);
+
+	// event target이 메뉴 <li> 안에 있지 않다면 리턴
+	if (!menuListItem) {
+		return;
+	}
+
+	// 클릭된 메뉴 <li> 가 메뉴 리스트 UI 내부에 존재하지 않으면 리턴
+	if (!menuList.contains(menuListItem)) {
+		return;
+	}
+
+	// 현재 클릭된 event target이 <button>이 아니면 리턴
+	if (e.target.tagName !== "BUTTON") {
+		return;
+	}
+
+	switch (e.target.dataset.action) {
+		case "edit":
+			updateMenuName(menuListItemIndex);
+			break;
+		case "delete":
+			removeMenuItem(menuListItemIndex);
+			break;
+		default:
+			console.error(`Unexpected action: ${e.target.dataset.action}`);
+			return;
+	}
+}
+
 function createMenuListItemElement(menu, index) {
 	const li = document.createElement("li");
 	li.className = "menu-list-item d-flex items-center py-2";
+	li.dataset.index = index;
 
 	const menuName = document.createElement("span")
 	menuName.className = "w-100 pl-2 menu-name";
@@ -61,14 +95,14 @@ function createMenuListItemElement(menu, index) {
 	const editButton = document.createElement("button");
 	editButton.type = "button"
 	editButton.className = "bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button";
-	editButton.addEventListener("click", () => updateMenuName(index));
 	editButton.innerText = "수정";
+	editButton.dataset.action = "edit"
 
 	const deleteButton = document.createElement("button");
 	deleteButton.type = "button";
 	deleteButton.className = "bg-gray-50 text-gray-500 text-sm menu-remove-button";
-	deleteButton.addEventListener("click", () => removeMenuItem(index));
 	deleteButton.innerText = "삭제";
+	deleteButton.dataset.action = "delete"
 
 	li.insertAdjacentElement("beforeend", menuName);
 	li.insertAdjacentElement("beforeend", editButton);

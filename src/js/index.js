@@ -26,7 +26,7 @@ function onSubmitForm(e) {
 function addNewMenu(menuName) {
 	const newMenu = new Menu(menuName);
 	state.add(newMenu);
-	renderMenuList();
+	renderMenu();
 }
 
 function updateMenuName(index) {
@@ -37,7 +37,7 @@ function updateMenuName(index) {
 		return;
 	}
 	state.update(index, new Menu(newName.trim()));
-	renderMenuList();
+	renderMenu();
 }
 
 function removeMenuItem(index) {
@@ -48,7 +48,7 @@ function removeMenuItem(index) {
 	}
 
 	state.delete(index);
-	renderMenuList();
+	renderMenu();
 }
 
 function onMenuClicked(e) {
@@ -97,6 +97,11 @@ function getMenuListItemHTMLString(menu, index) {
 `;
 }
 
+function renderMenu() {
+	renderMenuList();
+	renderMenuCount();
+}
+
 function renderMenuList() {
 	// 기존에 menuList의 innerHTML에 존재하던 <li> 모두 제거
 	while (menuList.firstChild) {
@@ -107,6 +112,8 @@ function renderMenuList() {
 	state.getMenuList().forEach(
 		(menu, index) => menuList.insertAdjacentHTML("beforeend", getMenuListItemHTMLString(menu, index))
 	);
+}
 
+function renderMenuCount() {
 	menuCount.innerText = `총 ${state.getMenuCount()}개`;
 }

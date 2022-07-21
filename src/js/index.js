@@ -29,15 +29,21 @@ function addNewMenu(menuName) {
 	renderMenu();
 }
 
-function updateMenuName(index) {
+function updateMenuName(menuListItem, index) {
 	const newName = prompt("메뉴명을 수정하세요");
+	const trimmedNewName = newName.trim();
 
-	if (!newName) {
+	if (!trimmedNewName) {
 		alert("값을 입력해주세요.");
 		return;
 	}
-	state.update(index, new Menu(newName.trim()));
-	renderMenu();
+	// data update
+	state.update(index, new Menu(trimmedNewName));
+
+	// ui update
+	// 메뉴 리스트 전체 render를 새로하는게 아닌, 
+	// 변경이 발생한 해당 menu list item만 수정한다
+	menuListItem.querySelector('span').innerText = trimmedNewName;
 }
 
 function removeMenuItem(index) {
@@ -72,7 +78,7 @@ function onMenuClicked(e) {
 
 	switch (e.target.dataset.action) {
 		case "edit":
-			updateMenuName(menuListItemIndex);
+			updateMenuName(menuListItem, menuListItemIndex);
 			break;
 		case "delete":
 			removeMenuItem(menuListItemIndex);

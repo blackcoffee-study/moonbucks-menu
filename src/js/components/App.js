@@ -7,36 +7,37 @@ function App() {
   //내부에 menu title과 id 값을 가진 object들을 요소로 가짐
   this.menuInfo = [];
   this.menuId = 0;
-  const menuList = new MenuList();
-  const count = new Count();
 
   this.setState = updatedMenuList => {
     this.menuInfo = updatedMenuList;
   };
   this.render = () => {
     //TODO: 필요한가?
-    menuList.render(this.menuInfo);
   };
+
+  this.onUpdate = (id, updatedMenu) => {
+    for (let i = 0; i < this.menuInfo.length; i++) {
+      if (this.menuInfo[i].id.toString() === id.toString()) {
+        this.menuInfo[i].title = updatedMenu;
+        break;
+      }
+    }
+  };
+
+  this.onDelete = id => {
+    let idx = this.menuInfo.findIndex(el => el.id === id * 1);
+    this.menuInfo.splice(idx, 1);
+  };
+
+  const menuList = new MenuList({ onUpdate: this.onUpdate, onDelete: this.onDelete });
+  const count = new Count();
 
   this.onAdd = newMenu => {
     this.setState([...this.menuInfo, { title: newMenu, id: this.menuId++ }]);
     menuList.addNewMenu(newMenu, this.menuId);
     count.updateCount({ menuCount: this.menuInfo.length });
   };
-  this.onUpdate = id => {
-    //TODO: 로직구현
-    // this.menuInfo.map(el => {
-    //   if (el.id === id) {
-    //     el =
-    //   }
-    // });
-    menuList.updateMenu(id);
-  };
-  this.onDelete = id => {
-    this.setState([...this.menuTitle, newMenu]);
-    menuList.addNewMenu(newMenu);
-    count.updateCount({ menuCount: this.menuTitle.length });
-  };
+
   new MenuInput({ onAdd: this.onAdd });
 }
 

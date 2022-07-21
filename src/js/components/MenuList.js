@@ -1,12 +1,12 @@
 import { $ } from '../utils/index.js';
 
-export default function MenuList() {
+export default function MenuList({ onUpdate, onDelete }) {
   this.menuListEl = $('#espresso-menu-list');
   this.menuListEl.addEventListener('click', e => {
     if (e.target.classList.contains('menu-edit-button')) {
       this.updateMenu(e.target.parentNode);
     } else if (e.target.classList.contains('menu-remove-button')) {
-      this.deleteMenu(e.target.parentNode.id);
+      this.deleteMenu(e.target.parentNode);
     }
   });
   this.makeMenuEl = (name, id) => {
@@ -28,17 +28,20 @@ export default function MenuList() {
   };
   this.render = menuList => {};
   this.addNewMenu = (newMenu, id) => {
-    let ans = window.prompt('어떤 이름으로 수정하시겠어요?');
-    if (!ans) return;
-
     const menu = this.makeMenuEl(newMenu, id);
     this.menuListEl.insertAdjacentHTML('afterBegin', menu);
   };
   this.updateMenu = parentNode => {
+    let ans = window.prompt('어떤 이름으로 수정하시겠어요?');
+    if (!ans) return;
     let valueEl = parentNode.querySelector('span');
     valueEl.innerHTML = ans;
+    onUpdate(parentNode.id, ans);
   };
-  this.deleteMenu = () => {
-    console.log('delete');
+  this.deleteMenu = parentNode => {
+    let result = window.confirm('정말 삭제하시겠어요?');
+    if (!result) return;
+    this.menuListEl.removeChild(parentNode);
+    onDelete(parentNode.id);
   };
 }

@@ -85,9 +85,8 @@ const MenuList = () => {
     const updateName = prompt(MESSAGE.PROMPT_UPDATE, $currentName.innerHTML);
     if (updateName) {
       $currentName.innerHTML = updateName;
-      menuData.map((data) => {
+      menuData.find((data) => {
         if (data.id === target.parentElement.id) data.name = updateName;
-        return data;
       });
       saveMenu();
     }
@@ -104,7 +103,7 @@ const MenuList = () => {
   };
 
   const soldOutMenu = ({ target }) => {
-    menuData.map((data) => {
+    menuData.find((data) => {
       if (data.id === target.parentElement.id) {
         data.isSoldOut = !data.isSoldOut;
         target.parentElement.querySelector(".menu-name").className =
@@ -112,7 +111,6 @@ const MenuList = () => {
             ? "w-100 pl-2 menu-name sold-out"
             : "w-100 pl-2 menu-name";
       }
-      return data;
     });
     saveMenu();
   };

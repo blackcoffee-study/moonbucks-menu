@@ -3,38 +3,32 @@ import MenuList from './MenuList.js';
 import Count from './Count.js';
 
 function App() {
-  //NOTE: menuInfo라는 이름이 적당한지는 모르겠음
-  //내부에 menu title과 id 값을 가진 object들을 요소로 가짐
+  // NOTE:
+  // enuInfo라는 이름이 적당한지는 모르겠음
+  // 내부에 menu title과 id 값을 가진 object들을 요소로 가짐
   this.menuInfo = [];
   this.menuId = 0;
 
   this.setState = updatedMenuList => {
     this.menuInfo = updatedMenuList;
   };
-  this.render = () => {
-    //TODO: 필요한가?
-  };
 
   this.onUpdate = (id, updatedMenu) => {
-    for (let i = 0; i < this.menuInfo.length; i++) {
-      if (this.menuInfo[i].id.toString() === id.toString()) {
-        this.menuInfo[i].title = updatedMenu;
-        break;
-      }
-    }
+    const updated = this.menuInfo.map(el => (el.id * 1 == id * 1 ? { title: updatedMenu, id: id * 1 } : el));
+    this.setState(updated);
   };
 
   this.onDelete = id => {
-    let idx = this.menuInfo.findIndex(el => el.id === id * 1);
-    this.menuInfo.splice(idx, 1);
+    const deletedList = this.menuInfo.filter(el => el.id.toString() !== id.toString());
+    this.setState(deletedList);
   };
 
   const menuList = new MenuList({ onUpdate: this.onUpdate, onDelete: this.onDelete });
   const count = new Count();
 
   this.onAdd = newMenu => {
+    menuList.addMenu(newMenu, this.menuId);
     this.setState([...this.menuInfo, { title: newMenu, id: this.menuId++ }]);
-    menuList.addNewMenu(newMenu, this.menuId);
     count.updateCount({ menuCount: this.menuInfo.length });
   };
 

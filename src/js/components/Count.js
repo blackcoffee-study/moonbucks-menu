@@ -1,6 +1,8 @@
+import { $ } from '../utils/index.js';
+
 export default function Count() {
   this.updateCount = ({ menuCount }) => {
-    const countEl = document.querySelector('.menu-count');
+    const countEl = $('.menu-count');
     countEl.innerHTML = `총 ${menuCount}개`;
   };
 }

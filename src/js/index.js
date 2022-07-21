@@ -46,15 +46,21 @@ function updateMenuName(menuListItem, index) {
 	menuListItem.querySelector('span').innerText = trimmedNewName;
 }
 
-function removeMenuItem(index) {
+function removeMenuItem(menuListItem, index) {
 	const isConfrimed = confirm("정말 삭제하시겠습니까?");
-	
+
 	if (!isConfrimed) {
 		return;
 	}
-
+	// data update
 	state.delete(index);
-	renderMenu();
+
+	// ui update
+	// 메뉴 리스트 전체 render를 새로하는게 아닌,
+	// 변경이 발생한 해당 menu list item만 삭제 후
+	// 메뉴 개수 부분만 새로 render
+	menuListItem.remove();
+	renderMenuCount();
 }
 
 function onMenuClicked(e) {
@@ -81,7 +87,7 @@ function onMenuClicked(e) {
 			updateMenuName(menuListItem, menuListItemIndex);
 			break;
 		case "delete":
-			removeMenuItem(menuListItemIndex);
+			removeMenuItem(menuListItem, menuListItemIndex);
 			break;
 		default:
 			console.error(`Unexpected action: ${e.target.dataset.action}`);

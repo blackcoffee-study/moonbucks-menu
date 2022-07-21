@@ -4,7 +4,7 @@ const state = new MenuStatus([]);
 const inputTag = document.getElementById("espresso-menu-name");
 const menuForm = document.getElementById("espresso-menu-form");;
 const menuList = document.getElementById("espresso-menu-list");
-const menuCount = document.getElementsByClassName("menu-count")[0];
+const menuCount = document.querySelector(".menu-count");
 
 
 menuForm.addEventListener("submit", onSubmitForm);

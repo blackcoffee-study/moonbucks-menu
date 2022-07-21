@@ -83,32 +83,18 @@ function onMenuClicked(e) {
 	}
 }
 
-function createMenuListItemElement(menu, index) {
-	const li = document.createElement("li");
-	li.className = "menu-list-item d-flex items-center py-2";
-	li.dataset.index = index;
-
-	const menuName = document.createElement("span")
-	menuName.className = "w-100 pl-2 menu-name";
-	menuName.innerText = menu.name;
-
-	const editButton = document.createElement("button");
-	editButton.type = "button"
-	editButton.className = "bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button";
-	editButton.innerText = "수정";
-	editButton.dataset.action = "edit"
-
-	const deleteButton = document.createElement("button");
-	deleteButton.type = "button";
-	deleteButton.className = "bg-gray-50 text-gray-500 text-sm menu-remove-button";
-	deleteButton.innerText = "삭제";
-	deleteButton.dataset.action = "delete"
-
-	li.insertAdjacentElement("beforeend", menuName);
-	li.insertAdjacentElement("beforeend", editButton);
-	li.insertAdjacentElement("beforeend", deleteButton);
-
-	return li;
+function getMenuListItemHTMLString(menu, index) {
+	return `
+<li class="menu-list-item d-flex items-center py-2" data-index=${index}>
+	<span class="w-100 pl-2 menu-name">${menu.name}</span>
+	<button type="button" class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button" data-action="edit">
+    	수정
+  	</button>
+  	<button type="button" class="bg-gray-50 text-gray-500 text-sm menu-remove-button" data-action="delete">
+		삭제
+  	</button>
+</li>
+`;
 }
 
 function renderMenuList() {
@@ -119,7 +105,7 @@ function renderMenuList() {
 
 	// 현재 state의 해당하는 Menu 배열을 불러와, 각각의 menu를 기반으로 <li> Element를 생성하여 menuList에 삽입
 	state.getMenuList().forEach(
-		(menu, index) => menuList.insertAdjacentElement("beforeend", createMenuListItemElement(menu, index))
+		(menu, index) => menuList.insertAdjacentHTML("beforeend", getMenuListItemHTMLString(menu, index))
 	);
 
 	menuCount.innerText = `총 ${state.getMenuCount()}개`;

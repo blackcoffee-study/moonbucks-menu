@@ -15,13 +15,21 @@ const MenuList = () => {
     $menuCount.innerHTML = `총 ${count} 개`;
   };
 
-  const drawMenu = (menu) => {
+  const drawMenu = (data) => {
     const menuItem = document.createElement("li");
     menuItem.className = "menu-list-item d-flex items-center py-2";
-    menuItem.id = menu.id;
+    menuItem.id = data.id;
     const menuItemName = document.createElement("span");
-    menuItemName.className = "w-100 pl-2 menu-name";
-    menuItemName.appendChild(document.createTextNode(menu.name));
+    // 품절 상태인 경우를 보여줄 수 있게, 품절 버튼을 추가하고 sold-out class를 추가하여 상태를 변경한다
+    menuItemName.className = data.isSoldOut
+      ? "w-100 pl-2 menu-name sold-out"
+      : "w-100 pl-2 menu-name";
+    menuItemName.appendChild(document.createTextNode(data.name));
+    const menuItemSoldOutButton = document.createElement("button");
+    menuItemSoldOutButton.className =
+      "bg-gray-50 text-gray-500 text-sm mr-1 menu-sold-out-button";
+    menuItemSoldOutButton.onclick = (e) => soldOutMenu(e);
+    menuItemSoldOutButton.appendChild(document.createTextNode("품절"));
     const menuItemUpdateButton = document.createElement("button");
     menuItemUpdateButton.className =
       "bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button";
@@ -35,6 +43,7 @@ const MenuList = () => {
     menuItemDeleteButton.onclick = (e) => deleteMenu(e);
     menuItemDeleteButton.appendChild(document.createTextNode("삭제"));
     menuItem.appendChild(menuItemName);
+    menuItem.appendChild(menuItemSoldOutButton);
     menuItem.appendChild(menuItemUpdateButton);
     menuItem.appendChild(menuItemDeleteButton);
     $menuList.appendChild(menuItem);
@@ -57,7 +66,11 @@ const MenuList = () => {
     e.preventDefault();
     // 사용자 입력값이 빈 값이라면 추가되지 않는다
     if ($menuInput.value === "") return alert(MESSAGE.ALERT_CREATE);
-    const newMenu = { id: `${Date.now()}`, name: $menuInput.value };
+    const newMenu = {
+      id: `${Date.now()}`,
+      name: $menuInput.value,
+      isSoldOut: false,
+    };
     drawMenu(newMenu);
     menuData.push(newMenu);
     saveMenu();
@@ -88,6 +101,20 @@ const MenuList = () => {
       saveMenu();
       countMenu();
     }
+  };
+
+  const soldOutMenu = ({ target }) => {
+    menuData.map((data) => {
+      if (data.id === target.parentElement.id) {
+        data.isSoldOut = !data.isSoldOut;
+        target.parentElement.querySelector(".menu-name").className =
+          data.isSoldOut
+            ? "w-100 pl-2 menu-name sold-out"
+            : "w-100 pl-2 menu-name";
+      }
+      return data;
+    });
+    saveMenu();
   };
 
   const init = () => {

@@ -111,21 +111,18 @@ function useMenu(initCategoryName = "espresso") {
     }
 
     categoryNameState = categoryName;
-    menuState = categoryState[categoryName];
-
-    renderMenu();
+    setMenuState(categoryState[categoryName]);
   }
 
   function setMenuState(param) {
     menuState = param;
     categoryState[categoryNameState] = menuState;
+
     renderMenu();
   }
 
   function remove(seq) {
     if (confirm("정말로 삭제하시겠습니까?")) {
-      $removeElement(seq);
-
       const { [seq]: removeMenu, ...rest } = menuState;
 
       setMenuState({
@@ -142,12 +139,9 @@ function useMenu(initCategoryName = "espresso") {
       [seq]: soldOutMenu,
       ...rest,
     });
-
-    toggleSoldOutUI(seq, menuState[seq].isSoldOut);
   }
 
   function update(seq) {
-    const { menuName } = elementIdMap;
     const newName = prompt("수정하고 싶은 이름을 입력해주세요.");
 
     if (newName) {
@@ -158,8 +152,6 @@ function useMenu(initCategoryName = "espresso") {
         [seq]: updateMenu,
         ...rest,
       });
-
-      getById(`${menuName}${seq}`).textContent = newName;
     }
   }
 
@@ -177,7 +169,7 @@ function useMenu(initCategoryName = "espresso") {
 
   function getMenuWrapperId(seq) {
     const { menuWrapper } = elementIdMap;
-    return `${categoryState}-${menuWrapper}-${seq}`;
+    return `${menuWrapper}-${seq}`;
   }
 
   /**
@@ -186,12 +178,73 @@ function useMenu(initCategoryName = "espresso") {
 
   function renderMenu() {
     renderAppendMenu(menuState);
+    renderSoldOutMenu(menuState);
+    renderUpdateMenu(menuState);
+    renderRemoveMenu(menuState);
     showCount(Object.keys(menuState).length);
   }
 
-  function stashMenu() {
-    for (const [seq, _] of Object.entries(menuState)) {
-      $removeElement(seq);
+  function renderAppendMenu(menuState) {
+    for (const [seq, menu] of Object.entries(menuState)) {
+      const menuWrapperId = getMenuWrapperId(seq);
+
+      if (getById(menuWrapperId)) {
+        continue;
+      }
+
+      const { name, isSoldOut } = menu;
+
+      appendMenu(
+        seq,
+        name,
+        menuWrapperId,
+        {
+          onClickRemove: () => remove(seq),
+          onClickUpdate: () => update(seq),
+          onClickSoldOut: () => soldOut(seq),
+        },
+        isSoldOut
+      );
+    }
+  }
+
+  function renderSoldOutMenu(menuState) {
+    const { menuName } = elementIdMap;
+
+    for (const [seq, menu] of Object.entries(menuState)) {
+      const $menuName = getById(`${menuName}${seq}`);
+      const { isSoldOut } = menu;
+
+      if (isSoldOut && !$menuName.classList.contains("sold-out")) {
+        $menuName.classList.add("sold-out");
+      }
+
+      if (!isSoldOut && $menuName.classList.contains("sold-out")) {
+        $menuName.classList.remove("sold-out");
+      }
+    }
+  }
+
+  function renderUpdateMenu(menuState) {
+    const { menuName } = elementIdMap;
+
+    for (const [seq, menu] of Object.entries(menuState)) {
+      const { name } = menu;
+      const $menuName = getById(`${menuName}${seq}`);
+      if ($menuName.textContent !== name) {
+        $menuName.textContent = name;
+      }
+    }
+  }
+
+  function renderRemoveMenu(menuState) {
+    const { espressoMenuList } = elementIdMap;
+
+    for (const menu of getById(espressoMenuList).children) {
+      const seq = menu.id.replace("menuWrapper-", "");
+      if (!menuState[seq]) {
+        menu.remove();
+      }
     }
   }
 
@@ -220,30 +273,6 @@ function useMenu(initCategoryName = "espresso") {
     });
   }
 
-  function renderAppendMenu(menuState) {
-    for (const [seq, menu] of Object.entries(menuState)) {
-      const menuWrapperId = getMenuWrapperId(seq);
-
-      if (getById(menuWrapperId)) {
-        continue;
-      }
-
-      const { name, isSoldOut } = menu;
-
-      appendMenu(
-        seq,
-        name,
-        menuWrapperId,
-        {
-          onClickRemove: () => remove(seq),
-          onClickUpdate: () => update(seq),
-          onClickSoldOut: () => soldOut(seq),
-        },
-        isSoldOut
-      );
-    }
-  }
-
   function showCount(count) {
     getById("count").textContent = count;
   }
@@ -252,16 +281,9 @@ function useMenu(initCategoryName = "espresso") {
     getById(getMenuWrapperId(seq)).remove();
   }
 
-  function toggleSoldOutUI(seq, isSoldOut) {
-    const { menuName } = elementIdMap;
-    const $menuName = getById(`${menuName}${seq}`);
-
-    if (isSoldOut && !$menuName.classList.contains("sold-out")) {
-      $menuName.classList.add("sold-out");
-    }
-
-    if (!isSoldOut && $menuName.classList.contains("sold-out")) {
-      $menuName.classList.remove("sold-out");
+  function stashMenu() {
+    for (const [seq, _] of Object.entries(menuState)) {
+      $removeElement(seq);
     }
   }
 

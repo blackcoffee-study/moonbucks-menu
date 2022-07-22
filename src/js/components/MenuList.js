@@ -1,4 +1,4 @@
-import { $ } from "../utils/dom.js";
+import { $, createCustomElement, createCustomButton } from "../utils/dom.js";
 import { MESSAGE } from "../constants/index.js";
 
 const MenuList = () => {
@@ -16,32 +16,35 @@ const MenuList = () => {
   };
 
   const drawMenu = (data) => {
-    const menuItem = document.createElement("li");
-    menuItem.className = "menu-list-item d-flex items-center py-2";
+    const menuItem = createCustomElement(
+      "li",
+      "menu-list-item d-flex items-center py-2"
+    );
     menuItem.id = data.id;
-    const menuItemName = document.createElement("span");
+
+    const menuItemName = createCustomElement("span", "w-100 pl-2 menu-name");
     // 품절 상태인 경우를 보여줄 수 있게, 품절 버튼을 추가하고 sold-out class를 추가하여 상태를 변경한다
-    menuItemName.className = data.isSoldOut
-      ? "w-100 pl-2 menu-name sold-out"
-      : "w-100 pl-2 menu-name";
-    menuItemName.appendChild(document.createTextNode(data.name));
-    const menuItemSoldOutButton = document.createElement("button");
-    menuItemSoldOutButton.className =
-      "bg-gray-50 text-gray-500 text-sm mr-1 menu-sold-out-button";
-    menuItemSoldOutButton.onclick = (e) => soldOutMenu(e);
-    menuItemSoldOutButton.appendChild(document.createTextNode("품절"));
-    const menuItemUpdateButton = document.createElement("button");
-    menuItemUpdateButton.className =
-      "bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button";
+    if (data.isSoldOut) menuItemName.classList.add("sold-out");
+
+    const menuItemSoldOutButton = createCustomButton(
+      ["mr-1", "menu-sold-out-button"],
+      (e) => soldOutMenu(e),
+      "품절"
+    );
     // 메뉴의 수정 버튼을 눌러 메뉴 이름을 수정할 수 있다
-    menuItemUpdateButton.onclick = (e) => updateMenu(e);
-    menuItemUpdateButton.appendChild(document.createTextNode("수정"));
-    const menuItemDeleteButton = document.createElement("button");
-    menuItemDeleteButton.className =
-      "bg-gray-50 text-gray-500 text-sm menu-remove-button";
+    const menuItemUpdateButton = createCustomButton(
+      ["mr-1", "menu-edit-button"],
+      (e) => updateMenu(e),
+      "수정"
+    );
     // 메뉴 삭제 버튼을 이용하여 메뉴를 삭제할 수 있다
-    menuItemDeleteButton.onclick = (e) => deleteMenu(e);
-    menuItemDeleteButton.appendChild(document.createTextNode("삭제"));
+    const menuItemDeleteButton = createCustomButton(
+      ["menu-remove-button"],
+      (e) => deleteMenu(e),
+      "삭제"
+    );
+
+    menuItemName.appendChild(document.createTextNode(data.name));
     menuItem.appendChild(menuItemName);
     menuItem.appendChild(menuItemSoldOutButton);
     menuItem.appendChild(menuItemUpdateButton);
@@ -106,10 +109,9 @@ const MenuList = () => {
     menuData.find((data) => {
       if (data.id === target.parentElement.id) {
         data.isSoldOut = !data.isSoldOut;
-        target.parentElement.querySelector(".menu-name").className =
-          data.isSoldOut
-            ? "w-100 pl-2 menu-name sold-out"
-            : "w-100 pl-2 menu-name";
+        target.parentElement
+          .querySelector(".menu-name")
+          .classList.toggle("sold-out");
       }
     });
     saveMenu();

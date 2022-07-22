@@ -1,17 +1,49 @@
-import { $, createCustomElement, createCustomButton } from "../utils/dom.js";
-import { MESSAGE } from "../constants/index.js";
+import {
+  $,
+  $all,
+  createCustomElement,
+  createCustomButton,
+} from "../utils/dom.js";
+import { MESSAGE, CATEGORY } from "../constants/index.js";
 
-const MenuList = () => {
+const MenuList = (menuCategory, menuData) => {
   const $menuForm = $("#espresso-menu-form");
   const $menuInput = $(".input-field");
   const $menuCount = $(".menu-count");
   const $menuList = $("#espresso-menu-list");
+  const $categoryName = $(".category-name");
+  const $categoryButton = $all(".cafe-category-name");
 
-  let menuData = [];
+  // 에스프레소, 프라푸치노, 블렌디드, 티바나, 디저트 각각의 종류별로 메뉴판을 관리할 수 있게 만든다
+  const changeCategory = ({ target }) => {
+    const categoryName = target.dataset["categoryName"];
+    switch (categoryName) {
+      case "espresso":
+        $categoryName.innerHTML = CATEGORY.ESPRESSO;
+        break;
+      case "frappuccino":
+        $categoryName.innerHTML = CATEGORY.FRAPPUCCINO;
+        break;
+      case "blended":
+        $categoryName.innerHTML = CATEGORY.BLENDED;
+        break;
+      case "teavana":
+        $categoryName.innerHTML = CATEGORY.TEAVANA;
+        break;
+      case "dessert":
+        $categoryName.innerHTML = CATEGORY.DESSERT;
+        break;
+    }
+    menuCategory = categoryName;
+    $menuList.textContent = "";
+    $menuForm.reset();
+    loadMenu();
+    countMenu();
+  };
 
   const countMenu = () => {
     // 총 메뉴 갯수를 count하여 상단에 보여준다
-    const count = $menuList.querySelectorAll("li").length;
+    const count = $all(".menu-list-item").length;
     $menuCount.innerHTML = `총 ${count} 개`;
   };
 
@@ -20,12 +52,7 @@ const MenuList = () => {
       "li",
       "menu-list-item d-flex items-center py-2"
     );
-    menuItem.id = data.id;
-
     const menuItemName = createCustomElement("span", "w-100 pl-2 menu-name");
-    // 품절 상태인 경우를 보여줄 수 있게, 품절 버튼을 추가하고 sold-out class를 추가하여 상태를 변경한다
-    if (data.isSoldOut) menuItemName.classList.add("sold-out");
-
     const menuItemSoldOutButton = createCustomButton(
       ["mr-1", "menu-sold-out-button"],
       (e) => soldOutMenu(e),
@@ -43,7 +70,9 @@ const MenuList = () => {
       (e) => deleteMenu(e),
       "삭제"
     );
-
+    menuItem.id = data.id;
+    // 품절 상태인 경우를 보여줄 수 있게, 품절 버튼을 추가하고 sold-out class를 추가하여 상태를 변경한다
+    if (data.isSoldOut) menuItemName.classList.add("sold-out");
     menuItemName.appendChild(document.createTextNode(data.name));
     menuItem.appendChild(menuItemName);
     menuItem.appendChild(menuItemSoldOutButton);
@@ -53,16 +82,16 @@ const MenuList = () => {
   };
 
   const saveMenu = () => {
-    localStorage.setItem("espresso", JSON.stringify(menuData));
+    localStorage.setItem(menuCategory, JSON.stringify(menuData));
   };
 
   const loadMenu = () => {
-    const savedMenuData = localStorage.getItem("espresso");
+    const savedMenuData = localStorage.getItem(menuCategory);
     if (savedMenuData !== null) {
       const parsedData = JSON.parse(savedMenuData);
       parsedData.forEach(drawMenu);
       menuData = parsedData;
-    }
+    } else menuData = [];
   };
 
   const createMenu = (e) => {
@@ -123,6 +152,7 @@ const MenuList = () => {
     countMenu();
     // 에스프레소 메뉴에 새로운 메뉴를 확인 버튼 또는 엔터키 입력으로 추가한다
     $menuForm.addEventListener("submit", createMenu);
+    $categoryButton.forEach((e) => e.addEventListener("click", changeCategory));
   };
 
   init();

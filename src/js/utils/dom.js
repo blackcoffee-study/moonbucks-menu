@@ -1,5 +1,7 @@
 export const $ = (selector) => document.querySelector(selector);
 
+export const $all = (selector) => document.querySelectorAll(selector);
+
 export const createCustomElement = (el, name) => {
   const customElement = document.createElement(el);
   customElement.className = name;

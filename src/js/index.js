@@ -5,6 +5,7 @@ const $form = document.getElementById('espresso-menu-form');
 let menuList = [];
 let category = 'espresso';
 
+// events
 const editMenu = ({target}) => {
   if (!target.classList.contains('menu-edit-button')) return;
   const name = window.prompt('메뉴명을 수정하세요');
@@ -31,6 +32,7 @@ const addMenuList = (name) => {
   $input.value = '';
 };
 
+// addEventListeners
 $form.addEventListener('submit', (e) => {
   e.preventDefault();
   addMenuList($input.value);
@@ -42,6 +44,7 @@ const addEventListenersToMenuList = () => {
   $menu.addEventListener('click', removeMenu);
 }
 
+// renders
 const renderMenuList = () => {
   const $menuList = document.getElementById('espresso-menu-list');
   const menuListItemElements = menuList.map((menu, index) => {

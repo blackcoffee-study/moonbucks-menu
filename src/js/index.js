@@ -96,9 +96,16 @@ function onMenuClicked(e) {
 }
 
 function getMenuListItemHTMLString(menu, index) {
+	const spanClassName = menu.isPurchasable
+		? "w-100 pl-2 menu-name"
+		: "w-100 pl-2 menu-name sold-out";
+
 	return `
 <li class="menu-list-item d-flex items-center py-2" data-index=${index}>
-	<span class="w-100 pl-2 menu-name">${menu.name}</span>
+	<span class="${spanClassName}">${menu.name}</span>
+	<button type="button" class="bg-gray-50 text-gray-500 text-sm mr-1 menu-sold-out-button" data-action="toggle-purchasable">
+		품절
+ 	</button>
 	<button type="button" class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button" data-action="edit">
     	수정
   	</button>

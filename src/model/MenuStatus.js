@@ -19,6 +19,14 @@ class MenuStatus {
         this.menuList.push(newMenu);
     }
 
+    getMenu(index) {
+        if (typeof index !== "number") {
+			console.error(`Invalid Input! ${index} is not 'number' value! @MenuStatus.update() 1st parameter`);
+			return;
+		}
+        return this.menuList[index];
+    }
+
     getMenuList() {
         return this.menuList;
     }

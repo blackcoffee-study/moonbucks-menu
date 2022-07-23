@@ -29,6 +29,23 @@ function addNewMenu(menuName) {
 	renderMenu();
 }
 
+function updateMenuListElementView(menuListItem, newMenu) {
+	const menuNameSpan = menuListItem.querySelector("span");
+
+	menuNameSpan.classList.toggle("sold-out", !newMenu.isPurchasable);
+}
+
+function toggleMenuPurchasable(menuListItem, index) {
+	const currentMenu = state.getMenu(index);
+	const updatedMenu = new Menu(currentMenu.name, !currentMenu.isPurchasable);
+
+	// data update
+	state.update(index, updatedMenu);
+
+	// ui update
+	updateMenuListElementView(menuListItem, updatedMenu);
+}
+
 function updateMenuName(menuListItem, index) {
 	const newName = prompt("메뉴명을 수정하세요");
 	const trimmedNewName = newName.trim();
@@ -88,6 +105,9 @@ function onMenuClicked(e) {
 			break;
 		case "delete":
 			removeMenuItem(menuListItem, menuListItemIndex);
+			break;
+		case "toggle-purchasable":
+			toggleMenuPurchasable(menuListItem, menuListItemIndex);
 			break;
 		default:
 			console.error(`Unexpected action: ${e.target.dataset.action}`);

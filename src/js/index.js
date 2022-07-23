@@ -49,7 +49,7 @@ function App() {
     const updateMenuName = (e) => {
         const menuId = e.target.closest("li").dataset.menuId;
         const $menuName = e.target.closest("li").querySelector(".menu-name");
-        const updatedMenuName = promdfpt("메뉴명을 수정하세요", $menuName.innerText);
+        const updatedMenuName = prompt("메뉴명을 수정하세요", $menuName.innerText);
         menu[menuId].name = updatedMenuName;
         store.setLocalStorage(menu);
         $menuName.innerText = updatedMenuName;
@@ -57,6 +57,9 @@ function App() {
 
     const removeMenuName = (e) => {
         if (confirm("정말 삭제하시겠습니까?")) {
+            const menuId = e.target.closest("li").dataset.menuId;
+            menu.splice(menuId, 1);
+            store.setLocalStorage(menu);
             e.target.closest("li").remove();
         }
         updateMenuCount();

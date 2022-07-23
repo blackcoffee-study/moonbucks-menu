@@ -69,7 +69,7 @@ const renderMenuList = () => {
 
 const renderMenuCount = () => {
   const $menuCount = document.querySelector('.menu-count');
-  $menuCount.innerHTML = `총 ${menuList.length}개`;
+  $menuCount.textContent = `총 ${menuList.length}개`;
 };
 
 const renderAboutMenus = () => {

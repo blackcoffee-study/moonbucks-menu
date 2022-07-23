@@ -30,9 +30,11 @@ function addNewMenu(menuName) {
 }
 
 function updateMenuListElementView(menuListItem, newMenu) {
-	const menuNameSpan = menuListItem.querySelector("span");
-
+	const menuNameSpan = menuListItem.querySelector(".menu-name");
+	// '품절' 관련 ui 업데이트
 	menuNameSpan.classList.toggle("sold-out", !newMenu.isPurchasable);
+	// '메뉴 이름' 관련 ui 업데이트
+	menuNameSpan.innerText = newMenu.name;
 }
 
 function toggleMenuPurchasable(menuListItem, index) {
@@ -47,6 +49,7 @@ function toggleMenuPurchasable(menuListItem, index) {
 }
 
 function updateMenuName(menuListItem, index) {
+	const currentMenu = state.getMenu(index);
 	const newName = prompt("메뉴명을 수정하세요");
 	const trimmedNewName = newName.trim();
 
@@ -54,13 +57,13 @@ function updateMenuName(menuListItem, index) {
 		alert("값을 입력해주세요.");
 		return;
 	}
+	const updatedMenu = new Menu(trimmedNewName, currentMenu.isPurchasable);
+	
 	// data update
-	state.update(index, new Menu(trimmedNewName));
+	state.update(index, updatedMenu);
 
 	// ui update
-	// 메뉴 리스트 전체 render를 새로하는게 아닌, 
-	// 변경이 발생한 해당 menu list item만 수정한다
-	menuListItem.querySelector('span').innerText = trimmedNewName;
+	updateMenuListElementView(menuListItem, updatedMenu);
 }
 
 function removeMenuItem(menuListItem, index) {

@@ -1,5 +1,5 @@
-const $input = document.querySelector('#espresso-menu-name');
-const $submitButton = document.querySelector('#espresso-menu-submit-button');
+const $input = document.getElementById('espresso-menu-name');
+const $form = document.getElementById('espresso-menu-form');
 
 // menuList = [{name: string, category: string}]
 let menuList = [];
@@ -31,26 +31,20 @@ const addMenuList = (name) => {
   $input.value = '';
 };
 
-$input.addEventListener('keypress', (e) => {
-  const { value } = e.target;
-  if (e.key !== 'Enter') return;
-
-  addMenuList(value);
-});
-
-$submitButton.addEventListener('click', () => {
-  addMenuList($input.value);
+$form.addEventListener('submit', (e) => {
+  e.preventDefault();
+  addMenuList(e.target.value);
 });
 
 const addEventListenersToMenuList = () => {
-  const $menu = document.querySelector('#espresso-menu-list');
+  const $menu = document.getElementById('espresso-menu-list');
   $menu.addEventListener('click', editMenu);
   $menu.addEventListener('click', removeMenu);
 }
 
 const renderMenuList = () => {
-  const $menuList = document.querySelector('#espresso-menu-list');
-  const htmls = menuList.map((menu, index) => {
+  const $menuList = document.getElementById('espresso-menu-list');
+  const menuListItemElements = menuList.map((menu, index) => {
     return `
       <li data-menu-id="${index}" class="menu-list-item d-flex items-center py-2">
         <span class="w-100 pl-2 menu-name">${menu.name}</span>
@@ -69,7 +63,7 @@ const renderMenuList = () => {
       </li>
       `
   });
-  $menuList.innerHTML = htmls.join('');
+  $menuList.innerHTML = menuListItemElements.join('');
   addEventListenersToMenuList();
 };
 

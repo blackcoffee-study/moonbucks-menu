@@ -33,7 +33,7 @@ const addMenuList = (name) => {
 
 $form.addEventListener('submit', (e) => {
   e.preventDefault();
-  addMenuList(e.target.value);
+  addMenuList($input.value);
 });
 
 const addEventListenersToMenuList = () => {

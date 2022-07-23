@@ -1,7 +1,19 @@
 
 const $ = (selector) => document.querySelector(selector);
 
+
+const store = {
+    setLocalStorage(menu) {
+        localStorage.setItem("menu", JSON.stringify(menu));
+    },
+    getLocalStorage() {
+        localStorage.getItem("menu");
+    },
+}
+
 function App() {
+
+    const menu = [];
 
     const addMenuName = (e) => {
         if ($("#espresso-menu-name").value === "") {
@@ -9,6 +21,32 @@ function App() {
             return;
         }
         const espressoMenuName = $("#espresso-menu-name").value;
+        menu.push({name: espressoMenuName});
+        store.setLocalStorage(menu);
+        const template = menu.map(item => {
+            return `<li class="menu-list-item d-flex items-center py-2">
+            <span class="w-100 pl-2 menu-name sold-out">${item.name}</span>
+            <button
+            type="button"
+            class="bg-gray-50 text-gray-500 text-sm mr-1 menu-sold-out-button"
+            >
+            품절
+            </button>
+            <button
+            type="button"
+            class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
+            >
+            수정
+            </button>
+            <button
+            type="button"
+            class="bg-gray-50 text-gray-500 text-sm menu-remove-button"
+            >
+            삭제
+            </button>
+            </li>`;
+
+        }).join("");
         const menuItemTemplate = (espressoMenuName) => {
             return `<li class="menu-list-item d-flex items-center py-2">
                         <span class="w-100 pl-2 menu-name">${espressoMenuName}</span>

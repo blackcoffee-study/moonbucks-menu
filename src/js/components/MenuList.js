@@ -1,5 +1,5 @@
 import { $ } from '../utils/index.js';
-
+import { UPDATE_MSG, DELETE_MSG } from '../constants/index.js';
 export default function MenuList({ onUpdate, onDelete }) {
   this.menuListEl = $('#espresso-menu-list');
   this.menuListEl.addEventListener('click', e => {
@@ -10,7 +10,7 @@ export default function MenuList({ onUpdate, onDelete }) {
     }
   });
 
-  this.makeMenuEl = function (name, id) {
+  this.makeMenuElement = function (name, id) {
     return `<li id=${id} class="menu-list-item d-flex items-center py-2">
             <span class="w-100 pl-2 menu-name">${name}</span>
             <button
@@ -28,22 +28,22 @@ export default function MenuList({ onUpdate, onDelete }) {
             </li>`;
   };
 
-  this.addMenu = function (newMenu, id) {
-    const menu = this.makeMenuEl(newMenu, id);
+  this.addMenu = function (name, id) {
+    const menu = this.makeMenuElement(name, id);
     this.menuListEl.insertAdjacentHTML('afterBegin', menu);
   };
 
   this.updateMenu = function (parentNode) {
-    let ans = window.prompt('어떤 이름으로 수정하시겠어요?');
+    const ans = window.prompt(UPDATE_MSG);
     if (!ans) return;
 
-    let valueEl = parentNode.querySelector('span');
+    const valueEl = parentNode.querySelector('span');
     valueEl.innerHTML = ans;
     onUpdate(parentNode.id, ans);
   };
 
   this.deleteMenu = function (parentNode) {
-    let result = window.confirm('정말 삭제하시겠어요?');
+    const result = window.confirm(DELETE_MSG);
     if (!result) return;
 
     this.menuListEl.removeChild(parentNode);

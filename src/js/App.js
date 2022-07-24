@@ -35,7 +35,8 @@ export default class App {
 
   /**
    * @typedef {"espresso" | "frappuccino" | "blended" | "teavana" | "desert"} MenuCategory
-   * @typedef {{selectedCategory: MenuCategory, menuList: string[]}} State
+   * @typedef {{name: string, isSoldOut: boolean}} MenuItem
+   * @typedef {{selectedCategory: MenuCategory, menuList: MenuItem[]}} State
    *
    * @type {State}
    */
@@ -67,6 +68,8 @@ export default class App {
         this.editMenuItem(clickedIndex, menuItem);
       } else if (target.classList.contains("menu-remove-button")) {
         this.removeMenuItem(clickedIndex);
+      } else if (target.classList.contains("menu-sold-out-button")) {
+        this.toggleSoldOutMenuItem(clickedIndex, menuItem);
       }
     });
 
@@ -100,7 +103,9 @@ export default class App {
 
   render() {
     this.#menuList.replaceChildren(
-      ...this.#state.menuList.map((menuName) => new MenuItem(menuName)),
+      ...this.#state.menuList.map(
+        ({ name, isSoldOut }) => new MenuItem(name, isSoldOut),
+      ),
     );
     this.updateMenuCount();
   }
@@ -109,7 +114,10 @@ export default class App {
     const menuName = this.#menuInput.value.trim();
     if (menuName) {
       this.setState({
-        menuList: [...this.#state.menuList, menuName],
+        menuList: [
+          ...this.#state.menuList,
+          { name: menuName, isSoldOut: false },
+        ],
       });
       this.#menuInput.value = "";
     }
@@ -122,18 +130,39 @@ export default class App {
   editMenuItem(index, menuItem) {
     const menuName = window.prompt(
       "수정할 메뉴 이름을 입력하세요",
-      menuItem.getAttribute("name"),
+      menuItem.name,
     );
     if (menuName) {
-      menuItem.setAttribute("name", menuName);
+      menuItem.name = menuName;
       this.setState({
         menuList: [
           ...this.#state.menuList.slice(0, index),
-          menuItem.getAttribute("name"),
+          {
+            name: menuItem.name,
+            isSoldOut: menuItem.isSoldOut,
+          },
           ...this.#state.menuList.slice(index + 1),
         ],
       });
     }
+  }
+
+  /**
+   * @param {number} index
+   * @param {MenuItem} menuItem
+   */
+  toggleSoldOutMenuItem(index, menuItem) {
+    menuItem.isSoldOut = !menuItem.isSoldOut;
+    this.setState({
+      menuList: [
+        ...this.#state.menuList.slice(0, index),
+        {
+          name: menuItem.name,
+          isSoldOut: menuItem.isSoldOut,
+        },
+        ...this.#state.menuList.slice(index + 1),
+      ],
+    });
   }
 
   /**

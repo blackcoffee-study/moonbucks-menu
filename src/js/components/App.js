@@ -21,6 +21,7 @@ function App() {
   const onDelete = id => {
     const deletedList = menuInfo.filter(el => el.id.toString() !== id.toString());
     setState(deletedList);
+    count.updateCount({ menuCount: menuInfo.length });
   };
 
   const menuList = new MenuList({ onUpdate, onDelete });

@@ -21,7 +21,7 @@ function App () {
 
   // events
   const addMenu = () => {
-    let name = $id('menu-name').value;
+    let name = $id('menu-name').value?.trim();
     if (!name) return;
 
     menuList = [...menuList, {name, category}];
@@ -31,7 +31,7 @@ function App () {
   };
 
   const editMenu = ({target}) => {
-    const name = window.prompt('메뉴명을 수정하세요');
+    const name = window.prompt('메뉴명을 수정하세요').trim();
     if (!name) return;
 
     const menuId = getMenuId(target);

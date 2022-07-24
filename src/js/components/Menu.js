@@ -1,11 +1,21 @@
 import Component from './Component.js';
 import { ALERT_TEXT } from '../constant/index.js';
-import { makeConfirmAlert, makePrompt } from '../utils/index.js';
+import {
+  getLocalStorageItem,
+  makeConfirmAlert,
+  makePrompt,
+} from '../utils/index.js';
 
 export default class Menu extends Component {
-  constructor(containerId) {
+  constructor(containerId, stateId) {
     const menuListTemplate = `<li class="menu-list-item d-flex items-center py-2">
-      <span class="w-100 pl-2 menu-name">{{name}}</span>
+      <span class="w-100 pl-2 menu-name {{isSoldOut}}">{{name}}</span>
+      <button
+      type="button"
+      class="bg-gray-50 text-gray-500 text-sm mr-1 menu-sold-out-button"
+    >
+      품절
+    </button>
       <button
           type="button"
           class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
@@ -19,12 +29,21 @@ export default class Menu extends Component {
       삭제
       </button>
       </li>`;
-    super(containerId, menuListTemplate);
+    super(containerId, menuListTemplate, stateId);
+    this.stateId = stateId;
   }
 
   init() {
-    this.setState('menu', []);
-    this.setState('count', 0);
+    const storedState = getLocalStorageItem(this.stateId);
+    if (storedState) {
+      this.setState('menu', storedState.menu);
+      this.setState('soldOut', storedState.soldOut);
+      this.setState('count', storedState.count || 0);
+    } else {
+      this.setState('menu', []);
+      this.setState('soldOut', []);
+      this.setState('count', 0);
+    }
     const $menuSubmitForm = document.getElementById('espresso-menu-form');
 
     $menuSubmitForm.addEventListener('submit', (e) => {
@@ -35,16 +54,18 @@ export default class Menu extends Component {
     this.container.addEventListener('click', ({ target }) => {
       if (!target) return;
 
+      const menuItem = target.parentNode.querySelector('.menu-name').innerText;
+
       if (target.classList.contains('menu-remove-button')) {
-        const menuItem =
-          target.parentNode.querySelector('.menu-name').innerText;
         return this.deleteMenu(menuItem);
       }
 
       if (target.classList.contains('menu-edit-button')) {
-        const menuItem =
-          target.parentNode.querySelector('.menu-name').innerText;
         return this.updateMenu(menuItem);
+      }
+
+      if (target.classList.contains('menu-sold-out-button')) {
+        this.setSoldOutMenu(menuItem);
       }
     });
   }
@@ -77,12 +98,24 @@ export default class Menu extends Component {
     this.setState('menu', [...this.state.menu, { name: newMenu }]);
   }
 
+  setSoldOutMenu(target) {
+    if (this.state.soldOut.includes(target)) {
+      this.setState(
+        'soldOut',
+        this.state.soldOut.filter((menu) => menu !== target)
+      );
+    } else {
+      this.setState('soldOut', [...this.state.soldOut, target]);
+    }
+  }
+
   updateMenu(target) {
     const newName = makePrompt(ALERT_TEXT.MENU_UPDATE);
     if (this.checkDuplication(newName)) {
       alert(ALERT_TEXT.MENU_EXIST);
       return;
     }
+
     const targetObj = this.state.menu.find((menu) => menu.name === target);
     if (!newName || newName.replaceAll(' ', '') === '' || !targetObj) return;
     targetObj.name = newName;
@@ -96,11 +129,21 @@ export default class Menu extends Component {
       'menu',
       this.state.menu.filter((menu) => menu.name !== target)
     );
+    this.setState(
+      'soldOut',
+      this.state.soldOut.filter((menu) => menu !== target)
+    );
   }
 
   makeHTML() {
     this.state.menu.forEach((menu) => {
       this.updateTemplate('name', menu.name);
+
+      if (this.state.soldOut && this.state.soldOut.includes(menu.name)) {
+        this.updateTemplate('isSoldOut', 'sold-out');
+      } else {
+        this.updateTemplate('isSoldOut', '');
+      }
 
       const $templateElement = this.getHTMLElement(this.renderTemplate);
 

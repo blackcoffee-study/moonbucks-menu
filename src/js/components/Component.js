@@ -1,11 +1,14 @@
+import { setLocalStorageItem } from '../utils/index.js';
+
 export default class Component {
-  constructor(containerId, template) {
+  constructor(containerId, template, stateId) {
     const $container = document.getElementById(containerId);
 
     if (!$container) {
       throw "container doesn't exists";
     }
 
+    if (stateId) this.stateId = stateId;
     this.state = {};
     this.container = $container;
     this.baseTemplate = template;
@@ -17,6 +20,9 @@ export default class Component {
 
   setState(key, value) {
     this.state = { ...this.state, [key]: value };
+    if (this.stateId) {
+      setLocalStorageItem(this.stateId, this.state);
+    }
     this.render();
   }
 

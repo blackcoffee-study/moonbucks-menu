@@ -7,25 +7,25 @@ export default class App {
    * @type {HTMLFormElement}
    * @readonly
    */
-  #menuForm = select("#espresso-menu-form");
+  #menuForm = select("#menu-form");
 
   /**
    * @type {HTMLUListElement}
    * @readonly
    */
-  #menuList = select("#espresso-menu-list");
+  #menuList = select("#menu-list");
 
   /**
    * @type {HTMLInputElement}
    * @readonly
    */
-  #menuInput = select("#espresso-menu-name");
+  #menuInput = select("#menu-name");
 
   /**
    * @type {HTMLHeadingElement}
    * @readonly
    */
-  #menuTitle = select("main h2");
+  #menuTitle = select(".menu-title");
 
   /**
    * @type {HTMLSpanElement}

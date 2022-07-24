@@ -5,6 +5,7 @@ export default class EtoileApp {
   $menuForm = document.getElementById('espresso-menu-form');
   $menuTextInput = document.getElementById('espresso-menu-name');
   $menuList = document.getElementById('espresso-menu-list');
+  $menuSubmitButton = document.getElementById('espresso-menu-submit-button');
   $menuCount = document.querySelector('span.menu-count');
 
   count = 0;
@@ -21,6 +22,7 @@ export default class EtoileApp {
 
   attachListeners() {
     this.$menuForm.addEventListener('submit', this.handleSubmitMenu);
+    this.$menuSubmitButton.addEventListener('click', this.handleSubmitMenu);
   }
 
   handleEditMenu(id, name) {
@@ -57,14 +59,13 @@ export default class EtoileApp {
   }
 
   handleCount(newCount) {
-    console.log(this.$menuCount);
     this.$menuCount.textContent = `총 ${newCount}개`;
   }
 
   handleSubmitMenu(event) {
     event.preventDefault();
 
-    const name = new FormData(event.target).get('espressoMenuName');
+    const name = new FormData(this.$menuForm).get('espressoMenuName');
 
     const newMenu = this.handleCreateMenu(name);
 

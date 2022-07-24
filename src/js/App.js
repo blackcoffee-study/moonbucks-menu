@@ -22,6 +22,18 @@ export default class App {
   #menuInput = select("#espresso-menu-name");
 
   /**
+   * @type {HTMLHeadingElement}
+   * @readonly
+   */
+  #menuTitle = select("main h2");
+
+  /**
+   * @type {HTMLSpanElement}
+   * @readonly
+   */
+  #menuCount = select(".menu-count");
+
+  /**
    * @type {{menuList: string[]}}
    */
   #state = {
@@ -116,6 +128,6 @@ export default class App {
 
   updateMenuCount() {
     const menuCount = this.#menuList.childElementCount;
-    select(".menu-count").textContent = `총 ${menuCount}개`;
+    this.#menuCount.textContent = `총 ${menuCount}개`;
   }
 }

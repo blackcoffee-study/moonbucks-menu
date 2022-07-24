@@ -22,16 +22,16 @@ export default class App {
   #menuInput = select("#menu-name");
 
   /**
-   * @type {HTMLHeadingElement}
-   * @readonly
-   */
-  #menuTitle = select(".menu-title");
-
-  /**
    * @type {HTMLSpanElement}
    * @readonly
    */
   #menuCount = select(".menu-count");
+
+  /**
+   * @type {HTMLHeadingElement}
+   * @readonly
+   */
+  #categoryTitle = select(".category-title");
 
   /**
    * @typedef {"espresso" | "frappuccino" | "blended" | "teavana" | "desert"} MenuCategory
@@ -60,10 +60,12 @@ export default class App {
       if (!target) {
         return;
       }
+
       const menuItem = target.closest("moon-menu-item");
       const clickedIndex = Array.from(this.#menuList.children).indexOf(
         menuItem,
       );
+
       if (target.classList.contains("menu-edit-button")) {
         this.editMenuItem(clickedIndex, menuItem);
       } else if (target.classList.contains("menu-remove-button")) {
@@ -77,6 +79,7 @@ export default class App {
       if (!target) {
         return;
       }
+
       if ("categoryName" in target.dataset) {
         /** @type {MenuCategory} */
         const selectedCategory = target.dataset.categoryName;
@@ -84,7 +87,7 @@ export default class App {
           selectedCategory,
           menuList: localStore.get(`${selectedCategory}.menuList`, []),
         });
-        this.updateMenuTitle(target.innerText);
+        this.updateCategoryTitle(target.innerText);
       }
     });
   }
@@ -112,15 +115,14 @@ export default class App {
 
   appendMenuItem() {
     const menuName = this.#menuInput.value.trim();
-    if (menuName) {
-      this.setState({
-        menuList: [
-          ...this.#state.menuList,
-          { name: menuName, isSoldOut: false },
-        ],
-      });
-      this.#menuInput.value = "";
+    if (!menuName) {
+      return;
     }
+
+    this.setState({
+      menuList: [...this.#state.menuList, { name: menuName, isSoldOut: false }],
+    });
+    this.#menuInput.value = "";
   }
 
   /**
@@ -132,19 +134,21 @@ export default class App {
       "수정할 메뉴 이름을 입력하세요",
       menuItem.name,
     );
-    if (menuName) {
-      menuItem.name = menuName;
-      this.setState({
-        menuList: [
-          ...this.#state.menuList.slice(0, index),
-          {
-            name: menuItem.name,
-            isSoldOut: menuItem.isSoldOut,
-          },
-          ...this.#state.menuList.slice(index + 1),
-        ],
-      });
+    if (!menuName) {
+      return;
     }
+
+    menuItem.name = menuName;
+    this.setState({
+      menuList: [
+        ...this.#state.menuList.slice(0, index),
+        {
+          name: menuItem.name,
+          isSoldOut: menuItem.isSoldOut,
+        },
+        ...this.#state.menuList.slice(index + 1),
+      ],
+    });
   }
 
   /**
@@ -169,25 +173,27 @@ export default class App {
    * @param {number} index
    */
   removeMenuItem(index) {
-    if (window.confirm("메뉴를 삭제하시겠습니까?")) {
-      this.setState({
-        menuList: [
-          ...this.#state.menuList.slice(0, index),
-          ...this.#state.menuList.slice(index + 1),
-        ],
-      });
+    if (!window.confirm("메뉴를 삭제하시겠습니까?")) {
+      return;
     }
-  }
 
-  /**
-   * @param {string} title
-   */
-  updateMenuTitle(title) {
-    this.#menuTitle.textContent = `${title} 메뉴 관리`;
+    this.setState({
+      menuList: [
+        ...this.#state.menuList.slice(0, index),
+        ...this.#state.menuList.slice(index + 1),
+      ],
+    });
   }
 
   updateMenuCount() {
     const menuCount = this.#menuList.childElementCount;
     this.#menuCount.textContent = `총 ${menuCount}개`;
+  }
+
+  /**
+   * @param {string} title
+   */
+  updateCategoryTitle(title) {
+    this.#categoryTitle.textContent = `${title} 메뉴 관리`;
   }
 }

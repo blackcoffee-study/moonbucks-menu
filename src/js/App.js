@@ -115,7 +115,7 @@ export default class App {
   }
 
   updateMenuCount() {
-    const menuCount = this.#menuList.children.length;
+    const menuCount = this.#menuList.childElementCount;
     select(".menu-count").textContent = `총 ${menuCount}개`;
   }
 }

@@ -1,71 +1,199 @@
-import { select } from "./dom.js";
-import MenuItem from "./MenuItem.js";
+import MenuItem from "./components/MenuItem.js";
+import { select } from "./utils/dom.js";
+import { localStore } from "./utils/storage.js";
 
-export default function App() {
-  /** @type {HTMLFormElement} */
-  const menuForm = select("#espresso-menu-form");
+export default class App {
+  /**
+   * @type {HTMLFormElement}
+   * @readonly
+   */
+  #menuForm = select("#menu-form");
 
-  /** @type {HTMLUListElement} */
-  const menuList = select("#espresso-menu-list");
+  /**
+   * @type {HTMLUListElement}
+   * @readonly
+   */
+  #menuList = select("#menu-list");
 
-  /** @type {HTMLInputElement} */
-  const menuInput = select("#espresso-menu-name");
+  /**
+   * @type {HTMLInputElement}
+   * @readonly
+   */
+  #menuInput = select("#menu-name");
 
-  init();
+  /**
+   * @type {HTMLSpanElement}
+   * @readonly
+   */
+  #menuCount = select(".menu-count");
 
-  function init() {
-    menuForm.addEventListener("submit", (event) => {
+  /**
+   * @type {HTMLHeadingElement}
+   * @readonly
+   */
+  #categoryTitle = select(".category-title");
+
+  /**
+   * @typedef {"espresso" | "frappuccino" | "blended" | "teavana" | "desert"} MenuCategory
+   * @typedef {{name: string, isSoldOut: boolean}} MenuItem
+   * @typedef {{selectedCategory: MenuCategory, menuList: MenuItem[]}} State
+   *
+   * @type {State}
+   */
+  #state = {
+    selectedCategory: "espresso",
+    menuList: localStore.get("espresso.menuList", []),
+  };
+
+  constructor() {
+    this.init();
+    this.render();
+  }
+
+  init() {
+    this.#menuForm.addEventListener("submit", (event) => {
       event.preventDefault();
-      appendMenuItem();
+      this.appendMenuItem();
     });
 
-    menuList.addEventListener("click", ({ target }) => {
-      if (!target) return;
+    this.#menuList.addEventListener("click", ({ target }) => {
+      if (!target) {
+        return;
+      }
+
       const menuItem = target.closest("moon-menu-item");
+      const clickedIndex = Array.from(this.#menuList.children).indexOf(
+        menuItem,
+      );
 
       if (target.classList.contains("menu-edit-button")) {
-        editMenuItem(menuItem);
+        this.editMenuItem(clickedIndex, menuItem);
       } else if (target.classList.contains("menu-remove-button")) {
-        removeMenuItem(menuItem);
+        this.removeMenuItem(clickedIndex);
+      } else if (target.classList.contains("menu-sold-out-button")) {
+        this.toggleSoldOutMenuItem(clickedIndex, menuItem);
+      }
+    });
+
+    select("nav").addEventListener("click", ({ target }) => {
+      if (!target) {
+        return;
+      }
+
+      if ("categoryName" in target.dataset) {
+        /** @type {MenuCategory} */
+        const selectedCategory = target.dataset.categoryName;
+        this.setState({
+          selectedCategory,
+          menuList: localStore.get(`${selectedCategory}.menuList`, []),
+        });
+        this.updateCategoryTitle(target.innerText);
       }
     });
   }
 
-  function appendMenuItem() {
-    if (menuInput.value.trim()) {
-      const menuItem = new MenuItem();
-      menuItem.setAttribute("name", menuInput.value.trim());
-      menuList.appendChild(menuItem);
-      menuInput.value = "";
-      updateMenuCount();
-    }
-  }
-
   /**
-   * @param {MenuItem} menuItem
+   * @param {State} nextState
    */
-  function editMenuItem(menuItem) {
-    const newMenuName = window.prompt(
-      "수정할 메뉴 이름을 입력하세요",
-      menuItem.getAttribute("name"),
+  setState(nextState) {
+    this.#state = { ...this.#state, ...nextState };
+    this.render();
+    localStore.set(
+      `${this.#state.selectedCategory}.menuList`,
+      this.#state.menuList,
     );
-    if (newMenuName) {
-      menuItem.setAttribute("name", newMenuName);
+  }
+
+  render() {
+    this.#menuList.replaceChildren(
+      ...this.#state.menuList.map(
+        ({ name, isSoldOut }) => new MenuItem(name, isSoldOut),
+      ),
+    );
+    this.updateMenuCount();
+  }
+
+  appendMenuItem() {
+    const menuName = this.#menuInput.value.trim();
+    if (!menuName) {
+      return;
     }
+
+    this.setState({
+      menuList: [...this.#state.menuList, { name: menuName, isSoldOut: false }],
+    });
+    this.#menuInput.value = "";
   }
 
   /**
+   * @param {number} index
    * @param {MenuItem} menuItem
    */
-  function removeMenuItem(menuItem) {
-    if (window.confirm("메뉴를 삭제하시겠습니까?")) {
-      menuItem.remove();
-      updateMenuCount();
+  editMenuItem(index, menuItem) {
+    const menuName = window.prompt(
+      "수정할 메뉴 이름을 입력하세요",
+      menuItem.name,
+    );
+    if (!menuName) {
+      return;
     }
+
+    menuItem.name = menuName;
+    this.setState({
+      menuList: [
+        ...this.#state.menuList.slice(0, index),
+        {
+          name: menuItem.name,
+          isSoldOut: menuItem.isSoldOut,
+        },
+        ...this.#state.menuList.slice(index + 1),
+      ],
+    });
   }
 
-  function updateMenuCount() {
-    const menuCount = menuList.children.length;
-    select(".menu-count").textContent = `총 ${menuCount}개`;
+  /**
+   * @param {number} index
+   * @param {MenuItem} menuItem
+   */
+  toggleSoldOutMenuItem(index, menuItem) {
+    menuItem.isSoldOut = !menuItem.isSoldOut;
+    this.setState({
+      menuList: [
+        ...this.#state.menuList.slice(0, index),
+        {
+          name: menuItem.name,
+          isSoldOut: menuItem.isSoldOut,
+        },
+        ...this.#state.menuList.slice(index + 1),
+      ],
+    });
+  }
+
+  /**
+   * @param {number} index
+   */
+  removeMenuItem(index) {
+    if (!window.confirm("메뉴를 삭제하시겠습니까?")) {
+      return;
+    }
+
+    this.setState({
+      menuList: [
+        ...this.#state.menuList.slice(0, index),
+        ...this.#state.menuList.slice(index + 1),
+      ],
+    });
+  }
+
+  updateMenuCount() {
+    const menuCount = this.#menuList.childElementCount;
+    this.#menuCount.textContent = `총 ${menuCount}개`;
+  }
+
+  /**
+   * @param {string} title
+   */
+  updateCategoryTitle(title) {
+    this.#categoryTitle.textContent = `${title} 메뉴 관리`;
   }
 }

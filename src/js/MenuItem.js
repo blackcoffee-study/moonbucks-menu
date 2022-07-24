@@ -24,10 +24,14 @@ export default class MenuItem extends HTMLElement {
     return ["name"];
   }
 
-  constructor() {
+  /**
+   * @param {string} name
+   */
+  constructor(name) {
     super();
 
     this.appendChild(template.content.cloneNode(true));
+    this.setAttribute("name", name);
   }
 
   attributeChangedCallback(name, _oldValue, newValue) {

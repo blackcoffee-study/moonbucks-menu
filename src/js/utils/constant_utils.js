@@ -11,7 +11,5 @@ export const elementIdMap = {
   menuTitleName: "menuTitleName",
 };
 
-export const localStorageKey = {
-  categoryState: "moonbucksState.categoryState",
-  categorySeqState: "moonbucksState.categorySeqState",
-};
+export const getLocalStorageKey = (categoryName) =>
+  `moonbucksState.${categoryName}`;

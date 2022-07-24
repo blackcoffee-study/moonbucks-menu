@@ -15,25 +15,21 @@ export default class Component {
     this.render();
   }
 
-  addEvent($element, eventName, func) {
-    $element.addEventListener(eventName, func);
-  }
-
   setState(key, value) {
     this.state = { ...this.state, [key]: value };
     this.render();
   }
 
   getHTMLElement(template) {
-    const $wrapper = document.createElement('div');
+    const $wrapper = document.createElement('template');
     $wrapper.innerHTML = template;
-    const $targetElement = $wrapper.firstChild.cloneNode(true);
+    const $targetElement = $wrapper.content.cloneNode(true);
     $wrapper.remove();
     return $targetElement;
   }
 
   updateTemplate(key, value) {
-    this.renderTemplate = this.renderTemplate.replace(key, value);
+    this.renderTemplate = this.renderTemplate.replace(`{{${key}}}`, value);
   }
 
   resetRenderTemplate() {
@@ -45,21 +41,13 @@ export default class Component {
   }
 
   resetContainer() {
-    this.container.innerHTML = '';
-  }
-
-  makeConfirmAlert(msg) {
-    return confirm(msg);
+    while (this.container.firstChild) this.container.firstChild.remove();
   }
 
   updateView() {
     this.resetContainer();
     this.htmlList.forEach((html) => this.container.appendChild(html));
     this.clearHtmlList();
-  }
-
-  makePrompt(msg) {
-    return prompt(msg);
   }
 
   makeHTML() {}

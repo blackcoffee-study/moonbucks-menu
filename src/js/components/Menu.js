@@ -1,5 +1,6 @@
 import Component from './Component.js';
-import { alertText } from '../constant/index.js';
+import { ALERT_TEXT } from '../constant/index.js';
+import { makeConfirmAlert, makePrompt } from '../utils/index.js';
 
 export default class Menu extends Component {
   constructor(containerId) {
@@ -26,9 +27,25 @@ export default class Menu extends Component {
     this.setState('count', 0);
     const $menuSubmitForm = document.getElementById('espresso-menu-form');
 
-    this.addEvent($menuSubmitForm, 'submit', (e) => {
+    $menuSubmitForm.addEventListener('submit', (e) => {
       e.preventDefault();
       this.addMenu();
+    });
+
+    this.container.addEventListener('click', ({ target }) => {
+      if (!target) return;
+
+      if (target.classList.contains('menu-remove-button')) {
+        const menuItem =
+          target.parentNode.querySelector('.menu-name').innerText;
+        return this.deleteMenu(menuItem);
+      }
+
+      if (target.classList.contains('menu-edit-button')) {
+        const menuItem =
+          target.parentNode.querySelector('.menu-name').innerText;
+        return this.updateMenu(menuItem);
+      }
     });
   }
 
@@ -38,7 +55,7 @@ export default class Menu extends Component {
 
   updateCount() {
     const $count = document.querySelector('.menu-count');
-    $count.innerHTML = `총 ${this.state.count}개`;
+    $count.textContent = `총 ${this.state.count}개`;
   }
 
   addMenu() {
@@ -50,7 +67,7 @@ export default class Menu extends Component {
     }
 
     if (this.checkDuplication(newMenu)) {
-      alert(alertText.MENU_EXIST);
+      alert(ALERT_TEXT.MENU_EXIST);
       $menuInput.value = '';
       return;
     }
@@ -61,9 +78,9 @@ export default class Menu extends Component {
   }
 
   updateMenu(target) {
-    const newName = this.makePrompt(alertText.MENU_UPDATE);
+    const newName = makePrompt(ALERT_TEXT.MENU_UPDATE);
     if (this.checkDuplication(newName)) {
-      alert(alertText.MENU_EXIST);
+      alert(ALERT_TEXT.MENU_EXIST);
       return;
     }
     const targetObj = this.state.menu.find((menu) => menu.name === target);
@@ -73,8 +90,8 @@ export default class Menu extends Component {
   }
 
   deleteMenu(target) {
-    if (!this.makeConfirmAlert(alertText.MENU_DELETE)) return;
-    this.state('count', this.state.count - 1);
+    if (!makeConfirmAlert(ALERT_TEXT.MENU_DELETE)) return;
+    this.setState('count', this.state.count - 1);
     this.setState(
       'menu',
       this.state.menu.filter((menu) => menu.name !== target)
@@ -83,19 +100,9 @@ export default class Menu extends Component {
 
   makeHTML() {
     this.state.menu.forEach((menu) => {
-      this.updateTemplate('{{name}}', menu.name);
+      this.updateTemplate('name', menu.name);
 
       const $templateElement = this.getHTMLElement(this.renderTemplate);
-      const $updateBtn = $templateElement.querySelector('.menu-edit-button');
-      const $deleteBtn = $templateElement.querySelector('.menu-remove-button');
-
-      this.addEvent($deleteBtn, 'click', () => {
-        this.deleteMenu(menu.name);
-      });
-
-      this.addEvent($updateBtn, 'click', () => {
-        this.updateMenu(menu.name);
-      });
 
       this.htmlList.push($templateElement);
       this.resetRenderTemplate();

@@ -36,38 +36,26 @@ export default class Menu extends Component {
   init() {
     const storedState = getLocalStorageItem(this.stateId);
     if (storedState) {
-      this.setState('menu', storedState.menu);
-      this.setState('soldOut', storedState.soldOut);
+      this.setState('menu', storedState.menu || []);
+      this.setState('soldOut', storedState.soldOut || []);
       this.setState('count', storedState.count || 0);
     } else {
       this.setState('menu', []);
       this.setState('soldOut', []);
       this.setState('count', 0);
     }
-    const $menuSubmitForm = document.getElementById('espresso-menu-form');
+  }
 
-    $menuSubmitForm.addEventListener('submit', (e) => {
+  clearEvents() {
+    const $menuSubmitForm = document.getElementById('espresso-menu-form');
+    const clone = $menuSubmitForm.cloneNode(true);
+
+    clone.addEventListener('submit', (e) => {
       e.preventDefault();
       this.addMenu();
     });
 
-    this.container.addEventListener('click', ({ target }) => {
-      if (!target) return;
-
-      const menuItem = target.parentNode.querySelector('.menu-name').innerText;
-
-      if (target.classList.contains('menu-remove-button')) {
-        return this.deleteMenu(menuItem);
-      }
-
-      if (target.classList.contains('menu-edit-button')) {
-        return this.updateMenu(menuItem);
-      }
-
-      if (target.classList.contains('menu-sold-out-button')) {
-        this.setSoldOutMenu(menuItem);
-      }
-    });
+    $menuSubmitForm.parentNode.replaceChild(clone, $menuSubmitForm);
   }
 
   checkDuplication(newMenu) {
@@ -146,6 +134,22 @@ export default class Menu extends Component {
       }
 
       const $templateElement = this.getHTMLElement(this.renderTemplate);
+
+      $templateElement.addEventListener('click', ({ target }) => {
+        if (!target) return;
+
+        if (target.classList.contains('menu-remove-button')) {
+          return this.deleteMenu(menu.name);
+        }
+
+        if (target.classList.contains('menu-edit-button')) {
+          return this.updateMenu(menu.name);
+        }
+
+        if (target.classList.contains('menu-sold-out-button')) {
+          this.setSoldOutMenu(menu.name);
+        }
+      });
 
       this.htmlList.push($templateElement);
       this.resetRenderTemplate();

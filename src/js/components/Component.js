@@ -27,9 +27,9 @@ export default class Component {
   }
 
   getHTMLElement(template) {
-    const $wrapper = document.createElement('template');
+    const $wrapper = document.createElement('div');
     $wrapper.innerHTML = template;
-    const $targetElement = $wrapper.content.cloneNode(true);
+    const $targetElement = $wrapper.firstChild.cloneNode(true);
     $wrapper.remove();
     return $targetElement;
   }
@@ -59,6 +59,8 @@ export default class Component {
   makeHTML() {}
 
   init() {}
+
+  clearEvents() {}
 
   render() {}
 }

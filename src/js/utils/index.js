@@ -8,7 +8,7 @@ export function makePrompt(msg) {
 
 export function getLocalStorageItem(stateId) {
   try {
-    const state = localStorage.getItem(stateId);
+    const state = localStorage.getItem(`moonbucks/${stateId}`);
     return JSON.parse(state);
   } catch (e) {
     console.error(e);
@@ -17,7 +17,7 @@ export function getLocalStorageItem(stateId) {
 
 export function setLocalStorageItem(stateId, state) {
   try {
-    localStorage.setItem(stateId, JSON.stringify(state));
+    localStorage.setItem(`moonbucks/${stateId}`, JSON.stringify(state));
   } catch (e) {
     console.error(e);
   }

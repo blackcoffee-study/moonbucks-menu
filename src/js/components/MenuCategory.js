@@ -1,12 +1,5 @@
+import { CATEGORY_LIST } from '../constant/index.js';
 import Component from './Component.js';
-
-const categoryList = [
-  { id: 'espresso', name: '☕ 에스프레소' },
-  { id: 'frappuccino', name: '🥤 프라푸치노' },
-  { id: 'blended', name: '🍹 블렌디드' },
-  { id: 'teavana', name: '🫖 티바나' },
-  { id: 'dessert', name: '🍰 디저트' },
-];
 
 export default class MenuCategory extends Component {
   constructor(containerId) {
@@ -45,7 +38,7 @@ export default class MenuCategory extends Component {
   }
 
   makeHTML() {
-    categoryList.forEach((category) => {
+    CATEGORY_LIST.forEach((category) => {
       this.updateTemplate('id', category.id);
       this.updateTemplate('name', category.name);
 

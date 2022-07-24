@@ -101,6 +101,8 @@ export default function useMenu(initCategoryName = "espresso") {
    * UI Control Functions
    */
 
+  // TODO: 메뉴를 렌더링하는 부분은 나중에 분리하면 좋을 것 같다. 상태를 관리하는 곳에서는 상태를 관리하는 것만...
+
   function renderMenu() {
     renderAppendMenu(menuState);
     renderSoldOutMenu(menuState);

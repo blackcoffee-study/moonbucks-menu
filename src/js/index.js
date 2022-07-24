@@ -2,7 +2,7 @@ import useMenu from "./useMenu.js";
 import { elementIdMap } from "./utils/constant_utils.js";
 import { getById } from "./utils/control_dom_utils.js";
 
-const [setCategoryName, addNewMenu] = useMenu();
+const [setCategoryName, addMenu] = useMenu();
 
 const onSubmit = (e) => {
   e.preventDefault();
@@ -14,7 +14,7 @@ const onSubmit = (e) => {
     return;
   }
 
-  addNewMenu(name);
+  addMenu(name);
 
   const submitForm = e.target;
   submitForm.reset();

@@ -46,7 +46,7 @@ export default function useMenu(initCategoryName = "espresso") {
     renderMenu();
   }
 
-  function addNewMenu(name) {
+  function addMenu(name) {
     if (name) {
       setMenuState({
         ...menuState,
@@ -226,7 +226,7 @@ export default function useMenu(initCategoryName = "espresso") {
     }
   }
 
-  return [setCategoryName, addNewMenu];
+  return [setCategoryName, addMenu];
 }
 
 /**

@@ -1,5 +1,5 @@
-import { select } from "./dom.js";
-import MenuItem from "./MenuItem.js";
+import MenuItem from "./components/MenuItem.js";
+import { select } from "./utils/dom.js";
 
 export default class App {
   /**

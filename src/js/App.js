@@ -34,10 +34,14 @@ export default class App {
   #menuCount = select(".menu-count");
 
   /**
-   * @type {{menuList: string[]}}
+   * @typedef {"espresso" | "frappuccino" | "blended" | "teavana" | "desert"} MenuCategory
+   * @typedef {{selectedCategory: MenuCategory, menuList: string[]}} State
+   *
+   * @type {State}
    */
   #state = {
-    menuList: localStore.get("menuList", []),
+    selectedCategory: "espresso",
+    menuList: localStore.get("espresso.menuList", []),
   };
 
   constructor() {
@@ -65,12 +69,33 @@ export default class App {
         this.removeMenuItem(clickedIndex);
       }
     });
+
+    select("nav").addEventListener("click", ({ target }) => {
+      if (!target) {
+        return;
+      }
+      if ("categoryName" in target.dataset) {
+        /** @type {MenuCategory} */
+        const selectedCategory = target.dataset.categoryName;
+        this.setState({
+          selectedCategory,
+          menuList: localStore.get(`${selectedCategory}.menuList`, []),
+        });
+        this.updateMenuTitle(target.innerText);
+      }
+    });
   }
 
+  /**
+   * @param {State} nextState
+   */
   setState(nextState) {
     this.#state = { ...this.#state, ...nextState };
     this.render();
-    localStore.set("menuList", this.#state.menuList);
+    localStore.set(
+      `${this.#state.selectedCategory}.menuList`,
+      this.#state.menuList,
+    );
   }
 
   render() {
@@ -124,6 +149,13 @@ export default class App {
       });
       this.updateMenuCount();
     }
+  }
+
+  /**
+   * @param {string} title
+   */
+  updateMenuTitle(title) {
+    this.#menuTitle.textContent = `${title} 메뉴 관리`;
   }
 
   updateMenuCount() {

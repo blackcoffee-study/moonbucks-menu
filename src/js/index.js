@@ -31,7 +31,7 @@ function App () {
   };
 
   const editMenu = ({target}) => {
-    const name = window.prompt('메뉴명을 수정하세요', prevName);
+    const name = window.prompt('메뉴명을 수정하세요');
     if (!name) return;
 
     const menuId = getMenuId(target);

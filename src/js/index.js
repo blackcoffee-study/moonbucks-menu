@@ -1,81 +1,137 @@
-const $input = document.getElementById('espresso-menu-name');
-const $form = document.getElementById('espresso-menu-form');
+import { $, $id } from './utils/dom.js';
+import LocalStorage from './utils/localStorage.js'
 
-// menuList = [{name: string, category: string}]
-let menuList = [];
-let category = 'espresso';
+function App () {
+  const MenuListStorage = new LocalStorage('menuList');
 
-// events
-const editMenu = ({target}) => {
-  if (!target.classList.contains('menu-edit-button')) return;
-  const name = window.prompt('메뉴명을 수정하세요');
-  if (!name) return;
+  // states
+  // [{name: string; category: string; isSoldOut: boolean;}]
+  let menuList = MenuListStorage.get() ?? [];
+  let category = 'espresso';
 
-  const menuId = Number(target.parentElement.dataset.menuId);
-  menuList = menuList.map((menu, index) => index === menuId ? {...menu, name} : menu);
-  renderAboutMenus();
-};
+  window.onload = () => {
+    initEventListenes();
+    renderAboutMenus();
+  };
 
-const removeMenu = ({target}) => {
-  if (!target.classList.contains('menu-remove-button')) return;
-  if (!window.confirm('정말 삭제하시겠습니까?')) return;
+  // utils
+  const getMenuId = (target) => {
+    return Number(target.parentElement.dataset.menuId);
+  };
 
-  const menuId = Number(target.parentElement.dataset.menuId);
-  menuList = menuList.filter((_, index) => index !== menuId);
-  renderAboutMenus();
-};
+  // events
+  const addMenu = () => {
+    let name = $id('menu-name').value?.trim();
+    if (!name) return;
 
-const addMenuList = (name) => {
-  if (!name) return;
-  menuList = [...menuList, {name, category}];
-  renderAboutMenus();
-  $input.value = '';
-};
+    menuList = [...menuList, {name, category}];
+    MenuListStorage.set(menuList);
+    renderAboutMenus();
+    $id('menu-name').value = '';
+  };
 
-// addEventListeners
-$form.addEventListener('submit', (e) => {
-  e.preventDefault();
-  addMenuList($input.value);
-});
+  const editMenu = ({target}) => {
+    const name = window.prompt('메뉴명을 수정하세요').trim();
+    if (!name) return;
 
-const addEventListenersToMenuList = () => {
-  const $menu = document.getElementById('espresso-menu-list');
-  $menu.addEventListener('click', editMenu);
-  $menu.addEventListener('click', removeMenu);
+    const menuId = getMenuId(target);
+    menuList = menuList.map((menu, index) => index === menuId ? {...menu, name} : menu);
+    MenuListStorage.set(menuList);
+    renderAboutMenus();
+  };
+
+  const removeMenu = ({target}) => {
+    if (!window.confirm('정말 삭제하시겠습니까?')) return;
+
+    const menuId = getMenuId(target);
+    menuList = menuList.filter((_, index) => index !== menuId);
+    MenuListStorage.set(menuList);
+    renderAboutMenus();
+  };
+
+  const toggleIsSoldOut = ({target}) => {
+    const menuId = getMenuId(target);
+    menuList = menuList.map((menu, index) => 
+      index === menuId ? {...menu, isSoldOut: !menu.isSoldOut} : menu,
+    );
+    MenuListStorage.set(menuList);
+    renderAboutMenus();
+  };
+
+  const setCategory = ({target}) => {
+    const selectedCategory = target.dataset.categoryName;
+    category = selectedCategory;
+    $id('category-title').textContent = `${target.textContent} 메뉴 관리`;
+    renderAboutMenus();
+  };
+
+  // addEventListeners
+  const initEventListenes = () => {
+    const $form = $id('menu-form');
+    $form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      addMenu();
+    });
+    
+    const $menu = $id('menu-list');
+    $menu.addEventListener('click', (e) => {
+      switch (e.target.dataset.action) {
+        case 'edit': 
+          editMenu(e);
+          return;
+        case 'remove':
+          removeMenu(e);
+          return;
+        case 'sold-out':
+          toggleIsSoldOut(e);
+          return;
+      }
+    });
+
+    const $categoryList = $id('cafe-category-name-list');
+    $categoryList.addEventListener('click', setCategory);
+  };
+
+  // renders
+  const renderAboutMenus = () => {
+    const menuListTemplate = menuList
+      .filter(menu => menu.category === category)
+      .map((menu, index) => {
+      return `
+        <li data-menu-id="${index}" class="menu-list-item d-flex items-center py-2">
+          <span class="w-100 pl-2 menu-name${menu.isSoldOut ? ' sold-out' : ''}">${menu.name}</span>
+          <button
+            type="button"
+            data-action="sold-out"
+            class="bg-gray-50 text-gray-500 text-sm mr-1 menu-sold-out-button"
+            >
+            품절
+            </button>
+            <button
+            type="button"
+            data-action="edit"
+            class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
+            >
+            수정
+            </button>
+            <button
+            type="button"
+            data-action="remove"
+            class="bg-gray-50 text-gray-500 text-sm menu-remove-button"
+          >
+            삭제
+          </button>
+        </li>
+        `
+    });
+    $id('menu-list').innerHTML = menuListTemplate.join('');
+    
+    renderMenuCount(menuListTemplate.length);
+  };
+
+  const renderMenuCount = (count) => {
+    $('.menu-count').textContent = `총 ${count}개`;
+  };
 }
 
-// renders
-const renderMenuList = () => {
-  const $menuList = document.getElementById('espresso-menu-list');
-  const menuListItemElements = menuList.map((menu, index) => {
-    return `
-      <li data-menu-id="${index}" class="menu-list-item d-flex items-center py-2">
-        <span class="w-100 pl-2 menu-name">${menu.name}</span>
-        <button
-          type="button"
-          class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
-        >
-          수정
-        </button>
-        <button
-          type="button"
-          class="bg-gray-50 text-gray-500 text-sm menu-remove-button"
-        >
-          삭제
-        </button>
-      </li>
-      `
-  });
-  $menuList.innerHTML = menuListItemElements.join('');
-  addEventListenersToMenuList();
-};
-
-const renderMenuCount = () => {
-  const $menuCount = document.querySelector('.menu-count');
-  $menuCount.textContent = `총 ${menuList.length}개`;
-};
-
-const renderAboutMenus = () => {
-  renderMenuList();
-  renderMenuCount();
-};
+App();

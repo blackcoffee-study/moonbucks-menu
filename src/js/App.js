@@ -20,8 +20,16 @@ export default class App {
    */
   #menuInput = select("#espresso-menu-name");
 
+  /**
+   * @type {{menuList: string[]}}
+   */
+  #state = {
+    menuList: [],
+  };
+
   constructor() {
     this.init();
+    this.render();
   }
 
   init() {
@@ -35,44 +43,72 @@ export default class App {
         return;
       }
       const menuItem = target.closest("moon-menu-item");
+      const clickedIndex = Array.from(this.#menuList.children).indexOf(
+        menuItem,
+      );
       if (target.classList.contains("menu-edit-button")) {
-        this.editMenuItem(menuItem);
+        this.editMenuItem(clickedIndex, menuItem);
       } else if (target.classList.contains("menu-remove-button")) {
-        this.removeMenuItem(menuItem);
+        this.removeMenuItem(clickedIndex);
       }
     });
   }
 
+  setState(nextState) {
+    this.#state = { ...this.#state, ...nextState };
+    this.render();
+  }
+
+  render() {
+    this.#menuList.replaceChildren(
+      ...this.#state.menuList.map((menuName) => new MenuItem(menuName)),
+    );
+  }
+
   appendMenuItem() {
-    if (!this.#menuInput.value.trim()) {
-      return;
+    const menuName = this.#menuInput.value.trim();
+    if (menuName) {
+      this.setState({
+        menuList: [...this.#state.menuList, menuName],
+      });
+      this.#menuInput.value = "";
+      this.updateMenuCount();
     }
-    const menuItem = new MenuItem(this.#menuInput.value.trim());
-    this.#menuList.appendChild(menuItem);
-    this.#menuInput.value = "";
-    this.updateMenuCount();
   }
 
   /**
+   * @param {number} index
    * @param {MenuItem} menuItem
    */
-  editMenuItem(menuItem) {
-    const newMenuName = window.prompt(
+  editMenuItem(index, menuItem) {
+    const menuName = window.prompt(
       "수정할 메뉴 이름을 입력하세요",
       menuItem.getAttribute("name"),
     );
-    if (newMenuName) {
-      menuItem.setAttribute("name", newMenuName);
+    if (menuName) {
+      menuItem.setAttribute("name", menuName);
+      this.setState({
+        menuList: [
+          ...this.#state.menuList.slice(0, index),
+          menuItem.getAttribute("name"),
+          ...this.#state.menuList.slice(index + 1),
+        ],
+      });
     }
   }
 
   /**
-   * @param {MenuItem} menuItem
+   * @param {number} index
    */
-  removeMenuItem(menuItem) {
+  removeMenuItem(index) {
     if (window.confirm("메뉴를 삭제하시겠습니까?")) {
-      menuItem.remove();
-      updateMenuCount();
+      this.setState({
+        menuList: [
+          ...this.#state.menuList.slice(0, index),
+          ...this.#state.menuList.slice(index + 1),
+        ],
+      });
+      this.updateMenuCount();
     }
   }
 

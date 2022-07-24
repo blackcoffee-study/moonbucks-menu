@@ -1,5 +1,6 @@
 import MenuItem from "./components/MenuItem.js";
 import { select } from "./utils/dom.js";
+import { localStore } from "./utils/storage.js";
 
 export default class App {
   /**
@@ -24,7 +25,7 @@ export default class App {
    * @type {{menuList: string[]}}
    */
   #state = {
-    menuList: [],
+    menuList: localStore.get("menuList", []),
   };
 
   constructor() {
@@ -57,6 +58,7 @@ export default class App {
   setState(nextState) {
     this.#state = { ...this.#state, ...nextState };
     this.render();
+    localStore.set("menuList", this.#state.menuList);
   }
 
   render() {

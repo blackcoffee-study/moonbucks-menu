@@ -14,12 +14,12 @@ function App() {
   };
 
   const onUpdate = (id, updatedMenu) => {
-    const updated = menuInfo.map(el => (el.id * 1 == id * 1 ? { title: updatedMenu, id: id * 1 } : el));
+    const updated = menuInfo.map(el => (el.id * 1 === id * 1 ? { ...el, title: updatedMenu } : el));
     setState(updated);
   };
 
   const onDelete = id => {
-    const deletedList = menuInfo.filter(el => el.id.toString() !== id.toString());
+    const deletedList = menuInfo.filter(el => el.id * 1 !== id * 1);
     setState(deletedList);
     count.updateCount({ menuCount: menuInfo.length });
   };

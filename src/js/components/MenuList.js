@@ -38,7 +38,7 @@ export default function MenuList({ onUpdate, onDelete }) {
     if (!ans) return;
 
     const valueEl = parentNode.querySelector('span');
-    valueEl.innerHTML = ans;
+    valueEl.textContent = ans;
     onUpdate(parentNode.id, ans);
   };
 

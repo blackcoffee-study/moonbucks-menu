@@ -46,6 +46,18 @@ export default function useMenu(initCategoryName = "espresso") {
     renderMenu();
   }
 
+  function addNewMenu(name) {
+    if (name) {
+      setMenuState({
+        ...menuState,
+        [getMenuNextSeq()]: {
+          name,
+          isSoldOut: false,
+        },
+      });
+    }
+  }
+
   function remove(seq) {
     if (confirm("정말로 삭제하시겠습니까?")) {
       const { [seq]: removeMenu, ...rest } = menuState;
@@ -84,7 +96,7 @@ export default function useMenu(initCategoryName = "espresso") {
    * Get Util Functions
    */
 
-  function getMenuSeq() {
+  function getMenuNextSeq() {
     return ++categorySeqState[categoryNameState];
   }
 
@@ -214,7 +226,7 @@ export default function useMenu(initCategoryName = "espresso") {
     }
   }
 
-  return [getMenuState, setMenuState, getMenuSeq, setCategoryName];
+  return [setCategoryName, addNewMenu];
 }
 
 /**

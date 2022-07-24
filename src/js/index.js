@@ -2,7 +2,7 @@ import useMenu from "./useMenu.js";
 import { elementIdMap } from "./utils/constant_utils.js";
 import { getById } from "./utils/control_dom_utils.js";
 
-const [getState, setState, incrementId, setCategoryName] = useMenu();
+const [setCategoryName, addNewMenu] = useMenu();
 
 const onSubmit = (e) => {
   e.preventDefault();
@@ -14,16 +14,9 @@ const onSubmit = (e) => {
     return;
   }
 
+  addNewMenu(name);
+
   const submitForm = e.target;
-
-  setState({
-    ...getState(),
-    [incrementId()]: {
-      name,
-      isSoldOut: false,
-    },
-  });
-
   submitForm.reset();
 };
 

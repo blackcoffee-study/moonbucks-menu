@@ -102,6 +102,7 @@ export default class App {
     this.#menuList.replaceChildren(
       ...this.#state.menuList.map((menuName) => new MenuItem(menuName)),
     );
+    this.updateMenuCount();
   }
 
   appendMenuItem() {
@@ -111,7 +112,6 @@ export default class App {
         menuList: [...this.#state.menuList, menuName],
       });
       this.#menuInput.value = "";
-      this.updateMenuCount();
     }
   }
 
@@ -147,7 +147,6 @@ export default class App {
           ...this.#state.menuList.slice(index + 1),
         ],
       });
-      this.updateMenuCount();
     }
   }
 

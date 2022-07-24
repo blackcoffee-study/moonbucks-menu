@@ -100,10 +100,6 @@ export default function useMenu(initCategoryName = "espresso") {
     return ++categorySeqState[categoryNameState];
   }
 
-  function getMenuState() {
-    return categoryState[categoryNameState];
-  }
-
   function getMenuWrapperId(seq) {
     const { menuWrapper } = elementIdMap;
     return `${menuWrapper}-${seq}`;

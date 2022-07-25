@@ -1,4 +1,6 @@
+
 import { $ } from '../utils/dom.js';
+
 
 export default function Count() {
   this.updateCount = function ({ menuCount }) {

@@ -18,7 +18,7 @@ export default function MenuList() {
             >
             수정
             </button>
-            
+
             <button
             type="button"
             class="bg-gray-50 text-gray-500 text-sm menu-remove-button"
@@ -30,5 +30,6 @@ export default function MenuList() {
       .join('');
 
     $('#menu-list').innerHTML = template;
+
   };
 }

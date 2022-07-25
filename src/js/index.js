@@ -30,20 +30,20 @@ function App() {
   const registerMenu = function(e) {
     e.preventDefault();
     const espressoMenuAdd = espressoMenuForm.querySelector("#espresso-menu-name");
-    const espressoNewMenu = espressoMenuAdd.value;
+    const newEspressoMenu = espressoMenuAdd.value;
     if (espressoMenuAdd.value.trim() === ""){
         alert("메뉴를 입력해주세요!");
         return;
     }
     espressoMenuAdd.value = "";
-    addMenu(espressoNewMenu);
+    addMenu(newEspressoMenu);
     updateMenuCount();
 }
 
 const updateMenuName = function(e) {
     const espressoMenuRename = e.target.closest("li").querySelector("span.menu-name");
     const renamedMenu = prompt("메뉴를 수정 하세요", espressoMenuRename.innerText);
-    if (renamedMenu != null && renamedMenu.trim().length != 0){
+    if (renamedMenu != null && renamedMenu.trim()){
       espressoMenuRename.innerText = renamedMenu;
     }
 }
@@ -63,9 +63,7 @@ const removeMenuName = function(e) {
   menuList.addEventListener("click", (e) => {
     if (e.target.classList.contains("menu-edit-button")){
       updateMenuName(e);
-    };
-
-    if (e.target.classList.contains("menu-remove-button")){
+    }else if (e.target.classList.contains("menu-remove-button")){
       removeMenuName(e);
     }
   })

@@ -15,6 +15,7 @@ class MenuStatus {
 
     reset() {
         this.menuList = [];
+        this.store();
     }
 
     add(newMenu) {
@@ -23,6 +24,7 @@ class MenuStatus {
 			return;
 		}
         this.menuList.push(newMenu);
+        this.store();
     }
 
     getMenu(index) {
@@ -58,6 +60,7 @@ class MenuStatus {
 		}
 
         this.selectedMenuType = newMenuType;
+        this.store();
     }
 
     update(index, newMenu) {
@@ -74,6 +77,7 @@ class MenuStatus {
         this.menuList = this.menuList.map(
             (menu, i) => (i === index) ? newMenu : menu
         );
+        this.store();
     }
 
     /**
@@ -87,5 +91,25 @@ class MenuStatus {
         this.menuList = this.menuList.filter(
             (menu, i) => i !== index
         );
+        this.store();
+    }
+
+    store() {
+        const storeObj = JSON.stringify(this);
+        LocalStorageUtil.store(storeObj);
+    }
+
+    static load() {
+        const storedData = LocalStorageUtil.load();
+        const storedMenuStatus = Object.assign(MenuStatus, JSON.parse(storedData));
+
+        if (!storedData) {
+            return undefined;
+        }    
+        return new MenuStatus(storedMenuStatus.menuList, storedMenuStatus.selectedMenuType);
+    }
+
+    static loadOrCeateNewMenuStatus() {
+        return MenuStatus.load() ?? new MenuStatus();
     }
 }

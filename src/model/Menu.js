@@ -39,8 +39,6 @@ class Menu {
 
 		this.name = newName;
 	}
-<<<<<<< HEAD
-=======
 
 	updateMenuSoldOut(newIsSoldOut) {
 		if (!newIsSoldOut) {
@@ -54,5 +52,4 @@ class Menu {
 
 		this.isSoldOut = newIsSoldOut;
 	}
->>>>>>> fe6131e (refactor: "품절" 관련 네이밍 "purchasble" -> "soldout" 으로 변경)
 }

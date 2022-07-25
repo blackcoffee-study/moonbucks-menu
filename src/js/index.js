@@ -1,5 +1,5 @@
 // 현재 메뉴 상태를 관리하는 변수
-const state = new MenuStatus([]);
+const state = MenuStatus.loadOrCeateNewMenuStatus();
 
 const inputTag = document.getElementById("espresso-menu-name");
 const menuForm = document.getElementById("espresso-menu-form");;
@@ -11,6 +11,7 @@ const menuTypeSelectButtonWarpper = document.querySelector("header nav");
 menuForm.addEventListener("submit", onSubmitForm);
 menuList.addEventListener("click", onMenuClicked);
 menuTypeSelectButtonWarpper.addEventListener("click", onMenuTypeClicked);
+document.addEventListener("DOMContentLoaded", renderMenu);
 
 function onSubmitForm(e) {
 	e.preventDefault();

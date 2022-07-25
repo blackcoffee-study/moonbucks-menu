@@ -1,9 +1,9 @@
-import { $ } from '../utils/index.js';
+import { $ } from '../utils/dom.js';
 
 export default function MenuInput({ onAdd }) {
-  this.menuInputEl = $('#espresso-menu-name');
-  this.submitBtnEl = $('#espresso-menu-submit-button');
-  this.submitForm = $('#espresso-menu-form');
+  this.menuInputEl = $('#menu-name');
+  this.submitBtnEl = $('#menu-submit-button');
+  this.submitForm = $('#menu-form');
 
   this.submitBtnEl.addEventListener('click', () => this.addMenu());
 

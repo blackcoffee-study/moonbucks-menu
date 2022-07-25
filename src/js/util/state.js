@@ -13,7 +13,7 @@ export function createCafe({ cafeStorage }) {
         items: [],
       },
       blended: {
-        name: " 🍹 블렌디드",
+        name: "🍹 블렌디드",
         items: [],
       },
       teavana: {

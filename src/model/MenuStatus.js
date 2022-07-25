@@ -1,10 +1,16 @@
 class MenuStatus {
-    constructor(menuList = []) {
+    constructor(menuList = [], selectedMenuType = MenuType.ESPRESSO) {
         if (menuList.some(menu => !menu instanceof Menu)) {
             console.error(`Invalid Input! ${menuList} array has a non Menu instance value @MenuStatus.constructor() 1st parameter`);
             return;
         }
+        if (!MenuTypeUtil.isMenuType(selectedMenuType)) {
+			console.error(`Invalid Input! ${selectedMenuType} is not value declared at "MenuType.js" file! @MenuStatus.constructor() 2nd parameter`);
+            return;
+		}
+
         this.menuList = menuList
+        this.selectedMenuType = selectedMenuType;
     }
 
     reset() {
@@ -28,11 +34,30 @@ class MenuStatus {
     }
 
     getMenuList() {
-        return this.menuList;
+        return this.menuList
+            .filter(menu => menu.type === this.selectedMenuType);
+
     }
 
     getMenuCount() {
-        return this.menuList.length;
+        return this.getMenuList().length;
+    }
+
+    getSelectedMenuType() {
+        return this.selectedMenuType;
+    }
+
+    setSelectedMenuType(newMenuType) {
+        if (!newMenuType) {
+			console.error(`Invalid Input! ${newMenuType} is 'undefined' or 'null' or ""(empty string) value! @MenuStatus.setSelectedMenuType() 1st parameter`);
+            return;
+		}
+		if (!MenuTypeUtil.isMenuType(newMenuType)) {
+			console.error(`Invalid Input! ${newMenuType} is not value declared at "MenuType.js" file! @MenuStatus.setSelectedMenuType() 1st parameter`);
+            return;
+		}
+
+        this.selectedMenuType = newMenuType;
     }
 
     update(index, newMenu) {

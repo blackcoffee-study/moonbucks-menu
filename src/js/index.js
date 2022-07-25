@@ -23,7 +23,7 @@ function onSubmitForm(e) {
 }
 
 function addNewMenu(menuName) {
-	const newMenu = new Menu(menuName);
+	const newMenu = new Menu(state.getSelectedMenuType(), menuName);
 	state.add(newMenu);
 	renderMenu();
 }
@@ -38,7 +38,7 @@ function updateMenuListElementView(menuListItem, newMenu) {
 
 function toggleMenuSoldOut(menuListItem, index) {
 	const currentMenu = state.getMenu(index);
-	const updatedMenu = new Menu(currentMenu.name, !currentMenu.isSoldOut);
+	const updatedMenu = new Menu(state.getSelectedMenuType(), currentMenu.name, !currentMenu.isSoldOut);
 
 	// data update
 	state.update(index, updatedMenu);
@@ -56,7 +56,7 @@ function updateMenuName(menuListItem, index) {
 		alert("값을 입력해주세요.");
 		return;
 	}
-	const updatedMenu = new Menu(trimmedNewName, currentMenu.isSoldOut);
+	const updatedMenu = new Menu(state.getSelectedMenuType(), trimmedNewName, currentMenu.isSoldOut);
 	
 	// data update
 	state.update(index, updatedMenu);

@@ -5,9 +5,12 @@ const inputTag = document.getElementById("espresso-menu-name");
 const menuForm = document.getElementById("espresso-menu-form");;
 const menuList = document.getElementById("espresso-menu-list");
 const menuCount = document.querySelector(".menu-count");
+const menuHeader = document.querySelector(".heading h2");
+const menuTypeSelectButtonWarpper = document.querySelector("header nav");
 
 menuForm.addEventListener("submit", onSubmitForm);
 menuList.addEventListener("click", onMenuClicked);
+menuTypeSelectButtonWarpper.addEventListener("click", onMenuTypeClicked);
 
 function onSubmitForm(e) {
 	e.preventDefault();
@@ -117,6 +120,29 @@ function onMenuClicked(e) {
 	}
 }
 
+function onMenuTypeClicked(e) {
+	const clickedMenuTypeButton = e.target.closest(".cafe-category-name");
+
+	// event target이 menuTypeSelectButtonWarpper 안에 있지 않다면 리턴
+	if (!clickedMenuTypeButton) {
+		return;
+	}
+
+	// 현재 클릭된 event target이 <button>이 아니면 리턴
+	if (e.target.tagName !== "BUTTON") {
+		return;
+	}
+
+	const clickedMenuType = e.target.dataset.categoryName;
+	// 현재 클릭된 <button>의 "data-category-name" 속성에 할당된 값이 MenuType에 정의된 값이 아니라면 리턴
+	if (!MenuTypeUtil.isMenuType(clickedMenuType)) {
+		return;
+	}
+
+	state.setSelectedMenuType(clickedMenuType);
+	renderMenu();
+}
+
 function getMenuListItemHTMLString(menu, index) {
 	const soldOutStatusClassName = menu.isSoldOut ? "sold-out" : "";
 
@@ -139,6 +165,7 @@ function getMenuListItemHTMLString(menu, index) {
 function renderMenu() {
 	renderMenuList();
 	renderMenuCount();
+	renderMenuHeader();
 }
 
 function renderMenuList() {
@@ -155,4 +182,9 @@ function renderMenuList() {
 
 function renderMenuCount() {
 	menuCount.innerText = `총 ${state.getMenuCount()}개`;
+}
+
+function renderMenuHeader() {
+	const currentMenuTypeKorName = MenuTypeUtil.getMenuTypeKorName(state.getSelectedMenuType());
+	menuHeader.innerText = `${currentMenuTypeKorName} 메뉴 관리`;
 }

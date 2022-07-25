@@ -6,7 +6,6 @@ const menuForm = document.getElementById("espresso-menu-form");;
 const menuList = document.getElementById("espresso-menu-list");
 const menuCount = document.querySelector(".menu-count");
 
-
 menuForm.addEventListener("submit", onSubmitForm);
 menuList.addEventListener("click", onMenuClicked);
 
@@ -32,14 +31,14 @@ function addNewMenu(menuName) {
 function updateMenuListElementView(menuListItem, newMenu) {
 	const menuNameSpan = menuListItem.querySelector(".menu-name");
 	// '품절' 관련 ui 업데이트
-	menuNameSpan.classList.toggle("sold-out", !newMenu.isPurchasable);
+	menuNameSpan.classList.toggle("sold-out", newMenu.isSoldOut);
 	// '메뉴 이름' 관련 ui 업데이트
 	menuNameSpan.innerText = newMenu.name;
 }
 
-function toggleMenuPurchasable(menuListItem, index) {
+function toggleMenuSoldOut(menuListItem, index) {
 	const currentMenu = state.getMenu(index);
-	const updatedMenu = new Menu(currentMenu.name, !currentMenu.isPurchasable);
+	const updatedMenu = new Menu(currentMenu.name, !currentMenu.isSoldOut);
 
 	// data update
 	state.update(index, updatedMenu);
@@ -57,7 +56,7 @@ function updateMenuName(menuListItem, index) {
 		alert("값을 입력해주세요.");
 		return;
 	}
-	const updatedMenu = new Menu(trimmedNewName, currentMenu.isPurchasable);
+	const updatedMenu = new Menu(trimmedNewName, currentMenu.isSoldOut);
 	
 	// data update
 	state.update(index, updatedMenu);
@@ -109,8 +108,8 @@ function onMenuClicked(e) {
 		case "delete":
 			removeMenuItem(menuListItem, menuListItemIndex);
 			break;
-		case "toggle-purchasable":
-			toggleMenuPurchasable(menuListItem, menuListItemIndex);
+		case "toggle-soldout":
+			toggleMenuSoldOut(menuListItem, menuListItemIndex);
 			break;
 		default:
 			console.error(`Unexpected action: ${e.target.dataset.action}`);
@@ -119,14 +118,12 @@ function onMenuClicked(e) {
 }
 
 function getMenuListItemHTMLString(menu, index) {
-	const spanClassName = menu.isPurchasable
-		? "w-100 pl-2 menu-name"
-		: "w-100 pl-2 menu-name sold-out";
+	const soldOutStatusClassName = menu.isSoldOut ? "sold-out" : "";
 
 	return `
 <li class="menu-list-item d-flex items-center py-2" data-index=${index}>
-	<span class="${spanClassName}">${menu.name}</span>
-	<button type="button" class="bg-gray-50 text-gray-500 text-sm mr-1 menu-sold-out-button" data-action="toggle-purchasable">
+	<span class="w-100 pl-2 menu-name ${soldOutStatusClassName}">${menu.name}</span>
+	<button type="button" class="bg-gray-50 text-gray-500 text-sm mr-1 menu-sold-out-button" data-action="toggle-soldout">
 		품절
  	</button>
 	<button type="button" class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button" data-action="edit">

@@ -1,5 +1,6 @@
-import { getLocalStorageKey } from "./utils/constant_utils.js";
+import { elementIdMap, getLocalStorageKey } from "./utils/constant_utils.js";
 import { useState } from "./utils/state_utils.js";
+import { getById } from "./utils/control_dom_utils.js";
 
 export default function useMenu(renderingFunction) {
   /**
@@ -29,6 +30,9 @@ export default function useMenu(renderingFunction) {
     if (localStorageValue) {
       proxySetMenuState(localStorageValue);
     }
+
+    const { espressoMenuList } = elementIdMap;
+    getById(espressoMenuList).innerHTML = "";
 
     renderingFunction(getMenuState());
   }

@@ -20,7 +20,11 @@ export default function useMenu(renderingFunction) {
     const localStorageKey = getLocalStorageKey(categoryName);
     const localStorageValue = JSON.parse(localStorage.getItem(localStorageKey));
 
-    [getMenuState, setMenuState] = useState({}, renderingFunction);
+    [getMenuState, setMenuState] = useState({}, renderingFunction, {
+      removeMenu,
+      updateMenu,
+      soldOutMenu,
+    });
 
     proxySetMenuState = (menuState) => {
       setMenuState(menuState);
@@ -34,7 +38,7 @@ export default function useMenu(renderingFunction) {
     const { espressoMenuList } = elementIdMap;
     getById(espressoMenuList).innerHTML = "";
 
-    renderingFunction(getMenuState());
+    renderingFunction(getMenuState(), { removeMenu, updateMenu, soldOutMenu });
   }
 
   function addMenu(name) {

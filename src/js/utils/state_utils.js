@@ -1,7 +1,7 @@
 let currentIndex = 0;
 const hookStates = [];
 
-export function useState(initialState, rendering) {
+export function useState(initialState, rendering, renderingArgs) {
   const index = currentIndex;
 
   if (hookStates.length === index) {
@@ -10,7 +10,7 @@ export function useState(initialState, rendering) {
 
   const setState = (newState) => {
     hookStates[index] = newState;
-    rendering(hookStates[index]);
+    rendering(hookStates[index], renderingArgs);
   };
 
   const getState = () => {

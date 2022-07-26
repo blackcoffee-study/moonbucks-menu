@@ -1,29 +1,29 @@
 export const INITIAL_STATE = {
   menu: {
     espresso: [
-      { name: 'test', isSold: false },
-      { name: 'test2', isSold: false },
-      { name: 'test3', isSold: false },
+      { name: '에스프레소 싱글', isSold: false },
+      { name: '에스프레소 더블', isSold: false },
+      { name: '에스프레소 도피오', isSold: false },
     ],
     frappuccino: [
-      { name: 'test5', isSold: false },
-      { name: 'test26', isSold: false },
-      { name: 'test37', isSold: false },
+      { name: '더블 에스프레소 칩 프라푸치노', isSold: false },
+      { name: '모카 프라푸치노', isSold: false },
+      { name: '에스프레소 프라푸치노', isSold: false },
     ],
     blended: [
-      { name: 'test234', isSold: false },
-      { name: 'test32', isSold: false },
-      { name: 'test33', isSold: false },
+      { name: '캐러멜 아이스 블렌디드', isSold: false },
+      { name: '헤이즐넛 아이스 블렌디드', isSold: false },
+      { name: '모카 아이스 블렌디드', isSold: false },
     ],
     teavana: [
-      { name: 'tes3t', isSold: false },
-      { name: 'tes3t2', isSold: false },
-      { name: 'tes3t3', isSold: false },
+      { name: '폼폼 민트 티', isSold: false },
+      { name: '폼폼 유스베리 티', isSold: false },
+      { name: '제주 그린 티 브리즈', isSold: false },
     ],
     desert: [
-      { name: 'te234st', isSold: false },
-      { name: 'tes234t2', isSold: false },
-      { name: 'te234st3', isSold: false },
+      { name: '아이스크림', isSold: false },
+      { name: '아이스크림 케이크', isSold: false },
+      { name: '셔벗', isSold: false },
     ],
   },
 }

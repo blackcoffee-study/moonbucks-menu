@@ -5,7 +5,7 @@ import { getInputValue, resetInputValue, setMenuList } from './util.js'
 
 let currentCategory = 'espresso'
 
-// 메뉴들을 관리하는 스토리지 생성
+// 메뉴들을 관리하는 스토리지 생성, localStorage에 'cafe'라는 키가, 없다면 : 로컬스토리지안에 cafe: INITIAL_STATE 추가, 있다면 : 새로 만들지 않는다.
 export const cafe = new Storage('cafe').createStorage(INITIAL_STATE)
 
 // nav의 각 카테고리를 선택하면, 아래 리스트의 정보들이 각 카테고리에 맞게 변하도록 한다.

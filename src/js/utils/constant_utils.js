@@ -10,6 +10,7 @@ export const elementIdMap = {
   menuWrapper: "menuWrapper",
   menuCategoryButtonWrapper: "menuCategoryButtonWrapper",
   menuTitleName: "menuTitleName",
+  count: "count",
 };
 
 export const getLocalStorageKey = (categoryName) =>

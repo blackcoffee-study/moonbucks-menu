@@ -1,6 +1,7 @@
 import { EVENTS } from "../constant";
 import {
   addCustomEventListener,
+  createRandomId,
   dispatchCustomEvent,
   validateMenuName,
 } from "../util";
@@ -26,7 +27,9 @@ export function MenuInput($container) {
     setValue("");
     focus();
 
-    dispatchCustomEvent(EVENTS.ADD_MENU, { menuName });
+    const menuId = createRandomId();
+
+    dispatchCustomEvent(EVENTS.ADD_MENU, { menuId, menuName });
   }
 
   addEventListener("load", focus);

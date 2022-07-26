@@ -67,4 +67,14 @@ export class Storage {
     this.#updateStorage(newData)
     return this
   }
+
+  updateSoldOut(categoryName, itemName) {
+    const idx = this.#findCategoryItemIdx(categoryName, itemName)
+    const prevItemList = this.#getCategoryItemList(categoryName)
+    prevItemList[idx] = { name: itemName, isSold: !prevItemList[idx].isSold }
+    const newData = { menu: { ...this.item.menu, [categoryName]: prevItemList } }
+
+    this.#updateStorage(newData)
+    return this
+  }
 }

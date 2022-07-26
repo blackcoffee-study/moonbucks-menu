@@ -15,9 +15,6 @@ function App() {
       updateMenuCount();
       $("#espresso-menu-name").value = "";
 
-      if(true){
-        confirm("띠용");
-      }
   };
   
   const updateMenuCount = () => {

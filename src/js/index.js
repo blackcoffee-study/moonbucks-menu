@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", renderMenu);
 
 function onSubmitForm(e) {
 	e.preventDefault();
-	const inputString = String(inputTag.value).trim();
+	const inputString = inputTag.value?.trim();
 	// 사용자가 <input>에 메뉴명 입력 없이 "확인" 버튼 클릭 시 예외 처리시키는 부분
 	if (!inputString) {
 		alert("값을 입력해주세요.");

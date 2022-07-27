@@ -4,7 +4,9 @@ const BASE_URL = "http://localhost:3000/api";
 
 export const MenuAPI = {
   async loadMenuAPI(category) {
-    const res = await fetch(`${BASE_URL}/category/${category}/menu`);
+    const res = await fetch(`${BASE_URL}/category/${category}/menu`, {
+      method: "GET",
+    });
     if (!res.ok) alert(MESSAGE.ALERT_API);
     return res.json();
   },
@@ -26,6 +28,15 @@ export const MenuAPI = {
       },
       body: JSON.stringify({ name }),
     });
+    if (!res.ok) alert(MESSAGE.ALERT_API);
+  },
+  async soldOutMenuAPI(category, id) {
+    const res = await fetch(
+      `${BASE_URL}/category/${category}/menu/${id}/soldout`,
+      {
+        method: "PUT",
+      }
+    );
     if (!res.ok) alert(MESSAGE.ALERT_API);
   },
 };

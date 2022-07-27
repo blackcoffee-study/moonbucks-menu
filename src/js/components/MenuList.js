@@ -103,7 +103,7 @@ const MenuList = (menuCategory, menuData) => {
         menuCategory,
         target.parentElement.id
       );
-      loadMenu();
+      $currentName.innerHTML = updateName;
     }
   };
 
@@ -116,13 +116,11 @@ const MenuList = (menuCategory, menuData) => {
     }
   };
 
-  const soldOutMenu = ({ target }) => {
+  const soldOutMenu = async ({ target }) => {
+    await MenuAPI.soldOutMenuAPI(menuCategory, target.parentElement.id);
     target.parentElement
       .querySelector(".menu-name")
       .classList.toggle("sold-out");
-    const data = menuData.find((data) => data.id === target.parentElement.id);
-    data.isSoldOut = !data.isSoldOut;
-    saveMenu();
   };
 
   const init = () => {

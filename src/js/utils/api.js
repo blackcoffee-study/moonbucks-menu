@@ -1,8 +1,11 @@
+import { MESSAGE } from "../constants/index.js";
+
 const BASE_URL = "http://localhost:3000/api";
 
 export const MenuAPI = {
   async loadMenuAPI(category) {
     const res = await fetch(`${BASE_URL}/category/${category}/menu`);
+    if (!res.ok) alert(MESSAGE.ALERT_API);
     return res.json();
   },
   async createMenuAPI(name, category) {
@@ -13,8 +16,6 @@ export const MenuAPI = {
       },
       body: JSON.stringify({ name }),
     });
-    if (!res.ok) {
-      alert("에러가 발생했습니다.");
-    }
+    if (!res.ok) alert(MESSAGE.ALERT_API);
   },
 };

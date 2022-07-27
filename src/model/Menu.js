@@ -22,9 +22,15 @@ class Menu {
 			return;
 		}
 
+		this.id = Menu.createId(type, name);
 		this.type = type;
 		this.name = name;
 		this.isSoldOut = isSoldOut;
+	}
+
+	static createId(type, name) {
+		const idString = `${type}-${name}-${Date.now()}`;
+		return StringUtil.createHashValue(idString);
 	}
 
     updateMenuName(newName) {

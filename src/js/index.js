@@ -177,10 +177,13 @@ function renderMenuList() {
 		menuList.firstChild.remove();
 	}
 
-	// 현재 state의 해당하는 Menu 배열을 불러와, 각각의 menu를 기반으로 <li> Element를 생성하여 menuList에 삽입
-	state.getMenuList().forEach(
-		menu => menuList.insertAdjacentHTML("beforeend", getMenuListItemHTMLString(menu))
-	);
+	// 현재 state의 해당하는 Menu 배열을 불러와, 각각의 메뉴들을 renderMenuListItem 함수 호출
+	state.getMenuList().forEach(renderMenuListItem);
+}
+
+function renderMenuListItem(menu) {
+	// 입력받은 menu를 기반으로 <li> Element를 생성하여 menuList에 삽입
+	menuList.insertAdjacentHTML("beforeend", getMenuListItemHTMLString(menu));
 }
 
 function renderMenuCount() {

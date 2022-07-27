@@ -18,4 +18,14 @@ export const MenuAPI = {
     });
     if (!res.ok) alert(MESSAGE.ALERT_API);
   },
+  async updateMenuAPI(name, category, id) {
+    const res = await fetch(`${BASE_URL}/category/${category}/menu/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ name }),
+    });
+    if (!res.ok) alert(MESSAGE.ALERT_API);
+  },
 };

@@ -35,7 +35,6 @@ const MenuList = (menuCategory, menuData) => {
         break;
     }
     menuCategory = categoryName;
-    $menuList.textContent = "";
     $menuForm.reset();
     loadMenu();
   };
@@ -81,6 +80,7 @@ const MenuList = (menuCategory, menuData) => {
   };
 
   const loadMenu = async () => {
+    $menuList.textContent = "";
     menuData = await MenuAPI.loadMenuAPI(menuCategory);
     menuData.forEach(drawMenu);
     countMenu();
@@ -90,24 +90,20 @@ const MenuList = (menuCategory, menuData) => {
     e.preventDefault();
     if ($menuInput.value.trim() === "") return alert(MESSAGE.ALERT_CREATE);
     await MenuAPI.createMenuAPI($menuInput.value, menuCategory);
-    const newMenu = {
-      id: `${Date.now()}`,
-      name: $menuInput.value,
-      isSoldOut: false,
-    };
-    drawMenu(newMenu);
-    countMenu();
     $menuForm.reset();
+    loadMenu();
   };
 
-  const updateMenu = ({ target }) => {
+  const updateMenu = async ({ target }) => {
     const $currentName = target.parentElement.querySelector(".menu-name");
     const updateName = prompt(MESSAGE.PROMPT_UPDATE, $currentName.innerHTML);
     if (updateName) {
-      $currentName.innerHTML = updateName;
-      const data = menuData.find((data) => data.id === target.parentElement.id);
-      data.name = updateName;
-      saveMenu();
+      await MenuAPI.updateMenuAPI(
+        updateName,
+        menuCategory,
+        target.parentElement.id
+      );
+      loadMenu();
     }
   };
 

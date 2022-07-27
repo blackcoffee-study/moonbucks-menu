@@ -1,7 +1,7 @@
 import MenuList from "./components/MenuList.js";
 
-const state = { menuCategory: "espresso", menuData: [] };
+const menuState = { menuCategory: "espresso", menuData: [] };
 
 document.addEventListener("DOMContentLoaded", () => {
-  MenuList(state.menuCategory, state.menuData);
+  MenuList(menuState.menuCategory, menuState.menuData);
 });

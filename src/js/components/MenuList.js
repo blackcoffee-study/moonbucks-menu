@@ -4,28 +4,8 @@ import {
   createCustomElement,
   createCustomButton,
 } from "../utils/dom.js";
+import { MenuAPI } from "../utils/api.js";
 import { MESSAGE, CATEGORY } from "../constants/index.js";
-
-const BASE_URL = "http://localhost:3000/api";
-
-const MenuApi = {
-  async getAllMenuByCategory(category) {
-    const res = await fetch(`${BASE_URL}/category/${category}/menu`);
-    return res.json();
-  },
-  async createMenu(name, category) {
-    const res = await fetch(`${BASE_URL}/category/${category}/menu`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ name }),
-    });
-    if (!res.ok) {
-      alert("에러가 발생했습니다.");
-    }
-  },
-};
 
 const MenuList = (menuCategory, menuData) => {
   const $menuForm = $("#espresso-menu-form");
@@ -101,7 +81,7 @@ const MenuList = (menuCategory, menuData) => {
   };
 
   const loadMenu = async () => {
-    menuData = await MenuApi.getAllMenuByCategory(menuCategory);
+    menuData = await MenuAPI.loadMenuAPI(menuCategory);
     menuData.forEach(drawMenu);
     countMenu();
   };
@@ -109,7 +89,7 @@ const MenuList = (menuCategory, menuData) => {
   const createMenu = async (e) => {
     e.preventDefault();
     if ($menuInput.value.trim() === "") return alert(MESSAGE.ALERT_CREATE);
-    await MenuApi.createMenu($menuInput.value, menuCategory);
+    await MenuAPI.createMenuAPI($menuInput.value, menuCategory);
     const newMenu = {
       id: `${Date.now()}`,
       name: $menuInput.value,

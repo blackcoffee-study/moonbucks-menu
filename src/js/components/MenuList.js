@@ -85,6 +85,13 @@ const MenuList = (menuCategory, menuData) => {
   const createMenu = async (e) => {
     e.preventDefault();
     if ($menuInput.value.trim() === "") return alert(MESSAGE.ALERT_CREATE);
+    const duplicatedData = menuData.find(
+      (data) => data.name === $menuInput.value.trim()
+    );
+    if (duplicatedData) {
+      $menuForm.reset();
+      return alert(MESSAGE.ALERT_DUPLICATE);
+    }
     await MenuAPI.createMenuAPI($menuInput.value, menuCategory);
     $menuForm.reset();
     loadMenu();
@@ -99,7 +106,7 @@ const MenuList = (menuCategory, menuData) => {
         menuCategory,
         target.parentElement.id
       );
-      $currentName.innerHTML = updateName;
+      loadMenu();
     }
   };
 
@@ -113,8 +120,7 @@ const MenuList = (menuCategory, menuData) => {
   const deleteMenu = async ({ target }) => {
     if (confirm(MESSAGE.CONFIRM_DELETE)) {
       await MenuAPI.deleteMenuAPI(menuCategory, target.parentElement.id);
-      target.parentElement.remove();
-      countMenu();
+      loadMenu();
     }
   };
 

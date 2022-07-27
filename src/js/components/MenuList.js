@@ -75,10 +75,6 @@ const MenuList = (menuCategory, menuData) => {
     $menuList.appendChild(menuItem);
   };
 
-  const saveMenu = () => {
-    localStorage.setItem(menuCategory, JSON.stringify(menuData));
-  };
-
   const loadMenu = async () => {
     $menuList.textContent = "";
     menuData = await MenuAPI.loadMenuAPI(menuCategory);
@@ -107,20 +103,19 @@ const MenuList = (menuCategory, menuData) => {
     }
   };
 
-  const deleteMenu = ({ target }) => {
-    if (confirm(MESSAGE.CONFIRM_DELETE)) {
-      target.parentElement.remove();
-      menuData = menuData.filter((data) => data.id !== target.parentElement.id);
-      saveMenu();
-      countMenu();
-    }
-  };
-
   const soldOutMenu = async ({ target }) => {
     await MenuAPI.soldOutMenuAPI(menuCategory, target.parentElement.id);
     target.parentElement
       .querySelector(".menu-name")
       .classList.toggle("sold-out");
+  };
+
+  const deleteMenu = async ({ target }) => {
+    if (confirm(MESSAGE.CONFIRM_DELETE)) {
+      await MenuAPI.deleteMenuAPI(menuCategory, target.parentElement.id);
+      target.parentElement.remove();
+      countMenu();
+    }
   };
 
   const init = () => {

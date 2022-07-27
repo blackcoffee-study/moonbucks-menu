@@ -39,4 +39,10 @@ export const MenuAPI = {
     );
     if (!res.ok) alert(MESSAGE.ALERT_API);
   },
+  async deleteMenuAPI(category, id) {
+    const res = await fetch(`${BASE_URL}/category/${category}/menu/${id}`, {
+      method: "DELETE",
+    });
+    if (!res.ok) alert(MESSAGE.ALERT_API);
+  },
 };

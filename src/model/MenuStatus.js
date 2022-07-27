@@ -27,17 +27,23 @@ class MenuStatus {
         this.store();
     }
 
-    getMenu(index) {
-        if (typeof index !== "number") {
-			console.error(`Invalid Input! ${index} is not 'number' value! @MenuStatus.update() 1st parameter`);
+    getMenu(id) {
+        if (typeof id !== "string") {
+			console.error(`Invalid Input! ${id} is not 'string' value! @MenuStatus.update() 1st parameter`);
 			return;
 		}
-        return this.menuList[index];
+        const menu = this.menuList.find(menu => menu.id === id);
+        if (!menu) {
+            console.error(`MenuStatus's menuList doesn't have Menu with Id "${id}!"`);
+            return;
+        }
+        return menu;
     }
 
     getMenuList() {
-        return this.menuList
-            .filter(menu => menu.type === this.selectedMenuType);
+        return this.menuList.filter(
+            menu => menu.type === this.selectedMenuType
+        );
 
     }
 
@@ -63,9 +69,9 @@ class MenuStatus {
         this.store();
     }
 
-    update(index, newMenu) {
-        if (typeof(index) !== 'number') {
-            console.error(`Invalid Input! ${index} is not 'number' value! @MenuStatus.update() 1st parameter`);
+    update(updatedMenuId, newMenu) {
+        if (typeof(updatedMenuId) !== 'string') {
+            console.error(`Invalid Input! ${updatedMenuId} is not 'string' value! @MenuStatus.update() 1st parameter`);
             return;
         }
 
@@ -75,21 +81,21 @@ class MenuStatus {
         }
 
         this.menuList = this.menuList.map(
-            (menu, i) => (i === index) ? newMenu : menu
+            menu => menu.id === updatedMenuId ? newMenu : menu
         );
         this.store();
     }
 
     /**
-     * @param {number} index 메뉴판에 보이는 메뉴들의 index 값. 첫번째 메뉴의 경우 0 값이 전달되어야 함.
+     * @param {string} deletedMenuId 삭제할 메뉴의 고유한 id 값.
      */
-    delete(index) {
-        if (typeof index !== "number") {
-			console.error(`Invalid Input! ${index} is not 'number' value! @MenuStatus.delete() 1st parameter`);
+    delete(deletedMenuId) {
+        if (typeof deletedMenuId !== "string") {
+			console.error(`Invalid Input! ${deletedMenuId} is not 'string' value! @MenuStatus.delete() 1st parameter`);
 			return;
 		}
         this.menuList = this.menuList.filter(
-            (menu, i) => i !== index
+            menu => menu.id !== deletedMenuId
         );
         this.store();
     }

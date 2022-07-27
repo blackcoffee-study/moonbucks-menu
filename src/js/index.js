@@ -34,25 +34,27 @@ function addNewMenu(menuName) {
 
 function updateMenuListElementView(menuListItem, newMenu) {
 	const menuNameSpan = menuListItem.querySelector(".menu-name");
+	// 새로 생성된 메뉴 newMenu의 id 값으로 <li> 엘리먼트 data-id 속성 업데이트
+	menuListItem.dataset.id = newMenu.id;
 	// '품절' 관련 ui 업데이트
 	menuNameSpan.classList.toggle("sold-out", newMenu.isSoldOut);
 	// '메뉴 이름' 관련 ui 업데이트
 	menuNameSpan.innerText = newMenu.name;
 }
 
-function toggleMenuSoldOut(menuListItem, index) {
-	const currentMenu = state.getMenu(index);
+function toggleMenuSoldOut(menuListItem, menuId) {
+	const currentMenu = state.getMenu(menuId);
 	const updatedMenu = new Menu(state.getSelectedMenuType(), currentMenu.name, !currentMenu.isSoldOut);
 
 	// data update
-	state.update(index, updatedMenu);
+	state.update(menuId, updatedMenu);
 
 	// ui update
 	updateMenuListElementView(menuListItem, updatedMenu);
 }
 
-function updateMenuName(menuListItem, index) {
-	const currentMenu = state.getMenu(index);
+function updateMenuName(menuListItem, menuId) {
+	const currentMenu = state.getMenu(menuId);
 	const newName = prompt("메뉴명을 수정하세요");
 	const trimmedNewName = newName.trim();
 
@@ -63,20 +65,20 @@ function updateMenuName(menuListItem, index) {
 	const updatedMenu = new Menu(state.getSelectedMenuType(), trimmedNewName, currentMenu.isSoldOut);
 	
 	// data update
-	state.update(index, updatedMenu);
+	state.update(menuId, updatedMenu);
 
 	// ui update
 	updateMenuListElementView(menuListItem, updatedMenu);
 }
 
-function removeMenuItem(menuListItem, index) {
+function removeMenuItem(menuListItem, menuId) {
 	const isConfrimed = confirm("정말 삭제하시겠습니까?");
 
 	if (!isConfrimed) {
 		return;
 	}
 	// data update
-	state.delete(index);
+	state.delete(menuId);
 
 	// ui update
 	// 메뉴 리스트 전체 render를 새로하는게 아닌,
@@ -88,7 +90,7 @@ function removeMenuItem(menuListItem, index) {
 
 function onMenuClicked(e) {
 	const menuListItem = e.target.closest(".menu-list-item");
-	const menuListItemIndex = Number(menuListItem?.dataset.index);
+	const menuListItemId = menuListItem?.dataset.id;
 
 	// event target이 메뉴 <li> 안에 있지 않다면 리턴
 	if (!menuListItem) {
@@ -107,13 +109,13 @@ function onMenuClicked(e) {
 
 	switch (e.target.dataset.action) {
 		case "edit":
-			updateMenuName(menuListItem, menuListItemIndex);
+			updateMenuName(menuListItem, menuListItemId);
 			break;
 		case "delete":
-			removeMenuItem(menuListItem, menuListItemIndex);
+			removeMenuItem(menuListItem, menuListItemId);
 			break;
 		case "toggle-soldout":
-			toggleMenuSoldOut(menuListItem, menuListItemIndex);
+			toggleMenuSoldOut(menuListItem, menuListItemId);
 			break;
 		default:
 			console.error(`Unexpected action: ${e.target.dataset.action}`);
@@ -144,11 +146,11 @@ function onMenuTypeClicked(e) {
 	renderMenu();
 }
 
-function getMenuListItemHTMLString(menu, index) {
+function getMenuListItemHTMLString(menu) {
 	const soldOutStatusClassName = menu.isSoldOut ? "sold-out" : "";
 
 	return `
-<li class="menu-list-item d-flex items-center py-2" data-index=${index}>
+<li class="menu-list-item d-flex items-center py-2" data-id=${menu.id}>
 	<span class="w-100 pl-2 menu-name ${soldOutStatusClassName}">${menu.name}</span>
 	<button type="button" class="bg-gray-50 text-gray-500 text-sm mr-1 menu-sold-out-button" data-action="toggle-soldout">
 		품절
@@ -177,7 +179,7 @@ function renderMenuList() {
 
 	// 현재 state의 해당하는 Menu 배열을 불러와, 각각의 menu를 기반으로 <li> Element를 생성하여 menuList에 삽입
 	state.getMenuList().forEach(
-		(menu, index) => menuList.insertAdjacentHTML("beforeend", getMenuListItemHTMLString(menu, index))
+		menu => menuList.insertAdjacentHTML("beforeend", getMenuListItemHTMLString(menu))
 	);
 }
 

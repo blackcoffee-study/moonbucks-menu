@@ -88,7 +88,10 @@ const MenuList = (menuCategory, menuData) => {
     const duplicatedData = menuData.find(
       (data) => data.name === $menuInput.value.trim()
     );
-    if (duplicatedData) return alert(MESSAGE.ALERT_DUPLICATE);
+    if (duplicatedData) {
+      $menuForm.reset();
+      return alert(MESSAGE.ALERT_DUPLICATE);
+    }
     await MenuAPI.createMenuAPI($menuInput.value, menuCategory);
     $menuForm.reset();
     loadMenu();

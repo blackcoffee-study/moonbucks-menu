@@ -29,7 +29,8 @@ const HTTP_METHOD = {
 const request = async (url, option) => {
   try {
     const res = await fetch(url, option);
-    return option && option.method === "DELETE" ? null : await res.json();
+    if (!res.ok) return alert(MESSAGE.ALERT_API);
+    if (!option) return await res.json();
   } catch (error) {
     console.log(error.message);
     alert(MESSAGE.ALERT_API);

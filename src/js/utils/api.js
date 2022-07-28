@@ -2,47 +2,66 @@ import { MESSAGE } from "../constants/index.js";
 
 const BASE_URL = "http://localhost:3000/api";
 
-export const MenuAPI = {
-  async loadMenuAPI(category) {
-    const res = await fetch(`${BASE_URL}/category/${category}/menu`, {
-      method: "GET",
-    });
-    if (!res.ok) alert(MESSAGE.ALERT_API);
-    return res.json();
-  },
-  async createMenuAPI(name, category) {
-    const res = await fetch(`${BASE_URL}/category/${category}/menu`, {
+const HTTP_METHOD = {
+  POST(data) {
+    return {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ name }),
-    });
-    if (!res.ok) alert(MESSAGE.ALERT_API);
+      body: JSON.stringify(data),
+    };
   },
-  async updateMenuAPI(name, category, id) {
-    const res = await fetch(`${BASE_URL}/category/${category}/menu/${id}`, {
+  PUT(data) {
+    return {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ name }),
-    });
-    if (!res.ok) alert(MESSAGE.ALERT_API);
+      body: data ? JSON.stringify(data) : null,
+    };
   },
-  async soldOutMenuAPI(category, id) {
-    const res = await fetch(
-      `${BASE_URL}/category/${category}/menu/${id}/soldout`,
-      {
-        method: "PUT",
-      }
+  DELETE() {
+    return { method: "DELETE" };
+  },
+};
+
+const request = async (url, option) => {
+  try {
+    const res = await fetch(url, option);
+    return option && option.method === "DELETE" ? null : await res.json();
+  } catch (error) {
+    console.log(error.message);
+    alert(MESSAGE.ALERT_API);
+  }
+};
+
+export const MenuAPI = {
+  loadMenuAPI(category) {
+    return request(`${BASE_URL}/category/${category}/menu`);
+  },
+  createMenuAPI(name, category) {
+    return request(
+      `${BASE_URL}/category/${category}/menu`,
+      HTTP_METHOD.POST({ name })
     );
-    if (!res.ok) alert(MESSAGE.ALERT_API);
   },
-  async deleteMenuAPI(category, id) {
-    const res = await fetch(`${BASE_URL}/category/${category}/menu/${id}`, {
-      method: "DELETE",
-    });
-    if (!res.ok) alert(MESSAGE.ALERT_API);
+  updateMenuAPI(name, category, id) {
+    return request(
+      `${BASE_URL}/category/${category}/menu/${id}`,
+      HTTP_METHOD.PUT({ name })
+    );
+  },
+  soldOutMenuAPI(category, id) {
+    return request(
+      `${BASE_URL}/category/${category}/menu/${id}/soldout`,
+      HTTP_METHOD.PUT()
+    );
+  },
+  deleteMenuAPI(category, id) {
+    return request(
+      `${BASE_URL}/category/${category}/menu/${id}`,
+      HTTP_METHOD.DELETE()
+    );
   },
 };

@@ -15,11 +15,11 @@ const MenuType = Object.freeze({
  * @readonly
  */
 const _MenuTypeKorNameObj = Object.freeze({
-    [MenuType.ESPRESSO]: "에스프레소",
-    [MenuType.FRAPPUCCINO]: "프라푸치노",
-    [MenuType.BLENDED]: "블렌디드",
-    [MenuType.TEAVANA]: "티바나",
-    [MenuType.DESERT]: "디저트"
+	[MenuType.ESPRESSO]: "☕ 에스프레소",
+	[MenuType.FRAPPUCCINO]: "🥤 프라푸치노",
+	[MenuType.BLENDED]: "🍹 블렌디드",
+	[MenuType.TEAVANA]: "🫖 티바나",
+	[MenuType.DESERT]: "🍰 디저트",
 });
 
 const MenuTypeUtil = Object.freeze({

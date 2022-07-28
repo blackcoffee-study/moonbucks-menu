@@ -84,14 +84,11 @@ const MenuList = (menuCategory, menuData) => {
 
   const createMenu = async (e) => {
     e.preventDefault();
-    if ($menuInput.value.trim() === "") return alert(MESSAGE.ALERT_CREATE);
+    if ($menuInput.value.trim() === "") return alert(MESSAGE.ALERT_EMPTY);
     const duplicatedData = menuData.find(
       (data) => data.name === $menuInput.value.trim()
     );
-    if (duplicatedData) {
-      $menuForm.reset();
-      return alert(MESSAGE.ALERT_DUPLICATE);
-    }
+    if (duplicatedData) return alert(MESSAGE.ALERT_DUPLICATE);
     await MenuAPI.createMenuAPI($menuInput.value, menuCategory);
     $menuForm.reset();
     loadMenu();
@@ -100,6 +97,11 @@ const MenuList = (menuCategory, menuData) => {
   const updateMenu = async ({ target }) => {
     const $currentName = target.parentElement.querySelector(".menu-name");
     const updateName = prompt(MESSAGE.PROMPT_UPDATE, $currentName.innerHTML);
+    if (updateName.trim() === "") return alert(MESSAGE.ALERT_EMPTY);
+    const duplicatedData = menuData.find(
+      (data) => data.name === updateName.trim()
+    );
+    if (duplicatedData) return alert(MESSAGE.ALERT_DUPLICATE);
     if (updateName) {
       await MenuAPI.updateMenuAPI(
         updateName,

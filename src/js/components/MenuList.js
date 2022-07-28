@@ -97,12 +97,12 @@ const MenuList = (menuCategory, menuData) => {
   const updateMenu = async ({ target }) => {
     const $currentName = target.parentElement.querySelector(".menu-name");
     const updateName = prompt(MESSAGE.PROMPT_UPDATE, $currentName.innerHTML);
-    if (updateName.trim() === "") return alert(MESSAGE.ALERT_EMPTY);
-    const duplicatedData = menuData.find(
-      (data) => data.name === updateName.trim()
-    );
-    if (duplicatedData) return alert(MESSAGE.ALERT_DUPLICATE);
     if (updateName) {
+      if (updateName.trim() === "") return alert(MESSAGE.ALERT_EMPTY);
+      const duplicatedData = menuData.find(
+        (data) => data.name === updateName.trim()
+      );
+      if (duplicatedData) return alert(MESSAGE.ALERT_DUPLICATE);
       await MenuAPI.updateMenuAPI(
         updateName,
         menuCategory,

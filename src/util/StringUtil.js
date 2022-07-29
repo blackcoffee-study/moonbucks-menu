@@ -1,4 +1,4 @@
-class StringUtil {
+export default class StringUtil {
     static createHashValue(string, length = 8) {
         let hash = 0;
 

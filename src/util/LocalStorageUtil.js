@@ -1,4 +1,4 @@
-class LocalStorageUtil {
+export default class LocalStorageUtil {
     static KEY = 'MOONBUCKS_MENU';
 
     static store(value) {

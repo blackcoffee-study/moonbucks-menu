@@ -1,4 +1,7 @@
-class Menu {
+import { MenuTypeUtil } from "./MenuType.js";
+import StringUtil from "../util/StringUtil.js";
+
+export default class Menu {
 	constructor(type, name, isSoldOut = false) {
 		if (!type) {
 			console.error(`Invalid Input! ${type} is 'undefined' or 'null' or ""(empty string) value! @Menu.constructor() 1st parameter`);

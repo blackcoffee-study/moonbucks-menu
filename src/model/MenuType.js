@@ -28,3 +28,5 @@ const MenuTypeUtil = Object.freeze({
     isMenuType: (type) => MenuTypeUtil.getAllType().includes(type)
 });
 
+
+export {MenuType, MenuTypeUtil};

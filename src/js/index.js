@@ -1,3 +1,7 @@
+import Menu from '../model/Menu.js';
+import MenuStatus from '../model/MenuStatus.js';
+import {MenuTypeUtil} from '../model/MenuType.js';
+
 // 현재 메뉴 상태를 관리하는 변수
 const state = MenuStatus.loadOrCeateNewMenuStatus();
 

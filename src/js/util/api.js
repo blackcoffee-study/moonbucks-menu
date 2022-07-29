@@ -7,55 +7,30 @@ export function Client() {
     },
   };
 
-  async function get(url, options) {
-    const result = await fetch(
-      url,
-      Object.assign(option, options, { method: "GET" })
-    );
+  const baseOption = (data) =>
+    Object.assign(option, { body: JSON.stringify(data) });
 
+  async function get(url, options = {}) {
+    const params = Object.assign(option, options, { method: "GET" });
+    const result = await fetch(url, params);
     return result.json();
   }
 
   async function post(url, data = {}) {
-    const result = await fetch(
-      url,
-      Object.assign(
-        option,
-        {
-          body: JSON.stringify(data),
-        },
-        { method: "POST" }
-      )
-    );
-
+    const params = Object.assign(baseOption(data), { method: "POST" });
+    const result = await fetch(url, params);
     return result.json();
   }
 
   async function put(url, data = {}) {
-    const result = await fetch(
-      url,
-      Object.assign(
-        option,
-        {
-          body: JSON.stringify(data),
-        },
-        { method: "PUT" }
-      )
-    );
+    const params = Object.assign(baseOption(data), { method: "PUT" });
+    const result = await fetch(url, params);
     return result.json();
   }
 
   async function del(url, data = {}) {
-    return await fetch(
-      url,
-      Object.assign(
-        option,
-        {
-          body: JSON.stringify(data),
-        },
-        { method: "DELETE" }
-      )
-    );
+    const params = Object.assign(baseOption(data), { method: "DELETE" });
+    return await fetch(url, params);
   }
 
   return { get, post, put, del };

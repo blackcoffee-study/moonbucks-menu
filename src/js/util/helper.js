@@ -19,3 +19,7 @@ export function dispatchCustomEvent(name, detail, target = window) {
 export function addCustomEventListener(name, callback, target = window) {
   target.addEventListener(name, ({ detail }) => callback(detail));
 }
+
+export function createRandomId() {
+  return Date.now().toString(36) + Math.random().toString(36).substring(2);
+}

@@ -19,3 +19,7 @@ export function dispatchCustomEvent(name, detail, target = window) {
 export function addCustomEventListener(name, callback, target = window) {
   target.addEventListener(name, ({ detail }) => callback(detail));
 }
+
+export function handleError(e) {
+  return alert(e.message);
+}

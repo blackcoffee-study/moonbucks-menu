@@ -2,6 +2,7 @@ import { EVENTS } from "../constant";
 import {
   addCustomEventListener,
   dispatchCustomEvent,
+  handleError,
   validateMenuName,
 } from "../util";
 
@@ -23,18 +24,17 @@ export function MenuInput($container, { api, stateManager }) {
       return alert(e.message);
     }
 
-    api
-      .createMenu({
-        categoryName: stateManager.currentCategory(),
-        name: menuName,
-      })
-      .then(({ id: menuId }) => {
-        setValue("");
-        focus();
+    function onAddMenu({ id: menuId }) {
+      setValue("");
+      focus();
 
-        dispatchCustomEvent(EVENTS.ADD_MENU, { menuId, menuName });
-      })
-      .catch((e) => alert(e.message));
+      dispatchCustomEvent(EVENTS.ADD_MENU, { menuId, menuName });
+    }
+
+    const categoryName = stateManager.currentCategory();
+    const params = { categoryName, name: menuName };
+
+    api.createMenu(params).then(onAddMenu).catch(handleError);
   }
 
   addEventListener("load", focus);

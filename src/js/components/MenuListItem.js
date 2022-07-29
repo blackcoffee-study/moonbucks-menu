@@ -3,6 +3,7 @@ import {
   $,
   createElement,
   dispatchCustomEvent,
+  handleError,
   validateMenuName,
 } from "../util";
 
@@ -47,12 +48,9 @@ export function MenuListItem(
 
     toggleSoldout(newSoldout);
 
-    api
-      .soldOut({
-        categoryName: stateManager.currentCategory(),
-        menuId,
-      })
-      .catch((e) => alert(e.message));
+    const categoryName = stateManager.currentCategory();
+    const params = { categoryName, menuId };
+    api.soldOut(params).catch(handleError);
   }
 
   function editMenuName() {

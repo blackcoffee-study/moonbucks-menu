@@ -1,4 +1,4 @@
-import { addCustomEventListener } from "./helper";
+import { addCustomEventListener, handleError } from "./helper";
 import { EVENTS } from "../constant";
 
 export async function createCafe({ api }) {
@@ -25,22 +25,20 @@ export async function createCafe({ api }) {
     },
   };
 
+  function mappingApiMenu(menu) {
+    const { id: menuId, name: menuName, isSoldOut: soldout } = menu;
+    return { ...menu, menuName, menuId, soldout };
+  }
+
+  function mappingApiMenus(categoryName) {
+    return (items) => (menus[categoryName].items = items.map(mappingApiMenu));
+  }
+
   for (const categoryName of Object.keys(menus)) {
     api
       .getMenu({ categoryName })
-      .then((items) => {
-        menus[categoryName].items = items.map((item) => {
-          const { id: menuId, name: menuName, isSoldOut: soldout } = item;
-
-          return {
-            ...item,
-            menuName,
-            menuId,
-            soldout,
-          };
-        });
-      })
-      .catch((e) => alert(e.message));
+      .then(mappingApiMenus(categoryName))
+      .catch(handleError);
   }
 
   return menus;
@@ -117,13 +115,11 @@ export function StateListener({ stateManager, api }) {
 
     stateManager.editMenu(newMenu);
 
-    api
-      .editMenu({
-        menuId,
-        name: newMenu.menuName,
-        categoryName: stateManager.currentCategory(),
-      })
-      .catch((e) => alert(e.message));
+    const categoryName = stateManager.currentCategory();
+    const name = newMenu.menuName;
+    const params = { menuId, name, categoryName };
+
+    api.editMenu(params).catch(handleError);
   }
 
   function addMenu(menu) {
@@ -133,12 +129,10 @@ export function StateListener({ stateManager, api }) {
   function removeMenu({ menuId }) {
     stateManager.removeMenu(menuId);
 
-    api
-      .delMenu({
-        categoryName: stateManager.currentCategory(),
-        menuId,
-      })
-      .catch((e) => alert(e.message));
+    const categoryName = stateManager.currentCategory();
+    const params = { categoryName, menuId };
+
+    api.delMenu(params).catch(handleError);
   }
 
   addCustomEventListener(EVENTS.CHANGE_MENU, editMenu);

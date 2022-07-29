@@ -22,9 +22,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   const state = { cafe, currentCafe: "espresso" };
   const stateManager = new StateManager(state);
 
-  new StateListener({ cafe, stateManager, api });
-
   const props = { cafe, stateManager, api };
+
+  new StateListener(props);
 
   MenuForm($("#espresso-menu-form"), props);
 

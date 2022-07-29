@@ -28,9 +28,7 @@ export function MenuInput($container, { api, stateManager }) {
         categoryName: stateManager.currentCategory(),
         name: menuName,
       })
-      .then(({ id }) => {
-        const menuId = id;
-
+      .then(({ id: menuId }) => {
         setValue("");
         focus();
 

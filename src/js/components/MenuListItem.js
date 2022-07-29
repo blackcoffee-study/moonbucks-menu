@@ -47,10 +47,12 @@ export function MenuListItem(
 
     toggleSoldout(newSoldout);
 
-    api.soldOut({
-      categoryName: stateManager.currentCategory(),
-      menuId,
-    });
+    api
+      .soldOut({
+        categoryName: stateManager.currentCategory(),
+        menuId,
+      })
+      .catch((e) => alert(e.message));
 
     //dispatchCustomEvent(EVENTS.CHANGE_MENU, { menuId, soldout: newSoldout });
   }

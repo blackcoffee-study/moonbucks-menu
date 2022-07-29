@@ -25,20 +25,23 @@ export async function createCafe({ api }) {
     },
   };
 
-  Object.keys(menus).forEach(async (categoryName) => {
-    const items = await api.getMenu({ categoryName });
+  for (const categoryName of Object.keys(menus)) {
+    api
+      .getMenu({ categoryName })
+      .then((items) => {
+        menus[categoryName].items = items.map((item) => {
+          const { id: menuId, name: menuName, isSoldOut: soldout } = item;
 
-    menus[categoryName].items = items.map((item) => {
-      const { id: menuId, name: menuName, isSoldOut: soldout } = item;
-
-      return {
-        ...item,
-        menuName,
-        menuId,
-        soldout,
-      };
-    });
-  });
+          return {
+            ...item,
+            menuName,
+            menuId,
+            soldout,
+          };
+        });
+      })
+      .catch((e) => alert(e.message));
+  }
 
   return menus;
 }
@@ -114,11 +117,15 @@ export function StateListener({ stateManager, api }) {
 
     stateManager.editMenu(newMenu);
 
-    api.editMenu({
-      menuId,
-      name: newMenu.menuName,
-      categoryName: stateManager.currentCategory(),
-    });
+    api
+      .editMenu({
+        menuId,
+        name: newMenu.menuName,
+        categoryName: stateManager.currentCategory(),
+      })
+      .catch((e) => {
+        alert(e.message);
+      });
   }
 
   function addMenu(menu) {
@@ -128,10 +135,12 @@ export function StateListener({ stateManager, api }) {
   function removeMenu({ menuId }) {
     stateManager.removeMenu(menuId);
 
-    api.delMenu({
-      categoryName: stateManager.currentCategory(),
-      menuId,
-    });
+    api
+      .delMenu({
+        categoryName: stateManager.currentCategory(),
+        menuId,
+      })
+      .catch((e) => alert(e.message));
   }
 
   addCustomEventListener(EVENTS.CHANGE_MENU, editMenu);

@@ -1,35 +1,53 @@
 import { addCustomEventListener } from "./helper";
 import { EVENTS } from "../constant";
 
-export function createCafe({ cafeStorage }) {
-  return Object.assign(
-    {
-      espresso: {
-        name: "☕ 에스프레소",
-        items: [],
-      },
-      frappuccino: {
-        name: "🥤 프라푸치노",
-        items: [],
-      },
-      blended: {
-        name: "🍹 블렌디드",
-        items: [],
-      },
-      teavana: {
-        name: "🫖 티바나",
-        items: [],
-      },
-      desert: {
-        name: "🍰 디저트",
-        items: [],
-      },
+export async function createCafe({ api }) {
+  const menus = {
+    espresso: {
+      name: "☕ 에스프레소",
+      items: [],
     },
-    cafeStorage.get()
-  );
+    frappuccino: {
+      name: "🥤 프라푸치노",
+      items: [],
+    },
+    blended: {
+      name: "🍹 블렌디드",
+      items: [],
+    },
+    teavana: {
+      name: "🫖 티바나",
+      items: [],
+    },
+    desert: {
+      name: "🍰 디저트",
+      items: [],
+    },
+  };
+
+  Object.keys(menus).forEach(async (categoryName) => {
+    const items = await api.getMenu({ categoryName });
+
+    menus[categoryName].items = items.map((item) => {
+      const { id: menuId, name: menuName, isSoldOut: soldout } = item;
+
+      return {
+        ...item,
+        menuName,
+        menuId,
+        soldout,
+      };
+    });
+  });
+
+  return menus;
 }
 
 export function StateManager(state) {
+  function currentCategory() {
+    return state.currentCafe;
+  }
+
   function currentCafe() {
     return state.cafe[state.currentCafe];
   }
@@ -79,6 +97,7 @@ export function StateManager(state) {
     setCurrentCafe,
     currentCafeItems,
     currentCafeItemsSize,
+    currentCategory,
     getMenuById,
     addMenu,
     editMenu,
@@ -86,7 +105,7 @@ export function StateManager(state) {
   };
 }
 
-export function StateListener({ cafe, stateManager, cafeStorage }) {
+export function StateListener({ stateManager, api }) {
   function editMenu(menu) {
     const { menuId } = menu;
 
@@ -95,19 +114,24 @@ export function StateListener({ cafe, stateManager, cafeStorage }) {
 
     stateManager.editMenu(newMenu);
 
-    cafeStorage.save(cafe);
+    api.editMenu({
+      menuId,
+      name: newMenu.menuName,
+      categoryName: stateManager.currentCategory(),
+    });
   }
 
   function addMenu(menu) {
     stateManager.addMenu(menu);
-
-    cafeStorage.save(cafe);
   }
 
   function removeMenu({ menuId }) {
     stateManager.removeMenu(menuId);
 
-    cafeStorage.save(cafe);
+    api.delMenu({
+      categoryName: stateManager.currentCategory(),
+      menuId,
+    });
   }
 
   addCustomEventListener(EVENTS.CHANGE_MENU, editMenu);

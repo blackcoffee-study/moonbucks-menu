@@ -16,5 +16,5 @@ export function MenuCategory($container, { stateManager }) {
 
   $buttons.forEach((btn) => btn.addEventListener("click", changeCategory));
 
-  setTimeout(() => $buttons[0].click());
+  setTimeout(() => $buttons[0].click(), 50);
 }

@@ -14,7 +14,7 @@ export function MenuInput($container, { api, stateManager }) {
     $container.focus();
   }
 
-  async function addMenu() {
+  function addMenu() {
     const { value: menuName } = $container;
 
     try {
@@ -23,9 +23,6 @@ export function MenuInput($container, { api, stateManager }) {
       return alert(e.message);
     }
 
-    setValue("");
-    focus();
-
     api
       .createMenu({
         categoryName: stateManager.currentCategory(),
@@ -33,6 +30,10 @@ export function MenuInput($container, { api, stateManager }) {
       })
       .then(({ id }) => {
         const menuId = id;
+
+        setValue("");
+        focus();
+
         dispatchCustomEvent(EVENTS.ADD_MENU, { menuId, menuName });
       })
       .catch((e) => alert(e.message));

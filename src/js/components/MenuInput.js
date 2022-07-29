@@ -1,12 +1,12 @@
 import { EVENTS } from "../constant";
 import {
   addCustomEventListener,
-  createRandomId,
   dispatchCustomEvent,
+  handleError,
   validateMenuName,
 } from "../util";
 
-export function MenuInput($container) {
+export function MenuInput($container, { api, stateManager }) {
   function setValue(value) {
     $container.value = value;
   }
@@ -24,12 +24,17 @@ export function MenuInput($container) {
       return alert(e.message);
     }
 
-    setValue("");
-    focus();
+    function onAddMenu({ id: menuId }) {
+      setValue("");
+      focus();
 
-    const menuId = createRandomId();
+      dispatchCustomEvent(EVENTS.ADD_MENU, { menuId, menuName });
+    }
 
-    dispatchCustomEvent(EVENTS.ADD_MENU, { menuId, menuName });
+    const categoryName = stateManager.currentCategory();
+    const params = { categoryName, name: menuName };
+
+    api.createMenu(params).then(onAddMenu).catch(handleError);
   }
 
   addEventListener("load", focus);

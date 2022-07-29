@@ -20,6 +20,6 @@ export function addCustomEventListener(name, callback, target = window) {
   target.addEventListener(name, ({ detail }) => callback(detail));
 }
 
-export function createRandomId() {
-  return Date.now().toString(36) + Math.random().toString(36).substring(2);
+export function handleError(e) {
+  return alert(e.message);
 }

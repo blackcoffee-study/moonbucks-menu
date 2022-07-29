@@ -1,24 +1,30 @@
 import {
-  MenuTitle,
   MenuCategory,
   MenuCount,
   MenuForm,
   MenuInput,
   MenuList,
+  MenuTitle,
 } from "./components";
-import { $, CafeStorage, StateListener, StateManager } from "./util";
-import { createCafe } from "./util";
+import {
+  $,
+  Api,
+  Client,
+  createCafe,
+  StateListener,
+  StateManager,
+} from "./util";
 
-const cafeStorage = new CafeStorage();
-const cafe = createCafe({ cafeStorage });
+document.addEventListener("DOMContentLoaded", async () => {
+  const api = Api(Client());
+  const cafe = await createCafe({ api });
 
-const state = { cafe, currentCafe: "espresso" };
-const stateManager = new StateManager(state);
+  const state = { cafe, currentCafe: "espresso" };
+  const stateManager = new StateManager(state);
 
-new StateListener({ cafe, stateManager, cafeStorage });
+  const props = { cafe, stateManager, api };
 
-document.addEventListener("DOMContentLoaded", () => {
-  const props = { cafe, stateManager };
+  new StateListener(props);
 
   MenuForm($("#espresso-menu-form"), props);
 

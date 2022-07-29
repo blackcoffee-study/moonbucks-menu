@@ -2,7 +2,7 @@ import { DefaultMenuListItem } from "./MenuListItem";
 import { EVENTS } from "../constant";
 import { addCustomEventListener } from "../util";
 
-export function MenuList($container, { stateManager }) {
+export function MenuList($container, { stateManager, api }) {
   function clear() {
     while ($container.hasChildNodes()) {
       $container.removeChild($container.firstChild);
@@ -13,6 +13,8 @@ export function MenuList($container, { stateManager }) {
     const { $container: $menuListItem } = DefaultMenuListItem({
       menuName,
       soldout,
+      api,
+      stateManager,
     });
 
     $menuListItem.dataset["menuId"] = menuId;

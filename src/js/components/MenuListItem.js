@@ -3,10 +3,14 @@ import {
   $,
   createElement,
   dispatchCustomEvent,
+  handleError,
   validateMenuName,
 } from "../util";
 
-export function MenuListItem($container, { menuName, soldout }) {
+export function MenuListItem(
+  $container,
+  { menuName, soldout, api, stateManager }
+) {
   const ref = { menuName };
 
   const $menuName = $(".menu-name", $container);
@@ -44,7 +48,9 @@ export function MenuListItem($container, { menuName, soldout }) {
 
     toggleSoldout(newSoldout);
 
-    dispatchCustomEvent(EVENTS.CHANGE_MENU, { menuId, soldout: newSoldout });
+    const categoryName = stateManager.currentCategory();
+    const params = { categoryName, menuId };
+    api.soldOut(params).catch(handleError);
   }
 
   function editMenuName() {
@@ -66,7 +72,7 @@ export function MenuListItem($container, { menuName, soldout }) {
   function toggleSoldout(check) {
     const soldoutClassName = "sold-out";
 
-    if (check === "true") {
+    if (`${check}` === "true") {
       $menuName.classList.add(soldoutClassName);
     } else {
       $menuName.classList.remove(soldoutClassName);
@@ -80,7 +86,7 @@ export function MenuListItem($container, { menuName, soldout }) {
   return { $container };
 }
 
-export function DefaultMenuListItem({ menuName, soldout }) {
+export function DefaultMenuListItem({ menuName, soldout, api, stateManager }) {
   const template = `
   <li class="menu-list-item d-flex items-center py-2">
     <span class="w-100 pl-2 menu-name">${menuName}</span>
@@ -92,5 +98,5 @@ export function DefaultMenuListItem({ menuName, soldout }) {
 
   const $container = createElement(template);
 
-  return MenuListItem($container, { menuName, soldout });
+  return MenuListItem($container, { menuName, soldout, api, stateManager });
 }

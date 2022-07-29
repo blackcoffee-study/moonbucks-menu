@@ -4,7 +4,7 @@ import {
   createCustomElement,
   createCustomButton,
 } from "../utils/dom.js";
-import { MenuAPI } from "../utils/api.js";
+import { MenuAPI } from "../libs/index.js";
 import { MESSAGE, CATEGORY } from "../constants/index.js";
 
 const MenuList = (menuCategory, menuData) => {

@@ -53,8 +53,6 @@ export function MenuListItem(
         menuId,
       })
       .catch((e) => alert(e.message));
-
-    //dispatchCustomEvent(EVENTS.CHANGE_MENU, { menuId, soldout: newSoldout });
   }
 
   function editMenuName() {

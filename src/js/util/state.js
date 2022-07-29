@@ -123,9 +123,7 @@ export function StateListener({ stateManager, api }) {
         name: newMenu.menuName,
         categoryName: stateManager.currentCategory(),
       })
-      .catch((e) => {
-        alert(e.message);
-      });
+      .catch((e) => alert(e.message));
   }
 
   function addMenu(menu) {

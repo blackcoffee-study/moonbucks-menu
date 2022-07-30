@@ -25,7 +25,19 @@ const _MenuTypeKorNameObj = Object.freeze({
 const MenuTypeUtil = Object.freeze({
     getAllType: () => Array.from(Object.values(MenuType)),
     getMenuTypeKorName: (type) => _MenuTypeKorNameObj[type],
-    isMenuType: (type) => MenuTypeUtil.getAllType().includes(type)
+    isMenuType: (type) => MenuTypeUtil.getAllType().includes(type),
+	isValidMenuType: (type, calledFunc= '') => {
+		if (!type) {
+			console.error(`Invalid Input! 'menuType' parameter's value "${type}" is 'undefined' or 'null' or ""(empty string) value! @${calledFunc}`);
+			return false;
+		}
+
+		if (!MenuTypeUtil.isMenuType(type)) {
+			console.error(`Invalid Input! 'menuType' parameter's value "${type}" is not value declared at "MenuType.js" file! @${calledFunc}`);
+			return false;
+		}
+		return true;
+	}
 });
 
 

@@ -29,11 +29,9 @@ const HTTP_METHOD = {
 const request = async (url, option) => {
   try {
     const res = await fetch(url, option);
-    if (!res.ok) return alert(MESSAGE.ALERT_API);
-    if (!option) return await res.json();
+    return !option ? await res.json() : res;
   } catch (error) {
-    console.log(error.message);
-    alert(MESSAGE.ALERT_API);
+    alert(`${MESSAGE.ALERT_API} (${error.message})`);
   }
 };
 

@@ -92,9 +92,9 @@ const MenuList = (menuCategory, menuData) => {
       $menuForm.reset();
       return alert(MESSAGE.ALERT_DUPLICATE);
     }
-    await MenuAPI.createMenuAPI($menuInput.value, menuCategory);
+    const res = await MenuAPI.createMenuAPI($menuInput.value, menuCategory);
+    res.ok ? loadMenu() : alert(MESSAGE.ALERT_API);
     $menuForm.reset();
-    loadMenu();
   };
 
   const updateMenu = async ({ target }) => {
@@ -106,26 +106,34 @@ const MenuList = (menuCategory, menuData) => {
         (data) => data.name === updateName.trim()
       );
       if (duplicatedData) return alert(MESSAGE.ALERT_DUPLICATE);
-      await MenuAPI.updateMenuAPI(
+      const res = await MenuAPI.updateMenuAPI(
         updateName,
         menuCategory,
         target.parentElement.id
       );
-      loadMenu();
+      res.ok ? loadMenu() : alert(MESSAGE.ALERT_API);
     }
   };
 
   const soldOutMenu = async ({ target }) => {
-    await MenuAPI.soldOutMenuAPI(menuCategory, target.parentElement.id);
-    target.parentElement
-      .querySelector(".menu-name")
-      .classList.toggle("sold-out");
+    const res = await MenuAPI.soldOutMenuAPI(
+      menuCategory,
+      target.parentElement.id
+    );
+    res.ok
+      ? target.parentElement
+          .querySelector(".menu-name")
+          .classList.toggle("sold-out")
+      : alert(MESSAGE.ALERT_API);
   };
 
   const deleteMenu = async ({ target }) => {
     if (confirm(MESSAGE.CONFIRM_DELETE)) {
-      await MenuAPI.deleteMenuAPI(menuCategory, target.parentElement.id);
-      loadMenu();
+      const res = await MenuAPI.deleteMenuAPI(
+        menuCategory,
+        target.parentElement.id
+      );
+      res.ok ? loadMenu() : alert(MESSAGE.ALERT_API);
     }
   };
 

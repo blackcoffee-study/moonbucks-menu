@@ -19,8 +19,7 @@ export default class MenuCategory extends Component {
       if (!target) return;
 
       if (target.classList.contains('cafe-category-name')) {
-        const categoryId = target.id;
-        const categoryName = target.textContent;
+        const { id: categoryId, textContent: categoryName } = target;
 
         this.changeHash(categoryId);
         this.updateCategoryName(categoryName);

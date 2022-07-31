@@ -110,6 +110,7 @@ export default class Menu extends Component {
     if (!newName || newName.replaceAll(' ', '') === '' || !targetObj) return;
     targetObj.name = newName;
     this.setState('menu', [...this.state.menu]);
+    this.setSoldOutMenu(target);
   }
 
   deleteMenu(target) {

@@ -15,13 +15,26 @@ export default class Component {
     this.renderTemplate = template;
     this.htmlList = [];
     this.init();
-    this.render();
+    if (!stateId) this.render();
   }
 
   setState(key, value) {
-    this.state = { ...this.state, [key]: value };
+    if (typeof key === 'string') {
+      this.state = { ...this.state, [key]: value };
+    } else if (typeof key === 'object' && !Array.isArray(key) && key !== null) {
+      this.state = key;
+    } else {
+      throw ': unexpected argument';
+    }
+
     if (this.stateId) {
       setLocalStorageItem(this.stateId, this.state);
+
+      if (this.stateId === location.hash.substring(1)) {
+        this.render();
+      }
+
+      return;
     }
     this.render();
   }

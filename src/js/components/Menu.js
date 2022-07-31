@@ -35,15 +35,17 @@ export default class Menu extends Component {
 
   init() {
     const storedState = getLocalStorageItem(this.stateId);
+
     if (storedState) {
-      this.setState('menu', storedState.menu || []);
-      this.setState('soldOut', storedState.soldOut || []);
-      this.setState('count', storedState.count || 0);
-    } else {
-      this.setState('menu', []);
-      this.setState('soldOut', []);
-      this.setState('count', 0);
+      this.setState(storedState);
+      return;
     }
+
+    this.setState({
+      menu: [],
+      soldOut: [],
+      count: 0,
+    });
   }
 
   clearEvents() {

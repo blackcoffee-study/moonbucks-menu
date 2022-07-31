@@ -1,5 +1,5 @@
 const $ = (selector) => document.querySelector(selector);
-  
+
 function App() {
 
   const createMenuName = () => {
@@ -11,18 +11,20 @@ function App() {
 
       const espressoMenuName = $("#espresso-menu-name").value;
       
-      $("#espresso-menu-list").insertAdjacentHTML("beforeend", menuItemTemplate(espressoMenuName));
-      updateMenuCount();
-      $("#espresso-menu-name").value = "";
+      // 로컬스토리지에 메뉴 저장
+      localStorage.setItem("espresso", espressoMenuName);
 
+      $("#espresso-menu-list").insertAdjacentHTML("beforeend", getMenuItemTemplate(espressoMenuName));
+      updateMenuCount();
+      $("#espresso-menu-form").reset();
   };
   
   const updateMenuCount = () => {
     const menuCount = $("#espresso-menu-list").querySelectorAll('li').length;
-    $(".menu-count").innerText = `총 ${menuCount} 개`
+    $(".menu-count").textContent = `총 ${menuCount} 개`
   };
 
-  const menuItemTemplate = (espressoMenuName) => {
+  const getMenuItemTemplate = (espressoMenuName) => {
     return `<li class="menu-list-item d-flex items-center py-2">
     <span class="w-100 pl-2 menu-name">${espressoMenuName}</span>
     <button
@@ -47,9 +49,9 @@ function App() {
 
   const editMenuName = (e) =>{
     const $menuName = e.target.closest("li").querySelector(".menu-name");
-    const editedName = prompt("메뉴명을 수정하세요", $menuName.innerText);
+    const editedName = prompt("메뉴명을 수정하세요", $menuName.textContent);
     if(!editedName) return;
-    $menuName.innerText = editedName;
+    $menuName.textContent = editedName;
   };
 
   $("#espresso-menu-list").addEventListener("click", (e) => {
@@ -67,15 +69,16 @@ function App() {
   // form 태그가 자동으로 전송되는 걸 막기
   $("#espresso-menu-form").addEventListener("submit", (e) => {
     e.preventDefault();
+    createMenuName();
   })
   
-  // 메뉴의 이름을 입력 받기
-  $("#espresso-menu-name").addEventListener("keydown", (e) => {
-    if(e.key !== "Enter") return;
-    createMenuName();
-    });
+  // $("#espresso-menu-name").addEventListener("keydown", (e) => {
+  //   if(e.key !== "Enter") return;
+  //   createMenuName();
+  //   });
   
-  $("#espresso-menu-submit-button").addEventListener("click", createMenuName);
+  // $("#espresso-menu-submit-button").addEventListener("click", createMenuName);
+
 }
 
 App();

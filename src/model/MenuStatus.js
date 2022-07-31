@@ -3,6 +3,7 @@ import {MenuType, MenuTypeUtil} from "./MenuType.js";
 import LocalStorageUtil from "../util/LocalStorageUtil.js"
 
 export default class MenuStatus {
+
 	constructor(menuList = [], selectedMenuType = MenuType.ESPRESSO) {
 		if (!MenuStatus._isValidMenuStatusConstructorInput(menuList, selectedMenuType)) {
 			return;
@@ -38,7 +39,7 @@ export default class MenuStatus {
 		);
 	}
 
-	static loadOrCeateNewMenuStatus() {
+	static loadOrCreateNewMenuStatus() {
 		return MenuStatus.load() ?? new MenuStatus();
 	}
 

@@ -3,18 +3,18 @@ import MenuStatus from '../model/MenuStatus.js';
 import {MenuTypeUtil} from '../model/MenuType.js';
 
 // 현재 메뉴 상태를 관리하는 변수
-const state = MenuStatus.loadOrCeateNewMenuStatus();
+const state = MenuStatus.loadOrCreateNewMenuStatus();
 
 const inputTag = document.getElementById("espresso-menu-name");
 const menuForm = document.getElementById("espresso-menu-form");;
 const menuList = document.getElementById("espresso-menu-list");
 const menuCount = document.querySelector(".menu-count");
 const menuHeader = document.querySelector(".heading h2");
-const menuTypeSelectButtonWarpper = document.querySelector("header nav");
+const menuTypeSelectButtonWrapper = document.querySelector("header nav");
 
 menuForm.addEventListener("submit", onSubmitForm);
 menuList.addEventListener("click", onMenuClicked);
-menuTypeSelectButtonWarpper.addEventListener("click", onMenuTypeClicked);
+menuTypeSelectButtonWrapper.addEventListener("click", onMenuTypeClicked);
 document.addEventListener("DOMContentLoaded", renderMenu);
 
 function onSubmitForm(e) {
@@ -76,9 +76,9 @@ function updateMenuName(menuListItem, menuId) {
 }
 
 function removeMenuItem(menuListItem, menuId) {
-	const isConfrimed = confirm("정말 삭제하시겠습니까?");
+	const isConfirmed = confirm("정말 삭제하시겠습니까?");
 
-	if (!isConfrimed) {
+	if (!isConfirmed) {
 		return;
 	}
 	// data update
@@ -130,7 +130,7 @@ function onMenuClicked(e) {
 function onMenuTypeClicked(e) {
 	const clickedMenuTypeButton = e.target.closest(".cafe-category-name");
 
-	// event target이 menuTypeSelectButtonWarpper 안에 있지 않다면 리턴
+	// event target이 menuTypeSelectButtonWrapper 안에 있지 않다면 리턴
 	if (!clickedMenuTypeButton) {
 		return;
 	}

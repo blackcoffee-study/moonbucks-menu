@@ -17,8 +17,8 @@ export default function useMenu(renderingFunction) {
    * Data Mutation Functions
    */
   function setCategoryName(categoryName) {
-    const localStorageKey = getLocalStorageKey(categoryName);
-    const localStorageValue = JSON.parse(localStorage.getItem(localStorageKey));
+    const localStorageKey = getLocalStorageKey(categoryName); // TODO: 제거
+    const localStorageValue = JSON.parse(localStorage.getItem(localStorageKey)); // TODO: API 호출로 불러오도록 변경
 
     [getMenuState, setMenuState] = useState({}, renderingFunction, {
       removeMenu,

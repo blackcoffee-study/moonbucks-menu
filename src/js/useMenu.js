@@ -1,39 +1,34 @@
-import { elementIdMap, getLocalStorageKey } from "./utils/constant_utils.js";
+import { elementIdMap } from "./utils/constant_utils.js";
 import { useState } from "./utils/state_utils.js";
 import { getById } from "./utils/control_dom_utils.js";
 
-export default function useMenu(renderingFunction) {
+export default function useMenu(
+  renderingFunction,
+  initCategoryName = "espresso"
+) {
   /**
    * Members of useMenu
    */
-  const initCategoryName = "espresso";
   let getMenuState;
   let setMenuState;
-  let proxySetMenuState;
 
   setCategoryName(initCategoryName);
 
   /**
    * Data Mutation Functions
    */
-  function setCategoryName(categoryName) {
-    const localStorageKey = getLocalStorageKey(categoryName); // TODO: 제거
-    const localStorageValue = JSON.parse(localStorage.getItem(localStorageKey)); // TODO: API 호출로 불러오도록 변경
+  async function setCategoryName(categoryName) {
+    const state = await loadState(categoryName);
 
-    [getMenuState, setMenuState] = useState({}, renderingFunction, {
+    [getMenuState, setMenuState] = useState(state, renderingFunction, {
       removeMenu,
       updateMenu,
       soldOutMenu,
     });
 
-    proxySetMenuState = (menuState) => {
+    setMenuState = (menuState) => {
       setMenuState(menuState);
-      localStorage.setItem(localStorageKey, JSON.stringify(getMenuState()));
     };
-
-    if (localStorageValue) {
-      proxySetMenuState(localStorageValue);
-    }
 
     const { espressoMenuList } = elementIdMap;
     getById(espressoMenuList).innerHTML = "";
@@ -41,9 +36,30 @@ export default function useMenu(renderingFunction) {
     renderingFunction(getMenuState(), { removeMenu, updateMenu, soldOutMenu });
   }
 
+  async function loadState(categoryName) {
+    const { data: menus } = await axios.get(
+      `http://localhost:3000/api/category/${categoryName}/menu`
+    );
+
+    if (!menus || menus.length === 0) {
+      return {};
+    }
+
+    const state = menus.reduce((acc, menu, index) => {
+      acc[menu.id] = {
+        ...menu,
+        index,
+      };
+
+      return acc;
+    }, {});
+
+    return state;
+  }
+
   function addMenu(name) {
     if (name) {
-      proxySetMenuState({
+      setMenuState({
         ...getMenuState(),
         [getMenuNextSeq()]: {
           name,
@@ -57,7 +73,7 @@ export default function useMenu(renderingFunction) {
     if (confirm("정말로 삭제하시겠습니까?")) {
       const { [seq]: removeMenu, ...rest } = getMenuState();
 
-      proxySetMenuState({
+      setMenuState({
         ...rest,
       });
     }
@@ -67,7 +83,7 @@ export default function useMenu(renderingFunction) {
     const { [seq]: soldOutMenu, ...rest } = getMenuState();
     soldOutMenu.isSoldOut = !soldOutMenu.isSoldOut;
 
-    proxySetMenuState({
+    setMenuState({
       [seq]: soldOutMenu,
       ...rest,
     });
@@ -80,7 +96,7 @@ export default function useMenu(renderingFunction) {
       const { [seq]: updateMenu, ...rest } = getMenuState();
       updateMenu.name = newName;
 
-      proxySetMenuState({
+      setMenuState({
         [seq]: updateMenu,
         ...rest,
       });

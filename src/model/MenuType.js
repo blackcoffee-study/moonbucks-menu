@@ -40,5 +40,4 @@ const MenuTypeUtil = Object.freeze({
 	}
 });
 
-
 export {MenuType, MenuTypeUtil};

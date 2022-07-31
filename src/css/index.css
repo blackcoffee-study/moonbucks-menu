@@ -33,6 +33,10 @@ hr {
   background-color: lightgray;
 }
 
+ul{
+  list-style: none;
+}
+
 ul li button {
   width: 60px;
   line-height: inherit;

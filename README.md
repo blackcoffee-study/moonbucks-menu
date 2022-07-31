@@ -244,3 +244,11 @@ live-server 폴더명
 ## 📝 License
 
 This project is [MIT](https://github.com/blackcoffee-study/moonbucks-menu/blob/main/LICENSE) licensed.
+
+# 팀이름: N^6
+- 김성중
+- 김동욱
+- 정요한
+- 정새미
+- 전상혁
+- 서진규

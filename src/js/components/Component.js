@@ -1,29 +1,48 @@
+import { setLocalStorageItem } from '../utils/index.js';
+
 export default class Component {
-  constructor(containerId, template) {
+  constructor(containerId, template, stateId) {
     const $container = document.getElementById(containerId);
 
     if (!$container) {
       throw "container doesn't exists";
     }
 
+    if (stateId) this.stateId = stateId;
     this.state = {};
     this.container = $container;
     this.baseTemplate = template;
     this.renderTemplate = template;
     this.htmlList = [];
     this.init();
-    this.render();
+    if (!stateId) this.render();
   }
 
   setState(key, value) {
-    this.state = { ...this.state, [key]: value };
+    if (typeof key === 'string') {
+      this.state = { ...this.state, [key]: value };
+    } else if (typeof key === 'object' && !Array.isArray(key) && key !== null) {
+      this.state = key;
+    } else {
+      throw ': unexpected argument';
+    }
+
+    if (this.stateId) {
+      setLocalStorageItem(this.stateId, this.state);
+
+      if (this.stateId === location.hash.substring(1)) {
+        this.render();
+      }
+
+      return;
+    }
     this.render();
   }
 
   getHTMLElement(template) {
-    const $wrapper = document.createElement('template');
+    const $wrapper = document.createElement('div');
     $wrapper.innerHTML = template;
-    const $targetElement = $wrapper.content.cloneNode(true);
+    const $targetElement = $wrapper.firstChild.cloneNode(true);
     $wrapper.remove();
     return $targetElement;
   }
@@ -53,6 +72,8 @@ export default class Component {
   makeHTML() {}
 
   init() {}
+
+  clearEvents() {}
 
   render() {}
 }

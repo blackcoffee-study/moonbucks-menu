@@ -1,58 +1,125 @@
-class MenuStatus {
-    constructor(menuList = []) {
-        if (menuList.some(menu => !menu instanceof Menu)) {
-            console.error(`Invalid Input! ${menuList} array has a non Menu instance value @MenuStatus.constructor() 1st parameter`);
-            return;
-        }
-        this.menuList = menuList
-    }
+import Menu from "./Menu.js";
+import {MenuType, MenuTypeUtil} from "./MenuType.js";
+import LocalStorageUtil from "../util/LocalStorageUtil.js"
 
-    reset() {
-        this.menuList = [];
-    }
+export default class MenuStatus {
 
-    add(newMenu) {
-        if (!newMenu instanceof Menu) {
-			console.error(`Invalid Input! ${newMenu} is not instance of 'Menu' class! @MenuStatus.add() 1st parameter`);
+	constructor(menuList = [], selectedMenuType = MenuType.ESPRESSO) {
+		if (!MenuStatus._isValidMenuStatusConstructorInput(menuList, selectedMenuType)) {
 			return;
 		}
-        this.menuList.push(newMenu);
-    }
 
-    getMenuList() {
-        return this.menuList;
-    }
+		this.menuList = menuList;
+		this.selectedMenuType = selectedMenuType;
+	}
 
-    getMenuCount() {
-        return this.menuList.length;
-    }
+	static _isValidMenuList(menuList, calledFunc = "") {
+		if (menuList.some((menu) => !Menu.isValidMenu(menu, calledFunc))) {
+			console.error(`Invalid Input! 'menuList' parameter's value "${menuList}" array has a non Menu instance value @${calledFunc}`);
+			return false;
+		}
+		return true;
+	}
 
-    update(index, newMenu) {
-        if (typeof(index) !== 'number') {
-            console.error(`Invalid Input! ${index} is not 'number' value! @MenuStatus.update() 1st parameter`);
-            return;
-        }
+	static _isValidMenuStatusConstructorInput(menuList, selectedMenuType, calledFunc = "MenuStatus.constructor()") {
+		return MenuStatus._isValidMenuList(menuList, calledFunc) 
+            && MenuTypeUtil.isValidMenuType(selectedMenuType, calledFunc);
+	}
 
-        if (!newMenu instanceof Menu) {
-            console.error(`Invalid Input! ${newMenu} is not instance of 'Menu' class! @MenuStatus.update() 2nd parameter`);
-			return;
-        }
+	static load() {
+		const storedData = LocalStorageUtil.load();
+		const storedMenuStatus = Object.assign(MenuStatus, JSON.parse(storedData));
 
-        this.menuList = this.menuList.map(
-            (menu, i) => (i === index) ? newMenu : menu
-        );
-    }
+		if (!storedData) {
+			return undefined;
+		}
+		return new MenuStatus(
+			storedMenuStatus.menuList,
+			storedMenuStatus.selectedMenuType
+		);
+	}
 
-    /**
-     * @param {number} index 메뉴판에 보이는 메뉴들의 index 값. 첫번째 메뉴의 경우 0 값이 전달되어야 함.
-     */
-    delete(index) {
-        if (typeof index !== "number") {
-			console.error(`Invalid Input! ${index} is not 'number' value! @MenuStatus.delete() 1st parameter`);
+	static loadOrCreateNewMenuStatus() {
+		return MenuStatus.load() ?? new MenuStatus();
+	}
+
+	reset() {
+		this.menuList = [];
+		this.store();
+	}
+
+	add(newMenu) {
+		if (!Menu.isValidMenu(newMenu, "MenuStatus.add()")) {
 			return;
 		}
-        this.menuList = this.menuList.filter(
-            (menu, i) => i !== index
-        );
-    }
+
+		this.menuList.push(newMenu);
+		this.store();
+	}
+
+	getMenu(id) {
+		if (!Menu.isValidMenuId(id, "MenuStatus.getMenu()")) {
+			return;
+		}
+
+		const menu = this.menuList.find((menu) => menu.id === id);
+		if (!menu) {
+			console.error(`MenuStatus's menuList doesn't have Menu with Id "${id}!"`);
+			return;
+		}
+		return menu;
+	}
+
+	getMenuList() {
+		return this.menuList.filter(
+			(menu) => menu.type === this.selectedMenuType
+		);
+	}
+
+	getMenuCount() {
+		return this.getMenuList().length;
+	}
+
+	getSelectedMenuType() {
+		return this.selectedMenuType;
+	}
+
+	setSelectedMenuType(newMenuType) {
+		if (!MenuTypeUtil.isValidMenuType(newMenuType, "MenuStatus.setSelectedMenuType()")) {
+			return;
+		}
+
+		this.selectedMenuType = newMenuType;
+		this.store();
+	}
+
+	update(updatedMenuId, newMenu) {
+		if (!Menu.isValidMenuId(updatedMenuId, "MenuStatus.update()") || !Menu.isValidMenu(newMenu, "MenuStatus.update()")) {
+			return;
+		}
+
+		this.menuList = this.menuList.map((menu) =>
+			menu.id === updatedMenuId ? newMenu : menu
+		);
+		this.store();
+	}
+
+	/**
+	 * @param {string} deletedMenuId 삭제할 메뉴의 고유한 id 값.
+	 */
+	delete(deletedMenuId) {
+		if (!Menu.isValidMenuId(deletedMenuId, "MenuStatus.delete()")) {
+			return;
+		}
+
+		this.menuList = this.menuList.filter(
+			(menu) => menu.id !== deletedMenuId
+		);
+		this.store();
+	}
+
+	store() {
+		const storeObj = JSON.stringify(this);
+		LocalStorageUtil.store(storeObj);
+	}
 }

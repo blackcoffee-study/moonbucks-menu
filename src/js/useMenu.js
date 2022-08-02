@@ -1,6 +1,14 @@
 import { elementIdMap } from "./utils/constant_utils.js";
 import { useState } from "./utils/state_utils.js";
 import { getById } from "./utils/control_dom_utils.js";
+import {
+  loadMenuApi,
+  setApiCategoryName,
+  addMenuApi,
+  removeMenuApi,
+  updateMenuApi,
+  soldOutMenuApi,
+} from "./utils/api_utils.js";
 
 export default function useMenu(
   renderingFunction,
@@ -18,7 +26,8 @@ export default function useMenu(
    * Data Mutation Functions
    */
   async function setCategoryName(categoryName) {
-    const state = await loadState(categoryName);
+    setApiCategoryName(categoryName);
+    const state = await loadMenuApi(categoryName);
 
     [getMenuState, setMenuState] = useState(state, renderingFunction, {
       removeMenu,
@@ -26,79 +35,65 @@ export default function useMenu(
       soldOutMenu,
     });
 
-    setMenuState = (menuState) => {
-      setMenuState(menuState);
-    };
-
     const { espressoMenuList } = elementIdMap;
     getById(espressoMenuList).innerHTML = "";
 
     renderingFunction(getMenuState(), { removeMenu, updateMenu, soldOutMenu });
   }
 
-  async function loadState(categoryName) {
-    const { data: menus } = await axios.get(
-      `http://localhost:3000/api/category/${categoryName}/menu`
-    );
-
-    if (!menus || menus.length === 0) {
-      return {};
-    }
-
-    const state = menus.reduce((acc, menu, index) => {
-      acc[menu.id] = {
-        ...menu,
-        index,
-      };
-
-      return acc;
-    }, {});
-
-    return state;
-  }
-
   function addMenu(name) {
-    if (name) {
-      setMenuState({
-        ...getMenuState(),
-        [getMenuNextSeq()]: {
-          name,
-          isSoldOut: false,
-        },
-      });
-    }
-  }
+    addMenuApi(name).then((response) => {
+      const { data: menu } = response;
 
-  function removeMenu(seq) {
-    if (confirm("정말로 삭제하시겠습니까?")) {
-      const { [seq]: removeMenu, ...rest } = getMenuState();
-
-      setMenuState({
-        ...rest,
-      });
-    }
-  }
-
-  function soldOutMenu(seq) {
-    const { [seq]: soldOutMenu, ...rest } = getMenuState();
-    soldOutMenu.isSoldOut = !soldOutMenu.isSoldOut;
-
-    setMenuState({
-      [seq]: soldOutMenu,
-      ...rest,
+      if (menu) {
+        setMenuState({
+          ...getMenuState(),
+          [menu.id]: menu,
+        });
+      }
     });
   }
 
-  function updateMenu(seq) {
+  function removeMenu(menuId) {
+    if (confirm("정말로 삭제하시겠습니까?")) {
+      removeMenuApi(menuId).then((response) => {
+        if (response.status === 200) {
+          const { [menuId]: removeMenu, ...rest } = getMenuState();
+
+          setMenuState({
+            ...rest,
+          });
+        }
+      });
+    }
+  }
+
+  function soldOutMenu(menuId) {
+    soldOutMenuApi(menuId).then((response) => {
+      if (response.status === 200) {
+        const { [menuId]: soldOutMenu, ...rest } = getMenuState();
+        soldOutMenu.isSoldOut = !soldOutMenu.isSoldOut;
+
+        setMenuState({
+          [menuId]: soldOutMenu,
+          ...rest,
+        });
+      }
+    });
+  }
+
+  function updateMenu(menuId) {
     const newName = prompt("수정하고 싶은 이름을 입력해주세요.");
 
     if (newName) {
-      const { [seq]: updateMenu, ...rest } = getMenuState();
-      updateMenu.name = newName;
+      updateMenuApi(menuId, newName).then((response) => {
+        const { data: updatedMenu } = response;
+        const { [menuId]: oldMenu, ...rest } = getMenuState();
 
-      setMenuState({
-        [seq]: updateMenu,
-        ...rest,
+        setMenuState({
+          [menuId]: updatedMenu,
+          ...rest,
+        });
       });
     }
   }

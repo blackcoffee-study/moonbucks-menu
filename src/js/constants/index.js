@@ -1,7 +1,9 @@
 export const MESSAGE = Object.freeze({
-  ALERT_CREATE: "값을 입력해주세요.",
+  ALERT_EMPTY: "값을 입력해주세요.",
   PROMPT_UPDATE: "메뉴명을 수정하세요.",
   CONFIRM_DELETE: "정말 삭제하시겠습니까?",
+  ALERT_API: "에러가 발생했습니다.",
+  ALERT_DUPLICATE: "이미 등록된 메뉴입니다. 다시 입력해주세요.",
 });
 
 export const CATEGORY = Object.freeze({

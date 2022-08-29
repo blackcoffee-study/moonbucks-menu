@@ -40,7 +40,7 @@ const requestWithoutJson = async (url, option) => {
     if (!response.ok) {
         alert("에러가 발생했습니다.");
         console.error("에러가 발생했습니다.");
-    }z
+    }
     return response;
 };
 

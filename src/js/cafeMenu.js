@@ -15,7 +15,6 @@ function App() {
         blended: [],
         desert: [],
     };
-
     this.currentCategory = "espresso";
 
     const render = async () => {

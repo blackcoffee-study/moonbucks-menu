@@ -1,6 +1,24 @@
 import { $ } from "./utils/dom.js";
 import store from "./store/index.js";
 
+// TODO 서버 요청 부분
+// - [x] 웹 서버를 띄운다.
+// - [] 서버에 새로운 메뉴명이 추가될 수 있도록 요청한다.
+// - [] 서버에 카테고리별 메뉴리스트를 불러온다.
+// - [] 서버에 메뉴가 수정 될 수 있도록 요청한다.
+// - [] 서버에 메뉴의 품절상태를 토글될 수 있도록 요청한다.
+// - [] 서버에 메뉴가 삭제 될 수 있도록 요청한다.
+
+// TODO 리팩터링 부분
+// - [x] localstorage에 저장하는 로직은 지운다.
+// - [x] fetch 비동기 api를 사용하는 부분을 async await을 사용하여 구현한다.
+
+// TODO 사용자 경험
+// - [] API 통신이 실패하는 경우에 대해 사용자가 알 수 있게 alert으로 예외처리를 진행한다.
+// - [] 중복되는 메뉴는 추가할 수 없다.
+
+const BASE_URL = "http://localhost:3000/api";
+
 function App() {
   this.menu = {
     espresso: [],
@@ -58,16 +76,32 @@ function App() {
     $(".menu-count").innerText = `총 ${menuCount} 개`;
   };
 
-  const addMenuName = () => {
+  const addMenuName = async () => {
     if ($("#menu-name").value.trim() === "") {
       alert("값을 입력해주세요.");
       return;
     }
     const menuName = $("#menu-name").value;
-    this.menu[this.currentCategory].push({ name: menuName });
-    store.setLocalStorage(this.menu);
-    render();
-    $("#menu-name").value = "";
+
+    await fetch(`${BASE_URL}/category/${this.currentCategory}/menu`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ name: menuName }),
+    }).then((response) => {
+      return response.json();
+    });
+
+    await fetch(`${BASE_URL}/category/${this.currentCategory}/menu`)
+      .then((response) => {
+        return response.json();
+      })
+      .then((data) => {
+        this.menu[this.currentCategory] = data;
+        render();
+        $("#menu-name").value = "";
+      });
   };
 
   const updateMenuName = (e) => {

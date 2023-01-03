@@ -16,7 +16,7 @@ import MenuApi from "./api/index.js";
 
 // TODO 사용자 경험
 // - [x] API 통신이 실패하는 경우에 대해 사용자가 알 수 있게 alert으로 예외처리를 진행한다.
-// - [] 중복되는 메뉴는 추가할 수 없다.
+// - [x] 중복되는 메뉴는 추가할 수 없다.
 
 function App() {
   this.menu = {

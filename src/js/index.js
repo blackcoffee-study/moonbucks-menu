@@ -82,6 +82,17 @@ function App() {
       alert("값을 입력해주세요.");
       return;
     }
+
+    const deplicatedItem = this.menu[this.currentCategory].find(
+      (menuItem) => menuItem.name === $("#menu-name").value
+    );
+    console.log(deplicatedItem);
+    if (deplicatedItem) {
+      alert("이미 등록된 메뉴입니다. 다시 입력해주세요.");
+      $("#menu-name").value = "";
+      return;
+    }
+
     const menuName = $("#menu-name").value;
     await MenuApi.createMenu(this.currentCategory, menuName);
     render();
